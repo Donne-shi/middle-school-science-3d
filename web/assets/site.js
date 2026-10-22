@@ -1,44 +1,55 @@
-// Homepage opening. Keep the site usable if storage or motion APIs are unavailable.
+// Shared language switch for every Newton Science Discovery Center page.
 (function () {
-  const intro = document.getElementById('site-intro');
-  const skip = document.getElementById('intro-skip');
-  const replay = document.getElementById('replay-intro');
-  if (!intro || !skip || !replay) return;
+  const key = 'newton-garage-lang'; // Shared with the standalone Newton's Garage lesson.
+  const root = document.documentElement;
+  const button = document.getElementById('language-switch');
+  if (!button) return;
 
-  const key = 'science-site-intro-seen';
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let timer;
-
-  function remember() {
-    try { sessionStorage.setItem(key, '1'); } catch (_) { /* file previews may block storage */ }
+  function savedLanguage() {
+    const query = new URLSearchParams(window.location.search).get('lang');
+    if (query === 'zh' || query === 'en') return query;
+    try {
+      const saved = window.localStorage.getItem(key);
+      if (saved === 'zh' || saved === 'en') return saved;
+    } catch (_) { /* file previews may block storage */ }
+    return 'zh';
   }
 
-  function dismiss() {
-    clearTimeout(timer);
-    intro.classList.add('is-leaving');
-    document.documentElement.classList.remove('intro-playing');
-    if (intro.contains(document.activeElement)) replay.focus();
-    remember();
-    window.setTimeout(() => { intro.hidden = true; }, reducedMotion ? 0 : 520);
+  function updateLinks(lang) {
+    document.querySelectorAll('a[href]').forEach((anchor) => {
+      const base = anchor.dataset.baseHref || anchor.getAttribute('href');
+      if (!base || !/\.html(?:[?#]|$)/.test(base)) return;
+      anchor.dataset.baseHref = base;
+      const hashIndex = base.indexOf('#');
+      const hash = hashIndex < 0 ? '' : base.slice(hashIndex);
+      const withoutHash = hashIndex < 0 ? base : base.slice(0, hashIndex);
+      const queryIndex = withoutHash.indexOf('?');
+      const path = queryIndex < 0 ? withoutHash : withoutHash.slice(0, queryIndex);
+      const params = new URLSearchParams(queryIndex < 0 ? '' : withoutHash.slice(queryIndex + 1));
+      if (lang === 'en') params.set('lang', 'en');
+      else params.delete('lang');
+      anchor.setAttribute('href', path + (params.size ? '?' + params.toString() : '') + hash);
+    });
   }
 
-  function play(fromReplay) {
-    clearTimeout(timer);
-    intro.hidden = false;
-    intro.classList.remove('is-leaving');
-    document.documentElement.classList.add('intro-playing');
-    if (fromReplay) skip.focus();
-    timer = window.setTimeout(dismiss, reducedMotion ? 850 : 3300);
+  function apply(lang) {
+    root.lang = lang === 'en' ? 'en' : 'zh-CN';
+    root.dataset.lang = lang;
+    document.querySelectorAll('[data-zh][data-en]').forEach((element) => {
+      if (element.tagName === 'META') element.setAttribute('content', element.dataset[lang]);
+      else element.textContent = element.dataset[lang];
+    });
+    document.querySelectorAll('[data-aria-zh][data-aria-en]').forEach((element) => {
+      element.setAttribute('aria-label', element.dataset[lang === 'en' ? 'ariaEn' : 'ariaZh']);
+    });
+    document.title = (lang === 'en' ? root.dataset.titleEn : root.dataset.titleZh) + ' · ' +
+      (lang === 'en' ? 'Newton Science Discovery Center' : '牛顿科学探索馆');
+    button.setAttribute('aria-label', lang === 'en' ? 'Switch to Chinese' : '切换为英文');
+    button.setAttribute('aria-pressed', String(lang === 'en'));
+    updateLinks(lang);
+    try { window.localStorage.setItem(key, lang); } catch (_) { /* query links keep the choice */ }
   }
 
-  skip.addEventListener('click', dismiss);
-  replay.addEventListener('click', () => play(true));
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !intro.hidden) dismiss();
-  });
-
-  let seen = false;
-  try { seen = sessionStorage.getItem(key) === '1'; } catch (_) { /* play on each open */ }
-  if (seen) intro.hidden = true;
-  else play();
+  button.addEventListener('click', () => apply(root.dataset.lang === 'en' ? 'zh' : 'en'));
+  apply(savedLanguage());
 }());

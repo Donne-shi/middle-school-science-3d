@@ -1,5 +1,6 @@
 {
-  "title": "中学科学 3D 探索馆",
+  "title": "牛顿科学探索馆",
+  "title_en": "Newton Science Discovery Center",
   "subjects": [
     {
       "slug": "astronomy",
@@ -7,22 +8,28 @@
       "english": "Astronomy",
       "eyebrow": "从地球出发，重新认识宇宙",
       "description": "看见天体的形状、运动与尺度，沿着问题一步步走进太阳系。",
+      "description_en": "Explore the shapes, motions, and scale of celestial bodies as you journey into the Solar System.",
       "accent": "#197a91",
       "status": "太阳系专题已开放",
+      "status_en": "Solar System topic available",
       "topics": [
         {
           "slug": "solar-system",
           "name": "太阳系",
           "english": "The Solar System",
           "description": "从一颗恒星出发，认识八颗行星与太阳系的边界。",
+          "description_en": "Start with our star and explore the eight planets and the outer Solar System.",
           "status": "演示制作中",
+          "status_en": "Interactive lessons in progress",
           "lessons": [
             {
               "slug": "atlas",
               "name": "太阳系行星图鉴",
               "english": "Solar System Atlas",
               "description": "旋转、靠近并观察太阳与行星。",
+              "description_en": "Rotate, zoom in, and observe the Sun and planets.",
               "interaction": "3D 漫游 · 天体资料",
+              "interaction_en": "3D exploration · Planet facts",
               "href": "demos/solar-system/atlas.html"
             },
             {
@@ -30,7 +37,9 @@
               "name": "太阳系结构",
               "english": "Structure of the Solar System",
               "description": "从行星轨道走向柯伊伯带与奥尔特云。",
+              "description_en": "Travel from planetary orbits to the Kuiper Belt and Oort Cloud.",
               "interaction": "尺度图解 · 光行时",
+              "interaction_en": "Scale diagram · Light travel time",
               "href": "demos/solar-system/structure.html"
             }
           ]
@@ -43,22 +52,28 @@
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
       "description": "从一辆汽车开始，观察受力、运动与牛顿三大定律。",
+      "description_en": "Use a car to explore forces, motion, and Newton's three laws.",
       "accent": "#ba572e",
       "status": "牛顿车库已开放",
+      "status_en": "Newton's Garage available",
       "topics": [
         {
           "slug": "forces-and-motion",
           "name": "力与运动",
           "english": "Forces & Motion",
           "description": "通过一辆可操作的 3D 汽车，观察受力图与牛顿三大定律。",
+          "description_en": "Use an interactive 3D car to study force diagrams and Newton's three laws.",
           "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
           "lessons": [
             {
               "slug": "newton-garage",
               "name": "牛顿车库",
               "english": "Newton's Garage",
               "description": "切换运动状态、调节质量与驱动力，完成五章互动实验与课堂挑战。",
+              "description_en": "Change motion states, mass, and driving force across five interactive chapters.",
               "interaction": "3D 汽车 · 双语 · 五章实验",
+              "interaction_en": "3D car · Bilingual · Five chapters",
               "href": "demos/physics/newton-garage/index.html",
               "published": true
             }
@@ -72,8 +87,10 @@
       "english": "Biology",
       "eyebrow": "从微观结构认识生命",
       "description": "观察生命的形态与结构。具体演示将随课程逐步加入。",
+      "description_en": "Observe the forms and structures of living things. Interactive lessons will be added over time.",
       "accent": "#428258",
       "status": "内容筹备中",
+      "status_en": "Coming soon",
       "topics": []
     },
     {
@@ -82,8 +99,10 @@
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
       "description": "用可视化模型理解物质的组成与变化。具体演示将随课程逐步加入。",
+      "description_en": "Use visual models to understand what matter is made of and how it changes. Lessons are coming soon.",
       "accent": "#8058a5",
       "status": "内容筹备中",
+      "status_en": "Coming soon",
       "topics": []
     }
   ]

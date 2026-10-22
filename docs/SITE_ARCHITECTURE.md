@@ -6,6 +6,8 @@
 
 四个学科都有自己的 `index.html`，因此可以跳过总首页，直接打开或分享学科首页。每个演示也有独立地址。页面使用相对链接，可在子路径托管；站点入口与学科首页可直接以本地文件方式打开。3D 页面是否支持 `file://` 取决于素材读取方式，建议用本地 HTTP 服务预览。
 
+网站名称为“牛顿科学探索馆 / Newton Science Discovery Center”。总入口、学科页和专题页使用右上角按钮切换中英文；语言选择保存在浏览器，并通过 `?lang=en` 传给站内页面。牛顿车库本身已有双语切换，其网站副本的返回链接会跟随当前语言。
+
 ## 内容来源
 
 `content/catalog.json` 是入口页面的目录数据。`scripts/build_site.py` 将公开版本生成到 `site/`，共用 `web/assets/site.css` 与 `web/assets/site.js`。目录项设为 `"published": true` 后，公开版本生成可点击的演示链接；素材未核查的演示只显示介绍卡片。`scripts/build_site.py --local` 将可点击的预览版本生成到 Git 忽略的 `preview/`，并复制已公开演示。

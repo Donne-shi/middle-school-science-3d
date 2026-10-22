@@ -28,10 +28,19 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .brand { display: flex; align-items: center; gap: 14px; min-width: 195px; font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: .07em; }
 .brand-mark { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font-family: var(--mono); font-size: 12px; transform: rotate(-22deg); }
 .brand small { display: block; margin-top: 4px; color: var(--quiet); font-family: var(--mono); font-size: 9px; font-weight: 400; letter-spacing: .2em; }
+.header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 26px; }
 .site-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 30px; }
 .site-nav a { padding: 8px 0; color: var(--muted); font-size: 13px; letter-spacing: .06em; transition: color .2s; }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--ink); }
 .site-nav a[aria-current]::after { display: block; height: 1px; margin-top: 6px; background: var(--accent); content: ''; }
+.language-switch { display: inline-flex; flex: none; align-items: center; gap: 6px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font: 11px var(--sans); cursor: pointer; }
+.language-switch:hover { border-color: var(--accent); }
+.language-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.language-divider { color: var(--quiet); }
+:root:not([data-lang="en"]) .language-option-zh, :root[data-lang="en"] .language-option-en { color: var(--ink); font-weight: 700; }
+:root[data-lang="en"] .english { display: none; }
+:root[data-lang="en"] .brand { font-size: 14px; letter-spacing: 0; }
+:root[data-lang="en"] .home-hero h1 { font-size: clamp(52px, 5.4vw, 82px); }
 
 .eyebrow { color: var(--accent); font: 11px/1.6 var(--mono); letter-spacing: .2em; text-transform: uppercase; }
 .eyebrow-line { display: inline-flex; align-items: center; gap: 15px; }
@@ -112,25 +121,6 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .site-footer { border-top: 1px solid var(--line); }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; padding-block: 28px; color: var(--quiet); font: 11px var(--mono); letter-spacing: .06em; }
 
-.replay-intro { border: 0; background: none; color: var(--muted); padding: 0; font: 11px var(--mono); cursor: pointer; }
-.replay-intro:hover { color: var(--accent); }
-.site-intro[hidden] { display: none !important; }
-.site-intro { display: none; }
-.js-intro .site-intro { position: fixed; z-index: 9999; inset: 0; display: grid; place-items: center; overflow: hidden; background: #0b1c2b; color: #fff; opacity: 1; transition: opacity .52s ease; }
-.js-intro .site-intro.is-leaving { opacity: 0; pointer-events: none; }
-.intro-sky { position: absolute; inset: 0; background: radial-gradient(circle at 50% 70%, rgba(65,141,172,.42), transparent 24%), linear-gradient(180deg, #0b1c2b 0%, #173950 62%, #7cc1d5 100%); }
-.intro-sky::before { content: ''; position: absolute; inset: 0; background: radial-gradient(1px 1px at 18% 18%, #fff 99%, transparent), radial-gradient(2px 2px at 70% 21%, #fff 99%, transparent), radial-gradient(1px 1px at 84% 57%, #fff 99%, transparent), radial-gradient(1px 1px at 42% 35%, #fff 99%, transparent), radial-gradient(2px 2px at 63% 62%, #fff 99%, transparent), radial-gradient(1px 1px at 26% 66%, #fff 99%, transparent); opacity: .75; }
-.intro-sky i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px 2px rgba(255,255,255,.7); animation: star-breathe 2s ease-in-out infinite alternate; }
-.intro-sky i:nth-child(1) { left: 13%; top: 37%; }.intro-sky i:nth-child(2) { left: 75%; top: 13%; animation-delay: .4s; }.intro-sky i:nth-child(3) { left: 88%; top: 42%; animation-delay: 1s; }.intro-sky i:nth-child(4) { left: 37%; top: 16%; animation-delay: .7s; }.intro-sky i:nth-child(5) { left: 58%; top: 48%; animation-delay: 1.3s; }.intro-sky i:nth-child(6) { left: 23%; top: 58%; animation-delay: .2s; }
-.intro-horizon { position: absolute; left: 50%; bottom: -27vw; width: 130vw; height: 45vw; border-radius: 50% 50% 0 0; background: radial-gradient(ellipse at 50% 0%, #fffaf0 0%, #d4eef2 32%, #6bb6ce 65%, transparent 69%); transform: translateX(-50%); animation: horizon-rise 3.2s cubic-bezier(.2,.7,.25,1) both; }
-.intro-content { position: relative; z-index: 1; text-align: center; padding: 0 24px 11vh; animation: quote-arrive 1.5s ease-out both; }
-.intro-overline, .intro-byline { display: block; color: #c7e4ed; font: 11px var(--mono); letter-spacing: .32em; }
-.intro-content p { margin: 25px 0 22px; font: 500 clamp(31px, 5.6vw, 82px)/1.35 var(--serif); letter-spacing: .08em; text-shadow: 0 8px 25px rgba(4,18,29,.22); }
-.intro-skip { position: absolute; z-index: 2; right: clamp(24px, 4vw, 68px); bottom: 40px; border: 1px solid rgba(255,255,255,.6); border-radius: 40px; background: rgba(8,29,44,.25); color: #fff; padding: 11px 18px; font: 12px var(--sans); cursor: pointer; }
-.intro-skip:hover, .intro-skip:focus-visible { background: rgba(255,255,255,.18); outline: 2px solid #fff; outline-offset: 3px; }
-@keyframes star-breathe { from { opacity: .35; transform: scale(.75); } to { opacity: 1; transform: scale(1.5); } }
-@keyframes quote-arrive { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes horizon-rise { from { transform: translate(-50%, 38%); opacity: .4; } to { transform: translate(-50%, 0); opacity: 1; } }
 
 @media (max-width: 900px) {
   .container { width: min(100% - 48px, 1320px); }
@@ -142,6 +132,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 @media (max-width: 680px) {
   .container { width: calc(100% - 36px); }
   .header-inner { flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; padding-block: 16px; }
+  .header-actions { width: 100%; justify-content: space-between; gap: 10px; }
   .site-nav { justify-content: flex-start; gap: 5px 19px; }
   .site-nav a { font-size: 12px; }
   .home-hero { min-height: auto; }
