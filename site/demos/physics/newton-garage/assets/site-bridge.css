@@ -1,0 +1,4 @@
+.science-back { display: block; flex: none; padding: 8px 34px; border-bottom: 1px solid rgba(23,21,17,.12); background: #fff8ef; color: #9b461e; font: 600 12px/1.5 -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; text-decoration: none; }
+.science-back:hover, .science-back:focus-visible { background: #f8e5d3; color: #642c13; }
+.science-back:focus-visible { outline: 2px solid #9b461e; outline-offset: -2px; }
+@media (max-width: 680px) { .science-back { padding-inline: 20px; } }

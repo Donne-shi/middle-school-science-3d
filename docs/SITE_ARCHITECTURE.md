@@ -8,9 +8,9 @@
 
 ## 内容来源
 
-`content/catalog.json` 是入口页面的目录数据。`scripts/build_site.py` 将公开版本生成到 `site/`，共用 `web/assets/site.css`。公开版本在演示素材核查完成前只显示介绍卡片，不生成空演示链接。`scripts/build_site.py --local` 将可点击的预览版本生成到 Git 忽略的 `preview/`。
+`content/catalog.json` 是入口页面的目录数据。`scripts/build_site.py` 将公开版本生成到 `site/`，共用 `web/assets/site.css` 与 `web/assets/site.js`。目录项设为 `"published": true` 后，公开版本生成可点击的演示链接；素材未核查的演示只显示介绍卡片。`scripts/build_site.py --local` 将可点击的预览版本生成到 Git 忽略的 `preview/`，并复制已公开演示。
 
-现有太阳系单页通过 `scripts/import_local_demos.py` 导入 `preview/demos/solar-system/`。这是本地预览，不改动原稿，也不进入 Git。原稿的贴图来源和科学表述核查完成后，再确定公开发布方式。后续学科可以沿用“先制作单页 → 登记目录 → 接入站点 → 核查后发布”的流程。
+《牛顿车库》由提供的 `newton-motion-lab/` 文件导入 `site/demos/physics/newton-garage/`，页面独立可打开，并保留单文件离线版、预览图和原说明。网站副本增加“返回物理学”链接；原始文件不改动。现有太阳系单页通过 `scripts/import_local_demos.py` 导入 `preview/demos/solar-system/`。这是本地预览，不改动原稿，也不进入 Git。原稿的贴图来源和科学表述核查完成后，再确定公开发布方式。
 
 ## 设计规则
 

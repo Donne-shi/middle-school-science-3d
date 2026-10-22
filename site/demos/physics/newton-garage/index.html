@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071018">
+  <meta name="description" content="牛顿车库：用一辆汽车看懂牛顿三大运动定律。七年级科学双语 3D 互动课堂。Newton's Garage — a bilingual, interactive 3D lesson on forces and motion.">
+  <meta property="og:title" content="牛顿车库 · Newton's Garage">
+  <meta property="og:description" content="三条定律，一辆汽车。可旋转、可操作的 3D 力学课堂。">
+  <meta property="og:type" content="website">
+  <title>牛顿车库 · Newton's Garage — 力与运动 3D 互动课堂</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23171511'/%3E%3Cpath d='M13 25h30' stroke='%23ef6b3a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='m36 17 9 8-9 8' fill='none' stroke='%23ef6b3a' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='42' r='6' fill='none' stroke='%23f3ecdf' stroke-width='3'/%3E%3Cpath d='M13 42h4M29 42h12' stroke='%23f3ecdf' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/site-bridge.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="lesson" id="lesson" aria-label="课程讲义">
+      <header class="lesson-header">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" role="img">
+              <circle cx="15.5" cy="33" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="31.5" cy="33" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M7 30h2.5l3.3-7.1 10.2-2.4 7.4 4.6H38l2.5 4.9H7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M7 17.5h17" stroke="#ef6b3a" stroke-width="2.3" stroke-linecap="round"/>
+              <path d="m20.5 13.3 4.5 4.2-4.5 4.2" fill="none" stroke="#ef6b3a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-kicker">NEWTON'S GARAGE</span>
+            <span class="brand-name" data-zh="牛顿车库" data-en="Newton's Garage">牛顿车库</span>
+          </div>
+        </div>
+        <div class="header-tools">
+          <span class="edition" data-zh="七年级科学" data-en="Grade 7">七年级科学</span>
+          <button class="lang-toggle" id="langToggle" type="button" aria-label="切换语言 / Switch language">
+            <span class="lang-option is-active" data-lang-option="zh">中</span>
+            <span class="lang-divider">/</span>
+            <span class="lang-option" data-lang-option="en">EN</span>
+          </button>
+        </div>
+      </header>
+
+      <a class="science-back" href="../../../subjects/physics/index.html">← 返回物理学</a>
+      <nav class="chapter-nav" id="chapterNav" aria-label="章节导航 / Chapter navigation"></nav>
+
+      <div class="panel-scroll" id="panelScroll">
+        <div class="chapter-root" id="chapterRoot"></div>
+      </div>
+      <footer class="lesson-footer">
+        <button class="footer-arrow" type="button" data-action="prev-chapter" id="prevBtn" aria-label="上一章 / Previous chapter">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-zh="上一章" data-en="Previous">上一章</span>
+        </button>
+        <span class="footer-count" id="footerCount">01 / 05</span>
+        <button class="footer-arrow footer-arrow--next" type="button" data-action="next-chapter" id="nextBtn" aria-label="下一章 / Next chapter">
+          <span data-zh="下一章" data-en="Next">下一章</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </footer>
+    </aside>
+
+    <main class="stage" id="stage" aria-label="三维汽车力学演示 / 3D car physics demonstration">
+      <canvas id="stageCanvas"></canvas>
+      <div class="stage-scrim" aria-hidden="true"></div>
+      <div class="stage-grain" aria-hidden="true"></div>
+      <div class="stage-watermark" id="stageWatermark" aria-hidden="true">01</div>
+
+      <header class="stage-header">
+        <div class="stage-identity">
+          <div class="live-badge"><i aria-hidden="true"></i><span data-zh="实时三维实验室" data-en="LIVE 3D LAB">实时三维实验室</span></div>
+          <div class="scene-code" id="sceneCode">SCENE 01 / FORCE ANALYSIS</div>
+          <h2 class="scene-title" id="sceneTitle">受力全景</h2>
+          <p class="scene-subtitle" id="sceneSubtitle">把每一股力，放到正确的位置上。</p>
+        </div>
+        <div class="stage-actions">
+          <button class="stage-lang" id="stageLangToggle" type="button" aria-label="切换语言 / Switch language">
+            <span data-zh="EN" data-en="中文">EN</span>
+          </button>
+          <button class="present-button" id="presentBtn" type="button" aria-label="全屏授课 / Present fullscreen">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4M13 3h4v4M7 17H3v-4M13 17h4v-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-zh="全屏授课" data-en="Present">全屏授课</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="stage-labels" id="stageLabels" aria-hidden="true"></div>
+
+      <div class="orbit-hint" id="orbitHint">
+        <span class="orbit-icon" aria-hidden="true">
+          <svg viewBox="0 0 28 28"><path d="M7 13a8 8 0 0 1 13.8-5.5L23 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M23 6v4h-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16a8 8 0 0 1-13.8 5.5L5 19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M5 23v-4h4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span data-zh="拖拽旋转 · 滚轮缩放" data-en="Drag to orbit · scroll to zoom">拖拽旋转 · 滚轮缩放</span>
+      </div>
+
+      <div class="stage-bottom">
+        <div class="telemetry" id="telemetry"></div>
+        <div class="force-legend" id="forceLegend"></div>
+      </div>
+
+      <div class="impact-flash" id="impactFlash" aria-hidden="true"></div>
+      <div class="stage-toast" id="stageToast" role="status" aria-live="polite"></div>
+
+      <noscript>
+        <div class="noscript">这个课堂需要 JavaScript 与 WebGL 才能运行。<br>This lesson needs JavaScript and WebGL to run.</div>
+      </noscript>
+    </main>
+  </div>
+
+  <script src="assets/three.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

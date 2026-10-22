@@ -7,15 +7,15 @@
       "english": "Astronomy",
       "eyebrow": "从地球出发，重新认识宇宙",
       "description": "看见天体的形状、运动与尺度，沿着问题一步步走进太阳系。",
-      "accent": "#8ed8e3",
-      "status": "开放预览",
+      "accent": "#197a91",
+      "status": "太阳系专题已开放",
       "topics": [
         {
           "slug": "solar-system",
           "name": "太阳系",
           "english": "The Solar System",
           "description": "从一颗恒星出发，认识八颗行星与太阳系的边界。",
-          "status": "开放预览",
+          "status": "演示制作中",
           "lessons": [
             {
               "slug": "atlas",
@@ -42,10 +42,29 @@
       "name": "物理学",
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
-      "description": "通过可操作的模型观察力、能量与运动。具体演示将随课程逐步加入。",
-      "accent": "#f1c978",
-      "status": "内容筹备中",
-      "topics": []
+      "description": "从一辆汽车开始，观察受力、运动与牛顿三大定律。",
+      "accent": "#ba572e",
+      "status": "牛顿车库已开放",
+      "topics": [
+        {
+          "slug": "forces-and-motion",
+          "name": "力与运动",
+          "english": "Forces & Motion",
+          "description": "通过一辆可操作的 3D 汽车，观察受力图与牛顿三大定律。",
+          "status": "1 个演示已开放",
+          "lessons": [
+            {
+              "slug": "newton-garage",
+              "name": "牛顿车库",
+              "english": "Newton's Garage",
+              "description": "切换运动状态、调节质量与驱动力，完成五章互动实验与课堂挑战。",
+              "interaction": "3D 汽车 · 双语 · 五章实验",
+              "href": "demos/physics/newton-garage/index.html",
+              "published": true
+            }
+          ]
+        }
+      ]
     },
     {
       "slug": "biology",
@@ -53,7 +72,7 @@
       "english": "Biology",
       "eyebrow": "从微观结构认识生命",
       "description": "观察生命的形态与结构。具体演示将随课程逐步加入。",
-      "accent": "#a9d9a3",
+      "accent": "#428258",
       "status": "内容筹备中",
       "topics": []
     },
@@ -63,7 +82,7 @@
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
       "description": "用可视化模型理解物质的组成与变化。具体演示将随课程逐步加入。",
-      "accent": "#d7b5e5",
+      "accent": "#8058a5",
       "status": "内容筹备中",
       "topics": []
     }

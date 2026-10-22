@@ -15,5 +15,5 @@ build/
 *.log
 *.swp
 *.swo
-site/demos/
+site/demos/solar-system/
 preview/
