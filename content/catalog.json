@@ -98,12 +98,35 @@
       "name": "化学",
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
-      "description": "用可视化模型理解物质的组成与变化。具体演示将随课程逐步加入。",
-      "description_en": "Use visual models to understand what matter is made of and how it changes. Lessons are coming soon.",
+      "description": "从原子模型的演进出发，探索物质结构与变化。",
+      "description_en": "Trace how atomic models evolved and explore the structure of matter.",
       "accent": "#8058a5",
-      "status": "内容筹备中",
-      "status_en": "Coming soon",
-      "topics": []
+      "status": "原子结构专题已开放",
+      "status_en": "Atomic Structure topic available",
+      "topics": [
+        {
+          "slug": "atomic-structure",
+          "name": "原子结构",
+          "english": "Atomic Structure",
+          "description": "沿着科学发现的时间线，比较原子模型，并观察电子云与原子轨道。",
+          "description_en": "Follow the discoveries behind atomic models, then explore electron clouds and orbitals.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "atomic-atlas",
+              "name": "原子图鉴",
+              "english": "Atomic Atlas",
+              "description": "操作 12 个模型与实验视图，理解原子观念如何随证据改变。",
+              "description_en": "Explore 12 models and experiments to see how evidence changed our view of atoms.",
+              "interaction": "模型演进 · 电子云 · 互动实验",
+              "interaction_en": "Model history · Electron clouds · Experiments",
+              "href": "demos/chemistry/atomic-atlas/index.html",
+              "published": true
+            }
+          ]
+        }
+      ]
     }
   ]
 }

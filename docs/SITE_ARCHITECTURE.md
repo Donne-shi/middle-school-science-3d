@@ -6,13 +6,15 @@
 
 四个学科都有自己的 `index.html`，因此可以跳过总首页，直接打开或分享学科首页。每个演示也有独立地址。页面使用相对链接，可在子路径托管；站点入口与学科首页可直接以本地文件方式打开。3D 页面是否支持 `file://` 取决于素材读取方式，建议用本地 HTTP 服务预览。
 
-网站名称为“牛顿科学探索馆 / Newton Science Discovery Center”。总入口、学科页和专题页使用右上角按钮切换中英文；语言选择保存在浏览器，并通过 `?lang=en` 传给站内页面。牛顿车库本身已有双语切换，其网站副本的返回链接会跟随当前语言。
+网站名称为“牛顿科学探索馆 / Newton Science Discovery Center”。总入口、学科页和专题页使用右上角按钮切换中英文；语言选择保存在浏览器，并通过 `?lang=en` 传给站内页面。牛顿车库和原子图鉴都有自己的语言切换，其网站副本的返回链接会跟随当前语言。
 
 ## 内容来源
 
 `content/catalog.json` 是入口页面的目录数据。`scripts/build_site.py` 将公开版本生成到 `site/`，共用 `web/assets/site.css` 与 `web/assets/site.js`。目录项设为 `"published": true` 后，公开版本生成可点击的演示链接；素材未核查的演示只显示介绍卡片。`scripts/build_site.py --local` 将可点击的预览版本生成到 Git 忽略的 `preview/`，并复制已公开演示。
 
 《牛顿车库》由提供的 `newton-motion-lab/` 文件导入 `site/demos/physics/newton-garage/`，页面独立可打开，并保留单文件离线版、预览图和原说明。网站副本增加“返回物理学”链接；原始文件不改动。现有太阳系单页通过 `scripts/import_local_demos.py` 导入 `preview/demos/solar-system/`。这是本地预览，不改动原稿，也不进入 Git。原稿的贴图来源和科学表述核查完成后，再确定公开发布方式。
+
+《原子图鉴》由作者提供的 `Documents/gemini/科学模型/` 导入 `site/demos/chemistry/atomic-atlas/`，保留十二个互动视图，调整了明亮主题、屏幕布局、返回入口与部分历史模型表述。其独立地址位于化学的“原子结构”专题下。原始文件不改动。
 
 ## 设计规则
 

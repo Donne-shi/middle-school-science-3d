@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原子图鉴 · 牛顿科学探索馆</title>
+  <meta name="description" content="从道尔顿实心球到现代电子云，操作十二个原子模型与实验视图。" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./site-theme.css" />
+</head>
+<body data-lang="zh">
+
+  <!-- TOP ARCHITECTURAL HEADER BAR -->
+  <header class="atlas-header">
+    <div class="header-brand">
+      <div class="brand-emblem">
+        <span class="emblem-core"></span>
+        <span class="emblem-dot"></span>
+      </div>
+      <div class="brand-titles">
+        <span class="brand-zh">原子图鉴</span>
+        <span class="brand-en">牛顿科学探索馆 / ATOMIC ATLAS</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <a class="science-back" href="../../../topics/chemistry/atomic-structure/index.html" id="scienceBack">← 返回原子结构</a>
+      <div class="header-counter">
+        <span id="topIndexNum">01</span>
+        <span class="counter-slash">/</span>
+        <span>12</span>
+        <span class="counter-dot">·</span>
+        <span id="topCategoryText">历史演进模型</span>
+      </div>
+
+      <div class="header-btn-group">
+        <button class="arch-btn active" id="btnLangBi" onclick="setLanguage('bi')">中/EN 双语</button>
+        <button class="arch-btn" id="btnLangZh" onclick="setLanguage('zh')">中文</button>
+        <button class="arch-btn" id="btnLangEn" onclick="setLanguage('en')">EN</button>
+      </div>
+
+      <button class="arch-btn" onclick="openModal('compareModal')">
+        <span class="btn-icon">⊞</span>
+        <span class="zh-inline">对比</span>
+        <span class="en-inline">Compare</span>
+      </button>
+
+      <button class="arch-btn" onclick="openModal('quizModal')">
+        <span class="btn-icon">✦</span>
+        <span class="zh-inline">随堂测验</span>
+        <span class="en-inline">Quiz</span>
+      </button>
+
+      <button class="arch-btn" onclick="openModal('guideModal')">
+        <span class="zh-inline">说明</span>
+        <span class="en-inline">Guide</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="atlas-intro" aria-label="课程导览">
+    <span class="intro-kicker">CHEMISTRY / ATOMIC STRUCTURE</span>
+    <span class="intro-zh">从一颗实心球，到一片电子云。沿着证据看原子模型如何演进。</span>
+    <span class="intro-en">From a solid sphere to the electron cloud. Follow the evidence that changed the atom.</span>
+    <span class="intro-count">12 个交互视图 <span aria-hidden="true">↘</span></span>
+  </div>
+
+  <!-- MAIN 3-COLUMN ATLAS WORKSPACE -->
+  <main class="atlas-main">
+
+    <!-- LEFT CATALOG INDEX SIDEBAR -->
+    <aside class="atlas-sidebar-left">
+      <div class="catalog-scroll" id="catalogList">
+        <!-- Populated dynamically by app.js (01 to 12) -->
+      </div>
+      <div class="sidebar-footer">
+        <div class="zh-text">课堂模型 · 观察、比较、提出问题</div>
+        <div class="en-text">Classroom models · Observe and compare</div>
+        <div class="footer-sub zh-text">历史模型并非现代原子的真实照片；尺寸与轨道均为教学示意。</div>
+        <div class="footer-sub en-text">Historical models and orbital views are teaching illustrations, not literal scale images.</div>
+      </div>
+    </aside>
+
+    <!-- CENTER PURE 3D EXHIBITION STAGE -->
+    <section class="atlas-stage-center">
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="atomCanvas"></canvas>
+        <!-- 3D Projected Bilingual Leader-Line Callout Overlay -->
+        <svg class="callout-svg" id="calloutSvg"></svg>
+        <div class="callout-labels-layer" id="calloutLabelsLayer"></div>
+      </div>
+
+      <!-- BOTTOM ARCHITECTURAL TOOLBAR & SHORTCUT BAR -->
+      <div class="stage-bottom-bar">
+        <div class="stage-controls-left">
+          <div class="tool-btn-group">
+            <button class="tool-btn active" id="btnRotate" onclick="toggleRotate()">
+              <span class="tool-ico">↻</span>
+              <span class="zh-inline">旋转</span>
+              <span class="en-inline">Rotate</span>
+            </button>
+            <button class="tool-btn active" id="btnSlice" onclick="toggleSlice()">
+              <span class="tool-ico">◒</span>
+              <span class="zh-inline">剖切</span>
+              <span class="en-inline">Slice</span>
+            </button>
+            <button class="tool-btn active" id="btnLabels" onclick="toggleLabels()">
+              <span class="tool-ico">／</span>
+              <span class="zh-inline">标注</span>
+              <span class="en-inline">Labels</span>
+            </button>
+            <button class="tool-btn" id="btnExp" onclick="triggerStageExperiment()">
+              <span class="tool-ico">⚡</span>
+              <span id="btnExpLabel">互动实验</span>
+            </button>
+            <button class="tool-btn" onclick="resetView()">
+              <span class="tool-ico">↺</span>
+              <span class="zh-inline">复位</span>
+              <span class="en-inline">Reset</span>
+            </button>
+          </div>
+
+          <!-- Scale Bar Indicator -->
+          <div class="scale-indicator">
+            <div class="scale-title" id="scaleTitle">道尔顿实心球</div>
+            <div class="scale-bar-row">
+              <span class="scale-bracket"></span>
+              <span class="scale-val" id="scaleVal">100 pm</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-shortcuts-right">
+          <span class="kbd-box">←</span>
+          <span class="kbd-box">→</span>
+          <span class="kbd-txt">切换</span>
+          <span class="kbd-dot">·</span>
+          <span class="kbd-box">C</span>
+          <span class="kbd-txt">剖切</span>
+          <span class="kbd-dot">·</span>
+          <span class="kbd-box">L</span>
+          <span class="kbd-txt">标注</span>
+          <span class="kbd-dot">·</span>
+          <span class="kbd-box">E</span>
+          <span class="kbd-txt">实验</span>
+          <span class="kbd-dot">·</span>
+          <span class="kbd-box">R</span>
+          <span class="kbd-txt">复位</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT MUSEUM EDITORIAL MONOGRAPH PANEL -->
+    <aside class="atlas-sidebar-right">
+      <div class="monograph-scroll" id="monographContent">
+        <!-- Populated dynamically by app.js -->
+      </div>
+      <div class="monograph-footer">
+        <div class="mono-foot-left">
+          <span id="footIndex">标本 01</span>
+          <span>·</span>
+          <span id="footCategory">历史演进模型</span>
+          <strong id="footScale">100 PM</strong>
+        </div>
+        <div class="mono-foot-right">
+          <span class="zh-inline">三维交互示意模型</span>
+          <span class="en-inline">3D Interactive Model</span>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- MODAL 1: COMPARISON TABLE -->
+  <div class="atlas-modal-backdrop" id="compareModal" onclick="if(event.target===this)closeModal('compareModal')">
+    <div class="atlas-modal">
+      <div class="atlas-modal-head">
+        <div>
+          <span class="modal-sub">COMPARATIVE MATRIX · 1803 — 1926+</span>
+          <h3><span class="zh-text">原子模型演进对比表</span><span class="en-text">Evolution of Atomic Models</span></h3>
+        </div>
+        <button class="arch-btn" onclick="closeModal('compareModal')">✕ <span class="zh-inline">关闭</span><span class="en-inline">Close</span></button>
+      </div>
+      <div class="atlas-modal-body">
+        <table class="atlas-table">
+          <thead>
+            <tr>
+              <th><span class="zh-text">时期与模型</span><span class="en-text">Era &amp; Model</span></th>
+              <th><span class="zh-text">代表科学家</span><span class="en-text">Scientist</span></th>
+              <th><span class="zh-text">结构特征</span><span class="en-text">Structure</span></th>
+              <th><span class="zh-text">实验依据</span><span class="en-text">Evidence</span></th>
+              <th><span class="zh-text">局限与演进</span><span class="en-text">Limitations</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1803 · 道尔顿实心球模型</strong><br><span class="en-text">Dalton's Solid Sphere Model</span></td>
+              <td>约翰·道尔顿<br><span class="en-text">John Dalton</span></td>
+              <td>均匀致密、不可分割的实心刚性球体<br><span class="en-text">Uniform, indivisible solid sphere</span></td>
+              <td>质量守恒定律、定比定律、倍比定律<br><span class="en-text">Conservation of Mass &amp; Definite Proportions</span></td>
+              <td>不知原子内部存在电子与原子核，误认为原子不可再分<br><span class="en-text">Unaware of subatomic particles (electrons &amp; nucleus)</span></td>
+            </tr>
+            <tr>
+              <td><strong>1904 · 汤姆孙葡萄干布丁模型</strong><br><span class="en-text">Thomson's Plum Pudding Model</span></td>
+              <td>J.J. 汤姆孙<br><span class="en-text">J.J. Thomson</span></td>
+              <td>正电荷均匀分布的球体内镶嵌负电电子环<br><span class="en-text">Negative electrons embedded in positive sphere</span></td>
+              <td>阴极射线管实验发现电子 e⁻<br><span class="en-text">Cathode ray experiments revealed the electron</span></td>
+              <td>无法解释 α 粒子的大角度散射<br><span class="en-text">Failed to explain large-angle alpha scattering</span></td>
+            </tr>
+            <tr>
+              <td><strong>1911 · 卢瑟福核式结构模型</strong><br><span class="en-text">Rutherford's Nuclear Model</span></td>
+              <td>欧内斯特·卢瑟福<br><span class="en-text">Ernest Rutherford</span></td>
+              <td>质量与正电荷集中于中心极小原子核，电子在外围绕核旋转<br><span class="en-text">Tiny dense positive nucleus in vast empty space</span></td>
+              <td>金箔 α 粒子散射实验<br><span class="en-text">Gold foil alpha-particle scattering experiment</span></td>
+              <td>按经典电磁学，加速电子会持续辐射能量并坍缩入核<br><span class="en-text">Classical radiative collapse crisis</span></td>
+            </tr>
+            <tr>
+              <td><strong>1913 · 玻尔量子化轨道模型</strong><br><span class="en-text">Bohr's Planetary Model</span></td>
+              <td>尼尔斯·玻尔<br><span class="en-text">Niels Bohr</span></td>
+              <td>电子处于特定能级（n=1, 2, 3…），跃迁时吸收或发射能量<br><span class="en-text">Discrete energy levels and transitions</span></td>
+              <td>氢原子分立线状发射光谱（巴耳末系）<br><span class="en-text">Discrete Hydrogen Emission Line Spectrum</span></td>
+              <td>仅适用于氢等单电子体系，仍保留经典平面轨道概念<br><span class="en-text">Only worked for 1-electron systems; flat classical paths</span></td>
+            </tr>
+            <tr>
+              <td><strong>1926+ · 量子力学电子云模型</strong><br><span class="en-text">Quantum Electron Cloud Model</span></td>
+              <td>薛定谔、海森堡、玻恩<br><span class="en-text">Schrödinger, Heisenberg, Born</span></td>
+              <td>波函数的概率密度 |ψ|² 与 s、p、d 原子轨道<br><span class="en-text">Probability density |ψ|² and s, p, d orbitals</span></td>
+              <td>电子衍射实验、不确定性原理、薛定谔波动方程<br><span class="en-text">Electron diffraction &amp; Schrödinger Wave Equation</span></td>
+              <td>现代物理与化学的标准原子理论框架<br><span class="en-text">Modern scientific foundation of atomic physics</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: INTERACTIVE QUIZ -->
+  <div class="atlas-modal-backdrop" id="quizModal" onclick="if(event.target===this)closeModal('quizModal')">
+    <div class="atlas-modal">
+      <div class="atlas-modal-head">
+        <div>
+          <span class="modal-sub">CLASSROOM CONCEPT CHECK</span>
+          <h3><span class="zh-text">课堂随堂测验</span><span class="en-text">Classroom Quiz</span></h3>
+        </div>
+        <button class="arch-btn" onclick="closeModal('quizModal')">✕ <span class="zh-inline">关闭</span><span class="en-inline">Close</span></button>
+      </div>
+      <div class="atlas-modal-body" id="quizContainer"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TEACHING GUIDE -->
+  <div class="atlas-modal-backdrop" id="guideModal" onclick="if(event.target===this)closeModal('guideModal')">
+    <div class="atlas-modal" style="max-width:680px;">
+      <div class="atlas-modal-head">
+        <div>
+          <span class="modal-sub">INTERACTION &amp; TEACHING GUIDE</span>
+          <h3><span class="zh-text">原子图鉴 · 操作说明</span><span class="en-text">Atomic Atlas · User Guide</span></h3>
+        </div>
+        <button class="arch-btn" onclick="closeModal('guideModal')">✕ <span class="zh-inline">关闭</span><span class="en-inline">Close</span></button>
+      </div>
+      <div class="atlas-modal-body guide-copy">
+        <div class="zh-text">
+          <p><strong>01 · 选择模型</strong><br>左侧按发现顺序列出五个历史模型与实验视图，以及七个电子云与轨道视图。点击条目即可比较不同阶段的原子图景。</p>
+          <p><strong>02 · 操作模型</strong><br>拖动模型可旋转视角；使用底部按钮切换剖切、标注和实验。键盘可使用 ← / → 切换，C 剖切，L 标注，E 实验，R 复位。</p>
+          <p><strong>03 · 正确理解图像</strong><br>历史模型呈现的是提出当时的认识。电子云表示概率分布，并非电子沿着可见的固定轨道飞行。形状、颜色与尺度经过教学处理。</p>
+        </div>
+        <div class="en-text">
+          <p><strong>01 · Choose a view</strong><br>The catalog moves from five historical models and experiments to seven electron-cloud and orbital views. Select any item to compare the ideas.</p>
+          <p><strong>02 · Explore the model</strong><br>Drag to rotate. Use the toolbar to slice, show labels, or run an experiment. Keyboard: ← / → change views; C slice; L labels; E experiment; R reset.</p>
+          <p><strong>03 · Read the diagrams carefully</strong><br>Historical models show ideas held at the time. An electron cloud represents probability, not a visible fixed path. Shapes, colors, and scales are adjusted for teaching.</p>
+        </div>
+        <p class="guide-source"><span class="zh-inline">延伸阅读</span><span class="en-inline">Further reading</span> · <a href="https://educationalgames.nobelprize.org/educational/physics/quantised_world/structure-1.html" target="_blank" rel="noopener noreferrer">Nobel Prize: early atomic models</a> · <a href="https://www.nobelprize.org/prizes/physics/1922/bohr/facts/" target="_blank" rel="noopener noreferrer">Nobel Prize: Bohr</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script src="./site-bridge.js"></script>
+</body>
+</html>
