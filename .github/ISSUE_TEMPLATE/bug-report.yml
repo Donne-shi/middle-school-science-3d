@@ -1,0 +1,24 @@
+name: 页面问题
+description: 报告无法打开、交互异常或显示问题
+labels: [bug]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: 页面
+      placeholder: 例如：太阳系图鉴 / 太阳系结构
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤与实际结果
+      description: 请按顺序写出操作，并描述发生了什么。
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 浏览器、版本与设备
+    validations:
+      required: true
