@@ -1,0 +1,71 @@
+{
+  "title": "中学科学 3D 探索馆",
+  "subjects": [
+    {
+      "slug": "astronomy",
+      "name": "天文学",
+      "english": "Astronomy",
+      "eyebrow": "从地球出发，重新认识宇宙",
+      "description": "看见天体的形状、运动与尺度，沿着问题一步步走进太阳系。",
+      "accent": "#8ed8e3",
+      "status": "开放预览",
+      "topics": [
+        {
+          "slug": "solar-system",
+          "name": "太阳系",
+          "english": "The Solar System",
+          "description": "从一颗恒星出发，认识八颗行星与太阳系的边界。",
+          "status": "开放预览",
+          "lessons": [
+            {
+              "slug": "atlas",
+              "name": "太阳系行星图鉴",
+              "english": "Solar System Atlas",
+              "description": "旋转、靠近并观察太阳与行星。",
+              "interaction": "3D 漫游 · 天体资料",
+              "href": "demos/solar-system/atlas.html"
+            },
+            {
+              "slug": "structure",
+              "name": "太阳系结构",
+              "english": "Structure of the Solar System",
+              "description": "从行星轨道走向柯伊伯带与奥尔特云。",
+              "interaction": "尺度图解 · 光行时",
+              "href": "demos/solar-system/structure.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "physics",
+      "name": "物理学",
+      "english": "Physics",
+      "eyebrow": "观察运动，理解规律",
+      "description": "通过可操作的模型观察力、能量与运动。具体演示将随课程逐步加入。",
+      "accent": "#f1c978",
+      "status": "内容筹备中",
+      "topics": []
+    },
+    {
+      "slug": "biology",
+      "name": "生物学",
+      "english": "Biology",
+      "eyebrow": "从微观结构认识生命",
+      "description": "观察生命的形态与结构。具体演示将随课程逐步加入。",
+      "accent": "#a9d9a3",
+      "status": "内容筹备中",
+      "topics": []
+    },
+    {
+      "slug": "chemistry",
+      "name": "化学",
+      "english": "Chemistry",
+      "eyebrow": "看见物质如何变化",
+      "description": "用可视化模型理解物质的组成与变化。具体演示将随课程逐步加入。",
+      "accent": "#d7b5e5",
+      "status": "内容筹备中",
+      "topics": []
+    }
+  ]
+}
