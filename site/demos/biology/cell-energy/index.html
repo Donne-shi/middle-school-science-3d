@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070a0b">
+<meta name="description" content="细胞能量图鉴：线粒体与叶绿体的实时三维结构，以及细胞呼吸、发酵、光合作用的完整过程。中英双语。 A real-time 3D atlas of the mitochondrion and chloroplast, with cellular respiration, fermentation and photosynthesis explained step by step.">
+<title>细胞能量图鉴 · 呼吸与光合 — Cellular Energy Atlas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='32' cy='32' rx='23' ry='15' fill='none' stroke='%23e8a071' stroke-width='2.2'/%3E%3Cpath d='M14 32c5-9 10 9 15 0s10 9 15 0' fill='none' stroke='%23e8a071' stroke-width='1.6' opacity='.8'/%3E%3Cellipse cx='44' cy='20' rx='9' ry='6' fill='none' stroke='%237fd3a8' stroke-width='1.8' opacity='.7'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   细胞能量图鉴 · Cellular Energy Atlas
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#070a0b;
+  --ink:#f0ece2;
+  --ink2:#c8c4b8;
+  --mut:#8d928d;
+  --dim:#5b625e;
+  --line:rgba(240,236,226,.115);
+  --line2:rgba(240,236,226,.055);
+  --ac:#e8a071;
+  --ac2:#c96b3a;
+  --ac-soft:rgba(232,160,113,.14);
+  --atp:#f2c76a;
+  --nad:#6fd3d6;
+  --co2:#98a5a7;
+  --o2:#7aa8ff;
+  --lac:#c78ee0;
+  --eth:#e6b3f0;
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","Source Han Serif CN",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --lat:Georgia,"Times New Roman",Times,serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --panel-w:392px;
+  --ease:cubic-bezier(.22,.72,.16,1);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
+  font-family:var(--sans);font-size:15px;line-height:1.66;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+body.m-mito,body.m-resp{--ac:#e8a071;--ac2:#c96b3a;--ac-soft:rgba(232,160,113,.14)}
+body.m-chloro,body.m-photo{--ac:#7fd3a8;--ac2:#3f9d78;--ac-soft:rgba(127,211,168,.14)}
+body.m-ferm{--ac:#c9a0e0;--ac2:#8f5fb0;--ac-soft:rgba(201,160,224,.14)}
+::selection{background:rgba(232,160,113,.85);color:#0a0a0c}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,p,ul,ol{margin:0;padding:0}
+ul,ol{list-style:none}
+em{font-style:normal}
+sub{font-size:.7em;vertical-align:-.18em}
+sup{font-size:.7em;vertical-align:.32em}
+
+#gl{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0;touch-action:none;cursor:grab}
+#gl.dragging{cursor:grabbing}
+#fx{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:1;pointer-events:none}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(130% 100% at 42% 46%,rgba(0,0,0,0) 34%,rgba(0,0,0,.28) 70%,rgba(0,0,0,.74) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.042;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------------------------------------------------------- top bar */
+.top{position:fixed;left:0;right:0;top:0;height:64px;z-index:24;display:flex;align-items:center;
+  gap:clamp(14px,2.4vw,34px);padding:0 clamp(14px,2.6vw,30px);
+  background:linear-gradient(180deg,rgba(7,10,11,.92),rgba(7,10,11,.55) 62%,rgba(7,10,11,0));
+  pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.mark{width:34px;height:34px;flex:0 0 auto;opacity:.92}
+.brand b{display:block;font-family:var(--serif);font-size:15px;font-weight:400;letter-spacing:.06em;line-height:1.2}
+.brand span{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.19em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+
+.tabs{display:flex;align-items:center;gap:2px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;
+  mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;flex:0 0 auto;display:flex;align-items:baseline;gap:7px;padding:8px 11px;border-radius:2px;
+  font-size:12.5px;color:var(--mut);white-space:nowrap;transition:color .3s var(--ease),background .3s var(--ease)}
+.tab i{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.06em;transition:color .3s}
+.tab em{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);opacity:0;max-width:0;overflow:hidden;transition:.35s var(--ease)}
+.tab:hover{color:var(--ink2);background:rgba(240,236,226,.035)}
+.tab.on{color:var(--ac)}
+.tab.on i{color:var(--ac);opacity:.8}
+.tab.on em{opacity:.55;max-width:120px}
+.tab.on::after{content:"";position:absolute;left:11px;right:11px;bottom:2px;height:1px;background:var(--ac);opacity:.55}
+
+.tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.lang{display:flex;align-items:center;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.lang button{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;padding:5px 8px;color:var(--dim);transition:.25s}
+.lang button+button{border-left:1px solid var(--line2)}
+.lang button.on{color:#0b0e0f;background:var(--ac)}
+.lang button:hover:not(.on){color:var(--ink2)}
+.icon-btn{width:27px;height:27px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;color:var(--mut);transition:.25s}
+.icon-btn:hover{color:var(--ac);border-color:var(--ac)}
+
+/* ---------------------------------------------------------- stage title */
+.stage{position:fixed;left:clamp(16px,3vw,38px);bottom:104px;z-index:16;pointer-events:none;max-width:min(38vw,430px)}
+.stage-idx{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;color:var(--ac);opacity:.85;margin-bottom:9px}
+.stage-idx b{color:var(--dim);font-weight:400}
+.stage-h{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.5vw,46px);line-height:1.08;letter-spacing:.02em;
+  text-shadow:0 8px 40px rgba(0,0,0,.6)}
+.stage-h span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--mut);margin-top:9px;font-weight:400}
+.stage-meta{margin-top:14px;font-size:11.5px;color:var(--dim);letter-spacing:.02em;line-height:1.7}
+.stage-meta b{color:var(--ink2);font-weight:400}
+
+/* ---------------------------------------------------------- panel */
+.panel{position:fixed;right:16px;top:74px;bottom:16px;width:var(--panel-w);z-index:20;display:flex;flex-direction:column;
+  background:linear-gradient(178deg,rgba(12,17,19,.90) 0%,rgba(9,13,15,.95) 100%);
+  -webkit-backdrop-filter:blur(20px) saturate(125%);backdrop-filter:blur(20px) saturate(125%);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden;
+  box-shadow:0 24px 80px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(240,236,226,.045)}
+.panel::before{content:"";position:absolute;left:0;top:0;width:1px;height:64px;background:linear-gradient(180deg,var(--ac),transparent);opacity:.7}
+.p-head{padding:19px 22px 15px;border-bottom:1px solid var(--line2);flex:0 0 auto;position:relative}
+.p-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);opacity:.9;
+  display:flex;align-items:center;gap:8px}
+.p-eyebrow::before{content:"";width:16px;height:1px;background:var(--ac);opacity:.55}
+.p-title{font-family:var(--serif);font-size:25px;line-height:1.24;margin-top:10px;letter-spacing:.015em}
+.p-title small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mut);margin-top:6px;font-weight:400}
+.p-body{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:18px 22px 26px;scrollbar-width:thin;
+  scrollbar-color:rgba(240,236,226,.18) transparent}
+.p-body::-webkit-scrollbar{width:5px}
+.p-body::-webkit-scrollbar-thumb{background:rgba(240,236,226,.16);border-radius:3px}
+.p-body::-webkit-scrollbar-track{background:transparent}
+
+.sec{margin-top:22px}
+.sec:first-child{margin-top:0}
+.sec-h{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:11px}
+.sec-h::after{content:"";flex:1;height:1px;background:var(--line2)}
+.sec-h b{color:var(--ac);font-weight:400;opacity:.9}
+
+.zh{font-size:13.5px;line-height:1.95;color:var(--ink2);letter-spacing:.008em}
+.zh p+p{margin-top:9px}
+.zh b,.zh strong{color:var(--ink);font-weight:500}
+.en{font-family:var(--lat);font-size:12.4px;line-height:1.72;color:var(--mut);margin-top:8px;letter-spacing:.005em}
+.en b,.en strong{color:var(--ink2);font-weight:600}
+body.lang-zh .en{display:none!important}
+body.lang-en .zh{display:none!important}
+body.lang-en .en{margin-top:0;font-size:13.6px;line-height:1.78;color:var(--ink2)}
+
+.hl{color:var(--ac);font-weight:500}
+.num{font-family:var(--mono);font-size:.94em;letter-spacing:.01em}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.09em;padding:1px 5px;border-radius:2px;
+  border:1px solid var(--line);color:var(--mut);vertical-align:1px;margin:0 1px}
+
+/* part list */
+.parts{margin-top:2px}
+.part{display:grid;grid-template-columns:20px 1fr;gap:10px;padding:11px 9px 11px 6px;border-top:1px solid var(--line2);
+  cursor:pointer;border-radius:2px;transition:background .25s var(--ease)}
+.part:first-child{border-top:0}
+.part:hover{background:rgba(240,236,226,.035)}
+.part.on{background:var(--ac-soft)}
+.part-n{font-family:var(--mono);font-size:9.5px;color:var(--dim);padding-top:3px;letter-spacing:.04em}
+.part.on .part-n{color:var(--ac)}
+.part-t{font-size:13px;color:var(--ink);letter-spacing:.01em;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.part-t em{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.part-d{grid-column:2;font-size:12.2px;line-height:1.72;color:var(--mut);margin-top:5px}
+.part-d .en{font-size:11.4px;margin-top:4px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line2);border:1px solid var(--line2);margin-top:2px}
+.stats div{background:rgba(255,255,255,.012);padding:10px 11px}
+.stats b{display:block;font-family:var(--mono);font-size:16px;color:var(--ac);letter-spacing:.01em;line-height:1.2}
+.stats span{display:block;font-size:10.5px;color:var(--dim);margin-top:3px;letter-spacing:.02em}
+
+/* equation */
+.eq{margin-top:2px;padding:13px 12px;border-left:2px solid var(--ac);background:linear-gradient(90deg,var(--ac-soft),transparent 88%);
+  font-family:var(--mono);font-size:11.2px;line-height:1.95;color:var(--ink2);letter-spacing:0;
+  white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+.eq b{color:var(--ac);font-weight:400}
+.eq small{display:block;font-family:var(--sans);font-size:10.5px;color:var(--dim);letter-spacing:.02em;line-height:1.6;margin-top:6px;white-space:normal}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:2px}
+.tbl th{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);
+  text-align:left;font-weight:400;padding:6px 7px 6px 0;border-bottom:1px solid var(--line)}
+.tbl td{padding:7px 7px 7px 0;border-bottom:1px solid var(--line2);color:var(--ink2);vertical-align:top;line-height:1.55}
+.tbl td:first-child{color:var(--ink);width:34%}
+.tbl tr.on td{background:var(--ac-soft)}
+.tbl em{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.06em;display:block}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;
+  color:var(--ink2);border:1px solid var(--line);padding:4px 7px;border-radius:2px}
+.chip i{width:5px;height:5px;border-radius:50%;display:block}
+
+.note{margin-top:18px;padding:11px 12px;border:1px dashed var(--line);border-radius:2px;font-size:11.4px;
+  line-height:1.75;color:var(--mut)}
+.note b{color:var(--ac);font-weight:500}
+
+/* step nav */
+.p-foot{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:12px 18px;border-top:1px solid var(--line2);
+  background:rgba(0,0,0,.22)}
+.p-foot .sidx{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--dim);flex:1}
+.p-foot .sidx b{color:var(--ac);font-weight:400}
+.nav-btn{width:29px;height:26px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--mut);
+  transition:.22s}
+.nav-btn:hover:not(:disabled){color:var(--ac);border-color:var(--ac)}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.nav-btn svg{width:12px;height:8px}
+
+/* ---------------------------------------------------------- steps */
+.steps{position:fixed;left:clamp(16px,3vw,38px);bottom:26px;z-index:17;display:flex;align-items:center;gap:0;
+  max-width:calc(100vw - var(--panel-w) - 318px);overflow-x:auto;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.step{display:flex;align-items:center;gap:0;opacity:.5;transition:opacity .35s var(--ease)}
+.step.on,.step.done{opacity:1}
+.step-b{display:flex;align-items:center;gap:7px;padding:6px 11px 6px 8px;border:1px solid var(--line);
+  border-radius:2px;white-space:nowrap;transition:.3s var(--ease);background:rgba(9,13,15,.6)}
+.step.on .step-b{border-color:var(--ac);background:var(--ac-soft)}
+.step:hover .step-b{border-color:rgba(240,236,226,.28)}
+.step-n{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.05em}
+.step.on .step-n{color:var(--ac)}
+.step-t{font-size:11.5px;color:var(--ink2);letter-spacing:.02em}
+.step.on .step-t{color:var(--ink)}
+.step-dash{width:clamp(8px,1.4vw,20px);height:1px;background:var(--line);flex:0 0 auto}
+
+/* ---------------------------------------------------------- hotspots */
+#hot{position:fixed;inset:0;z-index:12;pointer-events:none;overflow:hidden}
+.hs{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;opacity:0;
+  transition:opacity .45s var(--ease);will-change:transform}
+.hs.on{opacity:1}
+.hs-pin{position:absolute;left:-10px;top:-10px;width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;pointer-events:auto;cursor:pointer;
+  background:rgba(8,11,12,.72);border:1px solid rgba(232,160,113,.55);
+  font-family:var(--mono);font-size:8.5px;color:rgba(232,160,113,.9);letter-spacing:0;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  transition:.24s var(--ease)}
+.hs-pin::after{content:"";position:absolute;inset:-5px;border-radius:50%;
+  border:1px solid var(--ac);opacity:0;transform:scale(.8);transition:.3s var(--ease)}
+.hs-pin:hover,.hs.act .hs-pin{background:var(--ac);color:#0a0c0d;border-color:var(--ac);
+  box-shadow:0 0 18px rgba(232,160,113,.5)}
+.hs-pin:hover::after,.hs.act .hs-pin::after{opacity:.45;transform:scale(1)}
+.hs-tip{position:absolute;left:14px;top:-30px;padding:4px 9px 5px;border-left:1px solid var(--ac);
+  background:linear-gradient(90deg,rgba(8,11,12,.92),rgba(8,11,12,.62));white-space:nowrap;
+  opacity:0;transform:translateX(-4px);transition:.26s var(--ease);pointer-events:none}
+.hs.act .hs-tip{opacity:1;transform:translateX(0)}
+.hs-tip b{display:block;font-size:11.5px;font-weight:400;color:var(--ink);letter-spacing:.02em;line-height:1.3}
+.hs-tip span{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--mut);margin-top:1px}
+
+/* ---------------------------------------------------------- view bar */
+.viewbar{position:fixed;right:calc(var(--panel-w) + 32px);bottom:26px;z-index:17;display:flex;gap:6px}
+.vbtn{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
+  border:1px solid var(--line);border-radius:2px;padding:6px 9px;background:rgba(9,13,15,.55);
+  transition:.25s var(--ease);white-space:nowrap}
+.vbtn:hover{color:var(--ink2);border-color:rgba(240,236,226,.3)}
+.vbtn.on{color:var(--ac);border-color:var(--ac);background:var(--ac-soft)}
+
+/* ---------------------------------------------------------- hint / cursor readout */
+.hint{position:fixed;left:clamp(16px,3vw,38px);bottom:80px;z-index:15;display:flex;gap:16px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+.hint b{color:var(--mut);font-weight:400}
+
+/* ---------------------------------------------------------- boot */
+.boot{position:fixed;inset:0;z-index:60;background:#070a0b;display:grid;place-items:center;
+  transition:opacity .9s var(--ease),visibility .9s}
+.boot.gone{opacity:0;visibility:hidden}
+.boot-in{text-align:center}
+.boot-ring{width:52px;height:52px;margin:0 auto 26px;border-radius:50%;border:1px solid rgba(232,160,113,.22);
+  border-top-color:#e8a071;animation:spin 1.1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.boot-t{font-family:var(--serif);font-size:19px;letter-spacing:.16em;color:var(--ink2)}
+.boot-s{font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);margin-top:10px}
+
+/* ---------------------------------------------------------- modal */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;
+  background:rgba(4,6,7,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:.4s var(--ease)}
+.modal.on{opacity:1;visibility:visible}
+.modal-in{width:min(560px,100%);max-height:80vh;overflow:auto;background:#0b0f11;border:1px solid var(--line);
+  border-radius:3px;padding:30px 32px 26px;position:relative}
+.modal-in h3{font-family:var(--serif);font-size:22px;margin-bottom:4px}
+.modal-in .en{margin-bottom:18px}
+.modal-x{position:absolute;right:14px;top:12px;width:26px;height:26px;color:var(--dim);font-size:17px;line-height:1}
+.modal-x:hover{color:var(--ac)}
+
+/* ---------------------------------------------------------- responsive */
+@media (max-width:1180px){
+  :root{--panel-w:352px}
+  .tab em{display:none}
+}
+@media (max-width:980px){
+  .stage-meta{display:none}
+}
+@media (max-width:900px){
+  :root{--panel-w:0px}
+  .top{height:56px;gap:10px;padding:0 12px}
+  .brand b{font-size:13px}
+  .brand span{display:none}
+  .mark{width:28px;height:28px}
+  .tabs{mask-image:none}
+  .tab{padding:7px 9px;font-size:12px}
+  .tab i{display:none}
+  .tab.on::after{left:8px;right:8px}
+  .panel{left:8px;right:8px;top:auto;bottom:8px;width:auto;height:46vh;height:46dvh}
+  .panel.expanded{height:78vh;height:78dvh}
+  .stage{display:none}
+  .steps{left:10px;right:10px;bottom:calc(46vh + 16px);max-width:none;overflow-x:auto;gap:0;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .viewbar{right:10px;bottom:calc(46vh + 58px);gap:4px}
+  .viewbar button{padding:5px 8px;font-size:9px;letter-spacing:.08em}
+  .hint{display:none}
+  .p-title{font-size:22px}
+  .p-body{padding:16px 18px 22px}
+  .p-head{padding:15px 18px 13px}
+  .hs-lbl b{font-size:10.5px}
+  .hs-lbl span{display:none}
+}
+@media (max-width:560px){
+  .brand span,.brand b{display:none}
+  .lang button{padding:5px 6px;font-size:8.5px}
+  .tab{padding:7px 7px;font-size:11.5px;gap:4px}
+  .top{gap:8px;padding:0 10px}
+}
+</style>
+<link rel="stylesheet" href="site-bridge.css">
+</head>
+<body class="m-mito lang-both">
+
+<canvas id="gl"></canvas>
+<canvas id="fx"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+<div id="hot"></div>
+
+<header class="top">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <ellipse cx="17" cy="21" rx="13" ry="8.4" stroke="rgba(232,160,113,.55)" stroke-width="1"/>
+      <ellipse cx="17" cy="21" rx="9.4" ry="5.3" stroke="rgba(232,160,113,.28)" stroke-width=".8"/>
+      <path d="M7 21c3-6 5 6 8 0s5 6 8 0" stroke="rgba(232,160,113,.85)" stroke-width="1.1" fill="none"/>
+      <ellipse cx="30" cy="11" rx="7.4" ry="4.6" stroke="rgba(127,211,168,.62)" stroke-width="1" transform="rotate(-16 30 11)"/>
+      <path d="M24.6 12.2c2.2-1.6 3.6-1 4.4.4s2.4 2 3.6.5" stroke="rgba(127,211,168,.6)" stroke-width=".9" fill="none"/>
+    </svg>
+    <div><b>细胞能量图鉴</b><span>Cellular Energy Atlas</span></div>
+  </div>
+  <a class="course-back" id="courseBack" href="../../../subjects/biology/index.html">← 返回生物学</a>
+  <nav class="tabs" id="tabs" aria-label="章节"></nav>
+  <div class="tools">
+    <div class="lang" id="lang">
+      <button data-l="both" class="on">中/EN</button><button data-l="zh">中</button><button data-l="en">EN</button>
+    </div>
+    <button class="icon-btn" id="aboutBtn" type="button" aria-label="关于">?</button>
+  </div>
+</header>
+
+<div class="stage">
+  <div class="stage-idx"><b id="sIdx">01</b> / 05 · <span id="sKind">ORGANELLE</span></div>
+  <h1 class="stage-h" id="sTitle">线粒体<span>Mitochondrion</span></h1>
+</div>
+
+<div class="hint">
+  <span><b>拖动</b> 旋转</span><span><b>滚轮</b> 缩放</span><span><b>双击</b> 复位</span>
+</div>
+
+<div class="steps" id="steps"></div>
+
+<div class="viewbar">
+  <button class="vbtn on" id="cutBtn" type="button">剖面 CUT</button>
+  <button class="vbtn on" id="spinBtn" type="button">自转 SPIN</button>
+  <button class="vbtn" id="resetBtn" type="button">复位 RESET</button>
+</div>
+
+<aside class="panel" id="panel">
+  <div class="p-head">
+    <div class="p-eyebrow" id="pEyebrow">01 / STRUCTURE</div>
+    <h2 class="p-title" id="pTitle">线粒体<small>Mitochondrion</small></h2>
+  </div>
+  <div class="p-body" id="pBody"></div>
+  <div class="p-foot" id="pFoot" style="display:none">
+    <div class="sidx" id="pSidx"></div>
+    <button class="nav-btn" id="prevBtn" type="button" aria-label="上一步">
+      <svg viewBox="0 0 12 8" fill="none"><path d="M11 4H1M4.5 1L1 4l3.5 3" stroke="currentColor" stroke-width="1"/></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" type="button" aria-label="下一步">
+      <svg viewBox="0 0 12 8" fill="none"><path d="M1 4h10M7.5 1L11 4l-3.5 3" stroke="currentColor" stroke-width="1"/></svg>
+    </button>
+  </div>
+</aside>
+
+<div class="boot" id="boot">
+  <div class="boot-in">
+    <div class="boot-ring"></div>
+    <div class="boot-t">细胞能量图鉴</div>
+    <div class="boot-s">Rendering organelles</div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-in">
+    <button class="modal-x" id="modalX" type="button" aria-label="关闭">×</button>
+    <h3>关于这份课件</h3>
+    <div class="zh">
+      <p>三维结构使用 <b>WebGL2 实时光线步进</b>（signed distance field ray marching）在浏览器内即时生成，无需外部模型文件；两张 AI 教学插画是独立图片，可随页面离线打开。</p>
+      <p>结构比例经过教学化处理：线粒体长径约 5 : 1，叶绿体基粒层数做了压缩，以便单屏辨识。数字与通路依据 <b>Alberts《Molecular Biology of the Cell》</b>、<b>Campbell Biology</b> 与 <b>人教版高中生物必修 1</b>。</p>
+      <p>键盘：<b>← →</b> 切换步骤，<b>1–5</b> 切换章节，<b>空格</b> 播放/暂停，<b>R</b> 复位视角。</p>
+    </div>
+    <div class="en">
+      <p>The 3D structures are generated live by a <b>WebGL2 signed-distance-field ray marcher</b>, without external model files. The two AI teaching illustrations are separate images available offline with the page.</p>
+      <p>Proportions are adjusted for teaching: the mitochondrion is drawn at roughly 5:1, and grana stacks are compressed so a whole chloroplast reads on one screen. Numbers follow Alberts, <i>Molecular Biology of the Cell</i>; Campbell <i>Biology</i>; and the PEP high-school biology syllabus.</p>
+      <p>Keys: <b>← →</b> step, <b>1–5</b> chapter, <b>space</b> play/pause, <b>R</b> reset view.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   0. 小工具
+   ============================================================ */
+var clamp = function (v, a, b) { return v < a ? a : (v > b ? b : v); };
+var lerp = function (a, b, t) { return a + (b - a) * t; };
+function hexRGB(h) {
+  h = h.replace('#', '');
+  return [parseInt(h.substr(0, 2), 16) / 255, parseInt(h.substr(2, 2), 16) / 255, parseInt(h.substr(4, 2), 16) / 255];
+}
+
+/* ============================================================
+   1. 着色器
+   ============================================================ */
+var VERT = [
+  '#version 300 es',
+  'in vec2 aPos;',
+  'void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }'
+].join('\n');
+
+var FRAG = `#version 300 es
+precision highp float;
+precision highp int;
+out vec4 fragColor;
+
+uniform vec2  uRes;
+uniform float uTime;
+uniform vec3  uCamPos;
+uniform vec3  uRight;
+uniform vec3  uUp;
+uniform vec3  uFwd;
+uniform float uTan;
+uniform vec2  uShift;
+
+uniform int   uScene;    /* 0 mito · 1 chloro · 2 cyto */
+uniform float uCut;      /* 切割面沿 uCutN 的位置，大 = 不切 */
+uniform vec3  uCutN;
+uniform vec3  uAccent;
+uniform float uHi;       /* 高亮部件 id */
+uniform float uDim;
+uniform float uAO;
+uniform vec4  uMol[16];
+uniform vec3  uMolCol[16];
+uniform int   uMolN;
+
+float gM;  float gId;
+void put(float d, float id){ if(d < gM){ gM = d; gId = id; } }
+
+float sdCapsuleX(vec3 p, float h, float r){
+  vec3 q = vec3(max(abs(p.x)-h, 0.0), p.y, p.z);
+  return length(q) - r;
+}
+float sdRoundBox(vec3 p, vec3 b, float r){
+  vec3 q = abs(p) - b + r;
+  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - r;
+}
+float sdEllipsoid(vec3 p, vec3 r){
+  float k0 = length(p/r);
+  float k1 = length(p/(r*r));
+  return k0*(k0-1.0)/max(k1,1e-4);
+}
+float sdSeg(vec3 p, vec3 a, vec3 b, float r){
+  vec3 pa = p-a, ba = b-a;
+  float h = clamp(dot(pa,ba)/max(dot(ba,ba),1e-6), 0.0, 1.0);
+  return length(pa - ba*h) - r;
+}
+float hash11(float n){ return fract(sin(n*127.1)*43758.5453); }
+
+/* ---------- 观察窗：从正面挖掉一个椭球，形成解剖模型的圆形窗口 ---------- */
+float mitoBite(vec3 p){
+  float z = 2.34 - 1.86*uCut;
+  return sdEllipsoid(p - vec3(0.0, 0.0, z), vec3(1.40, 0.685, 0.90));
+}
+float chloroBite(vec3 p){
+  /* 中心只后退，半径固定要够大，窗口才不会被“埋”回壳内 */
+  float z = 1.620 - 1.140*uCut;
+  return sdEllipsoid(p - vec3(0.05, 0.075, z), vec3(1.05, 0.50, 0.62));
+}
+float cytoBite(vec3 p){
+  float z = 4.90 - 3.55*uCut;
+  return length(p - vec3(0.0, 0.0, z)) - 1.95;
+}
+
+/* ============================================================
+   2. 线粒体
+   ============================================================ */
+const float MH = 1.55;   /* 中段半长 */
+const float MR = 0.965;  /* 外膜半径 */
+
+vec3 mitoXf(vec3 p){
+  vec3 q = p;
+  q.y -= 0.082*sin(p.x*0.82 + 0.45);   /* 轻微弯曲 */
+  q.y += 0.022*sin(p.x*3.30);
+  q.z += 0.018*cos(p.x*2.35 - 0.7);
+  return q;
+}
+/* 沿长轴的粗细起伏：真实线粒体并不等粗 */
+float mitoR(vec3 q){
+  return MR + 0.055*sin(q.x*1.55 + 0.7) + 0.028*sin(q.x*3.4 - 1.1);
+}
+
+/* 嵴：内膜向内折叠的隔板，每片带一个偏心缺口，交替朝向 */
+float cristaeSDF(vec3 p){
+  float sp = 0.300;
+  float id = floor(p.x/sp + 0.5);
+  vec3 q = p;
+  q.x -= id*sp;
+  float s = (mod(id, 2.0) < 0.5) ? 1.0 : -1.0;
+  float a = 0.18*sin(id*1.27);
+  float ca = cos(a), sa = sin(a);
+  q.yz = mat2(ca,-sa,sa,ca)*q.yz;
+  q.y += 0.030*sin(q.z*2.6 + id*1.1);
+
+  float Rm = mitoR(p) - 0.095;
+  float th = 0.019 + 0.008*hash11(id*1.73 + 0.31);
+  /* 圆角板：正面平、边缘收圆 */
+  float rr2 = length(q.yz);
+  vec2 dq = vec2(abs(q.x) - (th - 0.009), rr2 - (Rm - 0.009));
+  float disc = length(max(dq,0.0)) + min(max(dq.x,dq.y),0.0) - 0.009;
+  float hole = length(q.yz - vec2(s*0.335, 0.05)) - (0.205 + 0.02*hash11(id*2.9));
+  disc = max(disc, -hole);
+  /* 限制在内膜以内 */
+  disc = max(disc, sdCapsuleX(mitoXf(p), MH - 0.135, mitoR(mitoXf(p)) - 0.100));
+  return disc;
+}
+
+float mitoDNA(vec3 p){
+  vec3 q = (p - vec3(0.94, 0.12, 0.02)) / 0.95;
+  q.xz = mat2(0.88,-0.47,0.47,0.88)*q.xz;
+  float r = length(q.yz);
+  float ang = atan(q.z, q.y);
+  float R = 0.235 + 0.048*sin(3.0*ang + 1.0);
+  return (length(vec2(r - R, q.x)) - 0.019) * 0.95;
+}
+
+void mapMito(vec3 p){
+  vec3 q = mitoXf(p);
+  float body = sdCapsuleX(q, MH, MR);
+
+  /* 外膜 */
+  float bite = mitoBite(p);
+  put(max(abs(body) - 0.020, -bite), 10.0);
+  /* 内膜 */
+  put(max(abs(sdCapsuleX(q, MH - 0.095, mitoR(q) - 0.104)) - 0.016, -bite), 11.0);
+  /* 嵴 */
+  put(cristaeSDF(p), 12.0);
+
+  /* 基质颗粒 */
+  put(length(p - vec3(-0.72, 0.30, 0.26)) - 0.048, 13.0);
+  put(length(p - vec3(-0.34,-0.24, 0.36)) - 0.041, 13.0);
+  put(length(p - vec3( 0.28, 0.34,-0.30)) - 0.044, 13.0);
+  put(length(p - vec3( 0.66,-0.30,-0.24)) - 0.038, 13.0);
+  put(length(p - vec3( 1.34, 0.16, 0.10)) - 0.042, 13.0);
+  put(length(p - vec3(-1.28, 0.10,-0.18)) - 0.050, 13.0);
+  put(length(p - vec3(-0.05, 0.50,-0.10)) - 0.034, 13.0);
+  put(length(p - vec3( 0.95,-0.02, 0.42)) - 0.036, 13.0);
+  put(length(p - vec3(-0.90,-0.34,-0.30)) - 0.033, 13.0);
+  put(length(p - vec3( 1.70,-0.02,-0.10)) - 0.040, 13.0);
+  /* 线粒体 DNA */
+  put(mitoDNA(p), 15.0);
+
+  /* ATP 合酶：内膜上的球状 F1 头部 */
+  for(int i=0;i<5;i++){
+    float x = -0.96 + float(i)*0.46;
+    vec3 c = vec3(x, -0.790, 0.10*sin(float(i)*2.3));
+    float knob = length(p - c) - 0.040;
+    float stalk = sdSeg(p, c, c + vec3(0.0, 0.075, 0.0), 0.012);
+    put(min(knob, stalk), 14.0);
+  }
+}
+
+/* ============================================================
+   3. 叶绿体
+   ============================================================ */
+vec3 chloroXf(vec3 p){
+  vec3 q = p;
+  q.y += 0.018*sin(p.x*1.7);
+  q.z += 0.014*cos(p.x*2.1);
+  return q;
+}
+
+/* 双凸透镜形，不是方盒子——叶绿体在切片上就是一枚凸透镜 */
+float chloroBody(vec3 p){
+  vec3 q = chloroXf(p);
+  float d = sdRoundBox(q, vec3(1.720,0.855,0.720), 0.56);
+  d += 0.009*sin(q.x*5.1 + 0.4)*sin(q.y*6.3)*sin(q.z*5.7);
+  return d;
+}
+
+/* 基粒：一摞扁盘，法线大致沿 y，按 id 方向错开 */
+float granum(vec3 p, vec3 c, float tx, float tz, float rad, float count){
+  vec3 q = p - c;
+  float cy = cos(tx), sy = sin(tx);
+  q.yz = mat2(cy,-sy,sy,cy)*q.yz;
+  float cz = cos(tz), sz = sin(tz);
+  q.xy = mat2(cz,-sz,sz,cz)*q.xy;
+
+  float gap = 0.050, th = 0.0125;
+  float h = 0.5*(count - 1.0)*gap + th;
+  float yy = mod(q.y + 0.5*gap, gap) - 0.5*gap;
+  vec2 dq = vec2(length(q.xz) - (rad - 0.014), abs(yy) - (th - 0.011));
+  float disc = length(max(dq,0.0)) + min(max(dq.x,dq.y),0.0) - 0.011;
+  return max(disc, abs(q.y) - h);
+}
+
+float chloroDNA(vec3 p){
+  vec3 q = (p - vec3(0.06,-0.02,-0.56)) / 0.85;
+  q.xy = mat2(0.94,-0.34,0.34,0.94)*q.xy;
+  float r = length(q.xz);
+  float ang = atan(q.z, q.x);
+  float R = 0.115 + 0.028*sin(4.0*ang);
+  return (length(vec2(r - R, q.y)) - 0.016) * 0.85;
+}
+
+void mapChloro(vec3 p){
+  float body = chloroBody(p);
+  float bite = chloroBite(p);
+  put(max(abs(body) - 0.029, -bite), 20.0);
+  put(max(abs(sdRoundBox(chloroXf(p), vec3(1.650,0.790,0.655), 0.56)) - 0.019, -bite), 21.0);
+
+  put(granum(p, vec3(-0.88,-0.01, 0.22),  0.10, 0.05, 0.245, 6.0), 22.0);
+  put(granum(p, vec3(-0.68, 0.03,-0.32), -0.06, 0.12, 0.305, 7.0), 22.0);
+  put(granum(p, vec3(-0.30,-0.02, 0.33),  0.14,-0.08, 0.268, 5.0), 22.0);
+  put(granum(p, vec3( 0.10, 0.02,-0.22), -0.10, 0.04, 0.302, 7.0), 22.0);
+  put(granum(p, vec3( 0.50,-0.03, 0.30),  0.08, 0.10, 0.278, 6.0), 22.0);
+  put(granum(p, vec3( 0.90, 0.02,-0.28), -0.12,-0.06, 0.288, 7.0), 22.0);
+  put(granum(p, vec3( 1.12, 0.00, 0.14),  0.06, 0.14, 0.238, 5.0), 22.0);
+
+  /* 基质片层：只在相邻基粒之间架短桥，而不是铺满整块板 */
+  put(min(sdSeg(p, vec3(-0.88,-0.01,0.22), vec3(-0.30,-0.02,0.33), 0.026),
+          min(sdSeg(p, vec3(-0.30,-0.02,0.33), vec3(0.50,-0.03,0.30), 0.026),
+              sdSeg(p, vec3(0.50,-0.03,0.30), vec3(1.12, 0.00,0.14), 0.024))), 23.0);
+  put(min(sdSeg(p, vec3(-0.68, 0.03,-0.32), vec3(0.10, 0.02,-0.22), 0.026),
+          sdSeg(p, vec3( 0.10, 0.02,-0.22), vec3(0.90, 0.02,-0.28), 0.026)), 23.0);
+
+  /* 淀粉粒 */
+  put(sdEllipsoid(p - vec3(-1.16, 0.00,-0.56), vec3(0.225,0.195,0.205)), 24.0);
+  /* 叶绿体 DNA */
+  put(chloroDNA(p), 25.0);
+  /* 质体小球 */
+  put(length(p - vec3( 1.32, 0.30, 0.36)) - 0.038, 26.0);
+  put(length(p - vec3(-0.02, 0.36, 0.62)) - 0.030, 26.0);
+}
+
+/* ============================================================
+   4. 细胞质（发酵场景）
+   ============================================================ */
+void mapCyto(vec3 p){
+  float d = length(p) - 2.32;
+  put(max(abs(d) - 0.045, -cytoBite(p)), 30.0);
+}
+
+/* ============================================================
+   5. 总图
+   ============================================================ */
+float mapScene(vec3 p){
+  gM = 1e6; gId = 0.0;
+  if(uScene == 0)      mapMito(p);
+  else if(uScene == 1) mapChloro(p);
+  else                 mapCyto(p);
+
+  for(int i=0;i<16;i++){
+    if(i >= uMolN) break;
+    vec4 m = uMol[i];
+    if(m.w < 0.004) continue;
+    put(length(p - m.xyz) - m.w, 40.0 + float(i));
+  }
+  return gM;
+}
+
+vec3 calcNormal(vec3 p, float e){
+  vec2 k = vec2(1.0,-1.0);
+  return normalize(k.xyy*mapScene(p + k.xyy*e) +
+                   k.yyx*mapScene(p + k.yyx*e) +
+                   k.yxy*mapScene(p + k.yxy*e) +
+                   k.xxx*mapScene(p + k.xxx*e));
+}
+
+/* ============================================================
+   6. 材质与光照
+   ============================================================ */
+vec3 matCol(float id){
+  if(id < 10.5) return vec3(0.40,0.47,0.50);   /* 外膜 */
+  if(id < 11.5) return vec3(0.78,0.46,0.32);   /* 内膜 */
+  if(id < 12.5) return vec3(0.95,0.42,0.19);   /* 嵴 */
+  if(id < 13.5) return vec3(0.74,0.57,0.41);   /* 基质颗粒 */
+  if(id < 14.5) return vec3(0.96,0.83,0.50);   /* ATP 合酶 */
+  if(id < 15.5) return vec3(0.74,0.38,0.80);   /* mtDNA */
+  if(id < 20.5) return vec3(0.300,0.425,0.375);  /* 叶绿体外膜 */
+  if(id < 21.5) return vec3(0.150,0.255,0.220); /* 叶绿体内膜 */
+  if(id < 22.5) return vec3(0.098,0.355,0.222); /* 基粒 */
+  if(id < 23.5) return vec3(0.26,0.56,0.40);   /* 片层 */
+  if(id < 24.5) return vec3(0.92,0.92,0.87);   /* 淀粉粒 */
+  if(id < 25.5) return vec3(0.66,0.44,0.78);   /* cpDNA */
+  if(id < 26.5) return vec3(0.82,0.76,0.48);   /* 质体小球 */
+  if(id < 30.5) return vec3(0.44,0.56,0.61);   /* 细胞膜 */
+  return vec3(0.85,0.80,0.75);
+}
+
+vec3 post(vec3 col, float id, float t){
+  float hi = 1.0 - step(0.5, abs(id - uHi));
+  if(hi > 0.5){
+    col += uAccent*(0.24 + 0.12*sin(uTime*2.4));
+    col = mix(col, uAccent, 0.16);
+  }
+  float fog = 1.0 - exp(-max(t - 4.0, 0.0)*0.10);
+  col = mix(col, vec3(0.016,0.021,0.024), fog*0.55);
+  col *= mix(1.0, 0.34, uDim);
+  return col;
+}
+
+vec3 shade(vec3 p, vec3 n, vec3 rd, float id, float t, float ao, float facing){
+  int mi = int(id - 40.0);
+  bool inner = facing > 0.0;
+
+  vec3 L1 = normalize(vec3(-0.55, 0.72, 0.62));
+  vec3 L2 = normalize(vec3(0.80,-0.18, 0.26));
+  vec3 L3 = normalize(vec3(0.10,-0.30,-0.95));
+
+  float dif1 = max(dot(n, L1), 0.0);
+  float dif2 = max(dot(n, L2), 0.0);
+  float rim3 = max(dot(n, L3), 0.0);
+  vec3  hv   = normalize(L1 - rd);
+  float spe  = pow(max(dot(n, hv), 0.0), 44.0);
+  float ndv  = clamp(1.0 - abs(dot(n, -rd)), 0.0, 1.0);
+  float fr   = pow(ndv, 3.4);
+
+  /* ---------- 分子：自发光的小球 ---------- */
+  if(id > 39.5){
+    vec3 mc = uMolCol[mi];
+    vec3 col = mc*(0.40 + 0.50*dif1) + mc*pow(1.0-ndv,2.0)*0.50;
+    col += vec3(1.0,0.97,0.90)*spe*0.40 + mc*0.16;
+    return post(col, id, t);
+  }
+
+  vec3 base = matCol(id);
+  bool membrane = (id > 10.5 && id < 12.5) || (id > 20.5 && id < 23.6);
+  if(membrane){
+    vec3 b = vec3(sin(p.y*14.0)*sin(p.z*11.0) + 0.45*sin(p.y*31.0)*sin(p.z*27.0),
+                  sin(p.z*13.0)*sin(p.x*10.0) + 0.45*sin(p.z*29.0)*sin(p.x*33.0),
+                  sin(p.x*15.0)*sin(p.y*12.0) + 0.45*sin(p.x*27.0)*sin(p.y*30.0));
+    n = normalize(n + 0.085*b);
+  }
+
+  /* ---------- 外壳：玻璃质感（正对视线处几乎透明，掠射处亮） ---------- */
+  bool glass = (id < 10.5) || (id > 19.5 && id < 20.5) || (id > 29.5 && id < 30.5);
+  if(glass){
+    float g = pow(ndv, 3.2);
+    vec3 sh = base*(0.80 + 0.28*smoothstep(-0.9, 1.0, p.y));
+    /* 各壳分级：线粒体外膜略亮成轮廓，叶绿体更收敛以免糊成白瓷 */
+    float pow2 = (id > 19.5 && id < 20.5) ? 1.16 : ((id > 29.5) ? 1.00 : 1.48);
+    float spk  = (id > 19.5 && id < 20.5) ? 0.17 : ((id > 29.5) ? 0.34 : 0.28);
+    float ak   = (id > 19.5 && id < 20.5) ? 0.30 : 0.34;
+    float dk   = (id > 19.5 && id < 20.5) ? 0.130 : 0.075;
+    float difK = (id > 19.5 && id < 20.5) ? 0.20 : 0.085;
+    vec3 deep = sh*dk + uAccent*0.014;
+    vec3 rimc = sh*pow2 + uAccent*ak;
+    vec3 col = mix(deep, rimc, g);
+    col += base*dif1*difK*ao;
+    float spc = (id > 19.5 && id < 20.5) ? pow(max(dot(n,hv), 0.0), 130.0) : pow(max(dot(n,hv), 0.0), 90.0);
+    col += mix(vec3(1.0,0.96,0.90), uAccent, 0.45)*spc*spk;
+    if(inner) col = col*0.30 + uAccent*0.035;
+    /* 窗内壁投出的暗影 */
+    col *= mix(1.0, 0.55, (1.0 - ao));
+    return post(col, id, t);
+  }
+
+  vec3 ambCol = mix(vec3(0.026,0.034,0.042), vec3(0.120,0.135,0.140), 0.5 + 0.5*n.y);
+  vec3 col = base*ambCol*(0.40 + 0.60*ao);
+  col += base*dif1*1.30*ao*ao;
+  col += base*dif2*0.18;
+  col += base*rim3*0.26;
+
+  float specK = 0.20;
+  if(id < 12.5) specK = 0.42;
+  else if(id > 19.5 && id < 21.5) specK = 0.26;
+  else if(id > 21.5 && id < 22.5) specK = 0.10;
+  else if(id > 22.5 && id < 23.5) specK = 0.32;
+  else if(id > 23.5 && id < 25.5) specK = 0.80;
+  col += vec3(1.0,0.96,0.90)*spe*specK;
+
+  col += base*fr*0.34;
+  col += uAccent*fr*0.12;
+
+  if(inner){
+    float mot = 0.5 + 0.5*sin(p.x*6.3)*sin(p.y*5.7 + 1.2)*sin(p.z*4.9 + 2.0);
+    vec3 mat = base*(0.55 + 0.55*mot);
+    float head = max(dot(n, -rd), 0.0);
+    col = mat*(0.055 + 0.30*head)*(0.35 + 0.65*ao) + uAccent*0.030;
+  }
+
+  if(id > 13.5 && id < 14.5) col += base*0.30;
+  if(id > 14.5 && id < 15.5) col += base*0.42;
+  if(id > 24.5 && id < 25.5) col += base*0.40;
+
+  /* 基粒：盘缘提亮，让一摞摞饼的层次读得出来 */
+  if(id > 21.5 && id < 22.5){
+    float rim = 1.0 - smoothstep(0.12, 0.58, abs(n.y));
+    col += uAccent*rim*0.34;
+    col += base*rim*0.55;
+  }
+
+  return post(col, id, t);
+}
+
+vec3 bgCol(vec3 rd){
+  float y = clamp(rd.y*0.5 + 0.5, 0.0, 1.0);
+  vec3 c = mix(vec3(0.012,0.017,0.019), vec3(0.030,0.039,0.042), y*y);
+  float ang = atan(rd.z, rd.x);
+  c += uAccent*0.016*(0.5 + 0.5*sin(ang*1.3 + 0.6))*(1.0-y*0.6);
+  return c;
+}
+
+void main(){
+  vec2 frag = gl_FragCoord.xy;
+  vec2 uv = (frag - 0.5*uRes) / uRes.y - uShift;
+
+  vec3 ro = uCamPos;
+  vec3 rd = normalize(uFwd + uRight*uv.x*uTan*2.0 + uUp*uv.y*uTan*2.0);
+
+  /* 包围球跳过空区 */
+  float t = 0.0;
+  float bb = dot(ro, rd);
+  float cc = dot(ro, ro) - 6.9*6.9;
+  float hh = bb*bb - cc;
+  if(hh > 0.0){ t = max(0.0, -bb - sqrt(hh)); }
+
+  float id = -1.0;
+  float md = 1e3;
+  for(int i=0;i<118;i++){
+    vec3 p = ro + rd*t;
+    float d = mapScene(p);
+    if(d < md) md = d;
+    if(d < 0.0016*t + 0.0012){ id = gId; break; }
+    t += d*0.90;
+    if(t > 24.0) break;
+  }
+
+  vec3 col;
+  if(id < 0.0){
+    col = bgCol(rd);
+    /* 轮廓外的一圈柔光，掩掉锯齿 */
+    col += uAccent*0.22*exp(-max(md,0.0)*2.2);
+  }else{
+    vec3 p = ro + rd*t;
+    float e = max(0.0016, 0.0009*t);
+    vec3 n = calcNormal(p, e);
+    float facing = dot(n, rd);
+    if(facing > 0.0) n = -n;
+
+    float ao = 1.0;
+    if(uAO > 0.5){
+      float o0 = mapScene(p + n*0.016);
+      float o1 = mapScene(p + n*0.05);
+      float o2 = mapScene(p + n*0.14);
+      float o3 = mapScene(p + n*0.30);
+      ao = clamp(1.0 - 4.6*(0.016 - o0) - 2.6*(0.05 - o1) - 1.4*(0.14 - o2) - 0.6*(0.30 - o3), 0.0, 1.0);
+    }
+    col = shade(p, n, rd, id, t, ao, facing);
+  }
+
+  /* 饱和度与对比 */
+  float lum = dot(col, vec3(0.299,0.587,0.114));
+  col = mix(vec3(lum), col, 1.34);
+  col = 1.0 - exp(-max(col,0.0)*1.16);
+  float dth = (hash11(frag.x*0.137 + frag.y*0.271 + uTime*0.0) - 0.5)/255.0;
+  col += dth;
+
+  fragColor = vec4(col, 1.0);
+}
+`;
+
+/* ============================================================
+   7. 渲染器
+   ============================================================ */
+function Renderer(canvas) {
+  this.canvas = canvas;
+  this.ok = false;
+  this.time = 0;
+  this.yaw = 0.55; this.pitch = 0.20; this.dist = 8.4; this.distT = 8.4;
+  this.velY = 0; this.velX = 0;
+  this.dragging = false;
+  this.q = 1.0;
+  this.scene = 0;
+  this.cut = 0; this.cutT = 0;
+  this.hi = 0;
+  this.dim = 0;
+  this.mols = [];
+  this.accent = [0.91, 0.63, 0.44];
+  this.spin = true;
+  this.frames = 0; this.acc = 0;
+  this.init();
+}
+
+Renderer.prototype.init = function () {
+  var gl = this.canvas.getContext('webgl2', {
+    antialias: false, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false
+  });
+  if (!gl) { this.fail(); return; }
+  this.gl = gl;
+
+  function compile(type, src) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(s));
+      var lines = src.split('\n');
+      var log = gl.getShaderInfoLog(s) || '';
+      var m = log.match(/0:(\d+)/);
+      if (m) console.error('LINE ' + m[1] + ': ' + (lines[+m[1] - 1] || ''));
+      return null;
+    }
+    return s;
+  }
+  var vs = compile(gl.VERTEX_SHADER, VERT);
+  var fs = compile(gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) { this.fail(); return; }
+
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(prog)); this.fail(); return;
+  }
+  this.prog = prog; gl.useProgram(prog);
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'aPos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  this.u = {};
+  var names = ['uRes','uTime','uCamPos','uRight','uUp','uFwd','uTan','uShift','uScene','uCut','uCutN',
+               'uAccent','uHi','uDim','uAO','uMol','uMolCol','uMolN'];
+  for (var i = 0; i < names.length; i++) this.u[names[i]] = gl.getUniformLocation(prog, names[i]);
+
+  this.molData = new Float32Array(16 * 4);
+  this.molCol = new Float32Array(16 * 3);
+  this.molN = 0;
+
+  this.ok = true;
+  this.bind();
+  this.resize();
+};
+
+Renderer.prototype.fail = function () {
+  this.ok = false;
+  document.body.classList.add('no-gl');
+  var b = document.getElementById('boot');
+  if (b) b.classList.add('gone');
+};
+
+Renderer.prototype.bind = function () {
+  var self = this;
+  var el = this.canvas;
+  el.addEventListener('pointerdown', function (e) {
+    self.dragging = true; self.moved = 0;
+    self.lx = e.clientX; self.ly = e.clientY;
+    self.velY = self.velX = 0;
+    el.classList.add('dragging');
+    if (self.onDragStart) self.onDragStart();
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  el.addEventListener('pointermove', function (e) {
+    if (!self.dragging) return;
+    var dx = e.clientX - self.lx, dy = e.clientY - self.ly;
+    self.lx = e.clientX; self.ly = e.clientY;
+    self.moved += Math.abs(dx) + Math.abs(dy);
+    self.yaw += dx * 0.0068;
+    self.pitch = clamp(self.pitch + dy * 0.0052, -1.24, 1.24);
+    self.velY = dx * 0.0068; self.velX = dy * 0.0052;
+  });
+  function up(e) {
+    if (!self.dragging) return;
+    self.dragging = false;
+    el.classList.remove('dragging');
+    try { el.releasePointerCapture(e.pointerId); } catch (err) {}
+  }
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointercancel', up);
+  el.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    self.distT = clamp(self.distT * Math.exp(e.deltaY * 0.0010), 3.4, 15.0);
+  }, { passive: false });
+  el.addEventListener('dblclick', function () { self.reset(); });
+  window.addEventListener('resize', function () { self.resize(); });
+};
+
+Renderer.prototype.resize = function () {
+  if (!this.ok) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2) * this.q;
+  var w = Math.max(1, Math.round(this.canvas.clientWidth * dpr));
+  var h = Math.max(1, Math.round(this.canvas.clientHeight * dpr));
+  if (this.canvas.width !== w || this.canvas.height !== h) {
+    this.canvas.width = w; this.canvas.height = h;
+    this.gl.viewport(0, 0, w, h);
+  }
+  this.updateShift();
+};
+
+Renderer.prototype.updateShift = function () {
+  var W = window.innerWidth, H = Math.max(1, window.innerHeight);
+  var panel = document.getElementById('panel');
+  var pw = 0, isMobile = W <= 900;
+  if (panel && !isMobile) pw = panel.getBoundingClientRect().width + 16;
+  var dx = 0, dy = 0;
+  if (isMobile) {
+    var ph = panel ? panel.getBoundingClientRect().height + 8 : H * 0.46;
+    var availTop = 56, availH = Math.max(160, H - ph - availTop);
+    dy = (availTop + availH / 2) - H / 2;
+    this.zoom = clamp(H / availH * 0.78, 1, 2.0);
+  } else {
+    dx = -pw / 2;
+    this.zoom = 1;
+  }
+  /* 着色器里 uv 以 H 为单位：dx/H 右移，-dy/H 下移 */
+  this.shiftU = [dx / H, -dy / H];
+};
+
+Renderer.prototype.reset = function () {
+  if (!this.home) return;
+  this.yaw = this.home.y; this.pitch = this.home.p; this.distT = this.home.d;
+  this.velX = this.velY = 0;
+};
+
+Renderer.prototype.camera = function () {
+  var cp = Math.cos(this.pitch), sp = Math.sin(this.pitch);
+  var pos = [this.dist*cp*Math.sin(this.yaw), this.dist*sp, this.dist*cp*Math.cos(this.yaw)];
+  var f = [-pos[0], -pos[1], -pos[2]];
+  var fl = Math.hypot(f[0], f[1], f[2]);
+  f = [f[0]/fl, f[1]/fl, f[2]/fl];
+  var r = [-f[2], 0, f[0]];
+  var rl = Math.hypot(r[0], r[2]) || 1;
+  r = [r[0]/rl, 0, r[2]/rl];
+  var up = [
+    r[1]*f[2] - r[2]*f[1],
+    r[2]*f[0] - r[0]*f[2],
+    r[0]*f[1] - r[1]*f[0]
+  ];
+  return { pos: pos, fwd: f, right: r, up: up };
+};
+
+Renderer.prototype.tanH = function () {
+  return Math.tan(25 * Math.PI / 180) * (this.zoom || 1);
+};
+
+Renderer.prototype.project = function (p) {
+  var c = this.cam || this.camera();
+  var v = [p[0]-c.pos[0], p[1]-c.pos[1], p[2]-c.pos[2]];
+  var z = v[0]*c.fwd[0] + v[1]*c.fwd[1] + v[2]*c.fwd[2];
+  if (z < 0.05) return null;
+  var tanH = this.tanH();
+  var W = this.canvas.clientWidth, H = Math.max(1, this.canvas.clientHeight);
+  if (!this.shiftU) this.updateShift();
+  var ux = (v[0]*c.right[0] + v[1]*c.right[1] + v[2]*c.right[2]) / z;
+  var uy = (v[0]*c.up[0] + v[1]*c.up[1] + v[2]*c.up[2]) / z;
+  var k = 1 / (2 * tanH);
+  return {
+    x: (ux * k + this.shiftU[0]) * H + W / 2,
+    y: H / 2 - (uy * k + this.shiftU[1]) * H,
+    z: z
+  };
+};
+
+Renderer.prototype.setCutNormal = function (cam) {
+  var nx = cam.pos[0], nz = cam.pos[2];
+  var l = Math.hypot(nx, nz) || 1;
+  this.cutN = [nx/l, 0, nz/l];
+};
+
+Renderer.prototype.draw = function () {
+  if (!this.ok) return;
+  var gl = this.gl, u = this.u, c = this.camera();
+  this.cam = c;
+  this.setCutNormal(c);
+
+  var w = this.canvas.width, h = this.canvas.height;
+  gl.useProgram(this.prog);
+  gl.uniform2f(u.uRes, w, h);
+  gl.uniform1f(u.uTime, this.time);
+  gl.uniform3f(u.uCamPos, c.pos[0], c.pos[1], c.pos[2]);
+  gl.uniform3f(u.uRight, c.right[0], c.right[1], c.right[2]);
+  gl.uniform3f(u.uUp, c.up[0], c.up[1], c.up[2]);
+  gl.uniform3f(u.uFwd, c.fwd[0], c.fwd[1], c.fwd[2]);
+  gl.uniform1f(u.uTan, this.tanH());
+  if (!this.shiftU) this.updateShift();
+  gl.uniform2f(u.uShift, this.shiftU[0], this.shiftU[1]);
+  gl.uniform1i(u.uScene, this.scene);
+
+  gl.uniform1f(u.uCut, this.cut);
+  gl.uniform3f(u.uCutN, this.cutN[0], this.cutN[1], this.cutN[2]);
+  gl.uniform3f(u.uAccent, this.accent[0], this.accent[1], this.accent[2]);
+  gl.uniform1f(u.uHi, this.hi || 0);
+  gl.uniform1f(u.uDim, this.dim || 0);
+  gl.uniform1f(u.uAO, (this.q >= 0.72) ? 1 : 0);
+
+  var n = Math.min(this.mols.length, 16);
+  for (var i = 0; i < n; i++) {
+    var m = this.mols[i];
+    this.molData[i*4] = m.p[0]; this.molData[i*4+1] = m.p[1];
+    this.molData[i*4+2] = m.p[2]; this.molData[i*4+3] = m.r;
+    this.molCol[i*3] = m.c[0]; this.molCol[i*3+1] = m.c[1]; this.molCol[i*3+2] = m.c[2];
+  }
+  this.molN = n;
+  gl.uniform4fv(u.uMol, this.molData);
+  gl.uniform3fv(u.uMolCol, this.molCol);
+  gl.uniform1i(u.uMolN, n);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+};
+
+Renderer.prototype.loop = function (ts) {
+  if (!this.ok) return;
+  var self = this;
+  if (!this.lastT) this.lastT = ts;
+  var dt = Math.min(0.05, (ts - this.lastT) / 1000);
+  this.lastT = ts;
+  this.time += dt;
+
+  if (!this.dragging) {
+    this.yaw += this.velY;
+    this.pitch = clamp(this.pitch + this.velX, -1.24, 1.24);
+    this.velY *= 0.93; this.velX *= 0.93;
+    if (this.spin) this.yaw += dt * 0.062;
+  }
+  this.dist += (this.distT - this.dist) * Math.min(1, dt * 7);
+  this.cut += (this.cutT - this.cut) * Math.min(1, dt * 4.5);
+  this.dt = dt;
+
+  this.frames++; this.acc += dt;
+  if (this.acc > 1.4) {
+    var fps = this.frames / this.acc;
+    if (fps < 34 && this.q > 0.58) { this.q = Math.max(0.58, this.q - 0.16); this.resize(); }
+    else if (fps > 56 && this.q < 1.0) { this.q = Math.min(1.0, this.q + 0.10); this.resize(); }
+    this.frames = 0; this.acc = 0;
+  }
+
+  this.draw();
+  if (this.onFrame) this.onFrame(this);
+  requestAnimationFrame(function (t) { self.loop(t); });
+};
+/* ============================================================
+   8. 内容
+   ============================================================ */
+var C = {
+  glu:'#f0b96a', pyr:'#e89a5c', aco:'#e0703c', nadh:'#5fd0d4', fadh:'#8ee0c8',
+  atp:'#f7d572', co2:'#5c7175', o2:'#7aa8ff', h2o:'#7fc4ff', hp:'#ff7a6a',
+  lac:'#c78ee0', eth:'#e6b3f0', ald:'#d9a0e8', nad:'#3f8f93', pho:'#ffe89a',
+  g3p:'#5fbf78'
+};
+
+function sec(t, body, badge) {
+  var pieces = t.split(' · ');
+  var label = pieces.length === 2 ? '<span class="zh">' + pieces[0] + '</span><span class="en">' + pieces[1] + '</span>' : t;
+  return '<div class="sec"><div class="sec-h">' + (badge ? '<b>' + badge + '</b>' : '') + label + '</div>' + body + '</div>';
+}
+function Z(s) { return '<div class="zh">' + s + '</div>'; }
+function E(s) { return '<div class="en">' + s + '</div>'; }
+function part(n, id, zh, en, dzh, den) {
+  return '<div class="part" data-id="' + id + '"><div class="part-n">' + n + '</div>' +
+    '<div class="part-t"><span class="zh">' + zh + '</span><em class="en">' + en + '</em></div>' +
+    '<div class="part-d"><span class="zh">' + dzh + '</span><div class="en">' + den + '</div></div></div>';
+}
+function stat(v, l) { return '<div><b>' + v + '</b><span>' + l + '</span></div>'; }
+function eq(s, note) { return '<div class="eq">' + s + (note ? '<small>' + note + '</small>' : '') + '</div>'; }
+
+/* ------------------------------------------------------------ 线粒体 · 结构 */
+var P_MITO = sec('概览 · Overview', Z(
+  '<p>线粒体是<b>双层膜</b>细胞器，直径 0.5–1 µm，长 1–10 µm。外膜平滑；内膜向基质反复折叠成<b>嵴</b>，把膜面积放大约 5 倍——呼吸链的四个复合体与 ATP 合酶，全部嵌在这层膜上。</p>' +
+  '<p>基质里溶解着三羧酸循环的酶、环状 mtDNA 和核糖体。在线粒体中，有机物氧化释放的能量用于建立<b>质子梯度</b>，进而驱动 ATP 合成。</p>'
+) + E(
+  '<p>A double-membrane organelle, 0.5–1 µm across and 1–10 µm long. The outer membrane is smooth; the inner one folds into <b>cristae</b>, expanding its surface roughly fivefold — every respiratory complex and every ATP synthase is embedded there.</p>' +
+  '<p>The matrix holds the TCA enzymes, circular mtDNA and ribosomes. Within mitochondria, energy released by oxidation of organic molecules builds a <b>proton gradient</b> that drives ATP synthesis.</p>'
+)) +
+  sec('七个部件 · Seven parts', '<div class="parts">' +
+    part('01', '10', '外膜', 'Outer membrane',
+      '富含<b>孔蛋白（VDAC）</b>，小于约 5 kDa 的分子可自由通过，因此膜间隙的化学组成接近细胞质基质。',
+      'Rich in <b>porin (VDAC)</b>; molecules below ~5 kDa pass freely, so the intermembrane space chemically resembles the cytosol.') +
+    part('02', '0', '膜间隙', 'Intermembrane space',
+      '电子传递把 H⁺ 从基质泵到这里，形成约 150–180 mV 的跨内膜电位；细胞色素 c 也存放在这里。',
+      'Electron transport pumps H⁺ here, building a ~150–180 mV potential across the inner membrane; cytochrome c also resides here.') +
+    part('03', '11', '内膜', 'Inner membrane',
+      '富含<b>心磷脂</b>，蛋白占比可达 75%，对离子高度不通透，有助于维持质子梯度；多数质子经 ATP 合酶回流。',
+      'Rich in <b>cardiolipin</b>, up to 75% protein by mass, and highly impermeable, helping maintain the proton gradient; most protons return through ATP synthase.') +
+    part('04', '12', '嵴', 'Cristae',
+      '内膜的折叠。嵴的颈部很窄，把每一片嵴隔成相对独立的"质子小室"，让局部 pH 更低、梯度更陡。',
+      'Folds of the inner membrane. Narrow crista junctions isolate each fold as a proton microcompartment, steepening the local gradient.') +
+    part('05', '13', '基质', 'Matrix',
+      '三羧酸循环、脂肪酸 β-氧化、部分尿素循环的酶都在这里；它也是 Ca²⁺ 的缓冲池。',
+      'The TCA cycle, β-oxidation and part of the urea cycle run here; it also buffers Ca²⁺.') +
+    part('06', '15', '线粒体 DNA', 'mtDNA',
+      '人的 mtDNA 是 16,569 bp 的环状分子，37 个基因（13 个蛋白、22 个 tRNA、2 个 rRNA），母系遗传，一个细胞可有上千个拷贝。',
+      'Human mtDNA is a 16,569 bp circle with 37 genes (13 proteins, 22 tRNAs, 2 rRNAs), maternally inherited, thousands of copies per cell.') +
+    part('07', '14', 'ATP 合酶', 'ATP synthase',
+      'F₁F₀ 是由质子流驱动的旋转马达：转子完整转一圈可合成约 3 个 ATP；所需 H⁺ 数取决于 c 环亚基数，不是固定 3 个。',
+      'F₁F₀ is a proton-driven rotary motor. One full rotation can synthesize about 3 ATP; the required H⁺ count depends on the c-ring size and is not fixed at three.')
+    + '</div>') +
+  sec('关键数字 · By the numbers', '<div class="stats">' +
+    stat('0.5–1 µm', '直径 DIAMETER') + stat('1–10 µm', '长度 LENGTH') +
+    stat('~5×', '内膜面积倍数 AREA GAIN') + stat('16.6 kb', 'mtDNA 环长 CIRCLE') +
+    stat('150–180 mV', '跨内膜电位 POTENTIAL') + stat('3 ATP', '完整一圈的理论产量 PER ROTATION') +
+    '</div>') +
+  '<div class="note"><b>内共生 · Endosymbiosis</b><br>' +
+  '<span class="zh">线粒体起源于古老的内共生过程：真核祖先接纳了与 α-变形菌近缘的细菌。线粒体保留自己的 DNA、核糖体和双层膜。</span>' +
+  '<div class="en">Mitochondria arose through ancient endosymbiosis involving a bacterium related to α-proteobacteria. They retain their own DNA, ribosomes and a double membrane.</div></div>';
+
+/* ------------------------------------------------------------ 有氧呼吸 */
+var P_RESP = [
+  {
+    zh: '糖酵解', en: 'Glycolysis', tag: '细胞质基质 CYTOSOL', hi: 0, cut: 0.55,
+    mols: [[C.glu, -3.62, 0.34, 0.25, 0.175], [C.pyr, -2.92, 0.10, 0.05, 0.125],
+           [C.pyr, -2.98, -0.30, 0.38, 0.125], [C.atp, -3.42, -0.58, 0.40, 0.095],
+           [C.atp, -3.76, -0.76, 0.02, 0.095], [C.nadh, -3.28, 0.84, 0.30, 0.095],
+           [C.nadh, -3.80, 0.66, 0.55, 0.095]],
+    html: sec('位置 · Where', Z('细胞质基质。不需要氧，也不进入任何细胞器。') + E('Cytosol. No oxygen required, no organelle involved.')) +
+      sec('反应 · Reaction', eq('葡萄糖 + 2 NAD⁺ + 2 ADP + 2 Pi → 2 丙酮酸 + 2 NADH + 2 ATP + 2 H₂O',
+        'C₆H₁₂O₆ + 2 NAD⁺ + 2 ADP + 2 Pi → 2 C₃H₄O₃ + 2 NADH + 2 H⁺ + 2 ATP + 2 H₂O')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>六碳糖先被磷酸化，再裂成两分子三碳的<b>丙酮酸</b>。前十步里有两步要投入 ATP（"投资阶段"，−2），后四步收回 4 个 ATP，<b>净得 2 个</b>。</p>' +
+        '<p>同时，两次氧化反应把 4 个电子交给 NAD⁺，生成 2 个 NADH——它们随后会把电子送进线粒体。</p>'
+      ) + E(
+        '<p>The six-carbon sugar is phosphorylated and split into two three-carbon <b>pyruvate</b> molecules. Two ATP are invested, four are recovered — <b>net two</b>.</p>' +
+        '<p>Two oxidations hand four electrons to NAD⁺, yielding two NADH that will carry them into the mitochondrion.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 净产 <b>2 ATP + 2 NADH</b>，全部生物通用<br>' +
+        '· 限速酶：磷酸果糖激酶-1（PFK-1），被 ATP 与柠檬酸抑制<br>' +
+        '· 丙酮酸有两条路：进线粒体，或留在细胞质发酵</p>'
+      ) + E(
+        '<p>· Net <b>2 ATP + 2 NADH</b>; universal across life<br>' +
+        '· Rate-limiting enzyme: phosphofructokinase-1, inhibited by ATP and citrate<br>' +
+        '· Pyruvate has two fates: into the mitochondrion, or fermentation in the cytosol</p>'
+      ))
+  },
+  {
+    zh: '丙酮酸氧化', en: 'Pyruvate oxidation', tag: '线粒体基质 MATRIX', hi: 13, cut: 0.86,
+    mols: [[C.pyr, -2.10, 0.05, 0.18, 0.125], [C.pyr, -1.86, -0.26, -0.08, 0.125],
+           [C.aco, -1.18, 0.20, 0.10, 0.120], [C.aco, -0.96, -0.20, -0.12, 0.120],
+           [C.co2, -1.58, 0.56, 0.46, 0.095], [C.co2, -1.42, -0.56, 0.36, 0.095],
+           [C.nadh, -1.28, 0.52, -0.36, 0.095], [C.nadh, -1.12, -0.46, -0.44, 0.095]],
+    html: sec('位置 · Where', Z('线粒体基质。丙酮酸经内膜上的转运蛋白进入。') + E('The mitochondrial matrix, entered through a transporter in the inner membrane.')) +
+      sec('反应 · Reaction', eq('2 丙酮酸 + 2 CoA + 2 NAD⁺ → 2 乙酰 CoA + 2 CO₂ + 2 NADH',
+        '2 C₃H₄O₃ + 2 CoA-SH + 2 NAD⁺ → 2 CH₃CO-SCoA + 2 CO₂ + 2 NADH + 2 H⁺')) +
+      sec('发生了什么 · What happens', Z(
+        '<p><b>丙酮酸脱氢酶复合体</b>（PDH：三种酶、五种辅酶）切掉丙酮酸的羧基，以 CO₂ 形式放出——这是呼吸作用<b>第一次放出 CO₂</b>。</p>' +
+        '<p>剩下的二碳单位挂到辅酶 A 上，成为<b>乙酰 CoA</b>。糖、脂肪、蛋白质分解后的产物，都要先变成它才能进三羧酸循环——这里是三大营养素的<b>共同入口</b>。</p>'
+      ) + E(
+        '<p>The <b>pyruvate dehydrogenase complex</b> (three enzymes, five coenzymes) removes the carboxyl group as CO₂ — the <b>first CO₂</b> of respiration.</p>' +
+        '<p>The remaining two-carbon unit is attached to coenzyme A, forming <b>acetyl-CoA</b>: the common entry point through which sugars, fats and amino acids all feed the TCA cycle.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 反应不可逆，是糖异生的单向阀门<br>· 缺维生素 B₁（TPP）时此步受阻<br>· 每分子葡萄糖在此产生 2 CO₂、2 NADH</p>'
+      ) + E(
+        '<p>· Irreversible — the one-way valve of gluconeogenesis<br>· Blocked when vitamin B₁ (TPP) is deficient<br>· Per glucose: 2 CO₂ and 2 NADH</p>'
+      ))
+  },
+  {
+    zh: '三羧酸循环', en: 'TCA cycle', tag: '线粒体基质 MATRIX', hi: 13, cut: 0.9,
+    mols: [[C.aco, -0.58, 0.12, 0.05, 0.120], [C.co2, 0.12, 0.46, 0.30, 0.095],
+           [C.co2, 0.34, -0.30, 0.42, 0.095], [C.co2, -0.10, -0.52, 0.10, 0.095],
+           [C.co2, 0.06, 0.72, -0.20, 0.095], [C.nadh, 0.52, 0.26, 0.16, 0.095],
+           [C.nadh, 0.72, -0.10, 0.36, 0.095], [C.nadh, 0.36, -0.36, -0.30, 0.095],
+           [C.fadh, 0.62, -0.22, -0.36, 0.095], [C.atp, -0.22, 0.10, 0.46, 0.095]],
+    html: sec('位置 · Where', Z('线粒体基质。八步反应，首尾相接。') + E('The matrix — eight reactions in a closed loop.')) +
+      sec('反应 · Reaction', eq('2 乙酰 CoA + 6 NAD⁺ + 2 FAD + 2 ADP → 4 CO₂ + 6 NADH + 2 FADH₂ + 2 ATP',
+        '每转一圈：2 CO₂ · 3 NADH · 1 FADH₂ · 1 ATP')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>乙酰基（2C）与草酰乙酸（4C）缩合成柠檬酸（6C），随后两次脱羧、四次氧化，重新变回草酰乙酸。葡萄糖的两个乙酰基转两圈，六个碳全部以 CO₂ 离开。</p>' +
+        '<p>循环本身只直接产出 <b>2 个 ATP</b>；真正的收获是 <b>8 个还原当量</b>（6 NADH + 2 FADH₂）——它们带着高能电子，去内膜换 ATP。</p>'
+      ) + E(
+        '<p>The acetyl group (2C) condenses with oxaloacetate (4C) to citrate (6C); two decarboxylations and four oxidations regenerate oxaloacetate. Two turns release all six carbons as CO₂.</p>' +
+        '<p>The cycle itself yields only <b>2 ATP</b>. The real harvest is <b>eight reducing equivalents</b> (6 NADH + 2 FADH₂) carrying high-energy electrons to the inner membrane.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 三个调控点：柠檬酸合酶、异柠檬酸脱氢酶、α-酮戊二酸脱氢酶<br>· 中间产物也是氨基酸、血红素、脂肪酸的原料——代谢的十字路口<br>· 循环本身不直接用氧，但缺氧就会停转（NAD⁺ 供不上）</p>'
+      ) + E(
+        '<p>· Three control points: citrate synthase, isocitrate dehydrogenase, α-ketoglutarate dehydrogenase<br>· Intermediates also feed amino-acid, haem and fatty-acid synthesis — a metabolic crossroads<br>· The cycle uses no O₂ directly, yet stalls without it (NAD⁺ runs out)</p>'
+      ))
+  },
+  {
+    zh: '氧化磷酸化', en: 'Oxidative phosphorylation', tag: '内膜 · 嵴 INNER MEMBRANE', hi: 12, cut: 0.94,
+    mols: [[C.nadh, -0.72, 0.56, 0.36, 0.095], [C.fadh, -0.42, -0.52, 0.32, 0.095],
+           [C.hp, 0.18, 0.74, 0.30, 0.052], [C.hp, 0.48, 0.80, 0.14, 0.052],
+           [C.hp, 0.78, 0.70, 0.26, 0.052], [C.hp, 1.04, 0.78, 0.08, 0.052],
+           [C.o2, 1.48, 0.56, 0.34, 0.100], [C.h2o, 1.76, 0.76, 0.28, 0.090],
+           [C.atp, 0.92, 1.08, 0.40, 0.095], [C.atp, 1.32, 1.18, 0.12, 0.095],
+           [C.atp, 1.66, 0.98, 0.46, 0.095], [C.atp, 1.96, 1.22, 0.18, 0.095]],
+    html: sec('位置 · Where', Z('内膜（嵴）上。四个复合体 + 辅酶 Q + 细胞色素 c + ATP 合酶。') + E('On the inner membrane: four complexes, coenzyme Q, cytochrome c and ATP synthase.')) +
+      sec('反应 · Reaction', eq('10 NADH + 2 FADH₂ + 6 O₂ → 10 NAD⁺ + 2 FAD + 12 H₂O + ~26–28 ATP',
+        '电子最终交给氧，氧被还原成水——这就是"呼吸"这个词的来源')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>电子从 NADH 交给复合体 I，经辅酶 Q → 复合体 III → 细胞色素 c → 复合体 IV，最后交给<b>氧</b>。每一步释放的能量，都用来把 H⁺ 从基质泵到膜间隙。</p>' +
+        '<p>H⁺ 主要经 <b>ATP 合酶</b>回流，像水流过水轮机，驱动其旋转并合成 ATP。每整圈可合成约 3 个 ATP，所需质子数随酶的结构而变。这个机制叫<b>化学渗透</b>。</p>'
+      ) + E(
+        '<p>Electrons pass from NADH to complex I, then coenzyme Q, complex III, cytochrome c and complex IV, and finally to <b>oxygen</b>. Each transfer pumps H⁺ out of the matrix.</p>' +
+        '<p>H⁺ returns mainly through <b>ATP synthase</b>, driving rotation and ATP synthesis. A full turn can make about 3 ATP; the proton count depends on the enzyme. This is <b>chemiosmosis</b>.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 氧不是"燃烧"葡萄糖，它只是电子的<b>最终受体</b><br>· 1 NADH ≈ 2.5 ATP；1 FADH₂ ≈ 1.5 ATP（从复合体 II 进入，少过一个泵）<br>· 解偶联剂（如 DNP）使部分 H⁺ 绕过 ATP 合酶回流，更多能量以热散失</p>'
+      ) + E(
+        '<p>· Oxygen does not "burn" glucose; it is merely the <b>terminal electron acceptor</b><br>· 1 NADH ≈ 2.5 ATP; 1 FADH₂ ≈ 1.5 ATP (it enters at complex II, bypassing one pump)<br>· Uncouplers (e.g. DNP) let some H⁺ bypass ATP synthase, increasing heat dissipation</p>'
+      ))
+  },
+  {
+    zh: '总账', en: 'The balance sheet', tag: '全书回顾 SUMMARY', hi: 0, cut: 0.7,
+    mols: [[C.co2, 2.30, 0.62, 0.30, 0.095], [C.co2, 2.66, 0.30, 0.42, 0.095],
+           [C.h2o, 2.10, -0.50, 0.36, 0.090], [C.atp, -3.10, 0.85, 0.35, 0.100],
+           [C.atp, -2.70, 1.05, 0.10, 0.100], [C.atp, 0.30, 1.15, 0.40, 0.100],
+           [C.atp, 0.75, 1.25, 0.12, 0.100], [C.atp, 1.20, 1.10, 0.45, 0.100]],
+    html: sec('总反应 · Overall', eq('C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O + 能量（约 30–32 ATP）',
+      '1 mol 葡萄糖彻底氧化释放 2870 kJ，其中约 1161 kJ 进入 ATP')) +
+      sec('ATP 收支 · ATP ledger', '<table class="tbl"><tr><th>阶段 STAGE</th><th>直接 ATP</th><th>还原当量</th></tr>' +
+        '<tr><td>糖酵解<em>GLYCOLYSIS</em></td><td>2</td><td>2 NADH</td></tr>' +
+        '<tr><td>丙酮酸氧化<em>LINK</em></td><td>0</td><td>2 NADH</td></tr>' +
+        '<tr><td>三羧酸循环<em>TCA ×2</em></td><td>2</td><td>6 NADH + 2 FADH₂</td></tr>' +
+        '<tr class="on"><td>氧化磷酸化<em>OXPHOS</em></td><td>~26–28</td><td>—</td></tr>' +
+        '<tr><td><b>合计</b><em>TOTAL</em></td><td><b>~30–32</b></td><td>10 NADH + 2 FADH₂</td></tr></table>') +
+      sec('为什么书上数字不一样 · Why textbooks differ', Z(
+        '<p>人教版教材按旧系数（NADH = 3 ATP、FADH₂ = 2 ATP）算出 <b>38</b>；国际主流按实测的 2.5 / 1.5 算出 <b>30–32</b>。</p>' +
+        '<p>差异来自两点：细胞质里的 NADH 要靠"穿梭"才能进线粒体（甘油磷酸穿梭只算 1.5），以及内膜有少量质子漏。两种口径都不影响同一个结论——<b>约 90% 的 ATP 来自氧化磷酸化</b>。</p>'
+      ) + E(
+        '<p>Chinese textbooks use the older coefficients (NADH = 3, FADH₂ = 2) and obtain <b>38</b>. International texts use the measured 2.5 / 1.5 and obtain <b>30–32</b>.</p>' +
+        '<p>The gap comes from the shuttle that carries cytosolic NADH inward, plus a small proton leak. Either way, the conclusion stands: <b>about 90% of the ATP comes from oxidative phosphorylation</b>.</p>'
+      ))
+  }
+];
+
+/* ------------------------------------------------------------ 发酵 */
+var P_FERM = [
+  {
+    zh: '为什么发酵', en: 'Why ferment', tag: '无氧 · 细胞质 ANOXIA', hi: 30, cut: 0.6,
+    mols: [[C.glu, -1.35, 0.42, 0.30, 0.170], [C.pyr, 0.35, 0.26, 0.28, 0.135],
+           [C.pyr, 0.30, -0.30, 0.34, 0.135], [C.nadh, 1.15, 0.55, 0.10, 0.095],
+           [C.nadh, 1.15, -0.55, 0.14, 0.095], [C.atp, -1.30, -0.55, 0.50, 0.095],
+           [C.atp, -0.85, -0.92, 0.22, 0.095]],
+    html: sec('问题 · The problem', Z(
+      '<p>没有氧，电子传递链停摆，NADH 无法被氧化回 NAD⁺。糖酵解第 6 步的 3-磷酸甘油醛脱氢酶需要 NAD⁺ 来接氢——NAD⁺ 一断供，糖酵解立刻卡死。</p>' +
+      '<p>发酵的唯一任务，就是<b>把 NADH 重新氧化成 NAD⁺</b>。它不额外产能，只是让糖酵解能继续转——用有机分子当"电子垃圾桶"。</p>'
+    ) + E(
+      '<p>Without oxygen, the electron transport chain stalls and NADH cannot be reoxidised. Glyceraldehyde-3-phosphate dehydrogenase needs NAD⁺ to accept hydride — cut that supply and glycolysis seizes within seconds.</p>' +
+      '<p>Fermentation has exactly one job: <b>regenerate NAD⁺</b>. It yields no extra ATP, it merely keeps glycolysis turning, using an organic molecule as the electron dump.</p>'
+    )) +
+      sec('关键 · The key', eq('NADH + 丙酮酸（或乙醛）→ NAD⁺ + 有机产物', '没有这一步，净产 2 ATP 也拿不到')) +
+      sec('要点 · Key points', Z(
+        '<p>· 每分子葡萄糖仍只净产 <b>2 ATP</b>——只有有氧呼吸的 1/15<br>· 发酵不产生更多 ATP，它只是"续命"<br>· 所有发酵的产物，都是被还原的有机分子</p>'
+      ) + E(
+        '<p>· Still only <b>2 ATP</b> per glucose — about 1/15 of aerobic yield<br>· Fermentation makes no extra ATP; it only keeps the pathway alive<br>· Every fermentation product is a reduced organic molecule</p>'
+      ))
+  },
+  {
+    zh: '乳酸发酵', en: 'Lactic acid fermentation', tag: '肌肉 · 乳酸菌 MUSCLE', hi: 30, cut: 0.6,
+    mols: [[C.pyr, -1.15, 0.30, 0.26, 0.135], [C.pyr, -1.15, -0.35, 0.34, 0.135],
+           [C.nadh, -0.30, 0.58, 0.18, 0.095], [C.nadh, -0.30, -0.58, 0.22, 0.095],
+           [C.lac, 0.95, 0.32, 0.24, 0.145], [C.lac, 0.95, -0.35, 0.30, 0.145],
+           [C.nad, 0.38, 0.90, 0.06, 0.080], [C.nad, 0.38, -0.90, 0.10, 0.080]],
+    html: sec('反应 · Reaction', eq('丙酮酸 + NADH + H⁺ → 乳酸 + NAD⁺',
+      'C₃H₄O₃ + NADH + H⁺ → C₃H₆O₃ + NAD⁺　（乳酸脱氢酶 LDH）')) +
+      sec('在哪里 · Where', Z(
+        '<p>剧烈运动的<b>骨骼肌</b>、成熟的<b>红细胞</b>（没有线粒体，只能走这条路）、以及乳酸菌。</p>' +
+        '<p>酸奶、奶酪、泡菜、酸菜、青贮饲料——人类利用乳酸发酵已有数千年。</p>'
+      ) + E(
+        '<p>Hard-working <b>skeletal muscle</b>, mature <b>red blood cells</b> (no mitochondria, so no alternative), and lactic acid bacteria.</p>' +
+        '<p>Yoghurt, cheese, kimchi, sauerkraut, silage — we have used lactic fermentation for millennia.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 一步反应，不放出 CO₂——所以酸奶不会起泡<br>· 乳酸是弱酸，积累会降低 pH，抑制细菌生长（这也是腌制的原理）<br>· 心肌和大脑会重新利用乳酸作为燃料（科里循环）</p>'
+      ) + E(
+        '<p>· One step, no CO₂ released — which is why yoghurt does not froth<br>· Lactic acid lowers pH and inhibits competing microbes — the basis of pickling<br>· Heart and brain actually re-use lactate as fuel (the Cori cycle)</p>'
+      ))
+  },
+  {
+    zh: '酒精发酵', en: 'Alcoholic fermentation', tag: '酵母 YEAST', hi: 30, cut: 0.6,
+    mols: [[C.pyr, -1.32, 0.12, 0.28, 0.135], [C.ald, -0.38, 0.36, 0.26, 0.140],
+           [C.co2, -0.42, 1.02, 0.16, 0.072], [C.nadh, -0.34, -0.42, 0.30, 0.095],
+           [C.eth, 0.78, 0.26, 0.26, 0.145], [C.nad, 0.52, -0.56, 0.20, 0.080],
+           [C.co2, 1.10, 0.96, 0.10, 0.072]],
+    html: sec('反应 · Reaction', eq('丙酮酸 → 乙醛 + CO₂　→　乙醛 + NADH + H⁺ → 乙醇 + NAD⁺',
+      '两步：丙酮酸脱羧酶（PDC）+ 乙醇脱氢酶（ADH）')) +
+      sec('在哪里 · Where', Z(
+        '<p>酵母菌，以及少数植物在淹水缺氧时的根。先脱羧放出 CO₂，再把乙醛还原成乙醇。</p>' +
+        '<p>面包的孔洞来自 CO₂，酒的度数来自乙醇——同一条通路，两种用途。人类利用它至少九千年。</p>'
+      ) + E(
+        '<p>Yeast, and the roots of some plants under waterlogging. Decarboxylation releases CO₂ first, then acetaldehyde is reduced to ethanol.</p>' +
+        '<p>Bread crumb comes from the CO₂, wine from the ethanol — one pathway, two industries. We have used it for at least nine thousand years.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 与乳酸发酵的关键差别：<b>放出 CO₂</b><br>· 乙醇对酵母本身也有毒，浓度约 12–15% 时发酵停止<br>· 面团中的 CO₂ 受热膨胀，定型成孔洞</p>'
+      ) + E(
+        '<p>· Key difference from lactate: <b>CO₂ is released</b><br>· Ethanol is toxic to yeast too; fermentation stalls around 12–15%<br>· CO₂ trapped in dough expands on baking and sets the crumb</p>'
+      ))
+  },
+  {
+    zh: '三方对比', en: 'Three-way comparison', tag: '对照 COMPARE', hi: 0, cut: 0.5,
+    mols: [[C.atp, -2.2, 0.9, 0.3, 0.10], [C.atp, -1.9, -0.9, 0.4, 0.10], [C.lac, 0.4, 0.8, 0.3, 0.12],
+           [C.eth, 1.2, 0.6, 0.3, 0.12], [C.co2, 1.6, -0.4, 0.3, 0.10], [C.co2, -0.4, 1.4, 0.2, 0.10]],
+    html: sec('对照表 · At a glance', '<table class="tbl">' +
+      '<tr><th>项目</th><th>有氧呼吸</th><th>乳酸发酵</th><th>酒精发酵</th></tr>' +
+      '<tr><td>场所<em>LOCATION</em></td><td>细胞质 + 线粒体</td><td>细胞质</td><td>细胞质</td></tr>' +
+      '<tr><td>最终电子受体<em>ACCEPTOR</em></td><td>O₂</td><td>丙酮酸</td><td>乙醛</td></tr>' +
+      '<tr><td>产物<em>PRODUCTS</em></td><td>CO₂ + H₂O</td><td>乳酸</td><td>乙醇 + CO₂</td></tr>' +
+      '<tr class="on"><td>ATP / 葡萄糖</td><td><b>30–32</b></td><td><b>2</b></td><td><b>2</b></td></tr>' +
+      '<tr><td>代表<em>EXAMPLES</em></td><td>大多数细胞</td><td>肌肉 · 红细胞 · 乳酸菌</td><td>酵母 · 水淹的根</td></tr></table>') +
+      sec('一个流传很广的错误 · A widespread myth', Z(
+        '<p>"乳酸堆积导致第二天肌肉酸痛"——这句话是错的。延迟性肌肉酸痛（DOMS）在运动后 24–72 小时达到峰值，来自肌纤维微损伤与随后的炎症；而乳酸在运动结束后约 1 小时内就被清除，且它本身是心肌和大脑的燃料。</p>'
+      ) + E(
+        '<p>"Lactic acid causes next-day soreness" is wrong. Delayed-onset muscle soreness peaks 24–72 h after exercise and reflects micro-damage and inflammation; lactate is cleared within about an hour and is itself a fuel for heart and brain.</p>'
+      )) +
+      sec('能量效率 · Efficiency', Z('<p>同样一分子葡萄糖，有氧呼吸的 ATP 产量约为发酵的 <b>15 倍</b>。但发酵的速度可以快上百倍——短跑运动员在 10 秒内靠的就是它。</p>') +
+        E('<p>Per glucose, aerobic respiration yields about <b>15 times</b> the ATP of fermentation. But fermentation can run orders of magnitude faster — which is what a sprinter lives on for ten seconds.</p>'))
+  }
+];
+
+/* ------------------------------------------------------------ 叶绿体 · 结构 */
+var P_CHLORO = sec('概览 · Overview', Z(
+  '<p>叶绿体是植物与藻类的<b>双层膜</b>细胞器，长 5–10 µm。内膜以内是<b>基质</b>，悬浮着一套独立的类囊体膜系统：扁平的类囊体堆成<b>基粒</b>，基粒之间由基质片层相连。</p>' +
+  '<p>类囊体膜上装着光系统 II、细胞色素 b₆f、光系统 I 与 ATP 合酶；基质里跑着卡尔文循环。一个叶绿体，就是一座把光子变成糖的工厂。</p>'
+) + E(
+  '<p>A double-membrane organelle of plants and algae, 5–10 µm long. Inside the inner membrane lies the <b>stroma</b>, suspending a separate thylakoid membrane system: flat thylakoids stacked into <b>grana</b>, interconnected by stroma lamellae.</p>' +
+  '<p>The thylakoid membrane carries photosystem II, cytochrome b₆f, photosystem I and ATP synthase; the stroma runs the Calvin cycle. One chloroplast is a factory that turns photons into sugar.</p>'
+)) +
+  sec('八个部件 · Eight parts', '<div class="parts">' +
+    part('01', '20', '外膜', 'Outer membrane', '通透性高，含孔蛋白，小分子可自由通过。', 'Highly permeable; porins let small molecules pass freely.') +
+    part('02', '21', '内膜', 'Inner membrane', '选择透过性，靠转运蛋白控制物质进出；与光合作用的光反应无直接关系。', 'Selectively permeable; transporters gate what enters. It plays no direct part in the light reactions.') +
+    part('03', '0', '膜间隙', 'Intermembrane space', '两层膜之间约 10–20 nm 的空隙。', 'A 10–20 nm gap between the two envelopes.') +
+    part('04', '13', '基质', 'Stroma', '含卡尔文循环的酶、环状 cpDNA、70S 核糖体、淀粉粒与质体小球。', 'Contains the Calvin-cycle enzymes, circular cpDNA, 70S ribosomes, starch grains and plastoglobuli.') +
+    part('05', '22', '基粒', 'Granum', '10–100 个类囊体叠成一摞，像一叠硬币；堆叠让捕光面积在有限体积内最大化。PSII 主要分布在这里。', 'Ten to a hundred thylakoids stacked like coins, maximising light-harvesting area. PSII is concentrated here.') +
+    part('06', '23', '基质片层', 'Stroma lamella', '连接相邻基粒的类囊体，使整个膜系统连成一个连续的腔。PSI 与 ATP 合酶多分布于此。', 'Thylakoids linking neighbouring grana, making the whole system one continuous lumen. PSI and ATP synthase are enriched here.') +
+    part('07', '24', '淀粉粒', 'Starch grain', '白天光合产物以淀粉形式暂存，夜间再分解运出。', 'A daytime store of photosynthate, broken down and exported at night.') +
+    part('08', '25', '叶绿体 DNA', 'cpDNA', '120–160 kb 的环状分子，约 100 个拷贝，编码部分光合蛋白；其余由细胞核编码后运入。', 'A 120–160 kb circle, ~100 copies, encoding some photosynthetic proteins; the rest are nuclear-encoded and imported.')
+    + '</div>') +
+  sec('关键数字 · By the numbers', '<div class="stats">' +
+    stat('5–10 µm', '长度 LENGTH') + stat('10–100', '每基粒层数 THYLAKOIDS') +
+    stat('~5 / ~8', '腔 / 基质 pH LUMEN vs STROMA') + stat('120–160 kb', 'cpDNA 环长 CIRCLE') +
+    stat('70S', '核糖体 RIBOSOME') + stat('2', '层膜 ENVELOPE') +
+    '</div>') +
+  '<div class="note"><b>分区协作 · Division of labour</b><br>' +
+  '光反应发生在<b>类囊体膜</b>上，把光能变成 ATP 与 NADPH；碳反应发生在<b>基质</b>里，用 ATP 与 NADPH 把 CO₂ 固定成糖。两者被一层膜隔开，却通过 ATP/NADPH 与 ADP/NADP⁺ 的往返紧密耦合。' +
+  '<div class="en">The light reactions run on the <b>thylakoid membrane</b>; the carbon reactions run in the <b>stroma</b>. One membrane separates them, yet ATP/NADPH and ADP/NADP⁺ shuttle between them in a tight loop.</div></div>';
+
+/* ------------------------------------------------------------ 光合作用 */
+var P_PHOTO = [
+  {
+    zh: '光捕获', en: 'Light capture', tag: '基粒膜 GRANA MEMBRANE', hi: 22, cut: 0.78,
+    mols: [[C.pho, -1.74, 1.32, 1.02, 0.060], [C.pho, -1.50, 1.15, 0.95, 0.064],
+           [C.pho, -1.24, 0.97, 0.88, 0.068], [C.pho, -0.98, 0.80, 0.82, 0.070],
+           [C.pho, -0.72, 0.64, 0.76, 0.072], [C.pho, -0.46, 0.48, 0.70, 0.070]],
+    html: sec('位置 · Where', Z('基粒的类囊体膜上，光系统 II（PSII）。') + E('On the thylakoid membrane of a granum: photosystem II.')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>PSII 像一个漏斗：天线色素（叶绿素 a、b 与类胡萝卜素）吸收光子，把能量一份份传给反应中心 <b>P680</b>。</p>' +
+        '<p>P680 被激发后失去电子，变成一个极强的氧化剂（约 +1.2 V）——这是生物界最强的氧化剂，强到足以从水里抢电子。</p>'
+      ) + E(
+        '<p>PSII works like a funnel: antenna pigments (chlorophylls a and b, carotenoids) absorb photons and pass the energy to the reaction centre, <b>P680</b>.</p>' +
+        '<p>Excited P680 gives up an electron and becomes an extremely strong oxidant (~+1.2 V) — strong enough to pull electrons out of water.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 天线色素扩大吸收截面，反应中心才不至于"等光"<br>· 叶绿素吸收红光与蓝紫光，反射绿光——所以叶子是绿的<br>· 每吸收一个光子，只传递一个电子，能量被逐级下调</p>'
+      ) + E(
+        '<p>· Antenna pigments widen the capture cross-section so the centre never waits for light<br>· Chlorophyll absorbs red and blue-violet, reflects green — hence green leaves<br>· One photon moves one electron; energy is stepped down deliberately</p>'
+      ))
+  },
+  {
+    zh: '水的裂解', en: 'Water splitting', tag: '类囊体腔 LUMEN', hi: 22, cut: 0.82,
+    mols: [[C.h2o, -0.36, 0.46, 0.34, 0.080], [C.h2o, -0.20, 0.30, 0.48, 0.080],
+           [C.o2, -0.28, 1.02, 0.46, 0.082], [C.hp, -0.62, 0.62, 0.40, 0.048],
+           [C.hp, -0.02, 0.66, 0.34, 0.048], [C.hp, -0.30, 0.10, 0.56, 0.048]],
+    html: sec('反应 · Reaction', eq('2 H₂O → O₂ + 4 H⁺ + 4 e⁻', '放氧复合体 OEC：Mn₄CaO₅ 簇，需要 4 个光子依次驱动')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>放氧复合体从两个水分子上逐个剥下四个电子，补回 P680。副产品是 <b>O₂</b> 和 4 个 H⁺，H⁺ 留在类囊体腔里。</p>' +
+        '<p>产氧光合作用持续补充大气中的氧气；这里释放的 O₂ 来自水，而不是二氧化碳。</p>'
+      ) + E(
+        '<p>The oxygen-evolving complex strips four electrons from two waters, one at a time, replacing those lost by P680. The by-products are <b>O₂</b> and four H⁺, which stay in the lumen.</p>' +
+        '<p>Oxygenic photosynthesis replenishes atmospheric oxygen; the O₂ released here comes from water, not carbon dioxide.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 光合作用释放的 O₂ 来自<b>水</b>，不是 CO₂（同位素标记实验证明）<br>· 锰簇每积累 4 个正电荷才释放一次 O₂<br>· 这一步同时完成了"补电子"和"建质子梯度"两件事</p>'
+      ) + E(
+        '<p>· The O₂ comes from <b>water</b>, not CO₂ (proved by isotope labelling)<br>· The Mn cluster accumulates four oxidising equivalents before releasing one O₂<br>· This single step both refills the electron hole and builds the proton gradient</p>'
+      ))
+  },
+  {
+    zh: '电子传递', en: 'Electron transport', tag: '类囊体膜 THYLAKOID', hi: 23, cut: 0.84,
+    mols: [[C.hp, -0.05, 0.02, 0.30, 0.048], [C.hp, 0.22, -0.08, 0.42, 0.048],
+           [C.nadh, 0.72, 0.18, -0.20, 0.075], [C.nadh, 1.02, 0.02, -0.34, 0.075],
+           [C.hp, 0.45, 0.30, -0.42, 0.048], [C.hp, 0.90, 0.44, -0.50, 0.048]],
+    html: sec('路线 · The route', eq('PQ → cyt b₆f → PC → PSI → Fd → FNR → NADPH',
+      '电子走"下坡"，质子被推"上坡"')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>电子经质体醌 PQ 传给细胞色素 b₆f，再经质体蓝素 PC 交给光系统 I（P700）。PSI 被光再激发一次，电子经铁氧还蛋白交给 <b>FNR</b>，最终把 NADP⁺ 还原成 <b>NADPH</b>。</p>' +
+        '<p>PQ 从基质侧取 H⁺、在腔侧释放；b₆f 再把 H⁺ 泵进腔。于是电子传递的每一次"下坡"，都在把质子往腔内堆。</p>'
+      ) + E(
+        '<p>Electrons pass via plastoquinone to cytochrome b₆f, then via plastocyanin to photosystem I (P700). PSI re-excites them; ferredoxin hands them to <b>FNR</b>, which reduces NADP⁺ to <b>NADPH</b>.</p>' +
+        '<p>PQ picks up H⁺ on the stromal side and releases it in the lumen; b₆f pumps more. Every downhill electron transfer therefore stacks protons inside.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 两个光系统串联，电子需要被"抬"两次——这就是 Z 型反应<br>· PSII 主要在基粒，PSI 主要在基质片层，空间上分开<br>· 非循环电子流：H₂O → PSII → PSI → NADPH，同时产 ATP 与 NADPH</p>'
+      ) + E(
+        '<p>· Two photosystems in series mean electrons are lifted twice — the Z-scheme<br>· PSII sits in grana, PSI in stroma lamellae: spatially separated<br>· Non-cyclic flow: H₂O → PSII → PSI → NADPH, producing both ATP and NADPH</p>'
+      ))
+  },
+  {
+    zh: '质子梯度', en: 'Proton gradient', tag: '类囊体腔 LUMEN', hi: 22, cut: 0.86,
+    mols: [[C.hp, -0.50, -0.18, 0.30, 0.048], [C.hp, -0.26, -0.28, 0.44, 0.048],
+           [C.hp, 0.02, -0.16, 0.36, 0.048], [C.hp, 0.28, -0.30, 0.50, 0.048],
+           [C.atp, 0.62, 0.55, -0.30, 0.095], [C.atp, 0.95, 0.42, -0.44, 0.095],
+           [C.atp, 1.18, 0.60, -0.22, 0.095]],
+    html: sec('数字 · The numbers', eq('腔 pH ≈ 5　·　基质 pH ≈ 8　·　ΔpH ≈ 3',
+      '相当于腔内 H⁺ 浓度高约 1000 倍，跨膜电位差约 10–50 mV')) +
+      sec('发生了什么 · What happens', Z(
+        '<p>类囊体膜围出类囊体腔。光反应让 H⁺ 在腔内积累；H⁺ 经 <b>ATP 合酶</b>回到基质时，驱动 ATP 合成。每圈所需的 H⁺ 数由 ATP 合酶结构决定，不能固定写成 3 个。</p>' +
+        '<p>在线性电子流中，裂解 2 个 H₂O 对应产生 <b>1 个 O₂、约 2 个 NADPH</b>；ATP 产量还受质子耦联和循环电子流影响。ATP 与 NADPH 在基质中供卡尔文循环使用。</p>'
+      ) + E(
+        '<p>The thylakoid membrane encloses the lumen. Light reactions build a proton gradient; H⁺ returning to the stroma through <b>ATP synthase</b> drives ATP formation. The number of protons per rotation depends on the enzyme’s structure.</p>' +
+        '<p>In linear electron flow, splitting two waters corresponds to <b>one O₂ and about two NADPH</b>. ATP yield also depends on proton coupling and cyclic electron flow. ATP and NADPH are used by the Calvin cycle in the stroma.</p>'
+      )) +
+      sec('要点 · Key points', Z(
+        '<p>· 与线粒体用的是同一套化学渗透逻辑，只是方向相反：H⁺ 从基质泵进腔内<br>· 腔内的酸化还会"下调"PSII，防止光损伤<br>· 循环电子流只产 ATP 不产 NADPH，用于调整比例</p>'
+      ) + E(
+        '<p>· Same chemiosmotic logic as mitochondria, opposite direction: H⁺ is pumped from stroma into the lumen<br>· Lumen acidification also down-regulates PSII, protecting it from photodamage<br>· Cyclic electron flow makes ATP without NADPH, adjusting the ratio</p>'
+      ))
+  },
+  {
+    zh: '卡尔文循环', en: 'Calvin cycle', tag: '基质 STROMA', hi: 13, cut: 0.8,
+    mols: [[C.co2, 0.50, -0.28, 0.16, 0.066], [C.co2, 0.72, 0.10, 0.30, 0.066],
+           [C.co2, 0.40, 0.30, 0.02, 0.066], [C.g3p, 0.98, -0.06, -0.10, 0.088],
+           [C.atp, 1.25, 0.34, 0.14, 0.080], [C.nadh, 1.18, -0.36, 0.18, 0.080]],
+    html: sec('三步 · Three phases', Z(
+      '<p><b>① 固定</b>　RuBisCO 把 CO₂ 接到 RuBP（C5）上，立刻裂成两分子 3-磷酸甘油酸（3-PGA，C3）。</p>' +
+      '<p><b>② 还原</b>　消耗 6 ATP 与 6 NADPH，把 6 个 3-PGA 还原成 6 个 G3P。</p>' +
+      '<p><b>③ 再生</b>　5 个 G3P 花 3 ATP 重新拼回 3 个 RuBP，循环闭合。剩下 1 个 G3P 是净产出。</p>'
+    ) + E(
+      '<p><b>① Fixation</b> — RuBisCO attaches CO₂ to RuBP (C5), which splits immediately into two molecules of 3-phosphoglycerate (3-PGA, C3).</p>' +
+      '<p><b>② Reduction</b> — 6 ATP and 6 NADPH convert six 3-PGA into six G3P.</p>' +
+      '<p><b>③ Regeneration</b> — five G3P spend 3 ATP to rebuild three RuBP, closing the loop. One G3P is the net output.</p>'
+    )) +
+      sec('收支 · Balance', eq('3 CO₂ + 9 ATP + 6 NADPH → 1 G3P（净）', '两个 G3P 拼成一个葡萄糖；所以一个葡萄糖 = 6 CO₂ + 18 ATP + 12 NADPH')) +
+      sec('要点 · Key points', Z(
+        '<p>· RuBisCO 是地球上含量最多的蛋白，约占叶片可溶蛋白的 1/3；但它很慢，每秒只固定 3–10 个 CO₂<br>· 它也能结合 O₂（光呼吸），C4 与 CAM 植物用"预浓缩 CO₂"来规避<br>· 卡尔文循环不直接使用光子，却依赖光反应产生的 ATP 和 NADPH，并受到光照条件调节</p>'
+      ) + E(
+        '<p>· RuBisCO is the most abundant protein on Earth (~1/3 of leaf soluble protein), yet slow: 3–10 CO₂ per second<br>· It also binds O₂ (photorespiration); C4 and CAM plants pre-concentrate CO₂ to avoid this<br>· The cycle does not use photons directly, but it depends on ATP and NADPH from light reactions and is regulated by light conditions</p>'
+      ))
+  },
+  {
+    zh: '总账', en: 'The balance sheet', tag: '全书回顾 SUMMARY', hi: 0, cut: 0.7,
+    mols: [[C.co2, -0.9, 0.9, 0.4, 0.09], [C.co2, -0.6, 1.1, 0.2, 0.09], [C.o2, 1.1, 0.95, 0.3, 0.10],
+           [C.g3p, 0.6, -0.1, 0.5, 0.11], [C.atp, -1.2, 0.5, 0.3, 0.09], [C.nadh, 1.3, 0.2, 0.4, 0.09]],
+    html: sec('总反应 · Overall', eq('6 CO₂ + 12 H₂O → C₆H₁₂O₆ + 6 O₂ + 6 H₂O',
+      '净消耗 6 CO₂ 与 6 H₂O；12 个水被裂解，其中 6 个在末端重新生成')) +
+      sec('能量账 · Energy budget', Z(
+        '<p>每固定 1 个葡萄糖，光反应要提供 <b>18 ATP + 12 NADPH</b>。这些能量来自约 <b>48 个光子</b>（理论最小值）。</p>' +
+        '<p>光合作用的能量转化效率，在理想条件下约 <b>3–6%</b> 的入射太阳光——听起来很低，但全球光合作用每年固定约 1000 亿吨碳。</p>'
+      ) + E(
+        '<p>Each glucose requires <b>18 ATP and 12 NADPH</b> from the light reactions — about <b>48 photons</b> at the theoretical minimum.</p>' +
+        '<p>Overall conversion efficiency is only <b>3–6%</b> of incident sunlight, yet global photosynthesis fixes roughly 100 billion tonnes of carbon a year.</p>'
+      )) +
+      sec('与呼吸的关系 · Relation to respiration', Z(
+        '<p>光合作用与呼吸作用共用同一套逻辑：<b>膜、电子传递链、质子梯度、ATP 合酶</b>。叶绿体把光能存进 C–C 键，线粒体再把它们取出来。</p>' +
+        '<p>差别只在方向：光合作用把 H⁺ 泵进类囊体腔，呼吸作用把 H⁺ 泵出基质；光合作用消耗 CO₂ 放出 O₂，呼吸作用消耗 O₂ 放出 CO₂。</p>'
+      ) + E(
+        '<p>Both processes share the same logic: <b>a membrane, an electron transport chain, a proton gradient, ATP synthase</b>. Chloroplasts store light in C–C bonds; mitochondria take it back out.</p>' +
+        '<p>Only the direction differs: photosynthesis pumps H⁺ into the lumen and consumes CO₂; respiration pumps H⁺ out of the matrix and consumes O₂.</p>'
+      ))
+  }
+];
+
+/* ============================================================
+   9. 章节
+   ============================================================ */
+var MODES = [
+  {
+    id: 'mito', cls: 'm-mito', idx: '01', kind: 'STRUCTURE · 结构',
+    zh: '线粒体', en: 'Mitochondrion', tabZh: '线粒体', tabEn: 'Structure',
+    scene: 0, accent: [0.91, 0.63, 0.44], cutRange: [1, 0], cut: 0.86,
+    home: { y: 0.36, p: 0.24, d: 6.7 },
+    eyebrow: '01 / STRUCTURE', pTitle: '线粒体', pTitleEn: 'Mitochondrion · 细胞的动力站',
+    html: P_MITO,
+    hot: [
+      { id: 10, p: [0.55, 0.94, 0.30], zh: '外膜', en: 'OUTER MEMBRANE', dx: 26, dy: -40 },
+      { id: 0, p: [-0.55, 0.90, 0.10], zh: '膜间隙', en: 'INTERMEMBRANE SPACE', dx: -22, dy: -70 },
+      { id: 11, p: [-1.35, 0.62, 0.45], zh: '内膜', en: 'INNER MEMBRANE', dx: -34, dy: 26 },
+      { id: 12, p: [0.10, 0.34, -0.10], zh: '嵴', en: 'CRISTAE', dx: 30, dy: 60 },
+      { id: 13, p: [-0.34, -0.24, 0.36], zh: '基质', en: 'MATRIX', dx: -24, dy: 46 },
+      { id: 15, p: [0.94, 0.12, 0.02], zh: '线粒体 DNA', en: 'mtDNA', dx: 18, dy: -56 },
+      { id: 14, p: [-0.50, -0.79, 0.10], zh: 'ATP 合酶', en: 'ATP SYNTHASE', dx: 26, dy: 58 }
+    ]
+  },
+  {
+    id: 'resp', cls: 'm-resp', idx: '02', kind: 'PATHWAY · 通路',
+    zh: '有氧呼吸', en: 'Aerobic respiration', tabZh: '有氧呼吸', tabEn: 'Respiration',
+    scene: 0, accent: [0.91, 0.63, 0.44], cutRange: [4.2, -0.15], cut: 0.86,
+    home: { y: 0.42, p: 0.13, d: 8.8 },
+    eyebrow: '02 / PATHWAY', pTitle: '有氧呼吸', pTitleEn: 'Aerobic respiration · 30–32 ATP',
+    steps: P_RESP,
+    hot: [
+      { id: 0, p: [-3.55, 0.78, 0.25], zh: '葡萄糖', en: 'GLUCOSE', dx: 18, dy: -30 },
+      { id: 12, p: [-0.62, 0.42, -0.15], zh: '嵴', en: 'CRISTAE · ETC', dx: -26, dy: -52 }
+    ]
+  },
+  {
+    id: 'ferm', cls: 'm-ferm', idx: '03', kind: 'PATHWAY · 无氧',
+    zh: '发酵', en: 'Fermentation', tabZh: '发酵', tabEn: 'Fermentation',
+    scene: 2, accent: [0.79, 0.63, 0.88], cutRange: [4.6, -0.2], cut: 0.52, molScale: 1.50,
+    home: { y: 0.26, p: 0.10, d: 8.1 },
+    eyebrow: '03 / ANAEROBIC', pTitle: '发酵', pTitleEn: 'Fermentation · 无氧条件下的续命方案',
+    steps: P_FERM,
+    hot: []
+  },
+  {
+    id: 'chloro', cls: 'm-chloro', idx: '04', kind: 'STRUCTURE · 结构',
+    zh: '叶绿体', en: 'Chloroplast', tabZh: '叶绿体', tabEn: 'Structure',
+    scene: 1, accent: [0.50, 0.83, 0.66], cutRange: [3.6, -0.12], cut: 0.7,
+    home: { y: 0.34, p: 0.17, d: 5.6 },
+    eyebrow: '04 / STRUCTURE', pTitle: '叶绿体', pTitleEn: 'Chloroplast · 把光子变成糖',
+    html: P_CHLORO,
+    hot: [
+      { id: 20, p: [0.30, 0.575, 0.62], zh: '外膜', en: 'OUTER MEMBRANE', dx: 24, dy: -34 },
+      { id: 21, p: [-0.70, 0.49, -0.72], zh: '内膜', en: 'INNER MEMBRANE', dx: -30, dy: -44 },
+      { id: 22, p: [0.50, 0.30, 0.30], zh: '基粒', en: 'GRANUM', dx: 30, dy: -30 },
+      { id: 23, p: [-0.10, 0.00, 0.02], zh: '基质片层', en: 'STROMA LAMELLA', dx: -10, dy: 62 },
+      { id: 24, p: [-1.16, 0.19, -0.56], zh: '淀粉粒', en: 'STARCH GRAIN', dx: -34, dy: 40 },
+      { id: 25, p: [0.06, -0.02, -0.56], zh: '叶绿体 DNA', en: 'cpDNA', dx: 16, dy: 74 },
+      { id: 13, p: [-0.90, -0.10, 0.55], zh: '基质', en: 'STROMA', dx: -26, dy: 54 }
+    ]
+  },
+  {
+    id: 'photo', cls: 'm-photo', idx: '05', kind: 'PATHWAY · 通路',
+    zh: '光合作用', en: 'Photosynthesis', tabZh: '光合作用', tabEn: 'Photosynthesis',
+    scene: 1, accent: [0.50, 0.83, 0.66], cutRange: [3.8, -0.12], cut: 0.82, molScale: 1.12,
+    home: { y: 0.32, p: 0.16, d: 5.9 },
+    eyebrow: '05 / PATHWAY', pTitle: '光合作用', pTitleEn: 'Photosynthesis · 光反应 + 卡尔文循环',
+    steps: P_PHOTO,
+    hot: [
+      { id: 22, p: [-0.30, 0.36, 0.36], zh: '基粒', en: 'GRANUM · PSII', dx: -30, dy: -46 },
+      { id: 13, p: [0.62, -0.18, 0.20], zh: '基质', en: 'STROMA · CALVIN', dx: 24, dy: 50 }
+    ]
+  }
+];
+
+/* ============================================================
+   10. 状态与分子池
+   ============================================================ */
+var S = { mode: 0, step: 0, lang: 'both', playing: false, playAcc: 0, cutOn: true, spinOn: true };
+var POOL = 16;
+var curMols = [], tgtMols = [];
+for (var i = 0; i < POOL; i++) {
+  curMols.push({ p: [0, 0, 0], r: 0, c: [1, 1, 1] });
+  tgtMols.push({ p: [0, 0, 0], r: 0, c: [1, 1, 1] });
+}
+
+var MOL_SCALE = 1.28;
+function setMols(list) {
+  for (var i = 0; i < POOL; i++) {
+    if (i < list.length) {
+      var m = list[i];
+      tgtMols[i].p = [m[1], m[2], m[3]];
+      tgtMols[i].r = m[4]*MOL_SCALE*((MODES[S.mode] && MODES[S.mode].molScale) || 1);
+      tgtMols[i].c = hexRGB(m[0]);
+    } else {
+      tgtMols[i].r = 0;
+    }
+  }
+}
+
+function tickMols(dt) {
+  var k = Math.min(1, dt * 4.6);
+  for (var i = 0; i < POOL; i++) {
+    var a = curMols[i], b = tgtMols[i];
+    a.p[0] += (b.p[0] - a.p[0]) * k;
+    a.p[1] += (b.p[1] - a.p[1]) * k;
+    a.p[2] += (b.p[2] - a.p[2]) * k;
+    a.r += (b.r - a.r) * k;
+    for (var j = 0; j < 3; j++) a.c[j] += (b.c[j] - a.c[j]) * k;
+  }
+}
+
+/* ============================================================
+   11. DOM 与渲染
+   ============================================================ */
+var elTabs = document.getElementById('tabs');
+var elSteps = document.getElementById('steps');
+var elPanel = document.getElementById('panel');
+var elPBody = document.getElementById('pBody');
+var elPFoot = document.getElementById('pFoot');
+var elPEye = document.getElementById('pEyebrow');
+var elPTitle = document.getElementById('pTitle');
+var elSIdx = document.getElementById('sIdx');
+var elSKind = document.getElementById('sKind');
+var elSTitle = document.getElementById('sTitle');
+var elHot = document.getElementById('hot');
+var R = null;
+
+function langClass() {
+  document.body.classList.remove('lang-both', 'lang-zh', 'lang-en');
+  document.body.classList.add('lang-' + S.lang);
+  var m = MODES[S.mode];
+  var english = S.lang === 'en';
+  document.documentElement.lang = english ? 'en' : 'zh-CN';
+  document.title = english ? 'Cellular Energy Atlas · Respiration & Photosynthesis' : '细胞能量图鉴 · 呼吸与光合 — Cellular Energy Atlas';
+  document.querySelector('.brand b').textContent = english ? 'Cellular Energy Atlas' : '细胞能量图鉴';
+  elTabs.querySelectorAll('.tab').forEach(function (button, i) {
+    button.querySelector('span').textContent = english ? MODES[i].en : MODES[i].tabZh;
+  });
+  elSTitle.innerHTML = english ? m.en : (S.lang === 'zh' ? m.zh : m.zh + '<span>' + m.en + '</span>');
+  elPTitle.innerHTML = english ? m.en : (S.lang === 'zh' ? m.pTitle : m.pTitle + '<small>' + m.pTitleEn + '</small>');
+  elSKind.textContent = english ? m.kind.split(' · ')[0] : m.kind;
+  elSteps.querySelectorAll('.step-t').forEach(function (label, i) {
+    label.textContent = english ? m.steps[i].en : m.steps[i].zh;
+  });
+  document.querySelector('.hint').innerHTML = english
+    ? '<span><b>Drag</b> rotate</span><span><b>Scroll</b> zoom</span><span><b>Double-click</b> reset</span>'
+    : '<span><b>拖动</b> 旋转</span><span><b>滚轮</b> 缩放</span><span><b>双击</b> 复位</span>';
+  document.querySelector('#modal h3').textContent = english ? 'About this lesson' : '关于这份课件';
+  document.getElementById('aboutBtn').setAttribute('aria-label', english ? 'About' : '关于');
+  document.getElementById('cutBtn').textContent = english ? 'Cutaway' : '剖面 CUT';
+  document.getElementById('spinBtn').textContent = english ? 'Spin' : '自转 SPIN';
+  document.getElementById('resetBtn').textContent = english ? 'Reset' : '复位 RESET';
+}
+
+function buildTabs() {
+  elTabs.innerHTML = MODES.map(function (m, i) {
+    return '<button class="tab" data-i="' + i + '" type="button"><i>' + m.idx + '</i>' +
+      '<span>' + m.tabZh + '</span><em>' + m.tabEn + '</em></button>';
+  }).join('');
+  elTabs.querySelectorAll('.tab').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(+b.dataset.i); });
+  });
+}
+
+function buildSteps() {
+  var m = MODES[S.mode];
+  if (!m.steps) { elSteps.style.display = 'none'; return; }
+  elSteps.style.display = 'flex';
+  elSteps.innerHTML = m.steps.map(function (s, i) {
+    return (i ? '<div class="step-dash"></div>' : '') +
+      '<div class="step" data-i="' + i + '"><button class="step-b" type="button">' +
+      '<span class="step-n">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="step-t">' + s.zh + '</span></button></div>';
+  }).join('');
+  elSteps.querySelectorAll('.step').forEach(function (d) {
+    d.querySelector('button').addEventListener('click', function () { setStep(+d.dataset.i); });
+  });
+}
+
+function refreshStepStates() {
+  var m = MODES[S.mode];
+  if (!m.steps) return;
+  elSteps.querySelectorAll('.step').forEach(function (d, i) {
+    d.classList.toggle('on', i === S.step);
+    d.classList.toggle('done', i < S.step);
+  });
+  /* 条窄时把当前步滚进视野，避免 1024 以下看不到正在讲哪一步 */
+  var cur = elSteps.querySelectorAll('.step')[S.step];
+  if (cur && elSteps.scrollWidth > elSteps.clientWidth) {
+    elSteps.scrollLeft = Math.max(0, cur.offsetLeft - (elSteps.clientWidth - cur.offsetWidth) / 2);
+  }
+}
+
+function buildHotspots() {
+  var m = MODES[S.mode];
+  elHot.innerHTML = '';
+  (m.hot || []).forEach(function (h, k) {
+    var d = document.createElement('div');
+    d.className = 'hs';
+    d.dataset.id = h.id;
+    d.dataset.k = k;
+    d.innerHTML = '<button class="hs-pin" type="button">' + String(k + 1).padStart(2, '0') + '</button>' +
+      '<div class="hs-tip"><b>' + h.zh + '</b><span>' + h.en + '</span></div>';
+    elHot.appendChild(d);
+    var pin = d.querySelector('.hs-pin');
+    pin.addEventListener('mouseenter', function () { if (R) R.hi = h.id; d.classList.add('act'); });
+    pin.addEventListener('mouseleave', function () {
+      if (R) R.hi = 0;
+      if (!d.classList.contains('lock')) d.classList.remove('act');
+    });
+    pin.addEventListener('click', function () {
+      elHot.querySelectorAll('.hs').forEach(function (x) { x.classList.remove('act', 'lock'); });
+      d.classList.add('act', 'lock');
+      if (R) R.hi = h.id;
+      var p = elPBody.querySelector('.part[data-id="' + h.id + '"]');
+      if (p) {
+        elPBody.querySelectorAll('.part').forEach(function (q) { q.classList.remove('on'); });
+        p.classList.add('on');
+        p.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    });
+  });
+}
+
+function setMode(i) {
+  S.mode = i; S.step = 0; S.playAcc = 0;
+  var m = MODES[i];
+  document.body.className = m.cls + ' lang-' + S.lang;
+  elTabs.querySelectorAll('.tab').forEach(function (b, k) { b.classList.toggle('on', k === i); });
+  var tb = elTabs.querySelectorAll('.tab')[i];
+  if (tb) elTabs.scrollLeft = Math.max(0, tb.offsetLeft - (elTabs.clientWidth - tb.offsetWidth) / 2);
+  elSIdx.textContent = m.idx;
+  elSKind.textContent = m.kind;
+  elSTitle.innerHTML = m.zh + '<span>' + m.en + '</span>';
+  elPEye.textContent = m.eyebrow;
+  elPTitle.innerHTML = m.pTitle + '<small>' + m.pTitleEn + '</small>';
+
+  if (R) {
+    R.scene = m.scene;
+    R.accent = m.accent;
+    R.cutRange = m.cutRange;
+    R.home = m.home;
+    R.yaw = m.home.y; R.pitch = m.home.p;
+    R.distT = m.home.d; R.dist = m.home.d * 1.04;
+    R.cutT = S.cutOn ? m.cut : 0;
+    R.cut = R.cutT;
+    R.hi = 0;
+    R.spin = S.spinOn;
+  }
+
+  buildSteps();
+  buildHotspots();
+  bindParts();
+  renderPanel();
+  langClass();
+}
+
+function insertEnergyFigure(modeId) {
+  var chloroplast = modeId === 'chloro' || modeId === 'photo';
+  var mitochondrion = modeId === 'mito' || modeId === 'resp';
+  if (!chloroplast && !mitochondrion) return;
+  var file = chloroplast ? 'chloroplast-ai.png' : 'mitochondrion-ai.png';
+  var titleZh = chloroplast ? '叶绿体 · 光合作用' : '线粒体 · 有氧呼吸';
+  var titleEn = chloroplast ? 'Chloroplast · Photosynthesis' : 'Mitochondrion · Aerobic respiration';
+  var descZh = chloroplast
+    ? '叶绿体吸收光能，利用二氧化碳和水合成有机物，并释放氧气；释放的氧气来自水。'
+    : '有氧呼吸中，糖酵解先在细胞质中进行；线粒体承担后续分解和大部分 ATP 合成，氧气是电子传递链的最终电子受体。';
+  var descEn = chloroplast
+    ? 'Chloroplasts capture light energy to build organic molecules from carbon dioxide and water. The released oxygen comes from water.'
+    : 'Glycolysis begins in the cytosol. Mitochondria carry out later stages of aerobic respiration and make most ATP; oxygen is the final electron acceptor.';
+  elPBody.insertAdjacentHTML('afterbegin',
+    '<figure class="energy-figure"><a href="assets/' + file + '" target="_blank" rel="noopener" aria-label="' + titleZh + ' / ' + titleEn + '">' +
+    '<img src="assets/' + file + '" alt="' + titleZh + ' / ' + titleEn + '" loading="lazy"></a>' +
+    '<figcaption><strong class="zh">' + titleZh + '</strong><strong class="en">' + titleEn + '</strong>' +
+    '<p class="zh">' + descZh + '</p><p class="en">' + descEn + '</p>' +
+    '<small class="zh">AI 生成的结构示意图，非显微照片，比例与颜色不代表真实状态。点击查看大图。</small>' +
+    '<small class="en">AI-generated structural illustration, not a micrograph. Scale and colors are illustrative. Open full image.</small></figcaption></figure>');
+}
+
+function renderPanel() {
+  var m = MODES[S.mode];
+  if (m.steps) {
+    var s = m.steps[S.step];
+    elPBody.innerHTML = s.html;
+    if (S.step === 0) insertEnergyFigure(m.id);
+    elPFoot.style.display = 'flex';
+    document.getElementById('pSidx').innerHTML = 'STEP <b>' + (S.step + 1) + '</b> / ' + m.steps.length + ' · ' + s.tag;
+    document.getElementById('prevBtn').disabled = S.step === 0;
+    document.getElementById('nextBtn').disabled = S.step === m.steps.length - 1;
+    if (R) {
+      R.hi = s.hi || 0;
+      R.cutT = S.cutOn ? s.cut : 0;
+    }
+    setMols(s.mols || []);
+  } else {
+    elPBody.innerHTML = m.html;
+    insertEnergyFigure(m.id);
+    elPFoot.style.display = 'none';
+    setMols([]);
+    if (R) { R.hi = 0; R.cutT = S.cutOn ? m.cut : 0; }
+  }
+  elPBody.scrollTop = 0;
+  bindParts();
+  refreshStepStates();
+}
+
+function bindParts() {
+  elPBody.querySelectorAll('.part').forEach(function (p) {
+    var id = +p.dataset.id;
+    p.addEventListener('mouseenter', function () { if (R && id) R.hi = id; });
+    p.addEventListener('mouseleave', function () { if (R) R.hi = 0; });
+    p.addEventListener('click', function () {
+      elPBody.querySelectorAll('.part').forEach(function (q) { q.classList.remove('on'); });
+      p.classList.add('on');
+      if (R && id) R.hi = id;
+    });
+  });
+}
+
+function setStep(i) {
+  var m = MODES[S.mode];
+  if (!m.steps) return;
+  S.step = clamp(i, 0, m.steps.length - 1);
+  S.playAcc = 0;
+  renderPanel();
+}
+
+/* ============================================================
+   12. 热点跟随
+   ============================================================ */
+function updateHotspots() {
+  if (!R) return;
+  var m = MODES[S.mode];
+  var nodes = elHot.children;
+  if (!(m.hot || []).length) return;
+  var W = window.innerWidth, H = window.innerHeight;
+  for (var i = 0; i < nodes.length; i++) {
+    var h = m.hot[i], el = nodes[i];
+    if (!h) continue;
+    var s = R.project(h.p);
+    if (!s || s.x < 10 || s.x > W - 10 || s.y < 56 || s.y > H - 10) {
+      el.classList.remove('on'); continue;
+    }
+    el.classList.add('on');
+    el.style.transform = 'translate(' + s.x.toFixed(1) + 'px,' + s.y.toFixed(1) + 'px)';
+    el.style.opacity = clamp(1.5 - s.z / 18, 0.55, 1).toFixed(2);
+  }
+}
+
+/* ============================================================
+   13. 叠加层：箭头与光束
+   ============================================================ */
+var fx = document.getElementById('fx');
+var fxc = fx.getContext('2d');
+var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+function resizeFx() {
+  fx.width = Math.round(window.innerWidth * dpr);
+  fx.height = Math.round(window.innerHeight * dpr);
+  fx.style.width = window.innerWidth + 'px';
+  fx.style.height = window.innerHeight + 'px';
+}
+resizeFx();
+window.addEventListener('resize', resizeFx);
+
+function accentRGB() {
+  var m = MODES[S.mode];
+  return m.accent.map(function (v) { return Math.round(v * 255); });
+}
+
+function drawFx() {
+  fxc.setTransform(dpr, 0, 0, dpr, 0, 0);
+  fxc.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  if (!R || !R.ok) return;
+  var m = MODES[S.mode];
+  var t = R.time;
+
+  if (m.id === 'photo') {
+    /* 斜射光束：只画在基粒上方 */
+    fxc.save();
+    fxc.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < 7; i++) {
+      var ph = (t * 0.16 + i * 0.37) % 1;
+      var sx = window.innerWidth * 0.16 + i * 92;
+      var sy = -40 + ph * 120;
+      var a = Math.max(0, Math.sin(ph * Math.PI)) * 0.16;
+      var g = fxc.createLinearGradient(sx, sy, sx + 210, sy + 170);
+      g.addColorStop(0, 'rgba(255,235,170,0)');
+      g.addColorStop(0.5, 'rgba(255,235,170,' + a.toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(255,235,170,0)');
+      fxc.strokeStyle = g;
+      fxc.lineWidth = 1.1;
+      fxc.beginPath();
+      fxc.moveTo(sx, sy);
+      fxc.lineTo(sx + 210, sy + 170);
+      fxc.stroke();
+    }
+    fxc.restore();
+  }
+}
+
+/* ============================================================
+   14. 启动
+   ============================================================ */
+function boot() {
+  var canvas = document.getElementById('gl');
+  R = new Renderer(canvas);
+  if (!R.ok) {
+    document.getElementById('boot').classList.add('gone');
+    elPBody.innerHTML = P_MITO;
+    elPFoot.style.display = 'none';
+    return;
+  }
+  R.mols = [];
+  for (var i = 0; i < POOL; i++) R.mols.push({ p: [0, 0, 0], r: 0, c: [1, 1, 1] });
+
+  R.onDragStart = function () {
+    if (S.spinOn) {
+      S.spinOn = false; R.spin = false;
+      var b = document.getElementById('spinBtn'); if (b) b.classList.remove('on');
+    }
+  };
+
+  R.onFrame = function (r) {
+    tickMols(Math.min(0.12, r.dt || 0.016));
+    for (var i = 0; i < POOL; i++) {
+      if (curMols[i].r > 0.002) {
+        var wob = Math.sin(r.time * 1.5 + i * 1.7) * 0.012;
+        r.mols[i].p[0] = curMols[i].p[0];
+        r.mols[i].p[1] = curMols[i].p[1] + wob;
+        r.mols[i].p[2] = curMols[i].p[2];
+        r.mols[i].r = curMols[i].r;
+        r.mols[i].c = curMols[i].c;
+      } else {
+        r.mols[i].r = 0;
+      }
+    }
+    updateHotspots();
+    drawFx();
+    if (S.playing) {
+      S.playAcc += 1 / 60;
+      var m = MODES[S.mode];
+      if (m.steps && S.playAcc > 7.2) {
+        S.playAcc = 0;
+        if (S.step < m.steps.length - 1) setStep(S.step + 1);
+        else { S.playing = false; }
+      }
+    }
+  };
+  R.loop(performance.now());
+
+  buildTabs();
+  setMode(0);
+  setTimeout(function () { document.getElementById('boot').classList.add('gone'); }, 320);
+}
+
+/* 视图控制 */
+document.getElementById('cutBtn').addEventListener('click', function () {
+  S.cutOn = !S.cutOn;
+  this.classList.toggle('on', S.cutOn);
+  var m = MODES[S.mode];
+  var t = m.steps ? m.steps[S.step].cut : m.cut;
+  if (R) R.cutT = S.cutOn ? t : 0;
+});
+document.getElementById('spinBtn').addEventListener('click', function () {
+  S.spinOn = !S.spinOn;
+  this.classList.toggle('on', S.spinOn);
+  if (R) R.spin = S.spinOn;
+});
+document.getElementById('resetBtn').addEventListener('click', function () {
+  if (R) R.reset();
+});
+
+/* 语言切换 */
+document.getElementById('lang').addEventListener('click', function (e) {
+  var b = e.target.closest('button');
+  if (!b) return;
+  S.lang = b.dataset.l;
+  document.querySelectorAll('#lang button').forEach(function (x) { x.classList.toggle('on', x === b); });
+  langClass();
+});
+
+/* 上下步 */
+document.getElementById('prevBtn').addEventListener('click', function () { setStep(S.step - 1); });
+document.getElementById('nextBtn').addEventListener('click', function () { setStep(S.step + 1); });
+
+/* 关于 */
+var modal = document.getElementById('modal');
+document.getElementById('aboutBtn').addEventListener('click', function () { modal.classList.add('on'); });
+document.getElementById('modalX').addEventListener('click', function () { modal.classList.remove('on'); });
+modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('on'); });
+
+/* 键盘 */
+window.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { modal.classList.remove('on'); return; }
+  if (e.key === 'ArrowRight') { setStep(S.step + 1); e.preventDefault(); }
+  if (e.key === 'ArrowLeft') { setStep(S.step - 1); e.preventDefault(); }
+  if (e.key === ' ') { S.playing = !S.playing; S.playAcc = 0; e.preventDefault(); }
+  if (e.key === 'r' || e.key === 'R') { if (R) R.reset(); }
+  if (e.key >= '1' && e.key <= '5') { setMode(+e.key - 1); }
+});
+
+window.addEventListener('resize', function () {
+  resizeFx();
+  if (R) R.resize();
+});
+
+boot();
+
+</script>
+<script src="site-bridge.js"></script>
+</body>
+</html>

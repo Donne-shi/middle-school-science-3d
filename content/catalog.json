@@ -108,11 +108,11 @@
       "name": "生物学",
       "english": "Biology",
       "eyebrow": "从微观结构认识生命",
-      "description": "从细胞的形态与结构出发，观察生命的多样性。",
-      "description_en": "Explore life's diversity through the forms and structures of cells.",
+      "description": "观察细胞的形态与结构，再追踪光合作用和呼吸作用中的能量转化。",
+      "description_en": "Explore cell structures, photosynthesis, respiration, and the flow of energy in living systems.",
       "accent": "#428258",
-      "status": "细胞专题本地预览",
-      "status_en": "Cell topic in local preview",
+      "status": "细胞能量图鉴已开放",
+      "status_en": "Cellular Energy Atlas available",
       "topics": [
         {
           "slug": "cell-world",
@@ -132,6 +132,28 @@
               "interaction": "3D 旋转 · 剖切 · 显微对照",
               "interaction_en": "3D rotation · Cutaway · Microscope comparison",
               "href": "demos/biology/cell-atlas/index.html"
+            }
+          ]
+        },
+        {
+          "slug": "cell-energy",
+          "name": "细胞能量",
+          "english": "Cellular Energy",
+          "description": "从线粒体和叶绿体的结构出发，理解有氧呼吸与光合作用。",
+          "description_en": "Connect mitochondrion and chloroplast structures to aerobic respiration and photosynthesis.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "cellular-energy-atlas",
+              "name": "细胞能量图鉴",
+              "english": "Cellular Energy Atlas",
+              "description": "探索线粒体、叶绿体、呼吸、发酵与光合作用，并查看两张独立的 AI 教学结构图。",
+              "description_en": "Explore mitochondria, chloroplasts, respiration, fermentation, and photosynthesis with two separate AI teaching illustrations.",
+              "interaction": "3D 结构 · 分步过程 · 双语 · 两张功能图",
+              "interaction_en": "3D structures · Step-by-step pathways · Bilingual · Two illustrations",
+              "href": "demos/biology/cell-energy/index.html",
+              "published": true
             }
           ]
         }

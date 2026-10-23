@@ -125,6 +125,8 @@ def topic_page(subject: dict, topic: dict) -> None:
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
         visual_zh, visual_en = "六种机械 · 力与距离", "SIX MACHINES · FORCE & DISTANCE"
+    if slug == "biology" and topic["slug"] == "cell-energy":
+        visual_zh, visual_en = "两种细胞器 · 两条能量路径", "TWO ORGANELLES · TWO ENERGY PATHWAYS"
     intro = f'''<section class="topic-intro"><div><span class="eyebrow eyebrow-line">TOPIC / {e(topic["english"])}</span>{tr(topic["name"], topic["english"], "h1")}{tr(topic["description"], topic["description_en"], "p")}</div><div class="topic-visual topic-visual-{e(slug)}" aria-hidden="true">{tr(visual_zh, visual_en)}</div></section>'''
     cards = []
     for index, lesson in enumerate(topic["lessons"], start=1):
@@ -148,11 +150,16 @@ def topic_page(subject: dict, topic: dict) -> None:
             "选择一种机械，调节参数，比较力与距离如何变化。",
             "Choose a machine, adjust its parameters, and compare changes in force and distance.",
         )
+    if slug == "biology" and topic["slug"] == "cell-energy":
+        guidance_zh, guidance_en = (
+            "先观察两种细胞器，再沿着呼吸与光合的步骤追踪物质和能量。",
+            "Explore both organelles, then follow matter and energy through respiration and photosynthesis.",
+        )
     section = f'''<section aria-labelledby="lesson-title"><div class="section-heading"><div><span class="eyebrow">INTERACTIVE LESSONS</span>{tr("选择一个演示", "Choose a lesson", "h2", 'id="lesson-title"')}</div>{tr(guidance_zh, guidance_en, "p")}</div><div class="lesson-grid">{''.join(cards)}</div></section>'''
     note_zh, note_en = {
         "astronomy": ("天体尺寸、距离和时间如经过视觉调整，以各演示页的标注为准。", "Visual scales for size, distance, and time are explained in each lesson."),
         "physics": ("三维模型、力箭头和场景为教学示意；数值及简化条件见各演示说明。", "The 3D models, force arrows, and scenes are teaching illustrations; see each lesson for values and assumptions."),
-        "biology": ("三维形态经过教学简化，标本大小不按同一比例；显微图片的来源与授权仍在核对。", "The 3D models are simplified and not shown at a common scale; image credits and licenses are still under review."),
+        "biology": ("三维形态经过教学简化，不按统一比例；示意图片与显微照片的性质和来源见各演示说明。", "The 3D models are simplified and not shown at a common scale; see each lesson for image type and provenance."),
         "chemistry": ("历史模型体现提出时的认识，轨道图像为教学示意；比例不代表真实原子。", "Historical models reflect ideas of their time; orbital views are teaching illustrations, not literal scale models."),
     }[slug]
     note = '<div class="context-bar">' + tr("适合课堂展示与自主探索", "For classroom and independent exploration") + tr(note_zh, note_en) + '</div>'

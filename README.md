@@ -4,7 +4,7 @@
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。
 
-目前已开放物理学《牛顿车库》《简单机械 3D 实验室》和化学《原子图鉴》互动演示。生物学已设“细胞世界”专题，《细胞形态图鉴》的 26 标本演示可在本地预览；天文学的太阳系演示也可在本地预览。**细胞图鉴内嵌显微照片和太阳系部分贴图的来源与授权尚未核实，因此演示副本被 Git 忽略，暂未纳入公开仓库。**详情见 [素材与授权记录](docs/ASSETS.md)。
+目前已开放物理学《牛顿车库》《简单机械 3D 实验室》、生物学《细胞能量图鉴》和化学《原子图鉴》互动演示。生物学已设“细胞世界”专题，《细胞形态图鉴》的 26 标本演示可在本地预览；天文学的太阳系演示也可在本地预览。**细胞图鉴内嵌显微照片和太阳系部分贴图的来源与授权尚未核实，因此演示副本被 Git 忽略，暂未纳入公开仓库。**详情见 [素材与授权记录](docs/ASSETS.md)。
 
 ## 页面结构
 
@@ -13,6 +13,8 @@ site/index.html                                四学科总入口
 site/subjects/astronomy/index.html             天文学独立入口
 site/subjects/physics/index.html               物理学独立入口
 site/subjects/biology/index.html               生物学独立入口
+site/topics/biology/cell-energy/index.html     细胞能量专题
+site/demos/biology/cell-energy/index.html      细胞能量图鉴独立入口
 site/topics/biology/cell-world/index.html      细胞世界专题
 preview/demos/biology/cell-atlas/index.html    细胞形态图鉴本地预览
 site/subjects/chemistry/index.html             化学独立入口
@@ -26,7 +28,7 @@ site/demos/chemistry/atomic-atlas/index.html    原子图鉴独立入口
 preview/                                       本地演示预览，Git 忽略
 ```
 
-所有入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。单独打开学科首页时，导航仍可使用。每页右上角可切换中文 / English；语言选择会随站内链接传递，并与《牛顿车库》《简单机械 3D 实验室》《原子图鉴》的语言设置保持一致。首页直接显示内容，不播放开场动画。两个物理演示需要支持 WebGL 的浏览器；《原子图鉴》使用 Canvas 绘制。建议通过本地 HTTP 服务预览。
+所有入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。单独打开学科首页时，导航仍可使用。每页右上角可切换中文 / English；语言选择会随站内链接传递，并与《牛顿车库》《简单机械 3D 实验室》《细胞能量图鉴》《原子图鉴》的语言设置保持一致。首页直接显示内容，不播放开场动画。两个物理演示与《细胞能量图鉴》需要支持 WebGL 的浏览器；《原子图鉴》使用 Canvas 绘制。建议通过本地 HTTP 服务预览。
 
 ## 本地预览
 
@@ -40,7 +42,7 @@ python3 scripts/check_site.py --local
 python3 -m http.server 8000 --directory preview
 ```
 
-浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版的牛顿车库、简单机械和原子图鉴可直接打开；细胞图鉴和太阳系演示保留介绍卡片，素材核查前不显示无效链接。本地预览版会自动复制已公开的演示，并可打开导入的细胞图鉴及太阳系单页。
+浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版的牛顿车库、简单机械、细胞能量图鉴和原子图鉴可直接打开；细胞图鉴和太阳系演示保留介绍卡片，素材核查前不显示无效链接。本地预览版会自动复制已公开的演示，并可打开导入的细胞图鉴及太阳系单页。
 
 导入脚本只读取提供的源目录，并在仓库内生成本地预览副本。它不会修改原始演示文件。生成副本增加“返回太阳系专题”入口，并修正地球与木星的对比标签、太阳系结构的返回链接，以及地火转移中的一句易误解文案。每次源页面更新后，可重新运行导入命令。
 
