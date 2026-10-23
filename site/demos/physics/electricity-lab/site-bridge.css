@@ -1,0 +1,24 @@
+.topbar { gap: 8px; }
+.science-back {
+  margin-left: auto;
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(23, 24, 26, .16);
+  border-radius: 6px;
+  color: #9b461e;
+  background: rgba(255, 255, 255, .55);
+  font-size: 10px;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.science-back:hover, .science-back:focus-visible {
+  border-color: #ba572e;
+  background: #fff8ef;
+  color: #642c13;
+}
+.science-back:focus-visible { outline: 2px solid #ba572e; outline-offset: 2px; }
+@media (max-width: 520px) {
+  .topbar { padding-inline: 12px; }
+  .science-back { padding-inline: 6px; font-size: 9px; }
+}

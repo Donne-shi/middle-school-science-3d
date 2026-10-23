@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>太阳系结构 · Structure of the Solar System</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#030407;
+  --ink:#f4ede2;
+  --ink-2:#d8d1c5;
+  --muted:#a5a29d;
+  --dim:#6b6f7c;
+  --dim-2:#4a4e5a;
+  --line:rgba(244,237,226,.12);
+  --line-2:rgba(244,237,226,.065);
+  --ac:#e8bb87;
+  --cold:#9fb8d8;
+  --ac-soft:rgba(232,187,135,.16);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","Source Han Serif CN",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --pad:clamp(22px,3.4vw,54px);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);overflow:hidden;background:#030407;
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--ac);color:#0a0705}
+#pl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 88% at 56% 46%,rgba(0,0,0,0) 40%,rgba(0,0,0,.34) 74%,rgba(0,0,0,.78) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.045;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:4}
+.scrim::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,4,7,.94) 0%,rgba(3,4,7,.78) 22%,rgba(3,4,7,.2) 42%,transparent 54%)}
+.scrim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18%;
+  background:linear-gradient(180deg,transparent,rgba(3,4,7,.58) 62%,rgba(3,4,7,.9))}
+
+/* ---------- back + language ---------- */
+.topright{position:fixed;right:var(--pad);top:clamp(24px,4vh,44px);z-index:20;
+  display:flex;align-items:center;gap:9px}
+.lang{display:flex;align-items:center;gap:1px;padding:2px;border:1px solid var(--line);border-radius:30px;
+  background:rgba(7,8,12,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.lang button{appearance:none;border:0;background:none;font:inherit;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;color:var(--dim);padding:6px 8px;border-radius:20px;cursor:pointer;line-height:1;
+  transition:color .22s,background .22s}
+.lang button:hover{color:var(--ink-2)}
+.lang button.is-on{background:var(--ac);color:#0a0705}
+.back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  padding:9px 15px;border:1px solid var(--line);border-radius:30px;
+  transition:border-color .25s,color .25s,background .25s}
+.back:hover{border-color:var(--ac);color:var(--ink);background:rgba(255,255,255,.03)}
+.back svg{opacity:.8}
+
+/* ---------- masthead ---------- */
+.mast{position:fixed;left:var(--pad);top:clamp(26px,4.4vh,48px);z-index:12;width:min(430px,31vw);pointer-events:none}
+.idx{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:15px;letter-spacing:0}
+.mast h1{margin:13px 0 0;font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:.06em}
+.mast h1 .cn{display:block;font-size:clamp(44px,4.8vw,66px);color:var(--ink);
+  text-shadow:0 2px 26px rgba(0,0,0,.72)}
+.mast h1 .en{display:block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.36em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12.5px;letter-spacing:.14em;color:var(--muted)}
+.kicker i{width:24px;height:1px;background:var(--ac);opacity:.75;flex:none}
+.tag{margin:12px 0 0;font-family:var(--serif);font-size:15.5px;line-height:1.85;color:var(--ink-2);
+  max-width:23em;opacity:.85;text-shadow:0 1px 16px rgba(0,0,0,.7)}
+
+/* ---------- layer captions (leaders are drawn on canvas) ---------- */
+.lv{position:fixed;z-index:11;pointer-events:none;max-width:min(400px,28vw);text-align:right;
+  transition:opacity .45s,filter .55s}
+.lv .n{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;margin-bottom:6px;color:var(--dim)}
+.lv h2{margin:0;font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:.08em;color:var(--ink);
+  display:flex;align-items:baseline;justify-content:flex-end;gap:9px;text-shadow:0 1px 18px rgba(0,0,0,.85)}
+.lv h2 i{font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--dim);white-space:nowrap}
+.lv p{margin:6px 0 0;font-size:12px;line-height:1.65;letter-spacing:.02em;color:var(--muted)}
+.lv p b{font-weight:400;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2)}
+.lv.warm .n{color:rgba(232,187,135,.75)}
+.lv.cold .n{color:rgba(159,184,216,.75)}
+.lv.cold h2{color:#e2eaf5}
+.lv.dim{opacity:.24}
+/* the caption lifts for a beat when the pulse reaches its region */
+.lv.peak{filter:brightness(1.5) saturate(1.15)}
+
+/* ---------- footer ---------- */
+.foot{position:fixed;left:var(--pad);bottom:calc(clamp(20px,3.2vh,32px) + 2px);z-index:12;
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim);pointer-events:none;
+  max-width:min(520px,44vw);line-height:1.9}
+.foot b{font-weight:400;color:var(--ink-2);opacity:.8}
+.foot{transition:opacity .45s,transform .45s}
+/* the English caption reaches under the readout; the instrument wins */
+body.lang-en.is-light .foot{opacity:0;transform:translateY(4px)}
+/* narrow windows keep a single line: the rail sits directly above this band */
+.ft-narrow{display:none}
+@media (max-width:859px){
+  .ft-wide{display:none}
+  .ft-narrow{display:inline}
+}
+
+/* ---------- rail ---------- */
+.rail{position:fixed;right:var(--pad);bottom:calc(clamp(20px,3.2vh,32px) - 2px);z-index:14;
+  display:flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--line);border-radius:30px;
+  background:rgba(7,8,12,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.rail button{appearance:none;border:0;background:transparent;color:var(--dim);font:inherit;cursor:pointer;
+  font-size:12px;letter-spacing:.1em;padding:7px 13px;border-radius:24px;white-space:nowrap;
+  transition:color .25s,background .25s}
+.rail button:hover{color:var(--ink-2)}
+.rail button.is-on{color:#0a0705;background:var(--ac)}
+.rail button.is-on[data-f="3"]{background:var(--cold);color:#070a11}
+.rail .lt-go{display:inline-flex;align-items:center;gap:7px;margin-left:3px;padding-left:13px;
+  border-left:1px solid var(--line-2);border-radius:0 24px 24px 0}
+.rail .lt-go em{width:0;height:0;border-left:5px solid currentColor;
+  border-top:3.6px solid transparent;border-bottom:3.6px solid transparent;
+  transition:border .25s,width .25s,height .25s}
+.rail .lt-go.is-on{color:var(--cold);background:rgba(159,184,216,.1)}
+.rail .lt-go.is-on em{width:5px;height:7px;border:0;background:currentColor}
+.rail .lt-spd{display:none;justify-content:center;min-width:38px;margin-left:2px;padding:6px 10px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--cold);
+  border:1px solid rgba(159,184,216,.26);background:rgba(159,184,216,.06)}
+.rail .lt-spd:hover{color:#e8f0fc;background:rgba(159,184,216,.16);border-color:rgba(159,184,216,.42)}
+body.is-light .rail .lt-spd{display:inline-flex;align-items:center}
+
+/* ---------- light-time instrument ---------- */
+.lt{position:fixed;left:var(--pad);bottom:calc(clamp(20px,3.2vh,32px) + 34px);z-index:13;
+  width:min(462px,calc(100vw - 2*var(--pad)));padding:11px 14px 9px;border-radius:3px;
+  border:1px solid var(--line);font-family:var(--mono);
+  background:linear-gradient(180deg,rgba(9,11,17,.76),rgba(6,8,12,.68));
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  opacity:0;visibility:hidden;transform:translateY(7px);pointer-events:none;
+  transition:opacity .45s,transform .45s,visibility .45s}
+body.is-light .lt{opacity:1;visibility:visible;transform:none}
+.lt-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.lt-k{font-size:8.5px;letter-spacing:.24em;color:var(--dim)}
+.lt-k b{font-weight:500;font-size:10.5px;letter-spacing:.14em;color:var(--cold);margin-right:7px}
+.lt-r{font-size:9px;letter-spacing:.16em;color:rgba(159,184,216,.92);white-space:nowrap}
+.lt-mid{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:6px}
+.lt-v{font-size:20px;letter-spacing:.01em;color:#f7f0e5;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 22px rgba(255,205,150,.2)}
+.lt-d{font-size:10px;letter-spacing:.05em;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lt-bar{position:relative;height:9px;margin-top:8px;
+  background:linear-gradient(90deg,rgba(244,237,226,.15),rgba(244,237,226,.15)) no-repeat;
+  background-size:100% 1px;background-position:0 4px}
+.lt-bar .fill{position:absolute;left:0;top:4px;height:1px;width:0;
+  background:linear-gradient(90deg,rgba(232,187,135,.5),#ffd9a8);
+  box-shadow:0 0 8px rgba(255,200,140,.45)}
+.lt-bar .tk{position:absolute;top:2px;width:1px;height:5px;background:rgba(244,237,226,.3)}
+.lt-bar .tk.is-cold{background:rgba(159,184,216,.5)}
+.lt-bar .dot{position:absolute;top:1px;width:5px;height:5px;border-radius:50%;
+  background:#ffe1b8;box-shadow:0 0 9px rgba(255,200,140,.95);margin-left:-2px}
+
+/* the English title is a phrase; Chinese is five characters at the same size */
+body.lang-en .mast h1 .cn{font-family:"Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+  font-size:clamp(26px,2.7vw,36px);line-height:1.08;letter-spacing:.005em;text-wrap:balance}
+body.lang-en .mast h1 .en{text-transform:none;letter-spacing:.2em;font-family:var(--serif);font-size:13px}
+body.lang-en .lv h2{font-size:20px}
+body.lang-en .lv h2 i{text-transform:none;letter-spacing:.1em}
+/* Latin runs long: above the legend breakpoint the caption keeps one line by
+   taking a little more room instead of folding a word onto a second row */
+@media (min-width:860px){
+  body.lang-en .lv{max-width:min(400px,34vw)}
+  body.lang-en .lv p{font-size:11px;letter-spacing:0}
+  body.lang-en .lv p b{font-size:11px}
+  body.lang-en .foot{font-size:9.5px;letter-spacing:.03em;max-width:min(560px,46vw)}
+}
+
+@media (max-width:1023px){
+  .mast{width:min(380px,44vw)}
+  body.lang-en .mast h1 .cn{font-size:clamp(23px,3.3vw,32px)}
+  .mast h1 .cn{font-size:clamp(36px,5.2vw,48px)}
+  .kicker{font-size:11.5px}
+  .tag{font-size:14px;max-width:22em}
+  .lv{max-width:min(290px,31vw)}
+  .lv h2{font-size:18px}
+  .lv p{font-size:11px}
+  .foot{max-width:46vw;font-size:9px;letter-spacing:.06em}
+  .rail button{font-size:11px;padding:6px 10px}
+  .lt{width:min(404px,calc(100vw - 2*var(--pad)));padding:9px 12px 8px}
+  .lt-v{font-size:17px}
+}
+@media (max-width:859px){
+  .mast{width:min(430px,calc(100vw - 2*var(--pad)))}
+  .mast h1 .cn{font-size:clamp(34px,9.4vw,44px)}
+  .mast h1 .en{font-size:8.5px;letter-spacing:.24em;margin-top:7px}
+  .kicker{font-size:10.5px;margin-top:9px;letter-spacing:.1em}
+  .tag{display:none}
+  /* the captions leave the margin and become a legend between the two shells */
+  .lv{max-width:calc(100vw - 2*var(--pad));text-align:left;left:var(--pad)}
+  .lv h2{justify-content:flex-start;font-size:14.5px;letter-spacing:.04em;gap:6px}
+  .lv h2 i{display:none}
+  .lv .n{font-size:7.5px;letter-spacing:.18em;margin-bottom:3px}
+  .lv p{margin-top:2px;font-size:9.5px;line-height:1.5}
+  .lv p b{font-size:9.5px}
+  .lv .x{display:none}
+  .foot{max-width:calc(100vw - 2*var(--pad));font-size:7.5px;letter-spacing:0;bottom:8px;opacity:.72}
+  .rail{right:auto;left:50%;transform:translateX(-50%);bottom:28px}
+  .rail button{font-size:10px;padding:5px 8px;letter-spacing:0}
+  .rail .lt-go{padding-left:10px;gap:5px}
+  .rail .lt-spd{min-width:32px;padding:4px 7px;font-size:10px}
+  .lt{bottom:66px;width:calc(100vw - 2*var(--pad));padding:8px 11px 7px}
+  .lt-v{font-size:16px}
+  .lt-k{font-size:7.5px;letter-spacing:.18em}
+  .lt-k b{font-size:9.5px}
+  .lt-d{font-size:9px}
+}
+@media (prefers-reduced-motion:reduce){
+  .lv,.rail button,.back{transition:none}
+}
+/* short landscape windows: the readout keeps its numbers, loses its rail */
+@media (max-height:560px){
+  .lt{padding:6px 10px;bottom:calc(clamp(20px,3.2vh,32px) + 26px)}
+  .lt-bar{display:none}
+  .lt-v{font-size:15px}
+  .lt-mid{margin-top:3px}
+}
+</style>
+</head>
+<body>
+<canvas id="pl"></canvas>
+<div class="vex"></div>
+<div class="grain"></div>
+<div class="scrim"></div>
+
+<div class="topright">
+  <div class="lang" id="lang" role="group" aria-label="语言 Language">
+    <button type="button" data-lang="zh" class="is-on" aria-pressed="true">中</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="back" id="back" href="../../subjects/astronomy/index.html">
+    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M7.5 1.5 3 6l4.5 4.5" stroke="currentColor" stroke-width="1.1"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span data-en="Atlas">返回图鉴</span>
+  </a>
+</div>
+
+<div class="mast">
+  <div class="idx"><b>Ⅱ</b><span>/ STRUCTURE</span></div>
+  <h1><span class="cn" data-en="Structure of the Solar System">太阳系结构</span><span class="en" data-en="太阳系结构">Structure of the Solar System</span></h1>
+  <div class="kicker"><i></i><span data-en="One star, two frontiers">一颗恒星，两片边疆</span></div>
+  <p class="tag" data-en="The planets are a thin sliver; the borders are written on two clouds of ice.">行星只占极小一片，边界写在两片冰屑云上。</p>
+</div>
+
+<div class="lv warm" id="lv1">
+  <span class="n">01</span>
+  <h2 data-en="Kuiper Belt<i>柯伊伯带</i>">柯伊伯带<i>KUIPER BELT</i></h2>
+  <p><b>30 – 50 AU</b><span class="x" data-en=" · home of the short-period comets"> · 短周期彗星的故乡</span></p>
+</div>
+
+<div class="lv cold" id="lv2">
+  <span class="n">02</span>
+  <h2 data-en="Oort Cloud<i>奥尔特云</i>">奥尔特云<i>OORT CLOUD</i></h2>
+  <p><b>2,000 – 100,000 AU</b><span class="x" data-en=" · long-period comets' source"> · 长周期彗星的源头</span></p>
+</div>
+
+<div class="foot" id="foot">
+  <span class="ft-wide" data-en="<b>Schematic</b> · the inner disc is ~20× oversized; at true scale the belt is 1/2000 the cloud."><b>示意</b> · 内层已放大约 20 倍；按真实比例，柯伊伯带的宽度只有奥尔特云的 1/2000。</span>
+  <span class="ft-narrow" data-en="<b>Schematic</b> · the inner disc is ~20× oversized."><b>示意</b> · 内层已放大约 20 倍。</span>
+</div>
+
+<div class="rail" id="rail">
+  <button data-f="0" class="is-on" data-en="All">全部</button>
+  <button data-f="1" data-en="Planets">行星系</button>
+  <button data-f="2" data-en="Kuiper Belt">柯伊伯带</button>
+  <button data-f="3" data-en="Oort Cloud">奥尔特云</button>
+  <button class="lt-go" id="ltgo" type="button" aria-pressed="false"><em></em><span data-en="Light-time">光行时</span></button>
+  <button class="lt-spd" id="ltspd" type="button" aria-label="播放速度 1 倍">1×</button>
+</div>
+
+<div class="lt" id="lt" aria-hidden="true">
+  <div class="lt-top">
+    <span class="lt-k" data-en="<b>LIGHT-TIME</b>光行时"><b>光行时</b>LIGHT-TIME</span>
+    <span class="lt-r" id="ltr" data-en="Planetary system">行星系</span>
+  </div>
+  <div class="lt-mid">
+    <span class="lt-v" id="ltv" data-en="0 s">0 秒</span>
+    <span class="lt-d" id="ltd" data-en="0.00 AU from the Sun">距太阳 0.00 AU</span>
+  </div>
+  <div class="lt-bar" id="ltbar">
+    <span class="fill" id="ltfill"></span>
+    <span class="dot" id="ltdot"></span>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const TAU = Math.PI * 2;
+
+const cv = $("#pl");
+const ctx = cv.getContext("2d", { alpha: true });
+const shellCv = document.createElement("canvas");
+const sctx = shellCv.getContext("2d", { alpha: true });
+
+let W = 0, H = 0, DPR = 1;
+const S = { spin: 0, belt: 0, frame: 0, focus: 0, anim: 1 };
+const L = {};
+
+const PLANETS = [
+  { cn: "水星", en: "Mercury", r: 1.7, c: "#c7b6a2", au: 0.387 },
+  { cn: "金星", en: "Venus", r: 2.6, c: "#e3cfa6", au: 0.723 },
+  { cn: "地球", en: "Earth", r: 2.8, c: "#8cc2e6", au: 1.0 },
+  { cn: "火星", en: "Mars", r: 2.1, c: "#d3875f", au: 1.524 },
+  { cn: "木星", en: "Jupiter", r: 7.2, c: "#dfbc8a", au: 5.203 },
+  { cn: "土星", en: "Saturn", r: 5.8, c: "#e4d0a2", au: 9.537 },
+  { cn: "天王星", en: "Uranus", r: 4.0, c: "#a6dbe2", au: 19.19 },
+  { cn: "海王星", en: "Neptune", r: 3.8, c: "#8aa6e8", au: 30.07 }
+];
+
+const FONT = '"PingFang SC","Hiragino Sans GB","Noto Sans SC",system-ui,sans-serif';
+
+/* ================================================================ language ==
+   The page carries both languages at all times; the switch only decides which
+   one is set large. Static copy keeps its Chinese in data-zh on first run, so
+   there is no dictionary to drift out of sync with the markup. */
+const LANG_KEY = "atlas-lang";
+let lang = "zh";
+try {
+  if (/[?&]lang=en/.test(location.search)) lang = "en";
+  else if (localStorage.getItem(LANG_KEY) === "en") lang = "en";
+} catch (e) { /* private mode */ }
+
+const T = (zh, en) => lang === "en" ? en : zh;
+
+const TITLE = {
+  zh: "太阳系结构 · Structure of the Solar System",
+  en: "Structure of the Solar System · 太阳系结构"
+};
+
+/* the readout's region names travel as keys, never as painted strings */
+const REG = {
+  planets: ["行星系", "Planetary system"],
+  inner: ["内行星", "Inner planets"],
+  outer: ["外行星", "Outer planets"],
+  kuiper: ["柯伊伯带", "Kuiper Belt"],
+  seam: ["尺度断点", "Scale break"],
+  oort: ["奥尔特云", "Oort Cloud"]
+};
+const regName = (k) => T(REG[k][0], REG[k][1]);
+
+function applyStatic() {
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  document.body.classList.toggle("lang-en", lang === "en");
+  document.title = TITLE[lang];
+  for (const el of document.querySelectorAll("[data-en]")) {
+    if (el.dataset.zh === undefined) el.dataset.zh = el.innerHTML;
+    el.innerHTML = lang === "en" ? el.dataset.en : el.dataset.zh;
+  }
+  for (const b of document.querySelectorAll("#lang button")) {
+    const on = b.dataset.lang === lang;
+    b.classList.toggle("is-on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+/* ============================================================== light-time ==
+   One pulse leaves the Sun and runs the plate's own scale ladder. The plate is
+   a compressed drawing, so the clock is not read off the radius: every planet
+   is a station at its true distance, and between two stations the time is
+   interpolated. 1 AU ≈ 500 light-seconds, which is the figure the round numbers
+   in every textbook come from (8 min 20 s to Earth). */
+const C_AU = 500;
+const OORT_IN = 2000, OORT_OUT = 100000;
+
+const LT = {
+  on: 0, t: 0, now: 0, alpha: 1, speed: 1,
+  front: 0, oortR: 0, cone: 0,
+  au: 0, tau: 0, reg: "planets",
+  /* the disc gets eight seconds so each of the eight arrivals holds for about
+     one; the cone is a transition and is allowed to be quicker. 21 s a cycle. */
+  disc: 8.6, jump: 2.4, oort: 7.2, hold: 2.8,
+  passed: [], at: [], fired: 0
+};
+LT.total = LT.disc + LT.jump + LT.oort + LT.hold;
+for (let i = 0; i < PLANETS.length; i++) { LT.passed.push(0); LT.at.push(0); }
+
+const LOG_MAX = Math.log(1 + OORT_OUT * C_AU);
+
+function ltPos(tau) { return clamp(Math.log(1 + tau) / LOG_MAX, 0, 1); }
+
+function fmtTau(s) {
+  if (s < 1) return T("0 秒", "0 s");
+  if (s < 90) return T(Math.round(s) + " 秒", Math.round(s) + " s");
+  if (s < 3600) {
+    const m = Math.floor(s / 60), r = Math.round(s - m * 60);
+    return T(r ? `${m} 分 ${r} 秒` : `${m} 分`, r ? `${m} min ${r} s` : `${m} min`);
+  }
+  if (s < 86400) {
+    const h = Math.floor(s / 3600), m = Math.round((s - h * 3600) / 60);
+    return T(m && h < 10 ? `${h} 小时 ${m} 分` : `${h} 小时`,
+      m && h < 10 ? `${h} hr ${m} min` : `${h} hr`);
+  }
+  const d = s / 86400;
+  if (d < 10) return T(d.toFixed(1) + " 天", d.toFixed(1) + " d");
+  if (d < 365) return T(Math.round(d) + " 天", Math.round(d) + " d");
+  return T((d / 365.25).toFixed(1) + " 年", (d / 365.25).toFixed(1) + " yr");
+}
+
+/* the arrival stamps sit under a 31 px pitch, so they drop the spaces */
+function fmtShort(s) {
+  if (s < 90) return T(Math.round(s) + "秒", Math.round(s) + "s");
+  if (s < 3600) {
+    const m = Math.floor(s / 60), r = Math.round(s - m * 60);
+    return T(r ? `${m}分${r}秒` : `${m}分`, r ? `${m}m${r}s` : `${m}m`);
+  }
+  const h = Math.floor(s / 3600), m = Math.round((s - h * 3600) / 60);
+  return T(m && h < 10 ? `${h}小时${m}分` : `${h}小时`,
+    m && h < 10 ? `${h}h${m}m` : `${h}h`);
+}
+
+function fmtAU(a) {
+  if (a < 100) return a.toFixed(2);
+  return String(Math.round(a)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function smoothstep(p) { p = clamp(p, 0, 1); return p * p * (3 - 2 * p); }
+
+/* the plate's radius is not the distance: interpolate over the station table */
+function auAtU(u) {
+  const s = L.stops;
+  if (!s) return 0;
+  if (u <= 0) return 0;
+  for (let i = 1; i < s.length; i++) {
+    if (u <= s[i].u) {
+      const a = s[i - 1], b = s[i];
+      const k = (u - a.u) / Math.max(1e-6, b.u - a.u);
+      return a.au + (b.au - a.au) * k;
+    }
+  }
+  return s[s.length - 1].au;
+}
+
+/* a fixed sampler: the plate is a composed object, not a slot machine */
+let _seed = 0x5eed2026;
+function rnd() {
+  _seed = (_seed * 1664525 + 1013904223) >>> 0;
+  return _seed / 4294967296;
+}
+
+/* ================================================================ layout == */
+function layout() {
+  W = innerWidth; H = innerHeight;
+  const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--pad")) || 40;
+  const col = W >= 860;
+
+  let cx, discY, cloudY, discRX, cloudR, colRight = 0;
+
+  if (col) {
+    const colW = clamp(W * 0.295, 320, 430);
+    colRight = pad + colW;
+    const avail = W - colRight - pad;
+    /* The caption column shares the mast's column, so the disc may only climb
+       as far as the mast's own baseline allows — measured, never guessed. */
+    const mastB = $(".mast") ? $(".mast").getBoundingClientRect().bottom : H * 0.24;
+    const capH = $("#lv1") ? $("#lv1").offsetHeight : 52;
+    const floorY = mastB + capH * 0.5 + Math.max(10, H * 0.016);
+    const gap = Math.max(28, H * 0.052);
+    /* The shell runs past the bottom edge by a fixed share of its own diameter:
+       less reads as a near-miss, more as a mistake. Everything else — how big
+       the shell is, where the disc sits — follows from that one number. A wide,
+       short window used to size the two shells independently and let them eat
+       their own gap until the taper lines collapsed to a seam. */
+    const CROP = 0.15;
+
+    cloudR = Math.min(avail * 0.46, H * 0.335);
+    discRX = Math.min(cloudR * 1.08, avail * 0.47);
+    let ry = discRX * 0.160;
+    /* the shell's top is pinned by the disc; solve for the radius that ends
+       one crop below the plate edge (three passes — ry moves with R) */
+    for (let i = 0; i < 3; i++) {
+      const fit = (H - (floorY + ry + gap)) / (2 * (1 - CROP));
+      if (fit >= cloudR) break;
+      cloudR = Math.max(96, fit);
+      discRX = Math.min(cloudR * 1.08, avail * 0.47);
+      ry = discRX * 0.160;
+    }
+    cx = colRight + avail * 0.5;
+    cloudY = floorY + ry + gap + cloudR;
+    /* when width is the binding constraint the stack ends short of the edge;
+       drop it by most of the slack so the plate sits optically centred */
+    const slack = Math.max(0, H - (cloudY + cloudR)) * 0.6;
+    discY = floorY + slack;
+    cloudY += slack;
+  } else {
+    cloudR = Math.min(W * 0.40, H * 0.225);
+    discRX = cloudR * 1.05;
+    cx = W * 0.52;
+    discY = H * 0.285;
+    cloudY = H * 0.700;
+  }
+
+  const discRY = discRX * 0.160;
+  Object.assign(L, { pad, col, cx, discY, discRY, discRX, cloudY, cloudR, colRight });
+  L.sunR = Math.max(8, discRX * 0.058);
+  L.pStart = cx + L.sunR + Math.max(30, discRX * 0.075);
+  L.pEnd = cx + discRX * 0.800;
+  L.pStep = (L.pEnd - L.pStart) / (PLANETS.length - 1);
+  L.labelBase = discY - discRY - Math.max(15, discRX * 0.042);
+  /* the light-time station table: true AU against the radius it is drawn at */
+  L.stops = [{ u: 0, au: 0 }];
+  for (let i = 0; i < PLANETS.length; i++) {
+    L.stops.push({ u: (L.pStart + L.pStep * i - cx) / discRX, au: PLANETS[i].au });
+  }
+  L.stops.push({ u: 1, au: 50 });
+  /* the real outer extents: the belt's scattered tail (u → 1.14) and the
+     shell's feathered fringe (r → 1.095). Captions must clear the dust, not
+     the mathematics of the ellipse. */
+  L.rimDisc = discRX * 1.16;
+  L.rimCloud = cloudR * 1.10;
+
+  sizeCanvas();
+  placeLabels();
+  buildShell();
+}
+
+function placeLabels() {
+  const a = $("#lv1"), b = $("#lv2");
+
+  if (L.col) {
+    /* one shared right edge for both blocks — a ragged column reads as a mistake */
+    const edge = Math.min(
+      L.colRight,
+      L.cx - L.rimDisc - 15,
+      L.cx - L.rimCloud - 15
+    );
+    L.colRight = edge;
+    /* the readout occupies the foot of the same column: if the cloud's caption
+       would run into it, lift the caption instead of letting them overlap.
+       Measured from the panel itself — it has no fixed height. */
+    const panel = $("#lt");
+    let y2 = L.cloudY;
+    if (panel) {
+      const pb = parseFloat(getComputedStyle(panel).bottom) || 0;
+      const pTop = H - pb - panel.offsetHeight;
+      y2 = Math.min(y2, pTop - 14 - b.offsetHeight * 0.5);
+    }
+    a.style.left = Math.round(edge - a.offsetWidth) + "px";
+    a.style.top = Math.round(L.discY - a.offsetHeight * 0.5) + "px";
+    b.style.left = Math.round(edge - b.offsetWidth) + "px";
+    b.style.top = Math.round(y2 - b.offsetHeight * 0.5) + "px";
+    L.anchor = [L.discY, y2];
+  } else {
+    /* stacked legend in the gap between the two shells */
+    const y0 = Math.round(L.discY + L.discRY + 26);
+    a.style.top = y0 + "px";
+    b.style.top = Math.round(y0 + a.offsetHeight + 16) + "px";
+    L.anchor = [y0 + a.offsetHeight * 0.5, y0 + a.offsetHeight + 16 + b.offsetHeight * 0.5];
+  }
+}
+
+/* ================================================================ canvas == */
+function sizeCanvas() {
+  DPR = clamp(window.devicePixelRatio || 1, 1, 1.75);
+  const px = Math.round(W * DPR), py = Math.round(H * DPR);
+  if (cv.width !== px || cv.height !== py) {
+    cv.width = px; cv.height = py;
+    shellCv.width = px; shellCv.height = py;
+  }
+  cv.style.width = W + "px"; cv.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  L.shellDirty = 1;
+}
+
+/* =============================================================== particles == */
+const BUCKETS = [
+  "rgba(142,170,208,.040)",
+  "rgba(158,184,222,.062)",
+  "rgba(178,200,234,.090)",
+  "rgba(204,220,246,.125)",
+  "rgba(236,242,254,.190)"
+];
+const SHELL = BUCKETS.map(() => []);
+const BAND = BUCKETS.map(() => []);
+const BAND_COL = [
+  "rgba(178,200,234,.125)",
+  "rgba(192,212,242,.175)",
+  "rgba(212,228,252,.225)",
+  "rgba(238,245,255,.295)"
+];
+const CORE = [];
+
+function buildShell() {
+  _seed = 0x5eed2026;
+  for (const b of SHELL) b.length = 0;
+  for (const b of BAND) b.length = 0;
+  CORE.length = 0;
+
+  const big = W >= 1200;
+  const cn = big ? 26000 : 12000;
+  const bn = big ? 5200 : 2600;
+
+  /* most particles ride a thin outer shell, which is what makes the limb read
+     as a rim; a sparse halo fills the inside so it is not a hollow ring */
+  for (let i = 0; i < cn; i++) {
+    const u = rnd() * 2 - 1;
+    const th = rnd() * TAU;
+    const s = Math.sqrt(1 - u * u);
+    const shell = rnd() < 0.74;
+    const r = shell
+      ? 0.845 + 0.155 * Math.pow(rnd(), 0.75)
+      : 0.08 + 0.76 * Math.pow(rnd(), 0.9);
+    const b = shell
+      ? (r > 0.965 ? (rnd() < 0.5 ? 4 : 3) : (rnd() < 0.32 ? 3 : 2))
+      : (rnd() < 0.14 ? 2 : 1);
+    SHELL[b].push(s * Math.cos(th), u, s * Math.sin(th), r);
+  }
+
+  /* a feathered fringe, so the limb is dust rather than a drawn circle */
+  for (let i = 0; i < (big ? 7000 : 3000); i++) {
+    const u = rnd() * 2 - 1;
+    const th = rnd() * TAU;
+    const s = Math.sqrt(1 - u * u);
+    const r = 1.0 + 0.095 * Math.pow(rnd(), 1.6);
+    SHELL[1].push(s * Math.cos(th), u, s * Math.sin(th), r);
+  }
+
+  /* the ecliptic, tilted to the very angle the disc is drawn at */
+  const tilt = Math.asin(clamp(L.discRY / L.discRX, 0, 0.6));
+  const ct = Math.cos(tilt), st = Math.sin(tilt);
+  for (let i = 0; i < bn; i++) {
+    const th = rnd() * TAU;
+    const r = 0.14 + 0.86 * Math.pow(rnd(), 0.55);
+    const gy = (rnd() + rnd() + rnd() - 1.5) * 0.072;
+    const ez = Math.sin(th);
+    BAND[rnd() < 0.55 ? 3 : 2].push(
+      Math.cos(th), gy * ct - ez * st, gy * st + ez * ct, r
+    );
+  }
+
+  /* everything inside the belt, squeezed into a seed at the centre */
+  for (let i = 0; i < 460; i++) {
+    const u = rnd() * 2 - 1;
+    const th = rnd() * TAU;
+    const s = Math.sqrt(1 - u * u);
+    const r = 0.048 * Math.pow(rnd(), 0.45);
+    CORE.push(s * Math.cos(th), u, s * Math.sin(th), r, rnd());
+  }
+}
+
+const BELT = [[], [], [], []];
+const BELT_COL = [
+  "rgba(222,206,186,.075)",
+  "rgba(234,222,204,.125)",
+  "rgba(246,238,224,.195)",
+  "rgba(255,251,242,.330)"
+];
+
+function buildBelt() {
+  _seed = 0xbe17c0de;
+  for (const b of BELT) b.length = 0;
+  const n = W >= 1200 ? 7600 : 3400;
+  const clumps = [];
+  for (let i = 0; i < 8; i++) {
+    clumps.push({ a: rnd() * TAU, w: 0.07 + rnd() * 0.2, k: 0.3 + rnd() * 0.5 });
+  }
+  const thick = W >= 1200 ? 4.4 : 2.6;
+
+  for (let i = 0; i < n; i++) {
+    let a = rnd() * TAU;
+    for (const c of clumps) {
+      if (rnd() < c.k * 0.16) { a = c.a + (rnd() - 0.5) * c.w * 2; break; }
+    }
+    /* a debris disc rather than a hoop: sparse near the sun, dense outward,
+       and brighter on the side the plate reads from */
+    const q = rnd();
+    const u = 0.15 + 0.93 * Math.pow(q, 0.55);
+    const t = clamp((u - 0.15) / 0.93, 0, 1);
+    const dy = (rnd() - 0.5) * thick * (0.50 + 0.50 * Math.sin(Math.PI * t));
+    const tail = rnd() < 0.06;
+    const uu = tail ? 1.05 + rnd() * 0.09 : u;
+    const lit = 0.5 + 0.5 * Math.cos(a - Math.PI);
+    let b = t < 0.40 ? 0 : t < 0.64 ? 1 : t < 0.90 ? 2 : 3;
+    if (lit > 0.62 && b < 3) b++;
+    if (tail) b = 0;
+    BELT[b].push(uu, a, dy, rnd() < 0.22 ? 1.6 : 1.0);
+  }
+}
+
+/* =============================================================== painting == */
+function backdrop() {
+  ctx.globalCompositeOperation = "source-over";
+  ctx.clearRect(0, 0, W, H);
+  ctx.globalCompositeOperation = "lighter";
+}
+
+/* the shell is isotropic: it is painted once and never rotated */
+function renderShell() {
+  sctx.globalCompositeOperation = "source-over";
+  sctx.clearRect(0, 0, W, H);
+  sctx.globalCompositeOperation = "lighter";
+
+  const R = L.cloudR, cx = L.cx, cy = L.cloudY;
+  const s = DPR > 1.4 ? 1.5 : 1.25;
+  const oortOn = S.focus === 0 || S.focus === 3;
+
+  for (let b = 0; b < SHELL.length; b++) {
+    const pts = SHELL[b];
+    if (!pts.length) continue;
+    sctx.fillStyle = BUCKETS[b];
+    sctx.globalAlpha = oortOn ? 1 : 0.26;
+    for (let i = 0; i < pts.length; i += 4) {
+      const r = pts[i + 3];
+      const w = r > 0.995 ? s * 0.75 : r > 0.965 ? s * 1.3 : s;
+      sctx.fillRect(cx + pts[i] * r * R, cy + pts[i + 1] * r * R, w, w);
+    }
+  }
+
+  sctx.fillStyle = "rgba(240,246,255,.6)";
+  sctx.globalAlpha = oortOn ? 1 : 0.26;
+  for (let i = 0; i < CORE.length; i += 5) {
+    const r = CORE[i + 3], k = CORE[i + 4];
+    const w = k > 0.86 ? 1.9 : 1.2;
+    sctx.fillRect(cx + CORE[i] * r * R, cy + CORE[i + 1] * r * R, w, w);
+  }
+  sctx.globalAlpha = 1;
+  L.shellDirty = 0;
+}
+
+/* the shell image, re-drawn through the pulse: everything the front has not
+   reached yet sits at 42 %, and the lit part is put back on top of it */
+function paintShell() {
+  if (!LT.on) {
+    ctx.drawImage(shellCv, 0, 0, W, H);
+    return;
+  }
+  const dim = 1 - 0.52 * LT.alpha;
+  if (dim > 0.999) {
+    ctx.drawImage(shellCv, 0, 0, W, H);
+    return;
+  }
+  ctx.globalAlpha = dim;
+  ctx.drawImage(shellCv, 0, 0, W, H);
+  if (LT.oortR > 1) {
+    /* at full reach the clip takes the feathered fringe with it, or the limb
+       would keep a dim ring long after the front has passed */
+    const rc = LT.oortR >= L.cloudR - 2 ? L.cloudR * 1.12 : LT.oortR;
+    ctx.globalAlpha = 1 - dim;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(L.cx, L.cloudY, rc, 0, TAU); ctx.clip();
+    ctx.drawImage(shellCv, 0, 0, W, H);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawCloudHaze() {
+  const { cx, cloudY: cy, cloudR: R } = L;
+  const on = S.focus === 0 || S.focus === 3;
+  ctx.globalAlpha = on ? 1 : 0.26;
+
+  const g = ctx.createRadialGradient(cx, cy, R * 0.06, cx, cy, R * 1.03);
+  g.addColorStop(0, "rgba(88,110,156,.10)");
+  g.addColorStop(0.55, "rgba(72,94,140,.045)");
+  g.addColorStop(0.90, "rgba(104,128,178,.09)");
+  g.addColorStop(0.975, "rgba(150,180,224,.12)");
+  g.addColorStop(1, "rgba(90,116,164,0)");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(cx, cy, R * 1.03, 0, TAU); ctx.fill();
+
+  const c = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.10);
+  c.addColorStop(0, "rgba(255,247,231,.70)");
+  c.addColorStop(0.30, "rgba(244,214,172,.24)");
+  c.addColorStop(1, "rgba(242,202,162,0)");
+  ctx.fillStyle = c;
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.10, 0, TAU); ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawBand() {
+  const { cx, cloudY: cy, cloudR: R } = L;
+  const on = S.focus === 0 || S.focus === 3;
+  const ca = Math.cos(S.spin), sa = Math.sin(S.spin);
+  const s = DPR > 1.4 ? 1.4 : 1.2;
+
+  const passes = LT.on ? 2 : 1;
+  for (let pass = 0; pass < passes; pass++) {
+    const ahead = LT.on && pass === 0;
+    for (let b = 0; b < BAND.length; b++) {
+      const pts = BAND[b];
+      if (!pts.length) continue;
+      ctx.fillStyle = BAND_COL[b];
+      ctx.globalAlpha = (on ? 0.95 : 0.20) * (ahead ? 0.42 : 1);
+      for (let i = 0; i < pts.length; i += 4) {
+        const x = pts[i], y = pts[i + 1], z = pts[i + 2], r = pts[i + 3];
+        if (LT.on && (r * R > LT.oortR) !== ahead) continue;
+        ctx.fillRect(cx + (x * ca - z * sa) * r * R, cy + y * r * R, s, s);
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawDisc() {
+  const { cx, discY, discRX: rx, discRY: ry } = L;
+  const on = S.focus === 0 || S.focus === 2;
+
+  ctx.globalAlpha = on ? 1 : 0.30;
+  /* a scaled radial gradient would compress its falloff by ry/rx and cut the
+     disc's silhouette into a hard line — stack ellipses instead */
+  /* the glow belongs to the belt's annulus, not to the whole disc: filling the
+     hole as well turns the plate into a sheet of glass */
+  for (let i = 1; i <= 16; i++) {
+    const f = 0.64 + 0.44 * (i / 16);
+    const t = (f - 0.64) / 0.44;
+    const a = 0.0030 * Math.sin(Math.PI * Math.pow(t, 0.85));
+    if (a < 0.0004) continue;
+    ctx.fillStyle = `rgba(238,214,180,${a.toFixed(4)})`;
+    ctx.beginPath();
+    ctx.ellipse(cx, discY, rx * f, ry * f, 0, 0, TAU);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.globalAlpha = on ? 1 : 0.28;
+  ctx.strokeStyle = "rgba(232,214,190,.026)";
+  ctx.lineWidth = 1;
+  /* one orbit per planet — each dot sits at the right-hand end of its own lane */
+  for (let i = 0; i < PLANETS.length; i++) {
+    const rr = L.pStart + L.pStep * i - cx;
+    ctx.beginPath();
+    ctx.ellipse(cx, discY, rr, rr * (ry / rx), 0, 0, TAU);
+    ctx.stroke();
+  }
+  /* then the belt's own lanes */
+  ctx.strokeStyle = "rgba(232,214,190,.030)";
+  for (const f of [0.770, 0.845, 0.925]) {
+    ctx.beginPath();
+    ctx.ellipse(cx, discY, rx * f, ry * f, 0, 0, TAU);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  const s = DPR > 1.4 ? 1.35 : 1.15;
+  /* while the pulse is running the belt is drawn twice: the dust still ahead
+     of the front sits at a third, so arrival reads as a change of state */
+  const passes = LT.on ? 2 : 1;
+  for (let pass = 0; pass < passes; pass++) {
+    const ahead = LT.on && pass === 0;
+    for (let b = 0; b < BELT.length; b++) {
+      const pts = BELT[b];
+      if (!pts.length) continue;
+      ctx.fillStyle = BELT_COL[b];
+      ctx.globalAlpha = (on ? 1 : 0.22) * (ahead ? 0.34 : 1);
+      for (let i = 0; i < pts.length; i += 4) {
+        const uu = pts[i];
+        if (LT.on && (uu * rx > LT.front) !== ahead) continue;
+        const a = pts[i + 1] + S.belt;
+        const w = pts[i + 3] * s;
+        ctx.fillRect(cx + Math.cos(a) * uu * rx,
+                     discY + Math.sin(a) * uu * ry + pts[i + 2], w, w);
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawSun() {
+  const { cx, discY: y, sunR: r } = L;
+  const on = S.focus === 0 || S.focus === 1;
+
+  const gl = ctx.createRadialGradient(cx, y, r * 0.9, cx, y, r * 9);
+  gl.addColorStop(0, `rgba(255,170,94,${on ? 0.34 : 0.07})`);
+  gl.addColorStop(0.22, `rgba(255,142,72,${on ? 0.14 : 0.03})`);
+  gl.addColorStop(1, "rgba(255,120,60,0)");
+  ctx.globalAlpha = on ? 1 : 0.3;
+  ctx.fillStyle = gl;
+  ctx.beginPath(); ctx.arc(cx, y, r * 9, 0, TAU); ctx.fill();
+
+  const bd = ctx.createRadialGradient(cx - r * 0.22, y - r * 0.22, r * 0.1, cx, y, r);
+  bd.addColorStop(0, "#fffaf0");
+  bd.addColorStop(0.38, "#ffdda6");
+  bd.addColorStop(0.78, "#ffa658");
+  bd.addColorStop(0.95, "#f4791f");
+  bd.addColorStop(1, "rgba(240,112,32,.65)");
+  ctx.fillStyle = bd;
+  ctx.beginPath(); ctx.arc(cx, y, r, 0, TAU); ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+function drawPlanets() {
+  const on = S.focus === 0 || S.focus === 1;
+  const y = L.discY;
+  const k = L.discRX / 400;
+
+  for (let i = 0; i < PLANETS.length; i++) {
+    const p = PLANETS[i];
+    const x = L.pStart + L.pStep * i;
+    const r = Math.max(1.1, p.r * k);
+    const lit = !LT.on || x - L.cx <= LT.front;
+    ctx.globalAlpha = (on ? 1 : 0.30) * (lit ? 1 : 0.26);
+
+    ctx.strokeStyle = "rgba(232,214,190,.16)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, y - L.discRY * 1.18);
+    ctx.lineTo(x, L.labelBase + 4);
+    ctx.stroke();
+
+    const gl = ctx.createRadialGradient(x, y, 0, x, y, r * 3.6);
+    gl.addColorStop(0, hexA(p.c, 0.22));
+    gl.addColorStop(1, hexA(p.c, 0));
+    ctx.fillStyle = gl;
+    ctx.beginPath(); ctx.arc(x, y, r * 3.6, 0, TAU); ctx.fill();
+
+    ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawPlanetLabels() {
+  const on = S.focus === 0 || S.focus === 1;
+  /* one character per line, so the names survive a narrow pitch — but they
+     still have to be readable at arm's length: never below 9 px */
+  const size = Math.round(L.discRX > 360 ? 11 : Math.max(8.6, L.discRX * 0.034));
+  const lh = size * 1.32;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+
+  if (lang === "en") {
+    /* Latin names cannot be stacked a letter at a time, so they turn instead:
+       each station carries one rotated run reading up from the same baseline.
+       At a 26 px pitch this is the only setting that keeps them apart. */
+    const fs = Math.max(9.4, Math.min(11.5, size));
+    ctx.font = `400 ${fs}px ${FONT}`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    for (let i = 0; i < PLANETS.length; i++) {
+      const x = L.pStart + L.pStep * i;
+      ctx.fillStyle = on ? "rgba(222,214,200,.70)" : "rgba(222,214,200,.18)";
+      ctx.globalAlpha = !LT.on || x - L.cx <= LT.front ? 1 : 0.26;
+      ctx.save();
+      ctx.translate(x, L.labelBase);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(PLANETS[i].en, 0, 0);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = on ? "rgba(255,230,194,.95)" : "rgba(255,230,194,.22)";
+    ctx.save();
+    ctx.translate(L.cx, L.labelBase);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("Sun", 0, 0);
+    ctx.restore();
+    return;
+  }
+
+  ctx.font = `400 ${size}px ${FONT}`;
+  for (let i = 0; i < PLANETS.length; i++) {
+    const chars = [...PLANETS[i].cn];
+    const x = L.pStart + L.pStep * i;
+    const top = L.labelBase - (chars.length - 1) * lh;
+    ctx.fillStyle = on ? "rgba(222,214,200,.70)" : "rgba(222,214,200,.18)";
+    /* the names come up one at a time as the front passes — that is the whole
+       reason the pulse is worth watching */
+    ctx.globalAlpha = !LT.on || x - L.cx <= LT.front ? 1 : 0.26;
+    for (let k = 0; k < chars.length; k++) ctx.fillText(chars[k], x, top + k * lh);
+  }
+  ctx.globalAlpha = 1;
+
+  const sun = ["太", "阳"];
+  const stop = L.labelBase - (sun.length - 1) * lh;
+  ctx.fillStyle = on ? "rgba(255,230,194,.95)" : "rgba(255,230,194,.22)";
+  for (let k = 0; k < sun.length; k++) ctx.fillText(sun[k], L.cx, stop + k * lh);
+}
+
+function drawCone() {
+  if (!L.col) return;
+  const { cx, discY, discRX: rx, discRY: ry, cloudY, cloudR: R } = L;
+  const half = R * 0.105;
+  const on = S.focus === 0;
+  /* this cone is where the plate changes scale — the pulse runs down it, so
+     the dashes brighten while the clock jumps from hours to days */
+  const boost = LT.on ? 1 + LT.cone * 3.4 : 1;
+
+  ctx.strokeStyle = on ? `rgba(226,214,196,${(0.20 * boost).toFixed(3)})` : "rgba(226,214,196,.06)";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 6]);
+  for (const sgn of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(cx + sgn * rx * 0.99, discY + ry * 0.5);
+    ctx.lineTo(cx + sgn * half, cloudY);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  ctx.strokeStyle = on ? `rgba(232,187,135,${(0.55 * boost).toFixed(3)})` : "rgba(232,187,135,.15)";
+  ctx.beginPath();
+  ctx.moveTo(cx - half, cloudY);
+  ctx.lineTo(cx + half, cloudY);
+  ctx.stroke();
+}
+
+function drawLeaders() {
+  const { discY, cloudY } = L;
+
+  if (L.col) {
+    const cols = ["rgba(232,187,135,.42)", "rgba(159,184,216,.42)"];
+    const ends = [
+      [L.anchor[0], L.cx - L.rimDisc],
+      [L.anchor[1], L.cx - L.rimCloud]
+    ];
+    for (let i = 0; i < 2; i++) {
+      const [y, xEnd] = ends[i];
+      ctx.strokeStyle = cols[i];
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(L.colRight + 1, y);
+      ctx.lineTo(xEnd - 5, y);
+      ctx.stroke();
+      ctx.fillStyle = cols[i];
+      ctx.fillRect(L.colRight - 0.4, y - 0.6, 1.7, 1.7);
+    }
+    return;
+  }
+
+  /* legend mode: a short elbow from each block out to its shell */
+  const x0 = L.pad - 6;
+  const pairs = [
+    [L.anchor[0], discY + L.discRY + 3, "rgba(232,187,135,.42)"],
+    [L.anchor[1], cloudY - L.cloudR * 0.84, "rgba(159,184,216,.42)"]
+  ];
+  for (const [y, ty, col] of pairs) {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(L.pad, y);
+    ctx.lineTo(x0, y);
+    ctx.lineTo(x0, ty);
+    ctx.stroke();
+    ctx.fillStyle = col;
+    ctx.fillRect(x0 - 0.9, ty - 0.8, 1.8, 1.8);
+  }
+}
+
+/* ------------------------------------------------------------ the pulse == */
+function pulse(sel, bit) {
+  if (LT.fired & (1 << bit)) return;
+  LT.fired |= 1 << bit;
+  const el = $(sel);
+  if (!el) return;
+  el.classList.add("peak");
+  setTimeout(() => el.classList.remove("peak"), 1200);
+}
+
+function resetLight() {
+  LT.t = 0; LT.front = 0; LT.oortR = 0; LT.cone = 0; LT.fired = 0; LT.alpha = 1;
+  for (let i = 0; i < PLANETS.length; i++) { LT.passed[i] = 0; LT.at[i] = 0; }
+}
+
+/* the timeline: disc → cone → cloud → hold. The plate's radius is not the
+   distance, so the clock is carried by the station table, not by the pixels. */
+function stepLight(dt) {
+  if (!LT.on) return;
+  LT.t += dt * LT.speed;
+  if (LT.t >= LT.total) resetLight();
+
+  const t = LT.t;
+  LT.front = 0; LT.cone = 0; LT.oortR = 0; LT.alpha = 1;
+
+  if (t < LT.disc) {
+    /* constant plate speed, not eased: easing bunched the inner planets into
+       the same half second, and those are the arrivals people came to read */
+    const p = clamp(t / LT.disc, 0, 1);
+    LT.front = p * L.discRX * 1.07;
+    LT.au = auAtU(clamp(LT.front / L.discRX, 0, 1));
+    LT.reg = p < 0.19 ? "inner" : p < 0.71 ? "outer" : "kuiper";
+    if (p >= 0.71) pulse("#lv1", 1);
+  } else if (t < LT.disc + LT.jump) {
+    const p = (t - LT.disc) / LT.jump;
+    LT.cone = p;
+    LT.front = L.discRX * 1.07;
+    LT.au = 50 * Math.pow(40, smoothstep(p));        // 50 AU → 2,000 AU
+    LT.reg = "seam";
+  } else if (t < LT.disc + LT.jump + LT.oort) {
+    const p = smoothstep((t - LT.disc - LT.jump) / LT.oort);
+    LT.front = L.discRX * 1.07;                      // the disc stays lit
+    LT.oortR = p * L.cloudR;
+    LT.au = OORT_IN * Math.pow(OORT_OUT / OORT_IN, p);
+    LT.reg = "oort";
+    pulse("#lv2", 2);
+  } else {
+    LT.front = L.discRX * 1.07;
+    LT.oortR = L.cloudR;
+    LT.au = OORT_OUT;
+    LT.reg = "oort";
+  }
+
+  LT.tau = LT.au * C_AU;
+  /* fade in and out at the seam, so the loop does not flash: the shell's dim
+     follows this same number, which is why it reads as a cycle and not a cut */
+  LT.alpha = clamp(Math.min(t, LT.total - t) / 0.5, 0, 1);
+
+  for (let i = 0; i < PLANETS.length; i++) {
+    const r = L.pStart + L.pStep * i - L.cx;
+    if (!LT.passed[i] && LT.front >= r) { LT.passed[i] = 1; LT.at[i] = t; }
+  }
+}
+
+function drawLight() {
+  if (!LT.on) return;
+  const { cx, discY, discRX: rx, discRY: ry, cloudR: R, cloudY } = L;
+  const k = ry / rx, a = LT.alpha;
+
+  /* the front in the ecliptic is a circle — it only looks like an ellipse */
+  if (LT.front > 2 && LT.cone === 0) {
+    const f = LT.front;
+    ctx.save();
+    ctx.translate(cx, discY);
+    ctx.scale(1, k);
+    const g = ctx.createRadialGradient(0, 0, f * 0.48, 0, 0, f);
+    g.addColorStop(0, "rgba(255,206,148,0)");
+    g.addColorStop(0.74, `rgba(255,203,150,${(0.045 * a).toFixed(3)})`);
+    g.addColorStop(0.97, `rgba(255,222,180,${(0.12 * a).toFixed(3)})`);
+    g.addColorStop(1, "rgba(255,236,205,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, f, 0, TAU); ctx.fill();
+    ctx.restore();
+
+    ctx.strokeStyle = `rgba(255,214,164,${(0.085 * a).toFixed(3)})`;
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.ellipse(cx, discY, f, f * k, 0, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgba(255,240,214,${(0.78 * a).toFixed(3)})`;
+    ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.ellipse(cx, discY, f, f * k, 0, 0, TAU); ctx.stroke();
+  }
+
+  /* arrivals: a ring on the planet, its time stamped under the disc. At most
+     two stamps live at once — adjacent arrivals land on different rows, so a
+     pair can never collide, and more than a pair is noise at 15 px pitch. */
+  const chip = L.discRX > 320 ? 10 : 9;
+  const life = 1.45;
+  ctx.font = `400 ${chip}px ${FONT}`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  let shown = 0;
+  for (let i = PLANETS.length - 1; i >= 0 && shown < 2; i--) {
+    if (!LT.passed[i]) continue;
+    const age = LT.t - LT.at[i];
+    if (age > life) continue;
+    shown++;
+    const x = L.pStart + L.pStep * i;
+    const fade = (1 - age / life) * a;
+
+    if (age < 0.7) {
+      const q = age / 0.7;
+      ctx.strokeStyle = `rgba(255,226,186,${(0.5 * (1 - q) * a).toFixed(3)})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(x, discY, 4 + q * 17, 0, TAU); ctx.stroke();
+    }
+
+    ctx.fillStyle = `rgba(255,232,198,${(0.86 * fade).toFixed(3)})`;
+    ctx.fillText(fmtShort(PLANETS[i].au * C_AU), x,
+      discY + ry + 27 + (i % 2) * (chip * 1.6) + age * 4);
+  }
+
+  /* down the cone: this is the seam where hours become days */
+  if (LT.cone > 0) {
+    const p = smoothstep(LT.cone), half = R * 0.105;
+    for (const sgn of [-1, 1]) {
+      const x0 = cx + sgn * rx * 0.99, y0 = discY + ry * 0.5;
+      const x1 = cx + sgn * half, y1 = cloudY;
+      const x = x0 + (x1 - x0) * p, y = y0 + (y1 - y0) * p;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 18);
+      g.addColorStop(0, `rgba(255,216,172,${(0.5 * a).toFixed(3)})`);
+      g.addColorStop(1, "rgba(255,216,172,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, 18, 0, TAU); ctx.fill();
+      ctx.fillStyle = `rgba(255,244,222,${(0.9 * a).toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(x, y, 1.7, 0, TAU); ctx.fill();
+    }
+  }
+
+  /* through the cloud */
+  if (LT.oortR > 1) {
+    const f = LT.oortR;
+    const g = ctx.createRadialGradient(cx, cloudY, 0, cx, cloudY, f);
+    g.addColorStop(0, `rgba(128,158,206,${(0.05 * a).toFixed(3)})`);
+    g.addColorStop(0.72, `rgba(120,150,200,${(0.028 * a).toFixed(3)})`);
+    g.addColorStop(0.96, `rgba(160,192,236,${(0.1 * a).toFixed(3)})`);
+    g.addColorStop(1, "rgba(190,214,246,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cloudY, f, 0, TAU); ctx.fill();
+
+    ctx.strokeStyle = `rgba(214,232,255,${(0.1 * a).toFixed(3)})`;
+    ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.arc(cx, cloudY, f, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgba(238,246,255,${(0.5 * a).toFixed(3)})`;
+    ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.arc(cx, cloudY, f, 0, TAU); ctx.stroke();
+  }
+}
+
+/* --------------------------------------------------------------- the HUD == */
+const ltV = $("#ltv"), ltD = $("#ltd"), ltR = $("#ltr");
+const ltFill = $("#ltfill"), ltDot = $("#ltdot"), ltBar = $("#ltbar");
+const hud = { v: "", d: "", r: "", p: -1 };
+
+function paintLightHud() {
+  const v = fmtTau(LT.tau);
+  if (v !== hud.v) { ltV.textContent = v; hud.v = v; }
+  const d = T("距太阳 " + fmtAU(LT.au) + " AU", fmtAU(LT.au) + " AU from the Sun");
+  if (d !== hud.d) { ltD.textContent = d; hud.d = d; }
+  const r = regName(LT.reg);
+  if (r !== hud.r) { ltR.textContent = r; hud.r = r; }
+  const p = Math.round(ltPos(LT.tau) * 1000) / 10;
+  if (p !== hud.p) {
+    ltFill.style.width = p + "%";
+    ltDot.style.left = p + "%";
+    hud.p = p;
+  }
+}
+
+/* the rail is a log clock: the planets bunch up at the left because they are
+   over in minutes, and the cloud takes the rest of the bar */
+function buildTicks() {
+  const list = PLANETS.map(p => ({ au: p.au, cold: 0 }));
+  list.push({ au: 50, cold: 0 }, { au: OORT_IN, cold: 1 }, { au: OORT_OUT, cold: 1 });
+  for (const t of list) {
+    const s = document.createElement("span");
+    s.className = "tk" + (t.cold ? " is-cold" : "");
+    s.style.left = (ltPos(t.au * C_AU) * 100).toFixed(2) + "%";
+    ltBar.insertBefore(s, ltFill);
+  }
+}
+
+function setLight(on) {
+  LT.on = on ? 1 : 0;
+  const btn = $("#ltgo");
+  btn.classList.toggle("is-on", !!on);
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  document.body.classList.toggle("is-light", !!on);
+  if (on) {
+    /* the pulse needs the whole plate: a dimmed focus mode would just fight it */
+    if (S.focus !== 0) { S.focus = 0; syncRail(); }
+    resetLight(); LT.now = performance.now(); stepLight(0); paintLightHud();
+  } else {
+    $("#lv1").classList.remove("peak");
+    $("#lv2").classList.remove("peak");
+  }
+}
+
+const STARS = [];
+for (let i = 0; i < 190; i++) {
+  STARS.push(Math.random(), Math.random(), Math.random() < 0.18 ? 1.4 : 1.0);
+}
+
+function drawStars() {
+  ctx.fillStyle = "rgba(216,224,240,.14)";
+  for (let i = 0; i < STARS.length; i += 3) {
+    ctx.fillRect(STARS[i] * W, STARS[i + 1] * H, STARS[i + 2], STARS[i + 2]);
+  }
+}
+
+/* ==================================================================== loop == */
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!W) return;
+  if (!now) now = performance.now();
+  const dt = LT.on ? Math.min(0.05, Math.max(0, (now - LT.now) / 1000)) : 0;
+  LT.now = now;
+  S.frame++;
+
+  if (S.anim) { S.spin += 0.0022; S.belt += 0.00016; stepLight(dt); }
+
+  backdrop();
+  drawStars();
+  drawCloudHaze();
+
+  if (L.shellDirty) renderShell();
+  paintShell();
+  drawBand();
+
+  drawDisc();
+  drawCone();
+  drawSun();
+  drawPlanets();
+  drawPlanetLabels();
+  drawLeaders();
+  drawLight();
+  if (LT.on) paintLightHud();
+}
+
+/* ==================================================================== boot == */
+applyStatic();
+layout();
+buildBelt();
+
+/* the caption column's height feeds the vertical budget — re-measure once the
+   display face has actually landed, or the disc sits a few pixels high */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => { layout(); buildBelt(); });
+}
+
+let rt = 0;
+window.addEventListener("resize", () => {
+  clearTimeout(rt);
+  rt = setTimeout(() => { layout(); buildBelt(); }, 90);
+});
+
+const params = new URLSearchParams(location.search);
+if (params.get("focus")) S.focus = clamp(+params.get("focus"), 0, 3);
+if (params.get("still") === "1") S.anim = 0;
+
+const rail = $("#rail");
+function syncRail() {
+  rail.querySelectorAll("button").forEach(b => {
+    if (!b.dataset.f) return;                 // the light toggle is not a focus
+    b.classList.toggle("is-on", +b.dataset.f === S.focus);
+  });
+  $("#lv1").classList.toggle("dim", S.focus !== 0 && S.focus !== 2);
+  $("#lv2").classList.toggle("dim", S.focus !== 0 && S.focus !== 3);
+  L.shellDirty = 1;
+}
+rail.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "ltspd") return;               // its own handler, not a mode
+  if (b.id === "ltgo") { setLight(!LT.on); return; }
+  if (LT.on) setLight(0);
+  S.focus = +b.dataset.f;
+  syncRail();
+});
+
+/* three gears, and the first click always goes slower — the reason anyone
+   reaches for it is that the pulse is outrunning their reading */
+const SPD = [2, 1, 0.5];
+let spdI = 1;
+
+function paintSpeed() {
+  const b = $("#ltspd");
+  b.textContent = LT.speed + "×";
+  b.setAttribute("aria-label",
+    T("播放速度 " + LT.speed + " 倍", "Playback speed ×" + LT.speed));
+}
+paintSpeed();
+
+$("#ltspd").addEventListener("click", () => {
+  spdI = (spdI + 1) % SPD.length;
+  LT.speed = SPD[spdI];
+  paintSpeed();
+});
+
+/* the switch: the plate is re-solved, not repainted — the mast's own height
+   feeds the vertical budget, so a longer title moves the disc */
+function setLang(next) {
+  if (next === lang) return;
+  lang = next;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* private mode */ }
+  applyStatic();
+  layout();
+  buildBelt();
+  hud.v = hud.d = hud.r = ""; hud.p = -1;
+  if (LT.on) stepLight(0);   // keep the pulse where it was, just re-letter it
+  paintSpeed();
+  paintLightHud();
+}
+
+$("#lang").addEventListener("click", e => {
+  const b = e.target.closest("button[data-lang]");
+  if (b) setLang(b.dataset.lang);
+});
+
+buildTicks();
+if (params.get("light") === "1") setLight(1);
+if (params.get("lt")) { LT.t = clamp(+params.get("lt"), 0, LT.total - 0.01); stepLight(0); }
+
+$("#back").href = location.protocol === "file:" ? "太阳系行星图鉴.html" : "./";
+
+syncRail();
+frame();
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

@@ -55,7 +55,7 @@ def header(current: Path, active: str | None = None) -> str:
         nav.append(f'<a href="{subject_href}"{attr}>{tr(subject["name"], subject["english"])}</a>')
     return f'''<a class="skip" href="#main">{tr("跳到主要内容", "Skip to main content")}</a>
 <header class="site-header"><div class="container header-inner">
-  <a class="brand" href="{link(current, 'index.html')}" {aria("牛顿科学探索馆首页", "Newton Science Discovery Center home")}>{tr("牛", "N", attrs='class="brand-mark"')}<span>{tr(CATALOG["title"], CATALOG["title_en"])}{tr("观察 · 操作 · 理解", "OBSERVE · EXPERIMENT · UNDERSTAND", tag="small")}</span></a>
+  <a class="brand" href="{link(current, 'index.html')}" {aria("牛顿科学探索馆首页", "Newton Science Discovery Center home")}><img class="brand-mark" src="{link(current, 'assets/newton-mark.svg')}" width="42" height="42" alt=""><span>{tr(CATALOG["title"], CATALOG["title_en"])}{tr("观察 · 操作 · 理解", "OBSERVE · EXPERIMENT · UNDERSTAND", tag="small")}</span></a>
   <div class="header-actions"><nav class="site-nav" {aria("学科导航", "Subject navigation")}>{''.join(nav)}</nav>
   <button class="language-switch" id="language-switch" type="button" aria-label="切换为英文" aria-pressed="false"><span class="language-option language-option-zh" lang="zh-CN">中</span><span class="language-divider" aria-hidden="true">/</span><span class="language-option language-option-en" lang="en">EN</span></button></div>
 </div></header>'''
@@ -65,14 +65,15 @@ def footer() -> str:
     return '<footer class="site-footer"><div class="container footer-inner">' + tr(CATALOG["title"], CATALOG["title_en"]) + tr("观察 · 操作 · 理解", "Observe · Experiment · Understand") + tr("演示图像与比例以各页面说明为准", "Visual scale and proportions are explained in each lesson") + '</div></footer>'
 
 
-def page(current: Path, title_zh: str, title_en: str, body: str, active: str | None = None, accent: str = "#197a91") -> None:
+def page(current: Path, title_zh: str, title_en: str, body: str, active: str | None = None, accent: str = "#197a91", home_page: bool = False) -> None:
     current.parent.mkdir(parents=True, exist_ok=True)
     document = f'''<!doctype html>
 <html lang="zh-CN" data-title-zh="{e(title_zh)}" data-title-en="{e(title_en)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f6f9f8"><meta name="description" content="牛顿科学探索馆：通过交互演示观察科学现象。" data-zh="牛顿科学探索馆：通过交互演示观察科学现象。" data-en="Newton Science Discovery Center: explore science through interactive lessons.">
 <title>{e(title_zh)} · {e(CATALOG["title"])}</title>
+<link rel="icon" type="image/svg+xml" href="{link(current, 'assets/newton-mark.svg')}">
 <link rel="stylesheet" href="{link(current, 'assets/site.css')}"><style>:root {{--accent:{e(accent)}}}</style>
-</head><body>{header(current, active)}<main id="main">{body}</main>{footer()}<script src="{link(current, 'assets/site.js')}" defer></script></body></html>
+</head><body{' class="home-page"' if home_page else ''}>{header(current, active)}<main id="main">{body}</main>{footer()}<script src="{link(current, 'assets/site.js')}" defer></script></body></html>
 '''
     current.write_text(document, encoding="utf-8")
 
@@ -80,20 +81,40 @@ def page(current: Path, title_zh: str, title_en: str, body: str, active: str | N
 def home() -> None:
     current = SITE / "index.html"
     cards = []
-    for index, subject in enumerate(CATALOG["subjects"], start=1):
+    board = []
+    introductions = {
+        "astronomy": ("从太阳系进入，再探索宇宙现象、恒星与星空，以及人类登月。七个独立演示已经开放。", "Begin with the Solar System, then explore cosmic phenomena, stars, the night sky, and the Moon. Seven standalone lessons are open."),
+        "physics": ("驾驶 3D 汽车观察受力与运动，再用简单机械和电磁实验调节参数，看看规律怎样改变。", "Use a 3D car to explore forces and motion, then adjust simple machines and electricity experiments to see the rules in action."),
+        "biology": ("比较细胞形态与内部结构，并沿着线粒体和叶绿体认识呼吸作用、光合作用中的能量转化。", "Compare cell forms and structures, then follow energy through respiration and photosynthesis in mitochondria and chloroplasts."),
+        "chemistry": ("从早期原子观念走向新的模型，观察证据如何改变人们对原子结构的解释。", "Trace changing models of the atom and see how new evidence reshaped explanations of its structure."),
+    }
+    card_axes = {
+        "astronomy": ("轨道与尺度", "ORBIT & SCALE"),
+        "physics": ("力与能量", "FORCE & ENERGY"),
+        "biology": ("生命的结构", "LIVING STRUCTURES"),
+        "chemistry": ("物质的内部", "INSIDE MATTER"),
+    }
+    for subject in CATALOG["subjects"]:
         slug = subject["slug"]
         subject_href = link(current, "subjects/" + slug + "/index.html")
+        summary_zh, summary_en = introductions[slug]
+        axis_zh, axis_en = card_axes[slug]
+        topics = ' / '.join(topic["name"] for topic in subject["topics"])
+        topics_en = ' / '.join(topic["english"] for topic in subject["topics"])
         cards.append(f'''<a class="subject-card" style="--accent:{e(subject["accent"])}" href="{subject_href}">
-  <div><span class="subject-no">FIELD / {index:02d}</span>{tr(subject["name"], subject["english"], "h3")}<span class="english">{e(subject["english"])}</span>{tr(subject["description"], subject["description_en"], "p")}<span class="card-bottom">{tr(subject["status"], subject["status_en"])} <span aria-hidden="true">↗</span></span></div>
+  <div>{tr(axis_zh, axis_en, attrs='class="subject-no"')}{tr(subject["name"], subject["english"], "h3")}{tr(summary_zh, summary_en, "p")}{tr(topics, topics_en, attrs='class="subject-topics"')}<span class="card-bottom">{tr(subject["status"], subject["status_en"])} <span aria-hidden="true">↗</span></span></div>
   {motif(slug)}</a>''')
-    body = f'''<div class="container"><section class="home-hero" aria-labelledby="home-title"><div>
-  <span class="eyebrow eyebrow-line">MIDDLE SCHOOL SCIENCE · 3D ATLAS</span>
-  <h1 class="serif" id="home-title">{tr("把科学", "Bring science")}<br>{tr("放到眼前。", "into view.", "em")}</h1>
-  {tr("从行星的纹理，到汽车的受力与简单机械。选择一个学科，亲手旋转、观察，带着问题进入科学的世界。", "From a planet's surface to car forces and simple machines. Choose a subject, explore it yourself, and follow your questions into science.", "p")}
-  <div class="hero-note"><a class="text-link" href="{link(current, 'subjects/astronomy/index.html')}">{tr("从天文学开始", "Start with astronomy")} <span class="arrow" aria-hidden="true">→</span></a>{tr("四个学科 · 持续更新", "Four subjects · Growing library", attrs='class="tiny"')}</div>
-  </div><div class="scientific-window" role="img" {aria("四个学科围绕科学探索的轨道示意", "Four subjects arranged around a science discovery orbit")}><i class="axis-x"></i><i class="axis-y"></i><i class="orbit"></i><i class="orbit orbit-2"></i><i class="orbit orbit-3"></i><i class="core"></i><i class="plot-node node-a"></i><i class="plot-node node-b"></i><i class="plot-node node-c"></i><i class="plot-node node-d"></i><span class="plot-label label-a">ASTRONOMY</span><span class="plot-label label-b">PHYSICS</span><span class="plot-label label-c">BIOLOGY</span><span class="plot-label label-d">CHEMISTRY</span>{tr("四种探索方式", "FOUR WAYS TO EXPLORE", attrs='class="window-index"')}</div></section>
-  <section aria-labelledby="fields-title"><div class="section-heading"><div><span class="eyebrow">CHOOSE A FIELD</span>{tr("四条进入科学的路径", "Four paths into science", "h2", 'id="fields-title"')}</div>{tr("每个学科都可以独立打开；具体演示会随着课程制作逐步加入。", "Open any subject on its own. More interactive lessons will be added as they are completed.", "p")}</div><div class="subject-grid">{''.join(cards)}</div></section></div>'''
-    page(current, "首页", "Home", body)
+        board.append(f'''<div class="board-panel board-{e(slug)}" style="--tile-accent:{e(subject["accent"])}">{tr(subject["name"], subject["english"], attrs='class="board-panel-label"')}{motif(slug)}</div>''')
+    body = f'''<div class="container"><section class="home-hero" aria-labelledby="home-title"><div class="home-hero-copy">
+  <span class="eyebrow eyebrow-line">NEWTON SCIENCE DISCOVERY CENTER</span>
+  <h1 class="serif" id="home-title">{tr("把科学，", "Bring science")}<br>{tr("放到眼前。", "into view.", "em")}</h1>
+  {tr("那些难以亲眼看到的过程，可以先在这里动手观察：行星怎样排布，力怎样改变运动，细胞怎样工作，原子模型又怎样随证据更新。", "Begin with what is hard to see in person: the arrangement of planets, how forces change motion, how cells work, and how evidence changes models of the atom.", "p", 'class="hero-lead"')}
+  {tr("选择学科，再进入专题与独立演示。你可以在支持交互的页面中旋转模型、调节参数、对照中英文说明；尚在制作的内容会清楚标注，并逐步补充。", "Choose a subject, then open a topic and its standalone lesson. Where interaction is available, rotate models, adjust parameters, and compare Chinese and English explanations. Lessons still in progress are clearly marked.", "p", 'class="hero-detail"')}
+  <div class="hero-actions"><a class="primary-link" href="#fields-title">{tr("选择学科", "Choose a subject")} <span aria-hidden="true">↗</span></a><a class="text-link" href="#how-title">{tr("了解如何探索", "How to explore")} <span class="arrow" aria-hidden="true">→</span></a></div>
+  </div><div class="discovery-board" role="img" {aria("四个学科的科学观察图板", "A science observation board for four subjects")}><span class="board-kicker">OBSERVE / EXPERIMENT / UNDERSTAND</span><div class="board-grid">{''.join(board)}</div><img class="board-seal" src="{link(current, 'assets/newton-mark.svg')}" width="76" height="76" alt=""></div></section>
+  <section class="home-fields" aria-labelledby="fields-title"><div class="section-heading"><div><span class="eyebrow">FOUR SUBJECTS</span>{tr("选择一个学科，开始探索", "Choose a subject to explore", "h2", 'id="fields-title"')}</div>{tr("四个入口都能单独打开。每个专题会告诉你已开放的演示和仍在制作的内容。", "Each subject has its own address. Its topics show which lessons are ready and which are still in progress.", "p")}</div><div class="subject-grid">{''.join(cards)}</div></section>
+  <section class="home-guide" aria-labelledby="how-title"><div class="guide-heading"><span class="eyebrow">HOW TO EXPLORE</span>{tr("一节科学课，可以这样开始", "A simple way to begin", "h2", 'id="how-title"')}{tr("先提出问题，再动手观察，最后回到原理。", "Start with a question, observe it in action, then return to the explanation.", "p")}</div><ol class="guide-steps"><li><span>01</span>{tr("进入一个专题", "Open a topic", "h3")}{tr("按天文学、物理学、生物学或化学找到感兴趣的内容；专题页会列出可打开的演示。", "Pick astronomy, physics, biology, or chemistry. Each topic page lists its available lessons.", "p")}</li><li><span>02</span>{tr("改变一个条件", "Change one condition", "h3")}{tr("在互动演示中旋转视角、切换状态或调整参数，留意画面、标注与数值怎样一起变化。", "Rotate the view, switch states, or adjust a parameter. Watch how the scene, labels, and values change together.", "p")}</li><li><span>03</span>{tr("用解释检验观察", "Check the explanation", "h3")}{tr("对照文字、示意图与公式，想一想这个模型解释了什么，以及哪些比例和细节经过了简化。", "Compare the notes, diagrams, and formulas. Ask what the model explains and which scales or details have been simplified.", "p")}</li></ol><div class="guide-note">{tr("关于科学图像", "About the visuals", "strong")}{tr("这里的模型用于课堂观察与讨论。天体距离、细胞大小等比例可能为教学而调整；准确范围与素材说明请查看各演示页。", "These models support classroom observation and discussion. Distances, cell sizes, and other scales may be adjusted for teaching; check each lesson for its limits and image credits.", "p")}</div></section></div>'''
+    page(current, "首页", "Home", body, home_page=True)
 
 
 def subject_page(subject: dict) -> None:
@@ -125,8 +146,17 @@ def topic_page(subject: dict, topic: dict) -> None:
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
         visual_zh, visual_en = "六种机械 · 力与距离", "SIX MACHINES · FORCE & DISTANCE"
+    if slug == "physics" and topic["slug"] == "electricity-and-magnetism":
+        visual_zh, visual_en = "十三个实验 · 电与磁", "13 EXPERIMENTS · ELECTRICITY & MAGNETISM"
     if slug == "biology" and topic["slug"] == "cell-energy":
         visual_zh, visual_en = "两种细胞器 · 两条能量路径", "TWO ORGANELLES · TWO ENERGY PATHWAYS"
+    astronomy_visuals = {
+        "universe": ("从宇宙早期到黑洞", "EARLY UNIVERSE · BLACK HOLES"),
+        "stellar-sky": ("恒星与星座", "STARS · CONSTELLATIONS"),
+        "moon-exploration": ("从地球走向月球", "EARTH · MOON"),
+    }
+    if slug == "astronomy" and topic["slug"] in astronomy_visuals:
+        visual_zh, visual_en = astronomy_visuals[topic["slug"]]
     intro = f'''<section class="topic-intro"><div><span class="eyebrow eyebrow-line">TOPIC / {e(topic["english"])}</span>{tr(topic["name"], topic["english"], "h1")}{tr(topic["description"], topic["description_en"], "p")}</div><div class="topic-visual topic-visual-{e(slug)}" aria-hidden="true">{tr(visual_zh, visual_en)}</div></section>'''
     cards = []
     for index, lesson in enumerate(topic["lessons"], start=1):
@@ -150,11 +180,24 @@ def topic_page(subject: dict, topic: dict) -> None:
             "选择一种机械，调节参数，比较力与距离如何变化。",
             "Choose a machine, adjust its parameters, and compare changes in force and distance.",
         )
+    if slug == "physics" and topic["slug"] == "electricity-and-magnetism":
+        guidance_zh, guidance_en = (
+            "从静电开始，逐章观察磁场、电路和电磁感应；调节参数后比较结果。",
+            "Start with static electricity, then explore magnetic fields, circuits, and induction. Adjust parameters and compare results.",
+        )
     if slug == "biology" and topic["slug"] == "cell-energy":
         guidance_zh, guidance_en = (
             "先观察两种细胞器，再沿着呼吸与光合的步骤追踪物质和能量。",
             "Explore both organelles, then follow matter and energy through respiration and photosynthesis.",
         )
+    astronomy_guidance = {
+        "solar-system": ("先观察太阳系结构，再体验天王星下降；行星图鉴与地火转移的贴图待核对。", "Start with Solar System structure and the Uranus descent. Image credits for the planet atlas and Mars transfer are under review."),
+        "universe": ("沿着宇宙早期的时间线观察，再探索黑洞附近的示意场景。", "Follow the early-universe timeline, then explore a visual model near a black hole."),
+        "stellar-sky": ("比较恒星的性质，再回到夜空辨认星座。", "Compare star properties, then return to the night sky to identify constellations."),
+        "moon-exploration": ("沿阿波罗 11 号的任务过程，观察登月环境。", "Follow the Apollo 11 mission and explore the lunar surface."),
+    }
+    if slug == "astronomy":
+        guidance_zh, guidance_en = astronomy_guidance[topic["slug"]]
     section = f'''<section aria-labelledby="lesson-title"><div class="section-heading"><div><span class="eyebrow">INTERACTIVE LESSONS</span>{tr("选择一个演示", "Choose a lesson", "h2", 'id="lesson-title"')}</div>{tr(guidance_zh, guidance_en, "p")}</div><div class="lesson-grid">{''.join(cards)}</div></section>'''
     note_zh, note_en = {
         "astronomy": ("天体尺寸、距离和时间如经过视觉调整，以各演示页的标注为准。", "Visual scales for size, distance, and time are explained in each lesson."),
@@ -177,6 +220,7 @@ def main() -> None:
     (SITE / "assets").mkdir(exist_ok=True)
     shutil.copyfile(ROOT / "web/assets/site.css", SITE / "assets/site.css")
     shutil.copyfile(ROOT / "web/assets/site.js", SITE / "assets/site.js")
+    shutil.copyfile(ROOT / "web/assets/newton-mark.svg", SITE / "assets/newton-mark.svg")
     home()
     for subject in CATALOG["subjects"]:
         subject_page(subject)

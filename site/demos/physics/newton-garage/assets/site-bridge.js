@@ -11,6 +11,7 @@
 
   update();
   document.querySelectorAll('#langToggle, #stageLangToggle').forEach((button) => {
-    button.addEventListener('click', update);
+    button.addEventListener('click', () => queueMicrotask(update));
   });
+  window.addEventListener('load', update);
 }());

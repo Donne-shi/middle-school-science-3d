@@ -12,7 +12,7 @@
   }
 
   document.querySelectorAll('#langSwitch button').forEach((button) => {
-    button.addEventListener('click', update);
+    button.addEventListener('click', () => queueMicrotask(update));
   });
   window.addEventListener('load', update);
   update();

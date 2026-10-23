@@ -1,0 +1,1645 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人类登月 · Apollo 11</title>
+<meta name="description" content="1969 年 7 月：土星五号、地月转移、月球轨道、鹰号下降、静海着陆、月面行走、上升对接与返回。九个阶段的三维重建。">
+<meta name="theme-color" content="#06050a">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#06050a;
+  --ink:#f7f0e4;
+  --ink-2:#ddd4c6;
+  --muted:#a8a29a;
+  --dim:#6e6a72;
+  --dim-2:#4b4852;
+  --line:rgba(247,240,228,.14);
+  --line-2:rgba(247,240,228,.07);
+  --ac:#eeb072;
+  --ac-2:#8fa8ff;
+  --pad:clamp(20px,3.2vw,54px);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 48%,#140d10 0%,#08060b 45%,#04040a 100%);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+::selection{background:var(--ac);color:#0a0705}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(125% 92% at 50% 46%,rgba(0,0,0,0) 42%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.62) 100%)}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:4}
+.scrim::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(6,5,10,.93) 0%,rgba(6,5,10,.80) 18%,rgba(6,5,10,.36) 38%,rgba(6,5,10,.06) 52%,transparent 62%)}
+.scrim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30%;
+  background:linear-gradient(180deg,transparent,rgba(6,5,10,.40) 62%,rgba(6,5,10,.66))}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.cut{position:fixed;inset:0;pointer-events:none;z-index:6;background:#06050a;opacity:0}
+
+/* ---------- masthead ---------- */
+.mast{position:fixed;left:var(--pad);top:clamp(26px,4.6vh,52px);z-index:12;width:min(500px,44vw)}
+.idx{display:flex;align-items:baseline;gap:7px;font-family:var(--mono);font-size:13px;letter-spacing:.28em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:15px}
+.idx i{font-style:normal;color:var(--dim-2)}
+.mast h1{margin:14px 0 0;font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:.02em}
+.mast h1 .cn{display:block;font-size:clamp(33px,4.1vw,54px);color:var(--ink);text-shadow:0 2px 22px rgba(0,0,0,.6)}
+.mast h1 .en{display:block;margin-top:9px;font-family:var(--mono);font-size:13px;letter-spacing:.38em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:13.5px;letter-spacing:.16em;color:var(--muted)}
+.kicker i{width:22px;height:1px;background:var(--ac);opacity:.7;flex:none}
+.tag{margin:11px 0 0;font-family:var(--serif);font-size:18px;line-height:1.75;color:var(--ink-2);opacity:.92;
+  max-width:23em;text-shadow:0 1px 14px rgba(0,0,0,.65)}
+
+.chips{list-style:none;display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;column-gap:12px;margin:26px 0 0;padding:0;
+  border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.chips li{padding:11px 0 12px;min-width:0}
+.chips b{display:flex;align-items:baseline;gap:3px;font-family:var(--mono);font-weight:400;font-size:17px;
+  color:#fdf6ea;line-height:1.15;white-space:nowrap}
+.chips b u{text-decoration:none;font-size:10px;letter-spacing:.06em;color:rgba(247,240,228,.66);transform:translateY(-1px)}
+.chips li>span{display:block;margin-top:5px;font-size:11px;letter-spacing:.12em;color:rgba(247,240,228,.52);white-space:nowrap}
+.mast .idx,.mast .kicker,.mast .chips b,.mast .chips li>span{
+  text-shadow:0 1px 12px rgba(0,0,0,.62),0 0 26px rgba(0,0,0,.4)}
+
+/* ---------- side panel ---------- */
+.panel{position:fixed;right:var(--pad);top:clamp(74px,10vh,104px);width:clamp(286px,25vw,346px);z-index:12;
+  display:flex;flex-direction:column;max-height:min(680px,calc(100vh - 178px));
+  padding:14px 15px 16px;border-radius:15px;border:1px solid rgba(247,240,228,.10);
+  background:linear-gradient(178deg,rgba(20,14,18,.66),rgba(7,6,11,.78));
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
+  box-shadow:0 24px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
+.ph{display:flex;align-items:baseline;gap:9px;font-size:12px;letter-spacing:.24em;color:var(--dim)}
+.ph b{font-weight:400;color:var(--ink-2)}
+.ph i{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--dim-2)}
+.ph + .traj{margin-top:13px}
+.ph.sect{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-2)}
+
+.traj{position:relative;padding-top:2px}
+.traj-track{position:relative;height:2px;background:rgba(247,240,228,.13);margin:9px 0 0}
+.traj-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#ffd9a8,#eeb072 70%,#b07bd6);opacity:.8;transition:width .18s linear}
+.traj-dot{position:absolute;top:-3.5px;left:0;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+  background:#fff3e2;box-shadow:0 0 14px rgba(238,176,114,.9);transition:left .18s linear}
+.traj-end{position:absolute;top:-2px;width:5px;height:5px;border-radius:50%;background:rgba(247,240,228,.42)}
+.traj-end.e{left:0}
+.traj-end.m{right:0}
+.traj-key{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;
+  font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
+.traj-key b{font-family:var(--mono);font-weight:400;font-size:12px;letter-spacing:.04em;color:var(--ac)}
+.traj-alt{margin-top:7px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--dim-2)}
+
+.eras{list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;gap:1px;
+  overflow-y:auto;scrollbar-width:none}
+.eras::-webkit-scrollbar{display:none}
+.eras li{position:relative;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:baseline;
+  padding:5px 8px 5px 11px;border-left:1px solid var(--line-2);transition:background .4s,border-color .4s}
+.eras li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:transparent;transition:background .4s}
+.eras li.is-on{background:rgba(238,176,114,.07);border-color:transparent}
+.eras li.is-on::before{background:var(--ac)}
+.eras time{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--dim);white-space:nowrap}
+.eras b{display:block;font-weight:400;font-size:13px;letter-spacing:.08em;color:var(--dim);transition:color .4s}
+.eras i{display:block;font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.13em;color:var(--dim-2);margin-top:1px}
+.eras li.is-on b{color:var(--ink)}
+.eras li.is-on i{color:var(--ac)}
+.eras li.is-on time{color:var(--ink-2)}
+
+/* ---------- note ---------- */
+.note{position:fixed;left:var(--pad);bottom:calc(118px + 3vh);z-index:12;width:min(408px,40vw);
+  padding:15px 17px 16px;border-radius:13px;border:1px solid rgba(247,240,228,.10);
+  background:linear-gradient(180deg,rgba(12,9,14,.78),rgba(6,5,9,.88));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;transform:translateY(9px);transition:opacity .55s ease,transform .55s ease;pointer-events:none}
+.note.is-on{opacity:1;transform:none}
+.note kbd{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ac);
+  border:1px solid rgba(238,176,114,.3);border-radius:2px;padding:3px 7px;background:rgba(238,176,114,.08)}
+.note h3{margin:11px 0 0;font-family:var(--serif);font-weight:400;font-size:18px;letter-spacing:.02em;color:var(--ink)}
+.note p{margin:7px 0 0;font-size:14px;line-height:1.8;color:var(--ink-2);opacity:.88;letter-spacing:.01em}
+
+/* ---------- timeline ---------- */
+.tl{position:fixed;left:var(--pad);right:var(--pad);bottom:clamp(26px,4vh,44px);z-index:14}
+.tl-head{display:flex;align-items:center;gap:14px;margin-bottom:9px}
+.tl-play{appearance:none;background:none;border:1px solid var(--line);border-radius:20px;color:var(--ink-2);
+  font:inherit;font-size:12px;letter-spacing:.18em;padding:5px 13px;cursor:pointer;transition:.25s;
+  flex:none;white-space:nowrap}
+.tl-play:hover{border-color:var(--ac);color:var(--ink)}
+.tl-hint{font-size:11px;letter-spacing:.16em;color:var(--dim-2);white-space:nowrap}
+.tl-sp{margin-left:auto;display:flex;gap:2px}
+.tl-sp button{appearance:none;background:none;border:0;color:var(--dim);font:inherit;font-family:var(--mono);
+  font-size:12px;letter-spacing:.06em;padding:4px 7px;cursor:pointer;border-bottom:1px solid transparent}
+.tl-sp button.is-on{color:var(--ac);border-bottom-color:var(--ac)}
+.track{position:relative;height:2px;background:rgba(247,240,228,.13);cursor:pointer}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,#ffd9a8,#eeb072 55%,#b07bd6);opacity:.9}
+.head-dot{position:absolute;top:-4px;left:0;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+  background:#fff3e2;box-shadow:0 0 16px rgba(238,176,114,.9)}
+.stages{display:flex;margin-top:12px;gap:4px;justify-content:space-between}
+.stages span{font-size:10.5px;letter-spacing:.08em;color:var(--dim);white-space:nowrap;position:relative;padding-top:7px;flex:none}
+.stages span::before{content:"";position:absolute;left:0;top:0;width:1px;height:4px;background:var(--dim-2)}
+.stages span.is-on{color:var(--ink)}
+.stages span.is-on::before{background:var(--ac)}
+.stages span i{display:block;font-style:normal;font-family:var(--mono);font-size:8px;letter-spacing:.06em;
+  color:var(--dim-2);margin-top:2px}
+.stages span.is-on i{color:var(--ac)}
+
+/* ---------- back ---------- */
+.back{position:fixed;right:var(--pad);top:clamp(22px,3.4vh,38px);z-index:16;display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;letter-spacing:.16em;color:var(--muted);text-decoration:none;transition:color .25s}
+.back:hover{color:var(--ink)}
+.back svg{opacity:.7}
+
+/* ---------- end ---------- */
+.end{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .9s ease;
+  background:radial-gradient(60% 50% at 50% 55%,rgba(0,0,0,.55),rgba(0,0,0,.9))}
+.end.is-on{opacity:1;pointer-events:auto}
+.end-in{text-align:center;max-width:600px;padding:0 24px}
+.end-in p{margin:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;color:var(--ac)}
+.end-in h2{margin:16px 0 0;font-family:var(--serif);font-weight:400;font-size:clamp(25px,3.1vw,40px);letter-spacing:.03em;line-height:1.4}
+.end-in small{display:block;margin-top:16px;font-size:13px;line-height:1.9;color:var(--muted)}
+.end-in button{margin-top:26px;appearance:none;background:none;border:1px solid var(--line);border-radius:24px;
+  color:var(--ink-2);font:inherit;font-size:12px;letter-spacing:.2em;padding:9px 22px;cursor:pointer;transition:.25s}
+.end-in button:hover{border-color:var(--ac);color:var(--ink)}
+
+.hstruct{display:none}
+body.ended #gl{opacity:.30;transition:opacity .9s ease}
+body.ended #gl{opacity:.30;transition:opacity .9s ease}
+body.ended .mast,body.ended .panel,body.ended .note,body.ended .tl,body.ended .hstruct{
+  opacity:0!important;transition:opacity .9s ease;pointer-events:none}
+
+@media (max-width:1080px){
+  .panel{width:286px}
+  .note p{font-size:13px}
+}
+@media (max-width:900px){
+  .scrim::before{
+    background:linear-gradient(180deg,rgba(6,5,10,.94) 0%,rgba(6,5,10,.86) 24%,
+      rgba(6,5,10,.58) 42%,rgba(6,5,10,.22) 56%,transparent 68%)}
+  .mast{width:auto;right:var(--pad)}
+  .mast h1 .cn{font-size:clamp(30px,7vw,40px)}
+  .tag{font-size:16px;max-width:34ch}
+  .chips{max-width:min(100%,480px)}
+  .chips li>span{color:rgba(247,240,228,.6)}
+  .chips b{font-size:15px}
+  .panel{display:none}
+  .note{width:auto;right:var(--pad);bottom:calc(148px + 2vh);padding:13px 14px 14px}
+  .note p{font-size:13px;line-height:1.75}
+  .stages{justify-content:flex-start;gap:5px}
+  .stages span{font-size:9px;letter-spacing:.02em}
+  .stages span i{display:none}
+  .tl-hint{display:none}
+}
+@media (max-width:560px){
+  .chips{grid-template-columns:repeat(2,1fr);gap:0;max-width:100%}
+  .chips li{padding:8px 0 9px;min-width:0}
+  .chips b{font-size:14px;gap:2px}
+  .chips b u{font-size:9px}
+  .chips li>span{font-size:10px;letter-spacing:.06em}
+  .kicker{font-size:11.5px;letter-spacing:.06em}
+  .tag{font-size:14.5px;line-height:1.65}
+  .note{padding:11px 12px 12px;bottom:calc(126px + 2vh)}
+  .note h3{font-size:16px;margin-top:9px}
+  .note p{font-size:12.5px;line-height:1.7}
+  .note kbd{font-size:9px;padding:2px 6px}
+  .tl-sp{display:none}
+  .stages{gap:0;justify-content:space-between;overflow:hidden}
+  .stages span{font-size:7px;letter-spacing:0;padding-top:6px;flex:0 1 auto;min-width:0}
+  .note{max-width:calc(100vw - 2 * var(--pad))}
+  .tl{left:var(--pad);right:var(--pad);width:auto}
+  .tl-play{padding:4px 11px;font-size:11px}
+  .back{font-size:11px}
+  .mast h1 .en{font-size:11px;letter-spacing:.3em}
+}
+@media (prefers-reduced-motion:reduce){
+  .note,.end,.cut{transition:none}
+}
+.no-anim *,.no-anim *::before,.no-anim *::after{transition:none!important;animation:none!important}
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="vex"></div>
+<div class="scrim"></div>
+<div class="grain"></div>
+<div class="cut" id="cut"></div>
+
+<a class="back" id="back" href="../../subjects/astronomy/index.html">
+  <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+    <path d="M12 4H1M4 1L1 4l3 3" stroke="currentColor" stroke-width="1"/>
+  </svg>
+  <span>返回图鉴</span>
+</a>
+
+<header class="mast">
+  <div class="idx"><b>A</b><i>·</i><span>APOLLO 11</span><i>·</i><span>1969</span></div>
+  <h1><span class="cn">人类登月</span><span class="en">The Moon Landing</span></h1>
+  <div class="kicker"><i></i><span>土星五号 · 38 万公里 · 3 个人 · 8 天</span></div>
+  <p class="tag">38 万公里外，一台只有 4 KB 内存的计算机，把他们放在了静海。</p>
+
+  <ul class="chips">
+    <li><b><i id="cGET">00:00:00</i></b><span>任务时间 GET</span></li>
+    <li><b><i id="cDist">0</i><u>km</u></b><span>距地球</span></li>
+    <li><b><i id="cSpd">0</i><u>km/h</u></b><span>速度</span></li>
+    <li><b><i id="cG">1.00</i><u>g</u></b><span>所处重力</span></li>
+  </ul>
+</header>
+
+<aside class="panel">
+  <div class="ph"><b>航程</b><i>TRAJECTORY</i></div>
+  <div class="traj">
+    <div class="traj-track">
+      <div class="traj-fill" id="tjFill"></div>
+      <span class="traj-end e"></span>
+      <span class="traj-end m"></span>
+      <span class="traj-dot" id="tjDot"></span>
+    </div>
+    <div class="traj-key"><span>地球</span><b id="tjPct">0%</b><span>月球</span></div>
+    <div class="traj-alt" id="tjAlt">地月距离 384,400 km</div>
+  </div>
+  <div class="ph sect"><b>任务阶段</b><i>PHASES</i></div>
+  <ul class="eras" id="eras"></ul>
+</aside>
+
+<div class="note" id="note">
+  <kbd id="nK"></kbd>
+  <h3 id="nH"></h3>
+  <p id="nP"></p>
+</div>
+
+<footer class="tl">
+  <div class="tl-head">
+    <button class="tl-play" id="play" type="button">暂停</button>
+    <span class="tl-hint">点击时间轴可跳转 · 空格播放／暂停</span>
+    <div class="tl-sp" id="sp">
+      <button data-s="0.6" type="button">0.6×</button>
+      <button data-s="1" class="is-on" type="button">1×</button>
+      <button data-s="2" type="button">2×</button>
+      <button data-s="4" type="button">4×</button>
+    </div>
+  </div>
+  <div class="track" id="track">
+    <div class="fill" id="fill"></div>
+    <div class="head-dot" id="hdot"></div>
+  </div>
+  <div class="stages" id="stages"></div>
+</footer>
+
+<div class="end" id="end">
+  <div class="end-in">
+    <p>1969 · 07 · 20 · 20:17 UTC</p>
+    <h2>然后，有人在另一个世界上<br>留下了脚印</h2>
+    <small>阿波罗 11 号：3 个人，8 天，38 万公里，21.5 公斤月岩。<br>此后三年，又有 11 个人走上月面。1972 年 12 月之后，再没有人类离开过近地轨道。</small>
+    <button id="again" type="button">再看一次</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const $ = (s) => document.querySelector(s);
+const clamp01 = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
+const lerp = (a, b, u) => a + (b - a) * u;
+const smooth = (a, b, x) => { const t = clamp01((x - a) / ((b - a) || 1e-6)); return t * t * (3 - 2 * t); };
+const params = new URLSearchParams(location.search);
+const STILL = params.get("still") === "1";
+if (STILL) document.documentElement.classList.add("no-anim");
+
+/* ============================================================== math ==== */
+const ident = () => new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+function mul(a, b) {
+  const o = new Float32Array(16);
+  for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) {
+    o[c*4+r] = a[r]*b[c*4] + a[4+r]*b[c*4+1] + a[8+r]*b[c*4+2] + a[12+r]*b[c*4+3];
+  }
+  return o;
+}
+function trans(x, y, z) { const m = ident(); m[12] = x; m[13] = y; m[14] = z; return m; }
+function scaleM(x, y, z) { const m = ident(); m[0] = x; m[5] = y; m[10] = z; return m; }
+function rotX(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]); }
+function rotY(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]); }
+function rotZ(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([c,s,0,0, -s,c,0,0, 0,0,1,0, 0,0,0,1]); }
+function axisAngle(ax, ang) {
+  const l = Math.hypot(ax[0], ax[1], ax[2]) || 1;
+  const x = ax[0]/l, y = ax[1]/l, z = ax[2]/l;
+  const c = Math.cos(ang), s = Math.sin(ang), t = 1 - c;
+  return new Float32Array([
+    t*x*x+c, t*x*y+s*z, t*x*z-s*y, 0,
+    t*x*y-s*z, t*y*y+c, t*y*z+s*x, 0,
+    t*x*z+s*y, t*y*z-s*x, t*z*z+c, 0,
+    0,0,0,1
+  ]);
+}
+function lookAt(eye, tgt, up) {
+  let zx = eye[0]-tgt[0], zy = eye[1]-tgt[1], zz = eye[2]-tgt[2];
+  let zl = Math.hypot(zx, zy, zz) || 1; zx/=zl; zy/=zl; zz/=zl;
+  let xx = up[1]*zz - up[2]*zy, xy = up[2]*zx - up[0]*zz, xz = up[0]*zy - up[1]*zx;
+  let xl = Math.hypot(xx, xy, xz) || 1; xx/=xl; xy/=xl; xz/=xl;
+  const yx = zy*xz - zz*xy, yy = zz*xx - zx*xz, yz = zx*xy - zy*xx;
+  return new Float32Array([
+    xx, yx, zx, 0,
+    xy, yy, zy, 0,
+    xz, yz, zz, 0,
+    -(xx*eye[0]+xy*eye[1]+xz*eye[2]), -(yx*eye[0]+yy*eye[1]+yz*eye[2]), -(zx*eye[0]+zy*eye[1]+zz*eye[2]), 1
+  ]);
+}
+function persp(fovy, asp, n, f) {
+  const t = 1 / Math.tan(fovy / 2), nf = 1 / (n - f);
+  return new Float32Array([
+    t/asp, 0, 0, 0,
+    0, t, 0, 0,
+    0, 0, (f+n)*nf, -1,
+    0, 0, 2*f*n*nf, 0
+  ]);
+}
+function nrm3(m) {
+  const a = m[0], b = m[1], c = m[2], d = m[4], e = m[5], f = m[6], g = m[8], h = m[9], i = m[10];
+  const A = e*i - f*h, B = f*g - d*i, C = d*h - e*g;
+  const det = a*A + b*B + c*C;
+  if (Math.abs(det) < 1e-12) return new Float32Array([1,0,0, 0,1,0, 0,0,1]);
+  const id = 1/det;
+  return new Float32Array([
+    A*id, (c*h - b*i)*id, (b*f - c*e)*id,
+    B*id, (a*i - c*g)*id, (c*d - a*f)*id,
+    C*id, (b*g - a*h)*id, (a*e - b*d)*id
+  ]);
+}
+function alignY(d) {
+  const l = Math.hypot(d[0], d[1], d[2]) || 1;
+  const y = d[1]/l;
+  if (y > 0.99999) return ident();
+  if (y < -0.99999) return rotX(Math.PI);
+  const ax = [d[2]/l, 0, -d[0]/l];
+  return axisAngle(ax, Math.acos(Math.max(-1, Math.min(1, y))));
+}
+
+/* ================================================================ gl ==== */
+const canvas = $("#gl");
+const gl = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
+if (!gl) { document.body.innerHTML = '<div style="color:#ddd;font:14px sans-serif;padding:40px">当前浏览器不支持 WebGL 2。</div>'; return; }
+
+const VS = `#version 300 es
+in vec3 aPos; in vec3 aNrm; in vec2 aUv;
+uniform mat4 uMVP; uniform mat4 uM; uniform mat3 uN;
+out vec3 vN; out vec3 vW; out vec2 vUv;
+void main(){
+  vN = uN * aNrm;
+  vec4 w = uM * vec4(aPos, 1.0);
+  vW = w.xyz;
+  vUv = aUv;
+  gl_Position = uMVP * vec4(aPos, 1.0);
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+in vec3 vN; in vec3 vW; in vec2 vUv;
+uniform vec3 uColor; uniform vec3 uEmis; uniform vec3 uLdir; uniform vec3 uCam;
+uniform float uAlpha; uniform float uSpec; uniform float uRim; uniform float uTexOn; uniform float uEmAmt;
+uniform float uAmb;
+uniform sampler2D uTex;
+out vec4 outColor;
+void main(){
+  vec4 tx = vec4(1.0);
+  if(uTexOn > 0.5) tx = texture(uTex, vUv);
+  vec3 base = uColor * tx.rgb;
+  vec3 N = normalize(vN);
+  vec3 V = normalize(uCam - vW);
+  vec3 L = normalize(uLdir);
+  float d = max(dot(N, L), 0.0);
+  float fill = max(dot(N, normalize(vec3(-0.55, 0.30, 0.62))), 0.0);
+  vec3 col = base * (uAmb + d * 1.00 + fill * 0.22);
+  vec3 H = normalize(L + V);
+  col += vec3(1.0, 0.97, 0.92) * pow(max(dot(N, H), 0.0), 44.0) * uSpec;
+  col += vec3(0.40, 0.60, 1.00) * pow(1.0 - max(dot(N, V), 0.0), 3.2) * uRim;
+  col += uEmis * uEmAmt * tx.a;
+  outColor = vec4(col, uAlpha * tx.a);
+}`;
+
+const SKY_VS = `#version 300 es
+void main(){
+  vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const SKY_FS = `#version 300 es
+precision highp float;
+out vec4 outColor;
+uniform vec2 uRes;
+uniform vec3 uSkyA;
+uniform vec3 uSkyB;
+uniform float uStars;
+uniform float uT;
+
+float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+
+float layer(vec2 p, float sc, float th){
+  vec2 g = p * sc;
+  vec2 id = floor(g);
+  vec2 f = fract(g) - 0.5;
+  float r = h21(id);
+  if(r < th) return 0.0;
+  vec2 off = vec2(h21(id + 1.31), h21(id + 7.77)) - 0.5;
+  float d = length(f - off * 0.72);
+  float core = smoothstep(0.085, 0.0, d);
+  float halo = smoothstep(0.34, 0.0, d) * 0.16;
+  return (core + halo) * (0.30 + 0.70 * h21(id + 3.17));
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec3 col = mix(uSkyB, uSkyA, smoothstep(0.0, 1.0, uv.y));
+  vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+
+  float s = 0.0;
+  s += layer(p, 5.5, 0.955) * 1.00;
+  s += layer(p, 11.0, 0.972) * 0.62;
+  s += layer(p, 23.0, 0.985) * 0.34;
+  vec3 tint = mix(vec3(0.82, 0.88, 1.00), vec3(1.00, 0.92, 0.80), h21(floor(p * 4.0)));
+  col += tint * s * uStars * 1.25;
+
+  float g = h21(floor(p * 9.0));
+  col *= 1.0 - 0.35 * smoothstep(0.6, 1.6, length(p));
+  outColor = vec4(col, 1.0);
+}`;
+
+function compile(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "shader");
+  return s;
+}
+function program(vs, fs) {
+  const p = gl.createProgram();
+  gl.attachShader(p, compile(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || "link");
+  return p;
+}
+
+const prog = program(VS, FS);
+const skyProg = program(SKY_VS, SKY_FS);
+const A = {
+  pos: gl.getAttribLocation(prog, "aPos"),
+  nrm: gl.getAttribLocation(prog, "aNrm"),
+  uv:  gl.getAttribLocation(prog, "aUv")
+};
+const U = {
+  mvp: gl.getUniformLocation(prog, "uMVP"),
+  m:   gl.getUniformLocation(prog, "uM"),
+  n:   gl.getUniformLocation(prog, "uN"),
+  color: gl.getUniformLocation(prog, "uColor"),
+  emis:  gl.getUniformLocation(prog, "uEmis"),
+  ldir:  gl.getUniformLocation(prog, "uLdir"),
+  cam:   gl.getUniformLocation(prog, "uCam"),
+  alpha: gl.getUniformLocation(prog, "uAlpha"),
+  spec:  gl.getUniformLocation(prog, "uSpec"),
+  rim:   gl.getUniformLocation(prog, "uRim"),
+  texOn: gl.getUniformLocation(prog, "uTexOn"),
+  emAmt: gl.getUniformLocation(prog, "uEmAmt"),
+  amb:   gl.getUniformLocation(prog, "uAmb"),
+  tex:   gl.getUniformLocation(prog, "uTex")
+};
+const SU = {
+  res:  gl.getUniformLocation(skyProg, "uRes"),
+  a:    gl.getUniformLocation(skyProg, "uSkyA"),
+  b:    gl.getUniformLocation(skyProg, "uSkyB"),
+  st:   gl.getUniformLocation(skyProg, "uStars"),
+  t:    gl.getUniformLocation(skyProg, "uT")
+};
+
+/* ============================================================= meshes ==== */
+function mkMesh(pos, nrm, uv, idx) {
+  const vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  const pb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, pb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(A.pos);
+  gl.vertexAttribPointer(A.pos, 3, gl.FLOAT, false, 0, 0);
+  const nb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, nb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(nrm), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(A.nrm);
+  gl.vertexAttribPointer(A.nrm, 3, gl.FLOAT, false, 0, 0);
+  const ub = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, ub);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(A.uv);
+  gl.vertexAttribPointer(A.uv, 2, gl.FLOAT, false, 0, 0);
+  const ib = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+  return { vao, n: idx.length };
+}
+
+function buildSphere(seg, ring) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let j = 0; j <= ring; j++) {
+    const v = j / ring, phi = v * Math.PI;
+    for (let i = 0; i <= seg; i++) {
+      const u = i / seg, th = u * Math.PI * 2;
+      const x = Math.sin(phi) * Math.cos(th), y = Math.cos(phi), z = Math.sin(phi) * Math.sin(th);
+      pos.push(x, y, z); nrm.push(x, y, z); uv.push(u, 1 - v);
+    }
+  }
+  for (let j = 0; j < ring; j++) for (let i = 0; i < seg; i++) {
+    const a = j * (seg + 1) + i, b = a + seg + 1;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+function buildCyl(seg) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let i = 0; i <= seg; i++) {
+    const u = i / seg, th = u * Math.PI * 2, c = Math.cos(th), s = Math.sin(th);
+    pos.push(c, -0.5, s); nrm.push(c, 0, s); uv.push(u, 0);
+    pos.push(c, 0.5, s);  nrm.push(c, 0, s); uv.push(u, 1);
+  }
+  for (let i = 0; i < seg; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+  for (const side of [-1, 1]) {
+    const base = pos.length / 3;
+    pos.push(0, 0.5 * side, 0); nrm.push(0, side, 0); uv.push(.5, .5);
+    for (let i = 0; i <= seg; i++) {
+      const th = i / seg * Math.PI * 2, c = Math.cos(th), s = Math.sin(th);
+      pos.push(c, 0.5 * side, s); nrm.push(0, side, 0); uv.push(.5 + .5 * c, .5 + .5 * s);
+    }
+    for (let i = 0; i < seg; i++) {
+      if (side > 0) idx.push(base, base + 2 + i, base + 1 + i);
+      else idx.push(base, base + 1 + i, base + 2 + i);
+    }
+  }
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+function buildCone(seg) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let i = 0; i <= seg; i++) {
+    const u = i / seg, th = u * Math.PI * 2, c = Math.cos(th), s = Math.sin(th);
+    const l = Math.hypot(c, 1, s);
+    pos.push(c, 0, s); nrm.push(c / l, 1 / l, s / l); uv.push(u, 0);
+    pos.push(0, 1, 0); nrm.push(c / l, 1 / l, s / l); uv.push(u, 1);
+  }
+  for (let i = 0; i < seg; i++) { const a = i * 2; idx.push(a, a + 2, a + 1); }
+  const base = pos.length / 3;
+  pos.push(0, 0, 0); nrm.push(0, -1, 0); uv.push(.5, .5);
+  for (let i = 0; i <= seg; i++) {
+    const th = i / seg * Math.PI * 2, c = Math.cos(th), s = Math.sin(th);
+    pos.push(c, 0, s); nrm.push(0, -1, 0); uv.push(.5 + .5 * c, .5 + .5 * s);
+  }
+  for (let i = 0; i < seg; i++) idx.push(base, base + 1 + i, base + 2 + i);
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+function buildBox() {
+  const p = [], n = [], u = [], ix = [];
+  const faces = [
+    [[1,0,0],[0,0,-1],[0,1,0]], [[-1,0,0],[0,0,1],[0,1,0]],
+    [[0,1,0],[1,0,0],[0,0,-1]], [[0,-1,0],[1,0,0],[0,0,1]],
+    [[0,0,1],[1,0,0],[0,1,0]], [[0,0,-1],[-1,0,0],[0,1,0]]
+  ];
+  for (const [nn, aa, bb] of faces) {
+    const base = p.length / 3;
+    for (const [s1, s2] of [[-1,-1],[1,-1],[1,1],[-1,1]]) {
+      p.push(0.5*(nn[0]+aa[0]*s1+bb[0]*s2), 0.5*(nn[1]+aa[1]*s1+bb[1]*s2), 0.5*(nn[2]+aa[2]*s1+bb[2]*s2));
+      n.push(nn[0], nn[1], nn[2]);
+      u.push((s1+1)/2, (s2+1)/2);
+    }
+    ix.push(base, base+1, base+2, base, base+2, base+3);
+  }
+  return mkMesh(p, n, u, ix);
+}
+
+function buildPlane(rep) {
+  const r = rep || 1;
+  return mkMesh(
+    [-.5,0,-.5, .5,0,-.5, .5,0,.5, -.5,0,.5],
+    [0,1,0, 0,1,0, 0,1,0, 0,1,0],
+    [0,0, r,0, r,r, 0,r],
+    [0,1,2, 0,2,3]
+  );
+}
+function buildQuad() {
+  return mkMesh(
+    [-.5,-.5,0, .5,-.5,0, .5,.5,0, -.5,.5,0],
+    [0,0,1, 0,0,1, 0,0,1, 0,0,1],
+    [0,0, 1,0, 1,1, 0,1],
+    [0,1,2, 0,2,3]
+  );
+}
+
+const sphereM = buildSphere(40, 24);
+const cylM = buildCyl(24);
+const coneM = buildCone(24);
+const boxM = buildBox();
+const planeM = buildPlane(1);
+const groundM = buildPlane(90);
+
+/* a displaced crater field: the regolith around the LM gets real relief
+   instead of a flat decal, so the low sun actually rakes across it */
+function buildTerrain() {
+  const N = 176, S = 760;
+  const craters = [];
+  let guard = 0;
+  while (craters.length < 30 && guard < 900) {
+    guard++;
+    const a = Math.random() * Math.PI * 2;
+    const rr = 26 + Math.pow(Math.random(), 0.55) * 300;
+    const r = 6 + Math.pow(Math.random(), 2.0) * 30;
+    craters.push({ x: Math.cos(a) * rr, z: Math.sin(a) * rr, r, d: 1.5 + Math.random() * 2.6 });
+  }
+  const H = (x, z) => {
+    let y = 0;
+    for (const c of craters) {
+      const dx = x - c.x, dz = z - c.z;
+      const q = Math.hypot(dx, dz) / c.r;
+      if (q > 2.0) continue;
+      if (q < 1) y -= c.d * (1 - q * q) * 1.15;
+      y += Math.exp(-Math.pow((q - 1) / 0.22, 2)) * c.d * 0.62;
+    }
+    y += Math.sin(x * 0.21) * 0.16 + Math.cos(z * 0.27) * 0.14;
+    y += Math.sin(x * 0.83 + z * 0.61) * 0.07;
+    const e = Math.max(Math.abs(x), Math.abs(z)) / S;
+    return y * (1 - smooth(0.33, 0.5, e));
+  };
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let j = 0; j <= N; j++) {
+    const z = (j / N - 0.5) * S;
+    for (let i = 0; i <= N; i++) {
+      const x = (i / N - 0.5) * S;
+      const y = H(x, z);
+      pos.push(x, y, z);
+      const e = 1.6;
+      const nx = H(x - e, z) - H(x + e, z);
+      const nz = H(x, z - e) - H(x, z + e);
+      const len = Math.hypot(nx, 2 * e, nz) || 1;
+      nrm.push(nx / len, (2 * e) / len, nz / len);
+      uv.push(x / 26, z / 26);
+    }
+  }
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const a = j * (N + 1) + i, b = a + N + 1;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  return mkMesh(pos, nrm, uv, idx);
+}
+const terrainM = buildTerrain();
+const quadM = buildQuad();
+
+/* =========================================================== textures ==== */
+function hash3i(i, j, k) {
+  let n = (i * 374761393 + j * 668265263 + k * 1274126177) | 0;
+  n = ((n ^ (n >>> 13)) * 1274126177) | 0;
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+}
+function vn3(x, y, z) {
+  const ix = Math.floor(x), iy = Math.floor(y), iz = Math.floor(z);
+  const fx = x - ix, fy = y - iy, fz = z - iz;
+  const ux = fx*fx*(3-2*fx), uy = fy*fy*(3-2*fy), uz = fz*fz*(3-2*fz);
+  const c000 = hash3i(ix,iy,iz),     c100 = hash3i(ix+1,iy,iz);
+  const c010 = hash3i(ix,iy+1,iz),   c110 = hash3i(ix+1,iy+1,iz);
+  const c001 = hash3i(ix,iy,iz+1),   c101 = hash3i(ix+1,iy,iz+1);
+  const c011 = hash3i(ix,iy+1,iz+1), c111 = hash3i(ix+1,iy+1,iz+1);
+  const x00 = c000 + (c100-c000)*ux, x10 = c010 + (c110-c010)*ux;
+  const x01 = c001 + (c101-c001)*ux, x11 = c011 + (c111-c011)*ux;
+  const y0 = x00 + (x10-x00)*uy, y1 = x01 + (x11-x01)*uy;
+  return y0 + (y1-y0)*uz;
+}
+function fbm3(x, y, z, oct) {
+  let v = 0, amp = 0.5, f = 1;
+  for (let i = 0; i < oct; i++) { v += amp * vn3(x*f, y*f, z*f); f *= 2.07; amp *= 0.5; }
+  return v;
+}
+
+function texFromCanvas(cv) {
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 8);
+  return t;
+}
+
+function makeEarthTex() {
+  const W = 640, H = 320;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const ctx = cv.getContext("2d");
+  const img = ctx.createImageData(W, H), d = img.data;
+  for (let y = 0; y < H; y++) {
+    const lat = (0.5 - y / H) * Math.PI;
+    const cl = Math.cos(lat), sl = Math.sin(lat);
+    const ice = smooth(0.72, 0.93, Math.abs(lat) / (Math.PI / 2));
+    for (let x = 0; x < W; x++) {
+      const lon = (x / W) * Math.PI * 2;
+      const nx = cl * Math.cos(lon), ny = sl, nz = cl * Math.sin(lon);
+      const f = fbm3(nx*1.75 + 4.3, ny*1.75 + 1.1, nz*1.75 + 9.4, 3);
+      const g = fbm3(nx*4.6 + 11.2, ny*4.6 + 3.7, nz*4.6 + 2.2, 2);
+      const c = fbm3(nx*3.2 + 21.5, ny*3.2 + 7.3, nz*3.2 + 15.8, 3);
+      let r, gg, b;
+      if (f > 0.508) {
+        const t = clamp01((f - 0.508) / 0.20);
+        const dry = clamp01((g - 0.44) / 0.22);
+        const l1 = [0.16, 0.28, 0.15], l2 = [0.44, 0.38, 0.22];
+        r = lerp(l1[0], l2[0], dry) * (0.72 + 0.7*t);
+        gg = lerp(l1[1], l2[1], dry) * (0.72 + 0.7*t);
+        b = lerp(l1[2], l2[2], dry) * (0.72 + 0.7*t);
+      } else {
+        const depth = clamp01((0.508 - f) / 0.10);
+        r = lerp(0.055, 0.018, depth);
+        gg = lerp(0.145, 0.062, depth);
+        b = lerp(0.255, 0.145, depth);
+      }
+      const cloud = clamp01((c - 0.49) / 0.13) * 0.82;
+      r = lerp(r, 0.93, cloud); gg = lerp(gg, 0.95, cloud); b = lerp(b, 0.97, cloud);
+      r = lerp(r, 0.90, ice); gg = lerp(gg, 0.93, ice); b = lerp(b, 0.95, ice);
+      const k = (y * W + x) * 4;
+      d[k] = r * 255; d[k+1] = gg * 255; d[k+2] = b * 255; d[k+3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  return texFromCanvas(cv);
+}
+
+function makeMoonTex() {
+  const W = 1024, H = 512;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const ctx = cv.getContext("2d");
+  const low = document.createElement("canvas"); low.width = 160; low.height = 80;
+  const lctx = low.getContext("2d");
+  const img = lctx.createImageData(160, 80), d = img.data;
+  for (let y = 0; y < 80; y++) {
+    const lat = (0.5 - y / 80) * Math.PI;
+    const cl = Math.cos(lat), sl = Math.sin(lat);
+    for (let x = 0; x < 160; x++) {
+      const lon = (x / 160) * Math.PI * 2;
+      const nx = cl*Math.cos(lon), ny = sl, nz = cl*Math.sin(lon);
+      const m = fbm3(nx*2.2 + 8.1, ny*2.2 + 2.4, nz*2.2 + 5.6, 3);
+      const v = 0.74 + (m - 0.5) * 0.34;
+      const k = (y * 160 + x) * 4;
+      d[k] = v * 255; d[k+1] = v * 250; d[k+2] = v * 240; d[k+3] = 255;
+    }
+  }
+  lctx.putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(low, 0, 0, W, H);
+
+  for (let i = 0; i < 520; i++) {
+    const x = Math.random() * W, y = Math.random() * H;
+    const r = 2 + Math.pow(Math.random(), 2.6) * 46;
+    const g = ctx.createRadialGradient(x, y, r * 0.05, x, y, r);
+    g.addColorStop(0, "rgba(20,20,22,0.30)");
+    g.addColorStop(0.62, "rgba(30,30,32,0.14)");
+    g.addColorStop(0.80, "rgba(255,255,248,0.22)");
+    g.addColorStop(1, "rgba(255,255,248,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  }
+  return texFromCanvas(cv);
+}
+
+function makeGroundTex() {
+  const S = 1024;
+  const cv = document.createElement("canvas"); cv.width = S; cv.height = S;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#7c7a74";
+  ctx.fillRect(0, 0, S, S);
+  const low = document.createElement("canvas"); low.width = 128; low.height = 128;
+  const lctx = low.getContext("2d");
+  const img = lctx.createImageData(128, 128), d = img.data;
+  for (let i = 0; i < 128 * 128; i++) {
+    const v = 0.50 + (Math.random() - 0.5) * 0.10;
+    d[i*4] = v*255; d[i*4+1] = v*252; d[i*4+2] = v*244; d[i*4+3] = 255;
+  }
+  lctx.putImageData(img, 0, 0);
+  ctx.globalAlpha = 0.85;
+  ctx.drawImage(low, 0, 0, S, S);
+  ctx.globalAlpha = 1;
+
+  for (let i = 0; i < 210; i++) {
+    const x = Math.random() * S, y = Math.random() * S;
+    const r = 6 + Math.pow(Math.random(), 2.4) * 70;
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      const px = x + dx * S, py = y + dy * S;
+      if (px + r < 0 || px - r > S || py + r < 0 || py - r > S) continue;
+      const sd = ctx.createRadialGradient(px + r*0.18, py + r*0.18, r*0.05, px + r*0.18, py + r*0.18, r*0.95);
+      sd.addColorStop(0, "rgba(24,23,21,0.52)");
+      sd.addColorStop(0.6, "rgba(44,43,40,0.30)");
+      sd.addColorStop(1, "rgba(60,59,55,0)");
+      ctx.fillStyle = sd;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+      const hr = ctx.createRadialGradient(px - r*0.26, py - r*0.26, r*0.52, px - r*0.26, py - r*0.26, r*1.08);
+      hr.addColorStop(0, "rgba(255,253,246,0)");
+      hr.addColorStop(0.78, "rgba(255,253,246,0.26)");
+      hr.addColorStop(1, "rgba(255,253,246,0)");
+      ctx.fillStyle = hr;
+      ctx.beginPath(); ctx.arc(px - r*0.26, py - r*0.26, r*1.08, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  return texFromCanvas(cv);
+}
+
+function makeGlowTex() {
+  const S = 128;
+  const cv = document.createElement("canvas"); cv.width = S; cv.height = S;
+  const ctx = cv.getContext("2d");
+  const g = ctx.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.28, "rgba(255,255,255,0.55)");
+  g.addColorStop(0.62, "rgba(255,255,255,0.14)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, S, S);
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return t;
+}
+
+const earthTex = makeEarthTex();
+const moonTex = makeMoonTex();
+const groundTex = makeGroundTex();
+const glowTex = makeGlowTex();
+
+/* ============================================================== draw ==== */
+let OP = [], AD = [];
+const ZERO = [0, 0, 0];
+let PV = ident(), camPos = [0, 0, 0], CR = [1,0,0], CU = [0,1,0];
+let LDIR = [-0.55, 0.55, 0.62];
+let AMB = 0.105;
+
+function add(mesh, mat, color, o) {
+  const item = { mesh, mat, color, o: o || {} };
+  (item.o.add ? AD : OP).push(item);
+}
+function put(base, mesh, x, y, z, sx, sy, sz, color, o) {
+  let m = trans(x, y, z);
+  if (o) {
+    if (o.ry) m = mul(m, rotY(o.ry));
+    if (o.rx) m = mul(m, rotX(o.rx));
+    if (o.rz) m = mul(m, rotZ(o.rz));
+  }
+  m = mul(m, scaleM(sx, sy, sz));
+  add(mesh, mul(base, m), color, o);
+}
+function between(base, p, q, r, color, o) {
+  const d = [q[0]-p[0], q[1]-p[1], q[2]-p[2]];
+  const len = Math.hypot(d[0], d[1], d[2]) || 1e-3;
+  const mid = [(p[0]+q[0])/2, (p[1]+q[1])/2, (p[2]+q[2])/2];
+  const m = mul(base, mul(trans(mid[0], mid[1], mid[2]), mul(alignY(d), scaleM(r, len, r))));
+  add(cylM, m, color, o);
+}
+function bb(pos, size, color, o) {
+  const m = new Float32Array([
+    CR[0]*size, CR[1]*size, CR[2]*size, 0,
+    CU[0]*size, CU[1]*size, CU[2]*size, 0,
+    0, 0, size, 0,
+    pos[0], pos[1], pos[2], 1
+  ]);
+  add(quadM, m, color, o);
+}
+
+function drawItem(d, additive) {
+  const o = d.o;
+  const mvp = mul(PV, d.mat);
+  gl.uniformMatrix4fv(U.mvp, false, mvp);
+  gl.uniformMatrix4fv(U.m, false, d.mat);
+  gl.uniformMatrix3fv(U.n, false, nrm3(d.mat));
+  gl.uniform3fv(U.color, d.color);
+  gl.uniform3fv(U.emis, o.emis || ZERO);
+  gl.uniform1f(U.alpha, o.alpha === undefined ? 1 : o.alpha);
+  gl.uniform1f(U.spec, o.spec === undefined ? 0.28 : o.spec);
+  gl.uniform1f(U.rim, o.rim || 0);
+  gl.uniform1f(U.emAmt, o.emAmt === undefined ? 1 : o.emAmt);
+  if (o.tex) {
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, o.tex);
+    gl.uniform1f(U.texOn, 1);
+  } else gl.uniform1f(U.texOn, 0);
+  gl.bindVertexArray(d.mesh.vao);
+  gl.drawElements(gl.TRIANGLES, d.mesh.n, gl.UNSIGNED_SHORT, 0);
+}
+
+/* ============================================================= models ==== */
+const WHITE = [0.90, 0.885, 0.855];
+const DARKB = [0.135, 0.130, 0.150];
+const METAL = [0.50, 0.50, 0.53];
+const GOLD  = [0.60, 0.44, 0.17];
+const SILV  = [0.63, 0.63, 0.61];
+
+function saturnV(base, o) {
+  o = o || {};
+  if (o.s1 !== false) {
+    put(base, cylM, 0, 21, 0, 5.05, 42, 5.05, WHITE, { spec: .22 });
+    put(base, cylM, 0, 39.6, 0, 5.09, 4.2, 5.09, DARKB);
+    put(base, cylM, 0, 1.4, 0, 5.12, 2.8, 5.12, DARKB);
+    for (let i = 0; i < 4; i++) {
+      const a = i * Math.PI / 2 + Math.PI / 4;
+      put(base, boxM, Math.cos(a)*5.9, 5.2, Math.sin(a)*5.9, 1.7, 9.5, 0.45, METAL, { ry: -a });
+    }
+    for (let i = 0; i < 5; i++) {
+      const a = i * Math.PI * 2 / 5 + 0.3, rr = i === 0 ? 0 : 2.3;
+      put(base, coneM, Math.cos(a)*rr, 0.5, Math.sin(a)*rr, 0.62, -1.9, 0.62, [0.20,0.19,0.21]);
+    }
+  }
+  put(base, cylM, 0, 44.8, 0, 5.0, 5.4, 5.0, [0.72,0.71,0.69]);
+  put(base, cylM, 0, 60.0, 0, 5.0, 25.0, 5.0, WHITE, { spec: .22 });
+  put(base, cylM, 0, 73.2, 0, 5.04, 1.6, 5.04, DARKB);
+  put(base, cylM, 0, 82.6, 0, 3.30, 17.6, 3.30, WHITE, { spec: .22 });
+  put(base, cylM, 0, 91.6, 0, 3.34, 0.9, 3.34, DARKB);
+  put(base, coneM, 0, 92.0, 0, 3.32, 8.6, 3.32, [0.60,0.59,0.57]);
+  put(base, cylM, 0, 101.0, 0, 1.95, 6.6, 1.95, [0.55,0.55,0.58]);
+  put(base, coneM, 0, 104.3, 0, 1.95, 3.4, 1.95, [0.30,0.29,0.32]);
+  put(base, cylM, 0, 107.9, 0, 0.30, 0.5, 0.30, METAL);
+  put(base, coneM, 0, 108.1, 0, 0.42, 8.2, 0.42, [0.55,0.32,0.26]);
+}
+
+function lmDescent(base, stowed) {
+  put(base, boxM, 0, 1.45, 0, 4.30, 2.90, 4.30, GOLD, { spec: .10 });
+  put(base, boxM, 0, 2.95, 0, 4.10, 0.16, 4.10, [0.40,0.30,0.13]);
+  put(base, boxM, 0, 1.05, 2.17, 3.20, 1.60, 0.06, [0.50,0.37,0.15], { spec: .18 });
+  put(base, boxM, 2.17, 1.05, 0, 0.06, 1.60, 3.20, [0.50,0.37,0.15], { spec: .18 });
+  put(base, boxM, 0, 0.30, 2.17, 3.40, 0.30, 0.08, [0.28,0.21,0.09]);
+  put(base, boxM, 2.17, 0.30, 0, 0.08, 0.30, 3.40, [0.28,0.21,0.09]);
+  const legs = [[1,1],[-1,1],[1,-1],[-1,-1]];
+  for (const [sx, sz] of legs) {
+    if (stowed) {
+      between(base, [sx*1.55, 1.70, sz*1.55], [sx*2.55, 0.85, sz*2.55], 0.12, [0.40,0.40,0.43]);
+      put(base, cylM, sx*2.55, 0.74, sz*2.55, 0.32, 0.16, 0.32, [0.44,0.43,0.41]);
+    } else {
+      between(base, [sx*1.55, 1.60, sz*1.55], [sx*3.55, 0.24, sz*3.55], 0.14, [0.44,0.44,0.47]);
+      between(base, [sx*1.55, 1.60, sz*1.55], [sx*2.75, 0.60, sz*2.75], 0.09, [0.36,0.36,0.39]);
+      put(base, cylM, sx*3.55, 0.10, sz*3.55, 0.38, 0.18, 0.38, [0.52,0.51,0.49]);
+    }
+  }
+  put(base, coneM, 0, 0.62, 0, 0.72, 1.35, 0.72, [0.17,0.16,0.18], { rx: Math.PI });
+  put(base, boxM, 0.95, 1.40, 2.24, 0.07, 2.10, 0.07, [0.60,0.60,0.58]);
+  put(base, boxM, 1.45, 1.40, 2.24, 0.07, 2.10, 0.07, [0.60,0.60,0.58]);
+  for (let i = 0; i < 7; i++) {
+    put(base, boxM, 1.20, 0.42 + i * 0.31, 2.24, 0.56, 0.05, 0.09, [0.70,0.70,0.68]);
+  }
+}
+
+function lmAscent(base) {
+  put(base, boxM, 0, 1.30, 0, 3.90, 2.55, 3.55, SILV, { spec: .30 });
+  put(base, boxM, 0, 2.58, 0, 3.20, 0.16, 3.00, [0.50,0.50,0.50]);
+  put(base, boxM, 0, 0.95, 1.95, 1.55, 0.85, 0.55, SILV);
+  put(base, boxM, 0, 1.35, 1.86, 1.30, 0.10, 0.20, [0.24,0.23,0.25]);
+  put(base, boxM, 0, 1.55, -1.95, 1.10, 0.95, 0.30, [0.42,0.42,0.44]);
+  put(base, cylM, 0, 2.92, -1.30, 0.055, 0.85, 0.055, METAL);
+  put(base, coneM, 0, 3.72, -1.30, 0.34, 0.10, 0.34, [0.80,0.80,0.78], { rx: Math.PI });
+  put(base, cylM, 0, 2.86, 1.10, 0.045, 0.55, 0.045, METAL);
+  for (const [sx, sz] of [[1,1],[-1,1],[1,-1],[-1,-1]]) {
+    put(base, boxM, sx*1.85, 2.35, sz*1.62, 0.34, 0.30, 0.34, [0.30,0.30,0.32]);
+  }
+  put(base, boxM, 0, 1.28, 0, 0.62, 0.34, 0.30, [0.20,0.20,0.22]);
+  put(base, boxM, 0, 0.60, 2.10, 1.55, 0.10, 0.95, [0.56,0.56,0.54]);
+  put(base, boxM, 0, 0.70, 1.80, 1.05, 0.10, 0.30, [0.50,0.50,0.48]);
+}
+
+function lmFull(base, stowed) {
+  lmDescent(base, stowed);
+  lmAscent(mul(base, trans(0, 2.95, 0)));
+}
+
+function saturnUpper(base) {
+  put(base, cylM, 0, 82.6, 0, 3.30, 17.6, 3.30, WHITE, { spec: .22 });
+  put(base, cylM, 0, 74.4, 0, 3.34, 1.4, 3.34, DARKB);
+  put(base, coneM, 0, 73.6, 0, 1.20, 2.6, 1.20, [0.20,0.19,0.21], { rx: Math.PI });
+  put(base, cylM, 0, 91.6, 0, 3.34, 0.9, 3.34, DARKB);
+  put(base, coneM, 0, 92.0, 0, 3.32, 8.6, 3.32, [0.60,0.59,0.57]);
+  put(base, cylM, 0, 101.0, 0, 1.95, 6.6, 1.95, [0.55,0.55,0.58]);
+  put(base, coneM, 0, 104.3, 0, 1.95, 3.4, 1.95, [0.30,0.29,0.32]);
+  put(base, cylM, 0, 107.9, 0, 0.30, 0.5, 0.30, METAL);
+  put(base, coneM, 0, 108.1, 0, 0.42, 8.2, 0.42, [0.55,0.32,0.26]);
+}
+
+function csm(base) {
+  put(base, cylM, 0, 0, 0, 1.95, 7.0, 1.95, [0.58,0.58,0.61], { spec: .42 });
+  put(base, cylM, 0, -3.4, 0, 1.98, 0.4, 1.98, [0.30,0.30,0.33]);
+  put(base, coneM, 0, 3.5, 0, 1.95, 3.4, 1.95, [0.30,0.29,0.32], { spec: .45 });
+  put(base, cylM, 0, 6.95, 0, 0.42, 0.22, 0.42, [0.22,0.22,0.24]);
+  put(base, coneM, 0, -3.6, 0, 0.62, 1.55, 0.62, [0.17,0.16,0.18], { rx: Math.PI });
+  for (let i = 0; i < 4; i++) {
+    const a = i * Math.PI / 2 + Math.PI / 4;
+    put(base, boxM, Math.cos(a)*1.92, 1.6, Math.sin(a)*1.92, 0.30, 0.55, 0.30, [0.36,0.36,0.38], { ry: -a });
+  }
+}
+
+function astronaut(base, t, phase) {
+  const sw = Math.sin(t * 2.6 + phase) * 0.34;
+  const W2 = [0.84, 0.84, 0.82];
+  put(base, boxM, 0, 1.16, 0, 0.44, 0.56, 0.30, W2, { spec: .18 });
+  put(base, boxM, 0, 1.20, -0.24, 0.38, 0.50, 0.20, [0.72,0.72,0.70]);
+  put(base, sphereM, 0, 1.56, 0.02, 0.155, 0.155, 0.155, W2);
+  put(base, boxM, 0, 1.57, 0.135, 0.20, 0.14, 0.05, [0.55, 0.40, 0.14], { spec: .8 });
+  between(base, [-0.22, 1.38, 0], [-0.28 - sw*0.10, 0.92, 0.05], 0.062, W2);
+  between(base, [ 0.22, 1.38, 0], [ 0.26 + sw*0.10, 0.92, -0.02], 0.062, W2);
+  between(base, [-0.12, 0.88, 0], [-0.14 + sw*0.16, 0.44, 0.03], 0.070, W2);
+  between(base, [ 0.12, 0.88, 0], [ 0.14 - sw*0.16, 0.44, -0.03], 0.070, W2);
+  put(base, boxM, -0.14 + sw*0.16, 0.14, 0.05, 0.13, 0.10, 0.22, [0.62,0.62,0.60]);
+  put(base, boxM,  0.14 - sw*0.16, 0.14, -0.02, 0.13, 0.10, 0.22, [0.62,0.62,0.60]);
+}
+
+function plume(base, y, r, len, inten, warm) {
+  const cols = warm
+    ? [[1.0, 0.96, 0.88], [1.0, 0.72, 0.36], [1.0, 0.48, 0.18]]
+    : [[0.92, 0.94, 1.0], [0.62, 0.72, 1.0], [0.45, 0.52, 1.0]];
+  for (let k = 0; k < 4; k++) {
+    const t = k / 3;
+    const ll = len * (1 - t * 0.26), rr = r * (0.42 + 0.70 * t);
+    put(base, coneM, 0, y - ll, 0, rr, ll, rr, ZERO, {
+      add: true, emis: cols[Math.min(2, k)], emAmt: inten * (1.0 - t * 0.42), alpha: 0.42 - t * 0.10
+    });
+  }
+}
+
+function tower(base, x, z, h) {
+  const col = [0.30, 0.21, 0.19];
+  for (let i = 0; i < 4; i++) {
+    const dx = (i & 1 ? 1 : -1) * 3.2, dz = (i & 2 ? 1 : -1) * 3.2;
+    put(base, boxM, x + dx, h / 2, z + dz, 0.55, h, 0.55, col);
+  }
+  for (let y = 7; y < h; y += 11) {
+    put(base, boxM, x, y, z - 3.2, 6.9, 0.36, 0.36, col);
+    put(base, boxM, x, y, z + 3.2, 6.9, 0.36, 0.36, col);
+    put(base, boxM, x - 3.2, y, z, 0.36, 0.36, 6.9, col);
+    put(base, boxM, x + 3.2, y, z, 0.36, 0.36, 6.9, col);
+    put(base, boxM, x - 3.2, y + 5.5, z, 0.24, 0.24, 6.9, col, { rx: 0.52 });
+  }
+  put(base, boxM, x + 3.6, h * 0.72, z, 1.0, 6.0, 1.0, [0.34,0.24,0.21]);
+  put(base, boxM, x + 5.2, h * 0.72, z, 3.2, 0.3, 0.3, [0.34,0.24,0.21]);
+}
+
+/* ============================================================== stages ==== */
+const STAGES = [
+  { cn: "点火升空", en: "LIFT-OFF",  short: "点火", sen: "LIFT",    tm: "T+00:00",  get: [0, 160],       dist: [0, 95],         spd: [0, 7600],     g: [1, 3.9] },
+  { cn: "入轨 · TLI", en: "TLI BURN", short: "入轨", sen: "TLI",    tm: "02:40",    get: [160, 11700],   dist: [95, 18000],     spd: [7600, 38900], g: [3.9, 0] },
+  { cn: "地月转移", en: "COAST",      short: "转移", sen: "COAST",  tm: "03:15",    get: [11700, 272000],dist: [18000, 381000], spd: [38900, 4200], g: [0, 0] },
+  { cn: "月球轨道", en: "LUNAR ORBIT",short: "环月", sen: "LOI",    tm: "75:33",    get: [272000, 288000],dist: [381000, 384400],spd: [4200, 5800],  g: [0, 0] },
+  { cn: "鹰号下降", en: "DESCENT",    short: "下降", sen: "POWERED",tm: "100:00",   get: [360000, 369940],dist: [384400, 384400],spd: [5800, 40],    g: [0.17, 0.17] },
+  { cn: "着陆",     en: "TOUCHDOWN",  short: "着陆", sen: "TOUCH",  tm: "102:45",   get: [369940, 372000],dist: [384400, 384400],spd: [40, 0],       g: [0.17, 0.17] },
+  { cn: "月面行走", en: "EVA",        short: "月面", sen: "EVA",    tm: "109:00",   get: [392400, 401400],dist: [384400, 384400],spd: [0, 0],        g: [0.17, 0.17] },
+  { cn: "上升 · 对接", en: "ASCENT",  short: "上升", sen: "ASCENT", tm: "124:00",   get: [446400, 449000],dist: [384400, 384400],spd: [0, 5800],     g: [0.17, 0] },
+  { cn: "返回 · 溅落", en: "RETURN",  short: "返回", sen: "RETURN", tm: "135:00",   get: [486000, 703115],dist: [384400, 0],      spd: [5800, 0],     g: [0, 1] }
+];
+
+const NOTES = [
+  { k: "1969-07-16 · 13:32 UTC", h: "三千吨，离地",
+    p: "土星五号高 110.6 米，起飞质量 2,970 吨。第一级五台 F-1 发动机每秒烧掉 13 吨推进剂，产生 3,400 吨推力——相当于把一艘驱逐舰推上天。" },
+  { k: "T+02:42 · 地球轨道", h: "先绕一圈半，再走",
+    p: "入轨后绕地球一圈半，检查所有系统。然后 S-IVB 第三次点火 5 分 47 秒，把速度从 7.8 km/s 推到 10.8 km/s——刚好够脱离地球，又不足以逃离地月系统。" },
+  { k: "7 月 16 — 19 日", h: "三天，什么都没有",
+    p: "38 万公里，76 小时。飞船以每分钟一圈的「烤肉模式」缓慢自转，让阳光均匀晒到每一面。导航靠一台 4 KB 内存的计算机和一架六分仪。" },
+  { k: "7 月 19 日 · 17:22 UTC", h: "在月球背面点火",
+    p: "飞船绕到月球背面，与地球失去无线电联系。在那 48 分钟里，服务舱发动机点火 6 分钟减速。如果失败，他们就再也回不来——而地球上没有人能帮上忙。" },
+  { k: "7 月 20 日 · 20:05 UTC", h: "十二分钟，十五公里",
+    p: "鹰号分离，下降发动机点火。导航计算机不断报 1202 报警，阿姆斯特朗手动接管，把着陆点往前推了约 500 米——因为原定地点布满巨石。" },
+  { k: "7 月 20 日 · 20:17 UTC", h: "只剩十五秒",
+    p: "接触灯亮起。下降级推进剂只剩大约 15 秒的余量。「休斯顿，这里是静海基地，鹰号已着陆。」地球上，约 4 亿人守在收音机前。" },
+  { k: "7 月 21 日 · 02:56 UTC", h: "一小步",
+    p: "阿姆斯特朗踏上月面。月尘像粉末一样粘在靴子上；没有风，没有水，那些脚印会留几百万年。两个人在外面待了 2 小时 31 分，带回 21.5 公斤岩石。" },
+  { k: "7 月 21 日 · 17:54 UTC", h: "把下降级留下",
+    p: "上升级发动机点火 7 分钟，把 4.5 吨的座舱送上月球轨道。下降级、相机、脚印，全部留在原地。月球上现在有六处这样的着陆点。" },
+  { k: "7 月 24 日 · 16:50 UTC", h: "十一公里每秒",
+    p: "指令舱以 11 km/s 冲进大气层，隔热罩表面烧到 2,700°C。降落伞打开，溅落在太平洋。三名宇航员在隔离舱里待了 21 天——怕他们带回月球上的微生物。" }
+];
+
+/* ---------------------------------------------------------- stage draw -- */
+function stageLaunch(u, t) {
+  const ign = smooth(0.03, 0.20, u);
+  const rise = smooth(0.24, 1.0, u) * 30;
+  const flick = 0.86 + 0.14 * Math.sin(t * 33) + 0.06 * Math.sin(t * 71);
+
+  put(ident(), planeM, 0, -0.3, 0, 2600, 1, 2600, [0.075, 0.068, 0.080]);
+  put(ident(), boxM, 0, 1.2, 0, 30, 3, 30, [0.145, 0.135, 0.150]);
+  put(ident(), boxM, 0, 3.0, 26, 34, 1.4, 9, [0.115, 0.105, 0.120]);
+  tower(ident(), -14.5, -8, 98);
+
+  const base = mul(trans(0, rise + 3.4, 0), rotY(-0.32));
+  saturnV(base);
+
+  if (ign > 0.02) {
+    plume(base, 0.2, 4.4, Math.min(78, rise + 22), 1.15 * ign * flick, true);
+    bb([0, 1.5 + rise, 0], 34 + 26 * ign, ZERO, {
+      add: true, tex: glowTex, emis: [1.0, 0.62, 0.28], emAmt: 0.9 * ign * flick, alpha: 0.9
+    });
+    for (let i = 0; i < 6; i++) {
+      const a = i * 1.05 + t * 0.5;
+      const rr = 12 + i * 5.5;
+      bb([Math.cos(a) * rr, 1.5 + (i % 3) * 2.2, Math.sin(a) * rr], 22 + i * 6, ZERO, {
+        add: true, tex: glowTex, emis: [0.55, 0.42, 0.36], emAmt: 0.28 * ign, alpha: 0.55
+      });
+    }
+  }
+  LDIR = [0.30, 0.66, 0.68];
+}
+
+function stageTLI(u, t) {
+  const burn = smooth(0.30, 0.62, u);
+  const pitch = smooth(0.0, 1.0, u) * 0.80;
+
+  put(ident(), sphereM, -520, -1000, -2100, 780, 780, 780, [1.35,1.35,1.35], { tex: earthTex, spec: .08, emis: [0.02,0.04,0.07], emAmt: 0.6 });
+  put(ident(), sphereM, -520, -1000, -2100, 792, 792, 792, ZERO, { add: true, rim: 1.25, alpha: 1 });
+
+  const base = mul(trans(0, 0, 0), mul(rotZ(-pitch * 0.85), rotY(0.5 + t * 0.03)));
+  saturnUpper(base);
+
+  if (burn > 0.01) {
+    plume(base, 73.0, 2.6, 30 * burn, 1.0 * burn, false);
+    bb([0, 92, 0], 16 * burn, ZERO, { add: true, tex: glowTex, emis: [0.6,0.72,1.0], emAmt: 0.5 * burn, alpha: 0.6 });
+  }
+  AMB = 0.20;
+  LDIR = [0.24, 0.56, 0.72];
+}
+
+function stageCoast(u, t) {
+  const earthX = lerp(-560, -680, u);
+  const moonX = lerp(620, 540, u);
+  const moonZ = lerp(-1900, -1760, u);
+  const moonR = lerp(52, 64, u);
+
+  put(ident(), sphereM, 330, -108, -1880, 104, 104, 104, [1,1,1], { tex: earthTex, spec: .1 });
+  put(ident(), sphereM, 330, -108, -1880, 110, 110, 110, ZERO, { add: true, rim: 1.6 });
+  put(ident(), sphereM, 325, 212, -1961, 100, 100, 100, [1,1,1], { tex: moonTex, spec: .04, rz: 1.15 });
+
+  const roll = t * 0.22;
+  const base = mul(mul(trans(0, 0, 0), rotZ(roll)), rotX(0.55));
+  csm(base);
+  lmFull(mul(base, mul(trans(0, 12.55, 0), rotX(Math.PI))), true);
+
+  LDIR = [0.30, 0.58, 0.72];
+}
+
+function stageOrbit(u, t) {
+  const ang = t * 0.11 + u * 0.4;
+  put(ident(), sphereM, 0, -760, 0, 700, 700, 700, [1.75,1.68,1.56], { tex: moonTex, spec: .05, rz: 1.15 });
+
+  const sx = -66 + Math.cos(ang) * 26;
+  const sy = 104 + Math.sin(ang * 0.85) * 15;
+  const sz = 512 + Math.sin(ang) * 24;
+  const base = mul(mul(trans(sx, sy, sz), rotY(ang + 1.2)), rotZ(-0.55));
+  csm(base);
+  lmFull(mul(base, mul(trans(0, 12.55, 0), rotX(Math.PI))), true);
+
+  const burn = smooth(0.18, 0.45, u) * (1 - smooth(0.62, 0.85, u));
+  if (burn > 0.01) plume(base, -5.1, 1.5, 16 * burn, 0.9 * burn, false);
+
+  AMB = 0.27;
+  LDIR = [0.32, 0.50, 0.66];
+}
+
+function stageDescent(u, t) {
+  const alt = lerp(58, 0.6, smooth(0.05, 0.95, u));
+  const tilt = lerp(0.26, 0.04, smooth(0.1, 0.7, u));
+  const burn = 0.85 + 0.15 * Math.sin(t * 21);
+
+  put(ident(), groundM, 0, -0.15, 0, 9000, 1, 9000, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), terrainM, 0, 0, 0, 1, 1, 1, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+
+  put(ident(), sphereM, -3200, 2500, -3800, 120, 120, 120, [1,1,1], { tex: earthTex, spec: .1, emis: [0.05,0.10,0.18], emAmt: 1 });
+  put(ident(), sphereM, -3200, 2500, -3800, 126, 126, 126, ZERO, { add: true, rim: 1.6 });
+
+  const base = mul(mul(trans(0, alt, 0), rotY(0.52)), rotZ(tilt));
+  lmFull(base);
+
+  plume(base, 0.3, 0.96, 5.0 + 6.0 * (1 - u), 0.30 * burn, true);
+  bb([0, alt - 1, 0], 5, ZERO, { add: true, tex: glowTex, emis: [1.0, 0.68, 0.34], emAmt: 0.22 * burn, alpha: 0.34 });
+
+  const hit = smooth(0.82, 1.0, u);
+  if (hit > 0.01) {
+    const rr = 6 + hit * 30;
+    bb([0, 0.25, 0], rr * 2, ZERO, { add: true, tex: glowTex, emis: [0.55, 0.50, 0.44], emAmt: 0.5 * hit, alpha: 0.5 });
+  }
+  LDIR = [0.56, 0.40, 0.72];
+}
+
+function stageTouch(u, t) {
+  const drop = (1 - smooth(0.0, 0.55, u)) * 3.2;
+  const dust = smooth(0.15, 0.9, u);
+
+  put(ident(), groundM, 0, -0.15, 0, 9000, 1, 9000, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), terrainM, 0, 0, 0, 1, 1, 1, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), sphereM, -2080, 470, -2260, 168, 168, 168, [1,1,1], { tex: earthTex, spec: .1, emis: [0.05,0.10,0.18], emAmt: 1 });
+
+  put(ident(), planeM, 0, 0.05, 0, 12, 1, 12, [0,0,0], { tex: glowTex, alpha: 0.62, spec: 0, rim: 0 });
+  const base = mul(trans(0, drop, 0), rotY(0.46));
+  lmFull(base);
+
+  if (dust > 0.02) {
+    for (let i = 0; i < 5; i++) {
+      const rr = 4 + dust * (10 + i * 7);
+      put(ident(), planeM, 0, 0.16 + i * 0.02, 0, rr * 2, 1, rr * 2, ZERO, {
+        add: true, tex: glowTex, emis: [0.62, 0.57, 0.50], emAmt: (0.16 - i * 0.026) * dust, alpha: 0.30
+      });
+    }
+  }
+  LDIR = [0.56, 0.40, 0.72];
+}
+
+const ROCKS = (function () {
+  const a = [];
+  for (let i = 0; i < 34; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const rr = 5 + Math.pow(Math.random(), 0.7) * 42;
+    a.push({
+      x: Math.cos(ang) * rr, z: Math.sin(ang) * rr,
+      s: 0.18 + Math.pow(Math.random(), 2.2) * 1.1,
+      r: Math.random() * 3, k: 0.16 + Math.random() * 0.10
+    });
+  }
+  return a;
+})();
+
+function stageEVA(u, t) {
+  const cam = t * 0.10 + u * 0.35;
+  put(ident(), groundM, 0, -0.15, 0, 9000, 1, 9000, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), terrainM, 0, 0, 0, 1, 1, 1, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), sphereM, -2290, 261, -1922, 140, 140, 140, [1,1,1], { tex: earthTex, spec: .1, emis: [0.05,0.11,0.19], emAmt: 1 });
+  put(ident(), sphereM, -2290, 261, -1922, 147, 147, 147, ZERO, { add: true, rim: 1.7 });
+
+  const base = rotY(0.50);
+  lmFull(base);
+
+  // flag
+  const fx = 4.6, fz = 5.4;
+  put(ident(), cylM, fx, 1.05, fz, 0.035, 2.1, 0.035, [0.62,0.62,0.60]);
+  put(ident(), boxM, fx + 0.48, 1.86, fz, 0.96, 0.62, 0.03, [0.80, 0.80, 0.78], { spec: .2 });
+  put(ident(), boxM, fx + 0.48, 1.60, fz, 0.96, 0.10, 0.035, [0.55, 0.20, 0.20]);
+
+  const walk = Math.sin(t * 0.9) * 0.9;
+  const ax = 6.6 + walk, az = 7.8 + Math.cos(t * 0.6) * 0.5;
+  const ab = mul(mul(trans(ax, 0, az), rotY(0.62 + Math.sin(t * 0.5) * 0.12)), scaleM(1.15, 1.15, 1.15));
+  astronaut(ab, t, 0);
+
+  // footprints
+  for (let i = 0; i < 11; i++) {
+    const p = i / 10;
+    put(ident(), boxM, lerp(0.3, 6.2, p), 0.02, lerp(3.0, 7.4, p), 0.28, 0.02, 0.42, [0.26, 0.25, 0.24], { ry: 0.72 });
+  }
+  LDIR = [0.58, 0.38, 0.72];
+}
+
+function stageAscent(u, t) {
+  const rise = smooth(0.10, 1.0, u) * 21;
+  const burn = smooth(0.06, 0.24, u);
+
+  put(ident(), groundM, 0, -0.15, 0, 9000, 1, 9000, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), terrainM, 0, 0, 0, 1, 1, 1, [1.46,1.41,1.31], { tex: groundTex, spec: .03 });
+  put(ident(), sphereM, -3300, 2500, -3900, 130, 130, 130, [1,1,1], { tex: earthTex, spec: .1, emis: [0.05,0.10,0.18], emAmt: 1 });
+
+  lmDescent(rotY(0.44));
+
+  const base = mul(mul(trans(0, 2.95 + rise, 0), rotY(0.44)), rotZ(0.10 + u * 0.20));
+  lmAscent(base);
+  if (burn > 0.01) {
+    plume(base, 0.0, 1.35, 5.5 + 4 * burn, 0.55 * burn, true);
+    bb([0, 2.95 + rise - 0.6, 0], 7, ZERO, { add: true, tex: glowTex, emis: [1.0, 0.70, 0.36], emAmt: 0.4 * burn, alpha: 0.5 });
+  }
+  for (let i = 0; i < 4; i++) {
+    const rr = 3 + i * 4 + rise * 0.25;
+    put(ident(), planeM, 0, 0.15 + i * 0.02, 0, rr * 2, 1, rr * 2, ZERO, {
+      add: true, tex: glowTex, emis: [0.60, 0.55, 0.48], emAmt: 0.20 * (1 - i * 0.2), alpha: 0.35
+    });
+  }
+  LDIR = [0.56, 0.40, 0.72];
+}
+
+function stageReturn(u, t) {
+  const heat = smooth(0.06, 0.55, u);
+  const flick = 0.82 + 0.18 * Math.sin(t * 29) + 0.08 * Math.sin(t * 61);
+
+  put(ident(), sphereM, 0, -2640, 0, 2400, 2400, 2400, [1.12,1.10,1.08], { tex: earthTex, spec: .07, emis: [0.015,0.03,0.055], emAmt: 0.9 });
+  put(ident(), sphereM, 0, -2640, 0, 2432, 2432, 2432, ZERO, { add: true, rim: 0.55 });
+
+  // heat shield faces the direction of travel; the plasma streams behind
+  const base = mul(trans(0, 26, 0), rotZ(Math.PI * 0.5));
+  csm(base);
+
+  if (heat > 0.01) {
+    plume(base, -4.6, 1.55, 13 * heat, 0.34 * heat * flick, true);
+    bb([-4.4, 26, 0], 13 * heat, ZERO, { add: true, tex: glowTex, emis: [1.0, 0.68, 0.32], emAmt: 0.55 * heat * flick, alpha: 0.6 });
+    for (let i = 1; i <= 7; i++) {
+      bb([-3.0 + i * 2.6, 26 + Math.sin(i * 2.3) * 2.0, Math.cos(i * 1.7) * 2.0], (15 - i * 1.35) * heat, ZERO, {
+        add: true, tex: glowTex, emis: [1.0, 0.50, 0.20], emAmt: 0.22 * heat, alpha: 0.34
+      });
+    }
+  }
+  LDIR = [0.34, 0.56, 0.72];
+}
+
+const SCENES = [stageLaunch, stageTLI, stageCoast, stageOrbit, stageDescent, stageTouch, stageEVA, stageAscent, stageReturn];
+const SKY = [
+  { a: [0.020, 0.028, 0.062], b: [0.075, 0.070, 0.115], s: 0.30 },
+  { a: [0.004, 0.006, 0.014], b: [0.030, 0.055, 0.105], s: 0.55 },
+  { a: [0.003, 0.004, 0.010], b: [0.006, 0.008, 0.018], s: 1.00 },
+  { a: [0.003, 0.004, 0.010], b: [0.006, 0.008, 0.018], s: 1.00 },
+  { a: [0.002, 0.003, 0.008], b: [0.005, 0.007, 0.014], s: 1.00 },
+  { a: [0.002, 0.003, 0.008], b: [0.005, 0.007, 0.014], s: 1.00 },
+  { a: [0.002, 0.003, 0.008], b: [0.005, 0.007, 0.014], s: 1.00 },
+  { a: [0.002, 0.003, 0.008], b: [0.005, 0.007, 0.014], s: 1.00 },
+  { a: [0.006, 0.010, 0.026], b: [0.030, 0.045, 0.075], s: 0.80 }
+];
+
+/* ---------------------------------------------------------- cameras ---- */
+function cameraFor(i, u, t) {
+  let eye, tgt, fov = 44;
+  if (i === 0) {
+    const rise = smooth(0.24, 1.0, u) * 30;
+    eye = [152, 24 + rise * 0.55, 196];
+    tgt = [0, 50 + rise * 0.95, 0];
+    fov = 42;
+  } else if (i === 1) {
+    eye = [58, 74, 138];
+    tgt = [0, 96, 0];
+    fov = 45;
+  } else if (i === 2) {
+    eye = [0, 14, 112];
+    tgt = [0, 4, 0];
+    fov = 40;
+  } else if (i === 3) {
+    eye = [0, 128, 616];
+    tgt = [-34, 102, 514];
+    fov = 44;
+  } else if (i === 4) {
+    const alt = lerp(58, 0.6, smooth(0.05, 0.95, u));
+    eye = [17, alt + 6, 24];
+    tgt = [0, alt - 0.5, 0];
+    fov = 44;
+  } else if (i === 5) {
+    eye = [19, 4.8, 27];
+    tgt = [0, 2.7, 0];
+    fov = 42;
+  } else if (i === 6) {
+    const a = 0.55 + t * 0.045;
+    eye = [Math.cos(a) * 30, 7.0, Math.sin(a) * 30];
+    tgt = [0.8, 2.3, 1.2];
+    fov = 44;
+  } else if (i === 7) {
+    const rise = smooth(0.10, 1.0, u) * 21;
+    eye = [34, 12, 47];
+    tgt = [0, 6.2 + rise * 0.74, 0];
+    fov = 46;
+  } else {
+    eye = [5, 38, 64];
+    tgt = [2, 20, 0];
+    fov = 40;
+  }
+  const wob = Math.sin(t * 0.7) * 0.004;
+  eye = [eye[0] * (1 + wob), eye[1], eye[2] * (1 + wob)];
+  return { eye, tgt, fov };
+}
+
+/* ================================================================ HUD ==== */
+const stagesEl = $("#stages");
+stagesEl.innerHTML = STAGES.map((s, i) =>
+  `<span data-t="${i / STAGES.length}">${s.short}<i>${s.sen}</i></span>`).join("");
+
+const erasEl = $("#eras");
+erasEl.innerHTML = STAGES.map((e, i) =>
+  `<li data-p="${i / STAGES.length}"><time>${e.tm}</time><div><b>${e.cn}</b><i>${e.en}</i></div></li>`).join("");
+const eraEls = [...erasEl.children];
+
+const S = { t: 0, playing: true, dur: 104, speed: 1, clock: 0, stage: -1 };
+const START = params.get("t");
+if (START !== null) {
+  S.t = clamp01(parseFloat(START) || 0);
+  S.playing = false;
+  $("#play").textContent = "播放";
+}
+if (STILL) { S.playing = false; $("#play").textContent = "播放"; }
+
+const SM = { get: 0, dist: 0, spd: 0, g: 1, init: false };
+
+function stageAt(t) {
+  const n = STAGES.length;
+  const i = Math.min(n - 1, Math.floor(t * n));
+  return { i, u: clamp01(t * n - i) };
+}
+
+function setEnded(on) {
+  $("#end").classList.toggle("is-on", on);
+  document.body.classList.toggle("ended", on);
+}
+
+let noteIdx = -1;
+const noteEl = $("#note");
+function paintNote(i, u) {
+  const idx = (u > 0.04) ? i : -1;
+  if (idx === noteIdx) return;
+  noteIdx = idx;
+  if (idx < 0) { noteEl.classList.remove("is-on"); return; }
+  const n = NOTES[idx];
+  $("#nK").textContent = n.k;
+  $("#nH").textContent = n.h;
+  $("#nP").textContent = n.p;
+  noteEl.classList.remove("is-on");
+  void noteEl.offsetWidth;
+  noteEl.classList.add("is-on");
+}
+
+function hms(s) {
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0");
+}
+
+const PAL = {
+  get: $("#cGET"), dist: $("#cDist"), spd: $("#cSpd"), g: $("#cG"),
+  tjF: $("#tjFill"), tjD: $("#tjDot"), tjP: $("#tjPct"), tjA: $("#tjAlt"),
+  fill: $("#fill"), dot: $("#hdot")
+};
+
+function paintHUD(t, dt) {
+  const { i, u } = stageAt(t);
+  const st = STAGES[i];
+  const target = {
+    get: lerp(st.get[0], st.get[1], u),
+    dist: lerp(st.dist[0], st.dist[1], u),
+    spd: lerp(st.spd[0], st.spd[1], u),
+    g: lerp(st.g[0], st.g[1], u)
+  };
+  if (!SM.init) { Object.assign(SM, target); SM.init = true; }
+  const k = 1 - Math.exp(-Math.max(0.001, dt) * 9);
+  SM.get += (target.get - SM.get) * k;
+  SM.dist += (target.dist - SM.dist) * k;
+  SM.spd += (target.spd - SM.spd) * k;
+  SM.g += (target.g - SM.g) * k;
+
+  PAL.get.textContent = hms(SM.get);
+  PAL.dist.textContent = Math.round(SM.dist).toLocaleString("en-US");
+  PAL.spd.textContent = Math.round(SM.spd).toLocaleString("en-US");
+  PAL.g.textContent = SM.g.toFixed(2);
+
+  const frac = clamp01(SM.dist / 384400);
+  PAL.tjF.style.width = (frac * 100).toFixed(2) + "%";
+  PAL.tjD.style.left = (frac * 100).toFixed(2) + "%";
+  PAL.tjP.textContent = Math.round(frac * 100) + "%";
+  PAL.tjA.textContent = "地月距离 384,400 km";
+
+  eraEls.forEach((el, n) => el.classList.toggle("is-on", n === i));
+  PAL.fill.style.width = (t * 100).toFixed(2) + "%";
+  PAL.dot.style.left = (t * 100).toFixed(2) + "%";
+
+  const kids = stagesEl.children;
+  for (let n = 0; n < kids.length; n++) kids[n].classList.toggle("is-on", n === i);
+
+  paintNote(i, u);
+  setEnded(t > 0.995);
+}
+
+/* =============================================================== loop ==== */
+let W = 1, H = 1, DPR = 1;
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = canvas.clientWidth || window.innerWidth;
+  H = canvas.clientHeight || window.innerHeight;
+  canvas.width = Math.round(W * DPR);
+  canvas.height = Math.round(H * DPR);
+  gl.viewport(0, 0, canvas.width, canvas.height);
+}
+window.addEventListener("resize", resize);
+resize();
+
+const skyVao = gl.createVertexArray();
+
+function cutFlash() {
+  const el = $("#cut");
+  el.style.transition = "none";
+  el.style.opacity = "1";
+  requestAnimationFrame(() => {
+    el.style.transition = "opacity .65s ease";
+    el.style.opacity = "0";
+  });
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.06, Math.max(0.001, (now - last) / 1000));
+  last = now;
+  S.clock += dt;
+  if (S.playing) {
+    S.t += dt / S.dur * S.speed;
+    if (S.t >= 1) { S.t = 1; S.playing = false; $("#play").textContent = "播放"; }
+  }
+
+  const { i, u } = stageAt(S.t);
+  if (i !== S.stage) {
+    if (S.stage >= 0) cutFlash();
+    S.stage = i;
+  }
+
+  const sk = SKY[i];
+  gl.disable(gl.DEPTH_TEST);
+  gl.depthMask(false);
+  gl.disable(gl.BLEND);
+  gl.useProgram(skyProg);
+  gl.bindVertexArray(skyVao);
+  gl.uniform2f(SU.res, canvas.width, canvas.height);
+  gl.uniform3fv(SU.a, sk.a);
+  gl.uniform3fv(SU.b, sk.b);
+  gl.uniform1f(SU.st, sk.s);
+  gl.uniform1f(SU.t, S.clock);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  OP = []; AD = [];
+  const cam = cameraFor(i, u, S.clock);
+  const V = lookAt(cam.eye, cam.tgt, [0, 1, 0]);
+  const fovAdj = (W / H) < 1.2 ? 1.52 : (W / H) < 1.45 ? 1.18 : 1;
+  const P = persp(cam.fov * fovAdj * Math.PI / 180, W / H, 0.6, 60000);
+  PV = mul(P, V);
+  camPos = cam.eye;
+  CR = [V[0], V[4], V[8]];
+  CU = [V[1], V[5], V[9]];
+  AMB = 0.105;
+  SCENES[i](u, S.clock);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+  gl.depthMask(true);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(prog);
+  gl.uniform1i(U.tex, 0);
+  gl.uniform3fv(U.ldir, LDIR);
+  gl.uniform3fv(U.cam, camPos);
+  gl.uniform1f(U.amb, AMB);
+  for (const d of OP) drawItem(d, false);
+
+  gl.depthMask(false);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  for (const d of AD) drawItem(d, true);
+  gl.depthMask(true);
+
+  paintHUD(S.t, dt);
+  requestAnimationFrame(frame);
+}
+
+/* ============================================================= events ==== */
+$("#play").addEventListener("click", () => {
+  if (S.t >= 1) { S.t = 0; setEnded(false); S.stage = -1; }
+  S.playing = !S.playing;
+  $("#play").textContent = S.playing ? "暂停" : "播放";
+});
+
+$("#sp").addEventListener("click", (ev) => {
+  const b = ev.target.closest("button[data-s]");
+  if (!b) return;
+  S.speed = parseFloat(b.dataset.s);
+  [...$("#sp").children].forEach(x => x.classList.toggle("is-on", x === b));
+});
+
+$("#track").addEventListener("click", (ev) => {
+  const r = ev.currentTarget.getBoundingClientRect();
+  S.t = clamp01((ev.clientX - r.left) / r.width);
+  S.stage = -1;
+  setEnded(S.t > 0.995);
+  paintHUD(S.t, 0.016);
+});
+
+$("#again").addEventListener("click", () => {
+  S.t = 0; setEnded(false); S.playing = true; S.stage = -1; $("#play").textContent = "暂停";
+});
+
+window.addEventListener("keydown", (ev) => {
+  if (ev.code === "Space") {
+    ev.preventDefault();
+    if (S.t >= 1) { S.t = 0; setEnded(false); S.stage = -1; }
+    S.playing = !S.playing;
+    $("#play").textContent = S.playing ? "暂停" : "播放";
+  }
+});
+
+const back = $("#back");
+// the atlas is a sibling file; in the published folder it is index.html
+back.href = /\/site\//.test(location.pathname) ? "index.html"
+  : location.protocol === "file:" ? "太阳系行星图鉴.html" : "./";
+
+paintHUD(S.t, 0.016);
+requestAnimationFrame(frame);
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

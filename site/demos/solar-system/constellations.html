@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>星座图解 · Constellation Atlas</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#030407;
+  --ink:#f4ede2;
+  --ink-2:#d8d1c5;
+  --muted:#a5a29d;
+  --dim:#6b6f7c;
+  --line:rgba(244,237,226,.12);
+  --line-2:rgba(244,237,226,.06);
+  --ac:#e8bb87;
+  --cold:#9fb8d8;
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","Source Han Serif CN",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --pad:clamp(22px,3.4vw,54px);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);overflow:hidden;background:#030407;
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--ac);color:#0a0705}
+#sk{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 92% at 62% 46%,rgba(0,0,0,0) 40%,rgba(0,0,0,.30) 74%,rgba(0,0,0,.74) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.042;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:4}
+.scrim::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,4,7,.95) 0%,rgba(3,4,7,.84) 22%,rgba(3,4,7,.26) 40%,transparent 52%)}
+.scrim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:15%;
+  background:linear-gradient(180deg,transparent,rgba(3,4,7,.46) 62%,rgba(3,4,7,.86))}
+
+.topright{position:fixed;right:var(--pad);top:clamp(22px,3.6vh,40px);z-index:20;
+  display:flex;align-items:center;gap:12px}
+.lang{display:flex;align-items:center;gap:1px;padding:2px;border:1px solid var(--line);border-radius:30px;
+  background:rgba(3,4,7,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.lang button{appearance:none;border:0;background:none;font:inherit;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;color:var(--dim);padding:6px 8px;border-radius:20px;cursor:pointer;line-height:1;
+  transition:color .22s,background .22s}
+.lang button:hover{color:var(--ink-2)}
+.lang button.is-on{background:var(--ac);color:#0a0705}
+.back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  padding:9px 15px;border:1px solid var(--line);border-radius:30px;
+  transition:border-color .25s,color .25s,background .25s}
+.back:hover{border-color:var(--ac);color:var(--ink);background:rgba(255,255,255,.03)}
+
+/* ---------- stage ---------- */
+.stage{
+  position:fixed;inset:0;z-index:10;padding:var(--pad);
+  display:grid;gap:0;
+  grid-template-columns:1fr;
+  grid-template-rows:auto minmax(0,1fr) auto auto;
+  grid-template-areas:"mast" "sky" "panel" "dock";
+  pointer-events:none;
+}
+.stage > *{pointer-events:auto}
+.sky{grid-area:sky;position:relative;pointer-events:none}
+
+.mast{grid-area:mast;align-self:start;width:100%;pointer-events:none}
+.idx{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:15px;letter-spacing:0}
+.mast h1{margin:13px 0 0;font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:.06em}
+.mast h1 .cn{display:block;font-size:clamp(38px,4.3vw,60px);color:var(--ink);text-shadow:0 2px 26px rgba(0,0,0,.72)}
+.mast h1 .en{display:block;margin-top:9px;font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:10px;margin-top:13px;font-size:12.5px;letter-spacing:.14em;color:var(--muted)}
+.kicker i{width:24px;height:1px;background:var(--ac);opacity:.75;flex:none}
+
+/* ---------- selected constellation ---------- */
+.panel{grid-area:panel;align-self:start;width:100%;overflow:hidden;transition:opacity .35s}
+.panel .p-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding-bottom:7px;border-bottom:1px solid var(--line)}
+.panel .p-idx{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--dim)}
+.panel .p-alt{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--cold);white-space:nowrap}
+.panel .p-alt.low{color:#8a6a55}
+.panel h2{margin:11px 0 0;font-family:var(--serif);font-weight:400;font-size:28px;letter-spacing:.07em;
+  display:flex;align-items:baseline;gap:11px}
+.panel h2 i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--dim)}
+.panel .p-note{margin:8px 0 0;font-family:var(--serif);font-size:13.5px;line-height:1.72;color:var(--ink-2);opacity:.84}
+.ps{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line-2)}
+.ps li{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;
+  padding:5.8px 0;border-bottom:1px solid var(--line-2);cursor:default}
+.ps li i{width:5px;height:5px;border-radius:50%;background:var(--c,#eaf0fb);
+  box-shadow:0 0 9px var(--c,#eaf0fb);opacity:.9}
+.ps li b{font-weight:400;font-family:var(--serif);font-size:15px;letter-spacing:.05em;color:var(--ink)}
+.ps li b.q{color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+.ps li span{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--dim);white-space:nowrap}
+.ps li em{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);
+  font-variant-numeric:tabular-nums;text-align:right;min-width:26px}
+
+/* ---------- dock ---------- */
+.dock{grid-area:dock;align-self:end;width:100%}
+.mo{user-select:none}
+.mo-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.mo-k{font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--dim)}
+.mo-k b{font-weight:500;font-size:10.5px;letter-spacing:.12em;color:var(--ac);margin-right:7px}
+.mo-v{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.mo-track{position:relative;height:20px;margin-top:5px}
+.mo-track .rail{position:absolute;left:0;right:0;top:9px;height:1px;background:rgba(244,237,226,.16)}
+.mo-track .tk{position:absolute;top:6px;width:1px;height:7px;background:rgba(244,237,226,.22)}
+.mo input[type=range]{position:absolute;left:-2px;top:0;width:calc(100% + 4px);height:20px;
+  margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+.mo input[type=range]::-webkit-slider-runnable-track{height:20px;background:transparent}
+.mo input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:9px;height:9px;margin-top:5.5px;
+  border-radius:50%;background:#ffd9a8;box-shadow:0 0 0 1px rgba(3,4,7,.8),0 0 12px rgba(255,200,140,.8)}
+.mo input[type=range]::-moz-range-track{height:20px;background:transparent}
+.mo input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;border-radius:50%;
+  background:#ffd9a8;box-shadow:0 0 12px rgba(255,200,140,.8)}
+.mo input[type=range]:focus-visible{outline:1px solid rgba(232,187,135,.5);outline-offset:4px}
+.mo-lbl{display:flex;justify-content:space-between;margin-top:1px}
+.mo-lbl i{font-style:normal;font-family:var(--mono);font-size:8.5px;color:#7c808c;letter-spacing:0;
+  width:0;display:flex;justify-content:center;overflow:visible;white-space:nowrap}
+
+.foot{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--dim);
+  line-height:1.85;pointer-events:none;border-top:1px solid var(--line-2);padding-top:10px}
+.foot b{font-weight:400;color:var(--ink-2);opacity:.8}
+
+@media (min-width:900px){
+  .stage{
+    grid-template-columns:clamp(330px,29vw,420px) minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"mast sky" "panel sky" "dock sky";
+    column-gap:clamp(16px,3vw,44px);
+  }
+  .mast,.panel,.dock{max-width:none}
+}
+@media (max-width:1179px){
+  .panel h2{font-size:24px}
+  .panel .p-note{font-size:12.5px}
+  .ps li b{font-size:14px}
+  .ps li{padding:4.8px 0}
+}
+@media (max-width:899px){
+  .stage{grid-template-rows:auto minmax(0,1fr) auto auto;row-gap:0}
+  .mast h1 .cn{font-size:clamp(30px,8.4vw,40px)}
+  .mast h1 .en{font-size:8.5px;letter-spacing:.24em;margin-top:6px}
+  .kicker{font-size:10.5px;margin-top:8px;letter-spacing:.1em}
+  .mast h1{margin-top:10px}
+  .panel{padding-top:12px}
+  .dock{padding-top:9px}
+  .panel h2{font-size:21px;margin-top:8px}
+  .panel h2 i{font-size:8px}
+  .panel .p-note{font-size:11.5px;line-height:1.62;margin-top:5px}
+  /* on a phone the card carries the star list — four rows is what the plate's
+     slack will pay for, and it beats eight-pixel type on the canvas */
+  .ps{margin-top:9px}
+  .ps li{padding:3.6px 0;gap:7px}
+  .ps li b{font-size:13px}
+  .ps li b.q{font-size:10px}
+  .ps li span{font-size:8px}
+  .ps li em{font-size:9px;min-width:22px}
+  .ps li:nth-child(n+5){display:none}
+  .mo-lbl i{font-size:0}
+  .foot{margin-top:10px;padding-top:8px;font-size:9px;letter-spacing:0;line-height:1.7;opacity:.8}
+}
+@media (prefers-reduced-motion:reduce){
+  .back,.panel{transition:none}
+}
+
+/* ---------- english mode ---------- */
+/* the latin name is ten characters longer than the chinese one, so it takes
+   the large slot at a smaller size and grows a proper serif face */
+body.lang-en .mast h1 .cn{font-family:"Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+  font-size:clamp(28px,3.3vw,43px);line-height:1.05;letter-spacing:.005em;text-wrap:balance}
+body.lang-en .mast h1 .en{font-family:var(--sans);font-size:13px;letter-spacing:.18em;text-transform:none}
+body.lang-en .kicker{font-size:12px;letter-spacing:.05em}
+body.lang-en .panel h2{font-size:24px;letter-spacing:.005em;gap:9px;text-wrap:balance}
+body.lang-en .panel h2 i{font-family:var(--sans);font-size:11.5px;letter-spacing:.06em}
+body.lang-en .p-note{font-size:12.8px;line-height:1.66;letter-spacing:0}
+body.lang-en .ps li b{font-size:14px;letter-spacing:.01em}
+body.lang-en .p-idx,body.lang-en .p-alt{letter-spacing:.13em}
+body.lang-en .foot{font-size:9.6px;letter-spacing:.02em;line-height:1.7}
+
+@media (max-width:899px){
+  body.lang-en .mast h1 .cn{font-size:clamp(25px,7.4vw,32px);line-height:1.08}
+  body.lang-en .mast h1 .en{font-size:10px;letter-spacing:.14em;margin-top:4px}
+  body.lang-en .panel h2{font-size:19px}
+  body.lang-en .panel h2 i{font-size:10px}
+  body.lang-en .p-note{font-size:11.2px;line-height:1.6}
+  body.lang-en .ps li b{font-size:12.5px}
+}
+/* the strap and the language capsule share one line on a phone, and at 12px
+   with .28em tracking the strap wins the space the capsule needs */
+@media (max-width:560px){
+  .topright{top:14px;gap:9px}
+  .back{padding:7px 12px;font-size:10px}
+  .lang button{padding:5px 7px}
+  .mast{padding-top:22px}
+  .idx{font-size:10.5px;letter-spacing:.2em}
+}
+</style>
+</head>
+<body>
+<canvas id="sk"></canvas>
+<div class="vex"></div>
+<div class="grain"></div>
+<div class="scrim"></div>
+
+<div class="topright">
+  <div class="lang" id="lang" role="group" aria-label="语言 Language">
+    <button type="button" data-lang="zh" class="is-on" aria-pressed="true">中</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="back" id="back" href="../../subjects/astronomy/index.html">
+    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M7.5 1.5 3 6l4.5 4.5" stroke="currentColor" stroke-width="1.1"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span data-en="Atlas">返回图鉴</span>
+  </a>
+</div>
+
+<div class="stage">
+  <header class="mast">
+    <div class="idx"><b>Ⅲ</b><span>/ CONSTELLATIONS</span></div>
+    <h1><span class="cn" data-en="Constellation Atlas">星座图解</span><span class="en" data-en="星座图解">Constellation Atlas</span></h1>
+    <div class="kicker"><i></i><span data-en="One night, eighty-eight names">一整夜，八十八个名字</span></div>
+  </header>
+
+  <div class="sky" id="sky"></div>
+
+  <aside class="panel" id="panel">
+    <div class="p-top">
+      <span class="p-idx" id="pIdx">08 / 冬</span>
+      <span class="p-alt" id="pAlt">高度 42°</span>
+    </div>
+    <h2><span id="pCn">猎户座</span><i id="pEn">ORION</i></h2>
+    <p class="p-note" id="pNote"></p>
+    <ul class="ps" id="pList"></ul>
+  </aside>
+
+  <div class="dock">
+    <div class="mo">
+      <div class="mo-top">
+        <span class="mo-k"><b data-en="Month">观测月份</b>21:00</span>
+        <span class="mo-v" id="moV">10 月</span>
+      </div>
+      <div class="mo-track">
+        <span class="rail"></span>
+        <input id="moR" type="range" min="0" max="11" step="1" value="9" aria-label="观测月份">
+      </div>
+      <div class="mo-lbl" id="moL"></div>
+    </div>
+    <div class="foot" id="foot">
+      <b data-en="Schematic">示意</b><span data-en=" · the sky at 30°N, 21:00; the rim is the horizon. Drag the month to turn the seasons, tap a constellation to read its bright stars."
+      > · 北纬 30°、21:00 的天空，圆边即地平线；拖动月份看四季轮转，点一处星座读它的亮星。</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const TAU = Math.PI * 2, RAD = Math.PI / 180;
+
+const cv = $("#sk");
+const ctx = cv.getContext("2d");
+const SERIF = '"Songti SC","Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif';
+const MONO = 'ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace';
+const SANS = '"PingFang SC","Hiragino Sans GB","Noto Sans SC",system-ui,sans-serif';
+
+let W = 0, H = 0, DPR = 1;
+let R = 300, cx = 0, cy = 0, k = 1;
+const LAT = 30;                       // the plate is drawn for one latitude, and says so
+
+/* ============================================================== language ===
+   Every label exists in both languages; the switch decides which one is set
+   large and which one becomes the footnote. */
+const LANG_KEY = "atlas-lang";
+let lang = "zh";
+try {
+  if (/[?&]lang=en/.test(location.search)) lang = "en";
+  else if (localStorage.getItem(LANG_KEY) === "en") lang = "en";
+} catch (e) { /* private mode */ }
+const T = (zh, en) => lang === "en" ? en : zh;
+const TITLE = { zh: "星座图解 · Constellation Atlas", en: "Constellation Atlas · 星座图解" };
+const SEASON = { "终年": "ALL YEAR", "春": "SPRING", "夏": "SUMMER", "秋": "AUTUMN", "冬": "WINTER" };
+const DIRS = ["北", "东北", "东", "东南", "南", "西南", "西", "西北"];
+const DIRS_EN = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+const MONTH_EN = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+const MONTH_ZH = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
+const MONTH_TICK = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+// "ARIES" → "Aries", "PISCIS AUSTRINUS" → "Piscis Austrinus"
+const titleCase = (s) => s.split(" ").map((w) => w.charAt(0) + w.slice(1).toLowerCase()).join(" ");
+
+function applyStatic(){
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  document.body.classList.toggle("lang-en", lang === "en");
+  document.title = TITLE[lang];
+  for (const el of document.querySelectorAll("[data-en]")){
+    if (el.dataset.zh === undefined) el.dataset.zh = el.innerHTML;
+    el.innerHTML = lang === "en" ? el.dataset.en : el.dataset.zh;
+  }
+  for (const b of document.querySelectorAll("#lang button")){
+    const on = b.dataset.lang === lang;
+    b.classList.toggle("is-on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+function paintMonths(){
+  const ticks = lang === "en" ? MONTH_TICK : MONTH_ZH;
+  $("#moL").innerHTML = ticks.map((d) => `<i>${d}</i>`).join("");
+  $("#moR").setAttribute("aria-label", T("观测月份", "Month"));
+}
+
+/* ------------------------------------------------------------------ data ==
+   RA in hours, Dec in degrees, magnitude, 中文名, 拜耳, 色. Only stars whose
+   position and name I can stand behind; the rest of a figure keeps its letter. */
+const TINT = { o: "#ffc79a", b: "#bcd6ff", w: "#eaf0fb", y: "#ffe9b8", r: "#ffb3a0" };
+
+const CONS = [
+  { cn: "大熊座", en: "URSA MAJOR", ab: "UMa", tag: "终年", lab: [11.9, 51.0],
+    note: "北斗七星是它的背和尾巴，斗口两颗指星连出去就是北极星。",
+    ne: "The Big Dipper is its back and tail; a line through the two stars at the bowl's edge points at Polaris.",
+    s: [
+      [11.062, 61.75, 1.79, "天枢", "α", "y", "Dubhe"],
+      [11.031, 56.38, 2.37, "天璇", "β", "w", "Merak"],
+      [11.897, 53.69, 2.44, "天玑", "γ", "w", "Phecda"],
+      [12.257, 57.03, 3.31, "天权", "δ", "w", "Megrez"],
+      [12.900, 55.96, 1.77, "玉衡", "ε", "w", "Alioth"],
+      [13.399, 54.93, 2.23, "开阳", "ζ", "b", "Mizar"],
+      [13.792, 49.31, 1.86, "摇光", "η", "b", "Alkaid"]
+    ],
+    l: [[0, 1], [1, 2], [2, 3], [3, 0], [3, 4], [4, 5], [5, 6]] },
+
+  { cn: "小熊座", en: "URSA MINOR", ab: "UMi", tag: "终年", lab: [15.2, 78.0],
+    note: "小北斗，斗柄末端的勾陈一就是北极星，几乎不动。",
+    ne: "The Little Dipper. The star at the tip of its handle is Polaris, and it barely moves all night.",
+    s: [
+      [2.530, 89.26, 1.98, "北极星", "α", "y", "Polaris"],
+      [17.537, 86.59, 4.36, "", "δ", "w"],
+      [16.766, 82.04, 4.23, "", "ε", "w"],
+      [15.734, 77.79, 4.29, "", "ζ", "w"],
+      [14.845, 74.16, 2.08, "北极二", "β", "o", "Kochab"],
+      [15.345, 71.83, 3.00, "北极一", "γ", "w", "Pherkad"],
+      [16.291, 75.75, 4.95, "", "η", "w"]
+    ],
+    l: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 3]] },
+
+  { cn: "仙后座", en: "CASSIOPEIA", ab: "Cas", tag: "终年", lab: [1.05, 58.2],
+    note: "五颗星连成一个 W，和北斗分居北极星两侧，秋冬最好认。",
+    ne: "Five stars in a W, sitting opposite the Big Dipper across Polaris. Easiest in autumn and winter.",
+    s: [
+      [0.153, 59.15, 2.28, "", "β", "w"],
+      [0.675, 56.54, 2.24, "", "α", "o"],
+      [0.945, 60.72, 2.47, "", "γ", "b"],
+      [1.430, 60.24, 2.68, "", "δ", "w"],
+      [1.907, 63.67, 3.38, "", "ε", "b"]
+    ],
+    l: [[0, 1], [1, 2], [2, 3], [3, 4]] },
+
+  { cn: "飞马座", en: "PEGASUS", ab: "Peg", tag: "秋", lab: [23.3, 24.0],
+    note: "秋季四边形，四角里有一颗其实属于仙女座。",
+    ne: "The Great Square of autumn — though one of its four corners actually belongs to Andromeda.",
+    s: [
+      [23.079, 15.21, 2.49, "室宿一", "α", "w", "Markab"],
+      [23.063, 28.08, 2.42, "室宿二", "β", "o", "Scheat"],
+      [0.221, 15.18, 2.83, "壁宿一", "γ", "b", "Algenib"],
+      [21.736, 9.88, 2.39, "危宿三", "ε", "o", "Enif"],
+      [0.140, 29.09, 2.06, "壁宿二", "α And", "b", "Alpheratz"]
+    ],
+    l: [[4, 1], [1, 0], [0, 2], [2, 4], [0, 3]] },
+
+  { cn: "仙女座", en: "ANDROMEDA", ab: "And", tag: "秋", lab: [1.6, 40.0],
+    note: "三颗星排成一线，沿线往上是仙女座大星系，肉眼勉强可见。",
+    ne: "Three stars in a row; follow the line upward to the Andromeda Galaxy, just barely visible to the naked eye.",
+    s: [
+      [0.140, 29.09, 2.06, "壁宿二", "α", "b", "Alpheratz"],
+      [1.162, 35.62, 2.06, "奎宿九", "β", "o", "Mirach"],
+      [2.065, 42.33, 2.10, "天大将军一", "γ", "o", "Almach"],
+      [0.655, 30.86, 3.27, "", "δ", "o"]
+    ],
+    l: [[0, 3], [3, 1], [1, 2]] },
+
+  { cn: "英仙座", en: "PERSEUS", ab: "Per", tag: "秋", lab: [3.3, 48.0],
+    note: "大陵五是著名的食变星，两天半里亮度会明显起伏一次。",
+    ne: "Algol is the famous eclipsing binary: every two and a half days its brightness dips visibly.",
+    s: [
+      [3.405, 49.86, 1.79, "天船三", "α", "y", "Mirfak"],
+      [3.136, 40.96, 2.12, "大陵五", "β", "b", "Algol"],
+      [3.079, 53.51, 2.93, "", "γ", "w"],
+      [3.715, 47.79, 3.01, "", "δ", "w"],
+      [3.964, 40.01, 2.89, "", "ε", "b"]
+    ],
+    l: [[2, 0], [0, 3], [3, 4], [0, 1]] },
+
+  { cn: "白羊座", en: "ARIES", ab: "Ari", tag: "秋", lab: [2.2, 21.0],
+    note: "黄道十二宫之首，两千年前的春分点就在这个方向。",
+    ne: "First sign of the zodiac. Two thousand years ago the vernal equinox lay in this direction.",
+    s: [
+      [2.119, 23.46, 2.00, "娄宿三", "α", "o", "Hamal"],
+      [1.911, 20.81, 2.64, "娄宿一", "β", "w", "Sheratan"],
+      [1.892, 19.29, 3.88, "娄宿二", "γ", "b", "Mesarthim"]
+    ],
+    l: [[0, 1], [1, 2]] },
+
+  { cn: "猎户座", en: "ORION", ab: "Ori", tag: "冬", lab: [5.45, 20.0],
+    note: "腰带三颗星几乎等距排成一线，两侧一红一蓝，是冬夜最醒目的星座。",
+    ne: "Three belt stars almost evenly spaced, a red one on one side and a blue one on the other — the boldest figure of a winter night.",
+    s: [
+      [5.919, 7.41, 0.45, "参宿四", "α", "r", "Betelgeuse"],
+      [5.242, -8.20, 0.18, "参宿七", "β", "b", "Rigel"],
+      [5.418, 6.35, 1.64, "参宿五", "γ", "b", "Bellatrix"],
+      [5.533, -0.30, 2.25, "参宿三", "δ", "b", "Mintaka"],
+      [5.604, -1.20, 1.69, "参宿二", "ε", "b", "Alnilam"],
+      [5.679, -1.94, 1.74, "参宿一", "ζ", "b", "Alnitak"],
+      [5.796, -9.67, 2.07, "参宿六", "κ", "b", "Saiph"]
+    ],
+    l: [[0, 2], [2, 3], [3, 4], [4, 5], [0, 5], [5, 6], [6, 1], [1, 3]] },
+
+  { cn: "金牛座", en: "TAURUS", ab: "Tau", tag: "冬", lab: [4.6, 18.0],
+    note: "毕宿五是牛眼，脸上一小撮星是毕星团，肩膀旁还有昴星团。",
+    ne: "Aldebaran is the eye; the little knot of stars on its face is the Hyades, and the Pleiades sit on its shoulder.",
+    s: [
+      [4.599, 16.51, 0.87, "毕宿五", "α", "o", "Aldebaran"],
+      [5.438, 28.61, 1.65, "五车五", "β", "b", "Elnath"],
+      [5.627, 21.14, 3.00, "", "ζ", "b"],
+      [4.330, 15.63, 3.65, "", "γ", "o"],
+      [4.478, 19.18, 3.53, "", "ε", "o"],
+      [4.382, 17.54, 3.76, "", "δ", "b"]
+    ],
+    l: [[0, 3], [3, 5], [5, 4], [4, 0], [4, 2], [2, 1]] },
+
+  { cn: "双子座", en: "GEMINI", ab: "Gem", tag: "冬", lab: [7.0, 26.0],
+    note: "北河二与北河三是两个人的头，脚下四颗星排成两列。",
+    ne: "Castor and Pollux are the two heads; four stars below them run down in two columns.",
+    s: [
+      [7.577, 31.89, 1.58, "北河二", "α", "w", "Castor"],
+      [7.755, 28.03, 1.14, "北河三", "β", "o", "Pollux"],
+      [6.629, 16.40, 1.90, "井宿三", "γ", "w", "Alhena"],
+      [6.383, 22.51, 2.87, "", "μ", "r"],
+      [6.732, 25.13, 2.98, "", "ε", "y"],
+      [7.068, 20.57, 3.79, "", "ζ", "y"],
+      [7.335, 21.98, 3.53, "", "δ", "w"]
+    ],
+    l: [[0, 1], [0, 4], [4, 3], [1, 6], [6, 5], [5, 2]] },
+
+  { cn: "御夫座", en: "AURIGA", ab: "Aur", tag: "冬", lab: [5.4, 41.0],
+    note: "五车二是全天第六亮星，冬夜几乎就在头顶；座里还有几个疏散星团。",
+    ne: "Capella is the sixth-brightest star in the sky and sits almost overhead on a winter night; the constellation also holds several open clusters.",
+    s: [
+      [5.278, 45.99, 0.08, "五车二", "α", "y", "Capella"],
+      [5.992, 44.95, 1.90, "五车三", "β", "w", "Menkalinan"],
+      [5.995, 37.21, 2.62, "", "θ", "w"],
+      [4.950, 33.17, 2.69, "五车一", "ι", "y", "Hassaleh"],
+      [5.033, 43.82, 3.03, "", "ε", "y"]
+    ],
+    l: [[0, 1], [1, 2], [2, 3], [3, 0]] },
+
+  { cn: "大犬座", en: "CANIS MAJOR", ab: "CMa", tag: "冬", lab: [6.9, -17.0],
+    note: "天狼星是全天最亮的恒星，冬夜东南方最亮的那一颗就是它。",
+    ne: "Sirius is the brightest star in the sky — the brilliant one low in the south-east on a winter night.",
+    s: [
+      [6.752, -16.72, -1.46, "天狼星", "α", "b", "Sirius"],
+      [6.378, -17.96, 1.98, "军市一", "β", "b", "Mirzam"],
+      [7.140, -26.39, 1.83, "弧矢一", "δ", "w", "Wezen"],
+      [6.977, -28.97, 1.50, "弧矢七", "ε", "b", "Adhara"],
+      [7.402, -29.30, 2.45, "弧矢二", "η", "b", "Aludra"]
+    ],
+    l: [[1, 0], [0, 2], [2, 3], [2, 4]] },
+
+  { cn: "小犬座", en: "CANIS MINOR", ab: "CMi", tag: "冬", lab: [7.85, 11.5],
+    note: "只有两颗主星，南河三和天狼星、参宿四组成冬季大三角。",
+    ne: "Just two main stars. Procyon joins Sirius and Betelgeuse to form the Winter Triangle.",
+    s: [
+      [7.655, 5.22, 0.34, "南河三", "α", "y", "Procyon"],
+      [7.453, 8.29, 2.89, "南河二", "β", "b", "Gomeisa"]
+    ],
+    l: [[0, 1]] },
+
+  { cn: "狮子座", en: "LEO", ab: "Leo", tag: "春", lab: [10.6, 32.0],
+    note: "头部几颗星连成一把镰刀，刀柄上的轩辕十四正落在黄道上。",
+    ne: "The head is a sickle of stars, and Regulus at its handle sits almost exactly on the ecliptic.",
+    s: [
+      [10.139, 11.97, 1.36, "轩辕十四", "α", "b", "Regulus"],
+      [11.818, 14.57, 2.14, "五帝座一", "β", "w", "Denebola"],
+      [10.333, 19.84, 2.08, "轩辕十二", "γ", "y", "Algieba"],
+      [11.235, 20.52, 2.56, "西上相", "δ", "w", "Zosma"],
+      [9.764, 23.77, 2.98, "轩辕九", "ε", "y", "Algenubi"],
+      [11.237, 15.43, 3.33, "", "θ", "w"],
+      [10.278, 23.42, 3.44, "", "ζ", "w"],
+      [10.122, 16.76, 3.51, "", "η", "w"],
+      [9.879, 26.01, 3.90, "", "μ", "w"]
+    ],
+    l: [[0, 7], [7, 2], [2, 6], [6, 8], [8, 4], [2, 3], [3, 1], [1, 5], [5, 0]] },
+
+  { cn: "处女座", en: "VIRGO", ab: "Vir", tag: "春", lab: [12.6, 2.0],
+    note: "角宿一是黄道附近唯一的亮星，也是春季大三角的一角。",
+    ne: "Spica is the only bright star near the ecliptic here, and one corner of the Spring Triangle.",
+    s: [
+      [13.420, -11.16, 0.98, "角宿一", "α", "b", "Spica"],
+      [12.694, -1.45, 2.74, "东上相", "γ", "w", "Porrima"],
+      [13.036, 10.96, 2.83, "东次将", "ε", "y", "Vindemiatrix"],
+      [11.845, 1.76, 3.61, "右执法", "β", "w", "Zavijava"],
+      [12.694, 3.69, 3.38, "", "δ", "r"]
+    ],
+    l: [[3, 4], [4, 1], [1, 0], [1, 2]] },
+
+  { cn: "牧夫座", en: "BOÖTES", ab: "Boo", tag: "春", lab: [14.3, 32.0],
+    note: "顺着北斗斗柄的弧线延长出去，就能找到橘黄色的大角星。",
+    ne: "Follow the arc of the Big Dipper's handle outward and you arrive at orange Arcturus.",
+    s: [
+      [14.261, 19.18, -0.05, "大角星", "α", "o", "Arcturus"],
+      [14.749, 27.07, 2.37, "梗河一", "ε", "o", "Izar"],
+      [13.911, 18.40, 2.68, "右摄提一", "η", "y", "Muphrid"],
+      [14.535, 38.31, 3.03, "招摇", "γ", "w", "Seginus"],
+      [15.032, 40.39, 3.49, "帝席一", "β", "w", "Nekkar"],
+      [15.258, 33.31, 3.47, "", "δ", "w"]
+    ],
+    l: [[0, 2], [0, 1], [1, 5], [5, 4], [4, 3], [3, 1]] },
+
+  { cn: "北冕座", en: "CORONA BOREALIS", ab: "CrB", tag: "春", lab: [15.6, 30.0],
+    note: "七颗星连成一顶小皇冠，中间的贯索四是一颗变星。",
+    ne: "Seven stars in a small crown; Alphecca at its centre is a variable.",
+    s: [
+      [15.578, 26.71, 2.23, "贯索四", "α", "w", "Alphecca"],
+      [15.463, 29.11, 3.66, "贯索三", "β", "w", "Nusakan"],
+      [15.712, 26.30, 3.84, "", "γ", "w"],
+      [15.556, 31.36, 4.14, "", "θ", "w"],
+      [15.960, 26.88, 4.15, "", "ε", "r"]
+    ],
+    l: [[3, 1], [1, 0], [0, 2], [2, 4]] },
+
+  { cn: "天蝎座", en: "SCORPIUS", ab: "Sco", tag: "夏", lab: [16.5, -27.0],
+    note: "心宿二火红，古人叫它“大火”；蝎尾一路弯向南方地平线。",
+    ne: "Antares burns red — the old Chinese name for it was the Great Fire — and the tail curls down toward the southern horizon.",
+    s: [
+      [16.490, -26.43, 1.06, "心宿二", "α", "r", "Antares"],
+      [17.560, -37.10, 1.62, "尾宿八", "λ", "b", "Shaula"],
+      [16.005, -22.62, 2.32, "房宿三", "δ", "w", "Dschubba"],
+      [16.090, -19.81, 2.56, "房宿四", "β", "b", "Acrab"],
+      [16.836, -34.29, 2.29, "尾宿二", "ε", "o", "Larawag"],
+      [16.598, -28.22, 2.82, "心宿三", "τ", "b", "Paikauhale"],
+      [16.353, -25.59, 2.88, "心宿一", "σ", "b", "Alniyat"]
+    ],
+    l: [[3, 2], [2, 6], [6, 0], [0, 5], [5, 4], [4, 1]] },
+
+  { cn: "天琴座", en: "LYRA", ab: "Lyr", tag: "夏", lab: [18.8, 40.0],
+    note: "织女星是夏季大三角最亮的一角，旁边四颗小星组成一个菱形。",
+    ne: "Vega is the brightest corner of the Summer Triangle; four faint stars beside it make a small parallelogram.",
+    s: [
+      [18.615, 38.78, 0.03, "织女星", "α", "b", "Vega"],
+      [18.834, 33.36, 3.45, "渐台二", "β", "w", "Sheliak"],
+      [18.982, 32.69, 3.24, "渐台三", "γ", "w", "Sulafat"],
+      [18.746, 37.60, 4.34, "", "ζ", "w"],
+      [18.908, 36.90, 4.30, "", "δ", "r"]
+    ],
+    l: [[0, 3], [3, 1], [1, 2], [2, 4], [4, 0]] },
+
+  { cn: "天鹰座", en: "AQUILA", ab: "Aql", tag: "夏", lab: [19.6, 6.0],
+    note: "牛郎星两侧各有一颗暗星，像挑着两个孩子——就是“扁担”的由来。",
+    ne: "Altair has a fainter star on either side, as if carrying two children on a shoulder pole — hence the old Chinese name for the asterism.",
+    s: [
+      [19.846, 8.87, 0.77, "牛郎星", "α", "w", "Altair"],
+      [19.771, 10.61, 2.72, "河鼓三", "γ", "y", "Tarazed"],
+      [19.922, 6.41, 3.71, "河鼓一", "β", "w", "Alshain"],
+      [19.090, 13.86, 2.99, "", "ζ", "w"],
+      [20.188, -0.82, 3.23, "", "θ", "b"]
+    ],
+    l: [[1, 0], [0, 2], [0, 3], [0, 4]] },
+
+  { cn: "天鹅座", en: "CYGNUS", ab: "Cyg", tag: "夏", lab: [20.9, 44.0],
+    note: "五颗星组成一个大十字，天津四是夏季大三角的一角。",
+    ne: "Five stars make a large cross; Deneb is one corner of the Summer Triangle.",
+    s: [
+      [20.690, 45.28, 1.25, "天津四", "α", "w", "Deneb"],
+      [20.371, 40.26, 2.23, "天津一", "γ", "w", "Sadr"],
+      [20.770, 33.97, 2.48, "天津九", "ε", "y", "Aljanah"],
+      [19.750, 45.13, 2.86, "天津二", "δ", "b", "Fawaris"],
+      [19.512, 27.96, 3.05, "辇道增七", "β", "y", "Albireo"]
+    ],
+    l: [[1, 0], [1, 3], [1, 2], [1, 4]] },
+
+  { cn: "南鱼座", en: "PISCIS AUSTRINUS", ab: "PsA", tag: "秋", lab: [22.6, -30.0],
+    note: "秋季星空最暗的一段里只有它亮着：北落师门孤零零挂在南方低空。",
+    ne: "In the emptiest stretch of the autumn sky only one star shines: Fomalhaut, alone low in the south.",
+    s: [
+      [22.961, -29.62, 1.16, "北落师门", "α", "b", "Fomalhaut"],
+      [22.525, -32.35, 4.17, "", "β", "w"],
+      [22.091, -32.99, 4.29, "", "δ", "w"]
+    ],
+    l: [[0, 1], [1, 2]] },
+
+  { cn: "宝瓶座", en: "AQUARIUS", ab: "Aqr", tag: "秋", lab: [22.3, -8.0],
+    note: "黄道第十一宫，水流成一条折线；这一带是全天最“空”的天区之一。",
+    ne: "Eleventh sign of the zodiac; its water runs in a zigzag. This is one of the emptiest regions of the sky.",
+    s: [
+      [22.096, -0.32, 2.95, "危宿一", "α", "y", "Sadalmelik"],
+      [21.526, -5.57, 2.90, "虚宿一", "β", "y", "Sadalsuud"],
+      [22.480, -0.02, 3.65, "坟墓二", "ζ", "w", "Sadaltager"],
+      [22.590, -0.12, 3.77, "坟墓一", "γ", "w", "Sadachbia"],
+      [20.795, -9.50, 3.77, "", "ε", "w"]
+    ],
+    l: [[1, 4], [1, 2], [2, 3], [3, 0]] },
+
+  { cn: "摩羯座", en: "CAPRICORNUS", ab: "Cap", tag: "秋", lab: [21.3, -19.0],
+    note: "黄道第十宫，一个尖角朝南的楔子；两千年前的冬至点就在这个方向。",
+    ne: "Tenth sign of the zodiac, a wedge pointing south. Two thousand years ago the winter solstice lay here.",
+    s: [
+      [20.300, -12.54, 3.57, "牛宿二", "α", "y", "Algedi"],
+      [20.350, -14.75, 3.05, "牛宿一", "β", "y", "Dabih"],
+      [21.784, -16.13, 2.85, "垒壁阵四", "δ", "b", "Deneb Algedi"],
+      [21.668, -16.66, 3.68, "垒壁阵三", "γ", "y", "Nashira"],
+      [21.444, -22.41, 3.74, "", "ζ", "w"],
+      [20.858, -26.92, 4.12, "", "ω", "w"],
+      [21.099, -17.23, 4.07, "", "θ", "w"]
+    ],
+    l: [[0, 1], [0, 2], [2, 3], [3, 4], [4, 5], [3, 6]] }
+];
+
+/* --------------------------------------------------------------- geometry ==
+   Stereographic, centred on the zenith: the rim of the plate is the horizon,
+   which is the one projection a pair of eyes can check against the real sky. */
+let month = clamp(new Date().getMonth(), 0, 11);
+let lstH = lstFor(month);
+let sel = 0, hover = -1;
+let dirty = true;
+
+function lstFor(m) { return (9 + (m - 2) * 2 + 24) % 24; }   // local sidereal time, 21:00
+
+function altaz(ra, dec) {
+  const Hd = (lstH - ra) * 15 * RAD;
+  const d = dec * RAD, p = LAT * RAD;
+  const s = Math.sin(p) * Math.sin(d) + Math.cos(p) * Math.cos(d) * Math.cos(Hd);
+  const alt = Math.asin(clamp(s, -1, 1));
+  const az = Math.atan2(-Math.cos(d) * Math.sin(Hd),
+                        Math.sin(d) * Math.cos(p) - Math.cos(d) * Math.sin(p) * Math.cos(Hd));
+  return [alt / RAD, (az / RAD + 360) % 360];
+}
+
+function proj(ra, dec) {
+  const [alt, az] = altaz(ra, dec);
+  if (alt < -1.4) return null;
+  const th = clamp(90 - alt, 0, 90) * RAD;
+  const r = R * Math.tan(th / 2);
+  const A = az * RAD;
+  return [cx + Math.sin(A) * r, cy - Math.cos(A) * r, alt, r];
+}
+
+function conAlt(c) {
+  let s = 0, n = 0;
+  for (const st of c.s) { const a = altaz(st[0], st[1])[0]; if (a > 0) { s += a; n++; } }
+  return n ? s / n : -90;
+}
+
+/* a fixed sampler: the faint background field must not twinkle on resize */
+let _seed = 0x51a2c0de;
+function rnd() {
+  _seed = (_seed * 1664525 + 1013904223) >>> 0;
+  return _seed / 4294967296;
+}
+
+/* The Milky Way is not a cloud, it is a great many stars that never resolve:
+   so it is sampled in galactic coordinates — a thin core, a wide halo, both
+   brightest where the galactic centre is. */
+const GAL = { aN: 192.85948 * RAD, dN: 27.12825 * RAD, lN: 122.93192 * RAD };
+function galToEq(l, b) {
+  const { aN, dN, lN } = GAL, dl = lN - l;
+  const sd = Math.sin(dN) * Math.sin(b) + Math.cos(dN) * Math.cos(b) * Math.cos(dl);
+  const ra = aN + Math.atan2(Math.cos(b) * Math.sin(dl),
+    Math.cos(dN) * Math.sin(b) - Math.sin(dN) * Math.cos(b) * Math.cos(dl));
+  return [((ra / RAD / 15) % 24 + 24) % 24, Math.asin(clamp(sd, -1, 1)) / RAD];
+}
+const MW = [];                                  // the centreline, for the bed
+for (let i = 0; i <= 240; i++) MW.push(galToEq(i / 240 * TAU, 0));
+
+const MWS = [];                                 // the unresolved stars themselves
+{
+  for (let i = 0; i < 1800; i++) {
+    const l = rnd() * TAU;
+    const g = Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(TAU * rnd());
+    const sig = i % 5 < 3 ? 2.0 : 7.4;
+    const [ra, dec] = galToEq(l, g * sig * RAD);
+    const lw = 0.32 + 0.68 * Math.max(0, Math.cos(l));   // Sagittarius glows most
+    const fade = Math.exp(-Math.abs(g) * 0.5);
+    MWS.push([ra, dec, 0.35 + rnd() * 0.6, (0.10 + 0.34 * rnd()) * lw * fade]);
+  }
+}
+
+/* ------------------------------------------------------------------- draw == */
+const skyEl = $("#sky"), panelEl = $("#panel");
+
+function layout() {
+  W = innerWidth; H = innerHeight;
+  const b = skyEl.getBoundingClientRect();
+  R = Math.max(90, Math.min(b.width * 0.492, b.height * 0.475));
+  cx = b.left + b.width / 2;
+  cy = b.top + b.height / 2;
+  k = R / 376;
+
+  DPR = clamp(window.devicePixelRatio || 1, 1, 2);
+  const px = Math.round(W * DPR), py = Math.round(H * DPR);
+  if (cv.width !== px || cv.height !== py) { cv.width = px; cv.height = py; }
+  cv.style.width = W + "px"; cv.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  dirty = true;
+}
+
+const FIELD = [];
+for (let i = 0; i < 640; i++) {
+  FIELD.push([rnd() * 24, Math.asin(rnd() * 2 - 1) / RAD, 0.4 + rnd() * 0.9, 0.05 + rnd() * 0.26]);
+}
+
+/* ---- label engine: every name has to earn its square of sky -------------- */
+let boxes = [];
+function hit(x, y, w, h) {
+  for (const b of boxes)
+    if (x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y) return true;
+  return false;
+}
+function hold(x, y, w, h) { boxes.push({ x, y, w, h }); }
+
+const LOG = [];
+function place(text, font, cands) {
+  ctx.font = font;
+  const w = ctx.measureText(text).width;
+  const h = parseFloat(font.match(/(\d+(?:\.\d+)?)px/)[1]) * 1.34;
+  for (const [px, py] of cands) {
+    if (Math.hypot(px - cx, py - cy) > R - 9 - w * 0.5) continue;
+    const bx = px - w / 2, by = py - h / 2;
+    if (hit(bx, by, w, h)) continue;
+    hold(bx, by, w, h);
+    LOG.push([text, Math.round(bx), Math.round(by), Math.round(w), Math.round(h), 1]);
+    return [px, py];
+  }
+  LOG.push([text, 0, 0, Math.round(w), Math.round(h), 0]);
+  return null;
+}
+
+/* constellation names may slide a little; star names must stay beside their star */
+function spread(x, y, sc) {
+  const out = [[x, y]];
+  for (const [dx, dy] of [[0, -14], [0, 14], [16, 0], [-16, 0], [14, -13], [-14, -13],
+                          [14, 13], [-14, 13], [0, -26], [0, 26], [27, 0], [-27, 0],
+                          [26, -23], [-26, -23], [26, 23], [-26, 23],
+                          [0, -38], [0, 38], [38, 0], [-38, 0],
+                          [36, -32], [-36, -32], [36, 32], [-36, 32]])
+    out.push([x + dx * sc, y + dy * sc]);
+  return out;
+}
+function hash(n) { const v = Math.sin(n * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); }
+
+function paint() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.globalCompositeOperation = "source-over";
+  boxes = []; LOG.length = 0;
+
+  /* the plate */
+  const bg = ctx.createRadialGradient(cx, cy, R * 0.05, cx, cy, R * 1.0);
+  bg.addColorStop(0, "rgba(13,18,30,.66)");
+  bg.addColorStop(0.55, "rgba(10,14,24,.54)");
+  bg.addColorStop(0.88, "rgba(8,11,19,.36)");
+  bg.addColorStop(1, "rgba(6,9,16,.18)");
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fill();
+  ctx.globalCompositeOperation = "lighter";
+
+  paintMW();
+  paintField();
+  paintGrid();
+  paintRim();
+  paintFigures();
+  /* priority order matters: the thing you clicked gets its name and its stars
+     named before the rest of the sky claims the space around it */
+  paintNames(true);
+  paintStarNames();
+  paintNames(false);
+
+  window.__cn = { R, cx, cy, log: LOG.slice() };
+}
+
+/* the Milky Way, as dust rather than a ribbon: a stack of soft grains whose
+   brightness follows galactic longitude, so Sagittarius and Cygnus glow most */
+function paintMW() {
+  /* a faint bed first, so the particles read as one river */
+  ctx.lineCap = "round";
+  for (const [wd, al] of [[24, .006], [10, .010]]) {
+    ctx.beginPath();
+    let prev = null;
+    for (const [ra, dec] of MW) {
+      const p = proj(ra, dec);
+      if (!p || p[2] < 0) { prev = null; continue; }
+      if (prev) { ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); }
+      prev = p;
+    }
+    ctx.strokeStyle = "rgba(186,203,236," + al + ")";
+    ctx.lineWidth = wd * k; ctx.stroke();
+  }
+
+  ctx.fillStyle = "#dbe6fb";
+  for (const [ra, dec, sz, al] of MWS) {
+    const p = proj(ra, dec);
+    if (!p) continue;
+    ctx.globalAlpha = al * (0.45 + 0.55 * clamp(p[2] / 16, 0, 1));
+    ctx.fillRect(p[0], p[1], sz, sz);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function paintField() {
+  ctx.fillStyle = "#cfe0f6";
+  for (const [ra, dec, s, a] of FIELD) {
+    const p = proj(ra, dec);
+    if (!p) continue;
+    ctx.globalAlpha = a * (0.45 + 0.55 * clamp(p[2] / 14, 0, 1));
+    ctx.fillRect(p[0], p[1], s, s);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* altitude rings, zenith, the equator and the ecliptic */
+function paintGrid() {
+  ctx.setLineDash([2, 6]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(159,184,216,.09)";
+  for (const alt of [30, 60]) {
+    ctx.beginPath(); ctx.arc(cx, cy, R * Math.tan((90 - alt) / 2 * RAD), 0, TAU); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.strokeStyle = "rgba(159,184,216,.18)";
+  ctx.beginPath();
+  ctx.moveTo(cx - 4 * k, cy); ctx.lineTo(cx + 4 * k, cy);
+  ctx.moveTo(cx, cy - 4 * k); ctx.lineTo(cx, cy + 4 * k);
+  ctx.stroke();
+
+  const eq = [];
+  for (let i = 0; i <= 360; i++) eq.push([i / 15, 0]);
+  arc(eq, "rgba(159,184,216,.17)", 0.60, T("天赤道", "CELESTIAL EQUATOR"));
+
+  const ecl = [];
+  for (let i = 0; i <= 360; i++) {
+    const lam = i / 360 * TAU, e = 23.44 * RAD;
+    const ra = Math.atan2(Math.cos(e) * Math.sin(lam), Math.cos(lam)) / RAD / 15;
+    const dec = Math.asin(Math.sin(e) * Math.sin(lam)) / RAD;
+    ecl.push([(ra + 24) % 24, dec]);
+  }
+  arc(ecl, "rgba(232,187,135,.22)", 0.66, T("黄 道", "ECLIPTIC"));
+}
+
+/* draw a sky curve, and hang its name off a point that is actually on it */
+function arc(pts, col, at, label) {
+  const run = [];
+  let mark = null;
+  const n = pts.length;
+  ctx.setLineDash([2, 7]);
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  let pen = false, acc = 0, total = 0;
+  for (const [ra, dec] of pts) {
+    const p = proj(ra, dec);
+    if (!p || p[2] < 0) { pen = false; continue; }
+    if (pen) { ctx.lineTo(p[0], p[1]); total++; }
+    else { ctx.moveTo(p[0], p[1]); pen = true; }
+  }
+  /* hang the name where the curve runs through the middle of the plate, not
+     out at the rim where there is neither room nor contrast */
+  let best = 1e9;
+  for (const [ra, dec] of pts) {
+    const p = proj(ra, dec);
+    if (!p || p[2] < 3) continue;
+    const d = Math.abs(Math.hypot(p[0] - cx, p[1] - cy) - R * at);
+    if (d < best) { best = d; mark = p; }
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+  if (!label || !mark) return;
+  const cands = spread(mark[0], mark[1], k).slice(0, 6);
+  const got = place(label, `400 ${Math.max(6.5, 7.4 * k)}px ${MONO}`, cands);
+  if (!got) return;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillStyle = col.replace(/[\d.]+\)$/, "0.62)");
+  ctx.fillText(label, got[0], got[1]);
+}
+
+function paintRim() {
+  ctx.strokeStyle = "rgba(232,187,135,.34)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+
+  const big = R > 210;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (let a = 0; a < 360; a += 10) {
+    const rad = a * RAD, minor = a % 30 !== 0;
+    const r0 = R + 2, r1 = R + (minor ? 4 : 7);
+    ctx.strokeStyle = minor ? "rgba(232,187,135,.13)" : "rgba(232,187,135,.32)";
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.sin(rad) * r0, cy - Math.cos(rad) * r0);
+    ctx.lineTo(cx + Math.sin(rad) * r1, cy - Math.cos(rad) * r1);
+    ctx.stroke();
+  }
+  /* on a phone there is no room outside the rim, so the four cardinals move
+     just inside it; on a plate they sit out past the ticks */
+  const step = big ? 45 : 90, rr = big ? R + 18 : R - 14;
+  for (let a = 0; a < 360; a += step) {
+    const rad = a * RAD, card = a % 90 === 0;
+    const x = cx + Math.sin(rad) * rr, y = cy - Math.cos(rad) * rr;
+    ctx.fillStyle = card ? "rgba(240,226,204,.74)" : "rgba(159,184,216,.30)";
+    ctx.font = `400 ${card ? Math.max(9, 10 * k) : Math.max(7, 7.8 * k)}px ${MONO}`;
+    ctx.fillText((lang === "en" ? DIRS_EN : DIRS)[a / 45], x, y);
+  }
+}
+
+function paintFigures() {
+  for (const c of CONS) {
+    const on = c === CONS[sel], hov = c === CONS[hover];
+    if (conAlt(c) < -8) continue;
+    ctx.strokeStyle = on ? "rgba(233,189,139,.52)"
+      : hov ? "rgba(233,189,139,.36)" : "rgba(150,178,215,.25)";
+    ctx.lineWidth = on ? 1.35 : hov ? 1.1 : 0.85;
+    ctx.beginPath();
+    for (const [a, b] of c.l) {
+      const p1 = proj(c.s[a][0], c.s[a][1]), p2 = proj(c.s[b][0], c.s[b][1]);
+      if (!p1 || !p2 || p1[2] < 0 || p2[2] < 0) continue;
+      ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]);
+    }
+    ctx.stroke();
+    if (on) {                                  // a second, soft pass: the figure glows
+      ctx.strokeStyle = "rgba(233,189,139,.13)";
+      ctx.lineWidth = 4.5;
+      ctx.stroke();
+    }
+  }
+
+  for (const c of CONS) {
+    const on = c === CONS[sel];
+    for (const s of c.s) {
+      const p = proj(s[0], s[1]);
+      if (!p || p[2] < 0) continue;
+      const ext = 0.42 + 0.58 * clamp(p[2] / 13, 0, 1);
+      const mag = s[2];
+      const rr = Math.max(0.8, (2.75 - 0.5 * mag)) * (0.6 + 0.4 * k);
+      const tint = TINT[s[5]] || TINT.w;
+      ctx.globalAlpha = (on ? 1 : 0.86) * ext;
+
+      if (mag < 1.35) {
+        const g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], rr * 5.4);
+        g.addColorStop(0, hexA(tint, 0.44));
+        g.addColorStop(1, hexA(tint, 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(p[0], p[1], rr * 5.4, 0, TAU); ctx.fill();
+        if (mag < 0.6) {                       // the way the brightest ones bloom
+          ctx.strokeStyle = hexA(tint, 0.26);
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(p[0] - rr * 4.4, p[1]); ctx.lineTo(p[0] + rr * 4.4, p[1]);
+          ctx.moveTo(p[0], p[1] - rr * 4.4); ctx.lineTo(p[0], p[1] + rr * 4.4);
+          ctx.stroke();
+        }
+      }
+      ctx.fillStyle = tint;
+      ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+/* the screen box of a figure — used to hang the selected name just outside it,
+   the way a plate label sits above the drawing rather than across it */
+function figBox(c) {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, n = 0;
+  for (const s of c.s) {
+    const p = proj(s[0], s[1]);
+    if (!p || p[2] < 0) continue;
+    x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]);
+    y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); n++;
+  }
+  return n ? { x0, y0, x1, y1, n } : null;
+}
+
+function paintNames(onlySel) {
+  const order = CONS.map((c, i) => i).filter((i) => (i === sel) === onlySel)
+    .sort((a, b) => conAlt(CONS[b]) - conAlt(CONS[a]));
+
+  for (const i of order) {
+    const c = CONS[i], on = i === sel, hov = i === hover;
+    if (conAlt(c) < -8) continue;
+    const main = lang === "en" ? c.en : c.cn;
+    const sub = lang === "en" ? c.cn : c.en;
+    let x, y;
+    const p = proj(c.lab[0], c.lab[1]);
+    if (p && p[2] > 3) { x = p[0]; y = p[1]; }
+    else {
+      let sx = 0, sy = 0, n = 0;
+      for (const s of c.s) {
+        const q = proj(s[0], s[1]);
+        if (q && q[2] > 0) { sx += q[0]; sy += q[1]; n++; }
+      }
+      if (!n) continue;
+      x = sx / n; y = sy / n - 9 * k;
+    }
+    const fs = Math.max(11, 12.4 * k) * (on ? 1.05 : 1);
+    let cands;
+    const box = on ? figBox(c) : null;
+    if (box) {
+      const pad2 = fs * 0.85 + 10;            /* the latin line needs its own clearance */
+      const mx = (box.x0 + box.x1) / 2, above = box.y0 - pad2, below = box.y1 + pad2;
+      const y0 = Math.abs(above - (cy - R)) > 26 ? above : below;
+      cands = spread(mx, y0, k);
+    } else {
+      cands = spread(x, y, k);
+    }
+    const at = place(main, `400 ${fs}px ${SERIF}`, cands);
+    if (!at) continue;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.globalAlpha = on ? 1 : hov ? 0.96 : 0.72;
+    ctx.fillStyle = on ? "#f8e9d1" : "#dee5f2";
+    ctx.font = `400 ${fs}px ${SERIF}`;
+    ctx.fillText(main, at[0], at[1]);
+
+    if (on || hov || R > 300) {
+      /* the gloss is chinese when the plate is in english, and cjk needs a
+         touch more size than a mono latin line to stay legible */
+      const cjk = lang === "en";
+      const subFs = cjk ? Math.max(7.4, 7.6 * k) : Math.max(6, 6.5 * k);
+      const subFont = cjk ? SANS : MONO;
+      ctx.font = `400 ${subFs}px ${subFont}`;
+      /* the second line under the name needs its own reservation, or the next
+         label lands straight on it */
+      const we = ctx.measureText(sub).width;
+      hold(at[0] - we / 2, at[1] + fs * 0.86 - subFs * 0.8, we, subFs * 1.7);
+      ctx.globalAlpha = on ? 0.9 : 0.5;
+      ctx.fillStyle = on ? "#e8bb87" : "#9fb8d8";
+      ctx.fillText(sub, at[0], at[1] + fs * 0.85);
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+function paintStarNames() {
+  /* below this size the names cannot be placed without turning the figure into
+     a pile of type — the card underneath lists them instead */
+  if (R < 232) return;
+  const c = CONS[sel];
+  const vis = [];
+  for (const s of c.s) {
+    const p = proj(s[0], s[1]);
+    if (p && p[2] > 0) vis.push({ s, p });
+  }
+  if (!vis.length) return;
+  const ax = vis.reduce((a, o) => a + o.p[0], 0) / vis.length;
+  const ay = vis.reduce((a, o) => a + o.p[1], 0) / vis.length;
+
+  const fs = Math.max(8.5, 9.2 * k);
+  for (const { s, p } of vis) {
+    const nm = lang === "en" ? s[6] : s[3];
+    if (!nm) continue;
+    const dx = p[0] - ax, dy = p[1] - ay;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len, uy = dy / len;
+    /* clear the star by half the width of the name, so the dot is never
+       buried under its own label */
+    ctx.font = `400 ${fs}px ${SANS}`;
+    const wid = ctx.measureText(nm).width;
+    const base = 5 + (Math.abs(ux) > 0.5 ? wid / 2 : fs * 0.78);
+    const cands = [];
+    for (const d of [base, base + 9 * k, base + 19 * k]) cands.push([p[0] + ux * d, p[1] + uy * d]);
+    for (const d of [base, base + 12 * k]) {
+      cands.push([p[0] - uy * d, p[1] + ux * d]);
+      cands.push([p[0] + uy * d, p[1] - ux * d]);
+    }
+    const at = place(nm, `400 ${fs}px ${SANS}`, cands);
+    if (!at) continue;
+    ctx.font = `400 ${fs}px ${SANS}`;
+    const w = ctx.measureText(nm).width;
+    ctx.fillStyle = "rgba(3,4,7,.7)";          // a dark seat, so the name holds
+    ctx.fillRect(at[0] - w / 2 - 2.6, at[1] - fs * 0.64, w + 5.2, fs * 1.28);
+    if (Math.hypot(at[0] - p[0], at[1] - p[1]) > 10 * k) {
+      ctx.strokeStyle = "rgba(226,236,250,.24)";
+      ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(at[0], at[1]); ctx.stroke();
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(234,241,252,.92)";
+    ctx.fillText(nm, at[0], at[1]);
+  }
+}
+
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+/* ------------------------------------------------------------------ panel == */
+function renderPanel() {
+  const c = CONS[sel];
+  const alt = conAlt(c);
+  $("#pIdx").textContent = String(sel + 1).padStart(2, "0") + " / "
+    + (lang === "en" ? SEASON[c.tag] : c.tag);
+  const a = $("#pAlt");
+  if (alt > 0) {
+    let sa = 0;
+    for (const s of c.s) sa += altaz(s[0], s[1])[1];
+    const d = Math.round((sa / c.s.length) / 45) % 8;
+    a.textContent = (lang === "en" ? DIRS_EN[d] + " " : DIRS[d] + "方 ") + Math.round(alt) + "°";
+  } else {
+    a.textContent = T("地平线下", "Below horizon");
+  }
+  a.classList.toggle("low", alt <= 0);
+  $("#pCn").textContent = lang === "en" ? titleCase(c.en) : c.cn;
+  $("#pEn").textContent = lang === "en" ? c.cn : c.en;
+  $("#pNote").textContent = lang === "en" ? c.ne : c.note;
+  const rows = c.s.slice().sort((a, b) => (b[3] ? 1 : 0) - (a[3] ? 1 : 0) || a[2] - b[2]).slice(0, 7);
+  $("#pList").innerHTML = rows.map((s) => {
+    const tint = TINT[s[5]] || TINT.w;
+    const nm = (lang === "en" ? s[6] : s[3]) || (s[4] + " " + c.ab);
+    const sub = s[3] ? (s[4].includes(" ") ? s[4] : s[4] + " " + c.ab) : "";
+    return `<li><i style="--c:${tint}"></i>`
+      + `<b class="${s[3] ? "" : "q"}">${nm}</b>`
+      + `<span>${sub}</span>`
+      + `<em>${s[2].toFixed(2)}</em></li>`;
+  }).join("");
+}
+
+function setMonth(m) {
+  month = clamp(m, 0, 11);
+  lstH = lstFor(month);
+  $("#moV").textContent = lang === "en" ? MONTH_EN[month] : (month + 1) + " 月";
+  renderPanel();
+  if (innerWidth < 900) layout();
+  dirty = true;
+}
+
+/* ------------------------------------------------------------- language == */
+function setLang(next){
+  if (next === lang) return;
+  lang = next;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  applyStatic();
+  paintMonths();
+  setMonth(month);            // repaints the month readout and the card
+  layout();                   // the english title is a different width
+  dirty = true;
+}
+for (const b of document.querySelectorAll("#lang button")){
+  b.addEventListener("click", () => setLang(b.dataset.lang));
+}
+
+/* ------------------------------------------------------------- hit test == */
+function pick(mx, my) {
+  let best = -1, bestD = 1e9;
+  CONS.forEach((c, i) => {
+    for (const s of c.s) {
+      const p = proj(s[0], s[1]);
+      if (!p || p[2] < 0) continue;
+      const d = Math.hypot(mx - p[0], my - p[1]);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+  });
+  if (bestD < 26 * k) return best;
+  /* second chance: the printed name is also a target */
+  bestD = 1e9;
+  CONS.forEach((c, i) => {
+    if (conAlt(c) < -6) return;
+    const p = proj(c.lab[0], c.lab[1]);
+    if (!p) return;
+    const d = Math.hypot(mx - p[0], my - p[1]);
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  return bestD < 40 * k ? best : -1;
+}
+
+/* ------------------------------------------------------------------- boot == */
+function boot() {
+  applyStatic();
+  paintMonths();
+  layout();
+
+  /* the month decides the sky, so it has to be resolved before anything is
+     chosen for the panel — otherwise the plate and the card disagree */
+  const q = new URLSearchParams(location.search);
+  if (q.has("m")) month = clamp(+q.get("m"), 0, 11);
+  lstH = lstFor(month);
+
+  const fav = ["猎户座", "天鹅座", "大熊座", "天蝎座", "狮子座", "金牛座",
+               "飞马座", "仙后座", "牧夫座", "天蝎座", "双子座"];
+  let best = -1, bestA = -99;
+  CONS.forEach((c, i) => {                       // the best-known thing that is up
+    const a = conAlt(c);
+    if (a > bestA && a > 16 && fav.includes(c.cn)) { bestA = a; best = i; }
+  });
+  if (best < 0) CONS.forEach((c, i) => {         // else: whatever is highest
+    const a = conAlt(c);
+    if (a > bestA) { bestA = a; best = i; }
+  });
+  sel = q.has("sel") ? clamp(+q.get("sel"), 0, CONS.length - 1) : Math.max(0, best);
+
+  const track = $(".mo-track");
+  for (let i = 0; i < 12; i++) {
+    const t = document.createElement("span");
+    t.className = "tk";
+    t.style.left = (i / 11 * 100) + "%";
+    track.appendChild(t);
+  }
+
+  $("#moR").value = month;
+  $("#moR").addEventListener("input", (e) => setMonth(+e.target.value));
+  addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const d = e.key === "ArrowRight" ? 1 : -1;
+    $("#moR").value = (month + d + 12) % 12;
+    setMonth(+$("#moR").value);
+  });
+
+  cv.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const h = pick(e.clientX, e.clientY);
+    if (h !== hover) { hover = h; cv.style.cursor = h >= 0 ? "pointer" : "default"; dirty = true; }
+  });
+  cv.addEventListener("pointerleave", () => { if (hover !== -1) { hover = -1; dirty = true; } });
+  cv.addEventListener("pointerdown", (e) => {
+    const h = pick(e.clientX, e.clientY);
+    if (h >= 0 && h !== sel) { sel = h; hover = h; renderPanel(); dirty = true; }
+  });
+
+  let rt = 0;
+  addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { layout(); dirty = true; }, 80);
+  });
+
+  setMonth(month);
+  document.fonts.ready.then(() => { layout(); dirty = true; });
+
+  const loop = () => { requestAnimationFrame(loop); if (dirty) { dirty = false; paint(); } };
+  requestAnimationFrame(loop);
+}
+
+/* opened beside the atlas → the atlas; opened from the published site/ folder
+   (or over http) → the sibling index, which is the same page */
+$("#back").href = /\/site\//.test(location.pathname) ? "index.html"
+  : location.protocol === "file:" ? "太阳系行星图鉴.html" : "./";
+boot();
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

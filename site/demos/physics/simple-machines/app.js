@@ -304,66 +304,220 @@
     en: { power: 'Force-saving', equal: 'Equal-arm', effort: 'Distance-saving' }
   };
 
+  /* ---------------- mini schematics (one per model, not per machine) ---------------- */
+
+  const INK = '#17181a', CYA = '#2b9fbd', ORG = '#dd5a2b';
+  const DIML = '#cfc8ba', MUT = '#9a9385', MBG = '#fbfaf6', ROPE = '#9d8f6a';
+
+  function svgWrap(inner) {
+    return '<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+  }
+
+  function svgArrow(x1, y1, x2, y2, color, w) {
+    const a = Math.atan2(y2 - y1, x2 - x1), hl = 7, hd = 2.7;
+    const bx = x2 - hl * Math.cos(a), by = y2 - hl * Math.sin(a);
+    return '<path d="M' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2 +
+      'M' + (bx + hd * Math.sin(a)).toFixed(1) + ' ' + (by - hd * Math.cos(a)).toFixed(1) +
+      'L' + x2 + ' ' + y2 +
+      'L' + (bx - hd * Math.sin(a)).toFixed(1) + ' ' + (by + hd * Math.cos(a)).toFixed(1) +
+      '" stroke="' + color + '" stroke-width="' + (w || 1.7) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+
+  function dimSeg(x1, y1, x2, y2) {
+    return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + DIML + '" stroke-dasharray="3 3"/>';
+  }
+
+  function tick(x1, y1, x2, y2, c) {
+    return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + c + '" stroke-width="1.5"/>';
+  }
+
+  function lbl(x, y, t, rot, size) {
+    return '<text x="' + x + '" y="' + y + '"' + (rot ? ' transform="rotate(' + rot + ' ' + x + ' ' + y + ')"' : '') +
+      ' font-size="' + (size || 8.5) + '" fill="' + MUT + '" font-family="ui-monospace,Menlo,monospace">' + t + '</text>';
+  }
+
+  /* ---- lever: crowbar / balance / fishing rod ---- */
+  function miniLever(v) {
+    const ground = '<line x1="14" y1="88" x2="306" y2="88" stroke="#e6e0d3"/>';
+
+    if (v === 'equal') {
+      return svgWrap(ground +
+        dimSeg(72, 72, 160, 72) + dimSeg(160, 72, 248, 72) +
+        '<path d="M156 42 L164 42 L168 88 L152 88 Z" fill="' + MBG + '" stroke="' + INK + '" stroke-width="1.2" stroke-linejoin="round"/>' +
+        '<line x1="138" y1="88" x2="182" y2="88" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round"/>' +
+        '<line x1="62" y1="42" x2="258" y2="42" stroke="' + INK + '" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<path d="M160 21 L156.5 42 L163.5 42 Z" fill="' + ORG + '"/>' +
+        '<path d="M72 42 L62 56 M72 42 L82 56" stroke="' + INK + '" stroke-width="0.9"/>' +
+        '<path d="M60 56 Q72 66 84 56" stroke="' + INK + '" stroke-width="1.3"/>' +
+        '<path d="M248 42 L238 56 M248 42 L258 56" stroke="' + INK + '" stroke-width="0.9"/>' +
+        '<path d="M236 56 Q248 66 260 56" stroke="' + INK + '" stroke-width="1.3"/>' +
+        '<rect x="66" y="49" width="12" height="9" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.2"/>' +
+        '<rect x="242" y="49" width="12" height="9" fill="' + MBG + '" stroke="' + ORG + '" stroke-width="1.2"/>' +
+        svgArrow(72, 4, 72, 28, CYA) + svgArrow(248, 4, 248, 28, ORG) +
+        tick(72, 67, 72, 77, CYA) + tick(248, 67, 248, 77, ORG) +
+        lbl(110, 84, 'L₂') + lbl(198, 84, 'L₁'));
+    }
+
+    if (v === 'effort') {
+      return svgWrap(ground +
+        dimSeg(61.5, 75.6, 121.8, 62.3) + dimSeg(121.8, 62.3, 287.5, 25.6) +
+        '<rect x="55" y="58" width="6" height="30" fill="' + MBG + '" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<path d="M58.7 63.1 L283.9 9.3 L284.1 10.7 L57.3 56.9 Z" fill="' + INK + '"/>' +
+        svgArrow(118, 12, 118, 41, ORG, 1.8) +
+        '<path d="M284 37 V51" stroke="#b9c6d4" stroke-width="0.9"/>' +
+        '<ellipse cx="284" cy="57" rx="9" ry="5.5" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.3"/>' +
+        '<path d="M275 57 L268 52 L268 62 Z" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.3"/>' +
+        svgArrow(284, 16, 284, 34, CYA) +
+        tick(60.4, 70.7, 62.6, 80.5, MUT) + tick(120.7, 57.4, 122.9, 67.2, ORG) + tick(286.4, 20.7, 288.6, 30.5, CYA) +
+        lbl(85, 66, 'L₁', -12.5, 7.5) + lbl(197, 41, 'L₂', -12.5, 7.5));
+    }
+
+    /* power */
+    return svgWrap(ground +
+      dimSeg(57, 72, 104, 72) + dimSeg(104, 72, 272, 72) +
+      '<line x1="40" y1="54" x2="284" y2="54" stroke="' + INK + '" stroke-width="2.6" stroke-linecap="round"/>' +
+      '<path d="M104 54 L92 88 L116 88 Z" fill="' + MBG + '" stroke="' + INK + '" stroke-width="1.3" stroke-linejoin="round"/>' +
+      '<rect x="44" y="32" width="26" height="22" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.4"/>' +
+      svgArrow(57, 4, 57, 27, CYA) +
+      svgArrow(272, 38, 272, 51, ORG) +
+      tick(57, 67, 57, 77, CYA) + tick(272, 67, 272, 77, ORG) +
+      lbl(74, 84, 'L₂') + lbl(180, 84, 'L₁'));
+  }
+
+  /* ---- pulley: n = 1 / 2 / 3 / 4 ---- */
+  function miniPulley(v) {
+    const ceil = '<line x1="72" y1="14" x2="248" y2="14" stroke="' + INK + '" stroke-width="1.8" stroke-linecap="round"/>';
+    const hub = (x, y, r) => '<circle cx="' + x + '" cy="' + y + '" r="' + (r || 2.6) + '" fill="' + INK + '"/>';
+    const wheel = (x, y, r) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" stroke="' + INK + '" stroke-width="1.5"/>' + hub(x, y, r * 0.22);
+    const rope = (d) => '<path d="' + d + '" stroke="' + ROPE + '" stroke-width="1.7" stroke-linecap="round"/>';
+    const box = (x, y, w, h) => '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.4"/>';
+
+    if (v === 'movable') {
+      return svgWrap(ceil +
+        '<rect x="104" y="9" width="12" height="6" fill="' + MBG + '" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<line x1="140" y1="14" x2="140" y2="24" stroke="' + INK + '" stroke-width="2"/>' +
+        rope('M110 16 V60 Q120 80 130 60 V34 Q140 14 150 34 V54') +
+        wheel(120, 60, 10) + wheel(140, 34, 10) +
+        '<line x1="120" y1="70" x2="120" y2="76" stroke="' + INK + '" stroke-width="1.4"/>' +
+        box(106, 76, 28, 16) +
+        svgArrow(150, 56, 150, 70, ORG));
+    }
+
+    if (v === 'block3') {
+      return svgWrap(ceil +
+        '<line x1="140" y1="14" x2="140" y2="20" stroke="' + INK + '" stroke-width="2"/>' +
+        '<line x1="160" y1="14" x2="160" y2="20" stroke="' + INK + '" stroke-width="2"/>' +
+        rope('M140 50 V40 Q130 40 130 30 V64 Q140 84 150 64 V30 Q160 10 170 30 V56') +
+        wheel(140, 30, 10) + wheel(160, 30, 10) + wheel(140, 64, 10) +
+        '<line x1="140" y1="74" x2="140" y2="78" stroke="' + INK + '" stroke-width="1.4"/>' +
+        box(126, 78, 28, 15) +
+        svgArrow(170, 58, 170, 72, ORG));
+    }
+
+    if (v === 'block4') {
+      return svgWrap(ceil +
+        '<line x1="148" y1="14" x2="148" y2="20" stroke="' + INK + '" stroke-width="2"/>' +
+        '<line x1="188" y1="14" x2="188" y2="20" stroke="' + INK + '" stroke-width="2"/>' +
+        '<rect x="112" y="9" width="12" height="6" fill="' + MBG + '" stroke="' + INK + '" stroke-width="1.1"/>' +
+        rope('M118 16 V60 Q128 80 138 60 V30 Q148 10 158 30 V60 Q168 80 178 60 V30 Q188 10 198 30 V54') +
+        wheel(148, 30, 10) + wheel(188, 30, 10) + wheel(128, 60, 10) + wheel(168, 60, 10) +
+        '<line x1="128" y1="70" x2="168" y2="70" stroke="' + INK + '" stroke-width="1.4"/>' +
+        '<line x1="148" y1="70" x2="148" y2="74" stroke="' + INK + '" stroke-width="1.4"/>' +
+        box(134, 74, 28, 15) +
+        svgArrow(198, 56, 198, 70, ORG));
+    }
+
+    /* fixed */
+    return svgWrap(ceil +
+      '<line x1="160" y1="14" x2="160" y2="24" stroke="' + INK + '" stroke-width="2"/>' +
+      rope('M148 36 V68 M172 36 V56 M148 36 Q160 12 172 36') +
+      wheel(160, 36, 12) +
+      box(134, 68, 28, 18) +
+      svgArrow(172, 58, 172, 72, ORG));
+  }
+
+  /* ---- wheel & axle: R / r ratio ---- */
+  function miniWheel(v) {
+    const R = v === 'big' ? 37 : v === 'small' ? 29 : 33;
+    return svgWrap(
+      '<circle cx="118" cy="46" r="' + R + '" stroke="' + INK + '" stroke-width="1.6"/>' +
+      '<circle cx="118" cy="46" r="11" stroke="' + INK + '" stroke-width="1.3"/>' +
+      '<line x1="118" y1="46" x2="' + (118 + R) + '" y2="46" stroke="' + ORG + '" stroke-width="1.2" stroke-dasharray="3 2"/>' +
+      '<line x1="118" y1="46" x2="118" y2="35" stroke="' + CYA + '" stroke-width="1.2"/>' +
+      lbl(118 + R * 0.42, 42, 'R') +
+      '<text x="121" y="33" font-size="8.5" fill="' + CYA + '" font-family="ui-monospace,Menlo,monospace">r</text>' +
+      '<line x1="118" y1="' + (46 + R) + '" x2="118" y2="' + (46 + R + 8) + '" stroke="' + DIML + '" stroke-dasharray="3 3"/>' +
+      '<path d="M206 22 L206 56" stroke="' + CYA + '" stroke-width="1.2" stroke-dasharray="3 2"/>' +
+      '<rect x="190" y="58" width="32" height="20" rx="2" stroke="' + CYA + '" stroke-width="1.4"/>' +
+      svgArrow(230, 30, 230, 49, ORG, 1.5));
+  }
+
+  /* ---- inclined plane: angle changes with the variant ---- */
+  function miniIncline(v) {
+    const deg = v === 'gentle' ? 16 : v === 'steep' ? 33 : 24;
+    const rad = deg * Math.PI / 180;
+    const top = 26, base = 80, h = base - top;
+    const s = h / Math.tan(rad);
+    const x0 = 262 - s;
+    const fx = 0.56;
+    const bx = x0 + s * fx, by = base - h * fx;
+    const nx = -Math.sin(rad), ny = -Math.cos(rad);
+    const cx = bx + nx * 10.5, cy = by + ny * 10.5;
+    const dx = Math.cos(rad), dy = -Math.sin(rad);
+    return svgWrap(
+      '<path d="M' + x0.toFixed(1) + ' ' + base + ' L262 ' + base + ' L262 ' + top + ' Z" stroke="' + INK + '" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<rect x="' + (cx - 11).toFixed(1) + '" y="' + (cy - 11).toFixed(1) + '" width="22" height="22" rx="2" fill="' + MBG + '" stroke="' + CYA + '" stroke-width="1.4" transform="rotate(-' + deg + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')"/>' +
+      '<line x1="278" y1="80" x2="278" y2="26" stroke="' + DIML + '" stroke-dasharray="3 3"/>' +
+      '<line x1="272" y1="80" x2="284" y2="80" stroke="' + DIML + '"/>' +
+      '<line x1="272" y1="26" x2="284" y2="26" stroke="' + DIML + '"/>' +
+      lbl(286, 56, 'h') +
+      lbl((x0 + 262) / 2 - 3, 92, 's') +
+      svgArrow(cx + dx * 15, cy + dy * 15, cx + dx * 34, cy + dy * 34, ORG, 1.5));
+  }
+
+  /* ---- screw: thread pitch ---- */
+  function miniScrew(v) {
+    const n = v === 'coarse' ? 3 : v === 'fine' ? 6 : 4;
+    let th = '';
+    for (let i = 0; i < n; i++) {
+      const y = 22 + i * (52 / (n - 1));
+      th += '<path d="M62 ' + y.toFixed(1) + ' L86 ' + (y + 9).toFixed(1) + '" stroke="' + ORG + '" stroke-width="1.2"/>';
+    }
+    return svgWrap(
+      '<rect x="62" y="14" width="24" height="66" rx="2" stroke="' + INK + '" stroke-width="1.3"/>' +
+      th +
+      '<line x1="40" y1="14" x2="108" y2="14" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M136 80 L248 80 L248 34 Z" stroke="' + INK + '" stroke-width="1.2" stroke-linejoin="round"/>' +
+      lbl(182, 92, '2πR') +
+      lbl(254, 58, 'p'));
+  }
+
+  /* ---- wedge: apex angle ---- */
+  function miniWedge(v) {
+    const half = v === 'thick' ? 20 : v === 'thin' ? 9 : 14;
+    const out = half + 6;
+    return svgWrap(
+      '<rect x="92" y="30" width="136" height="50" rx="3" stroke="' + INK + '" stroke-width="1.4"/>' +
+      '<path d="M' + (160 - half) + ' 14 L' + (160 + half) + ' 14 L160 34 Z" stroke="' + ORG + '" stroke-width="1.5" stroke-linejoin="round" fill="' + MBG + '"/>' +
+      '<line x1="160" y1="32" x2="160" y2="80" stroke="#e6e0d3" stroke-width="1.2"/>' +
+      svgArrow(160 - out, 52, 160 - out - 22, 52, CYA, 1.5) +
+      svgArrow(160 + out, 52, 160 + out + 22, 52, CYA, 1.5) +
+      '<path d="M160 2 V10 M155 5 L160 12 L165 5" stroke="' + ORG + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>');
+  }
+
   const MINI = {
-    lever: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="16" y1="78" x2="304" y2="78" stroke="#e6e0d3"/>
-      <path d="M160 78 L145 55 L175 55 Z" stroke="#17181a" stroke-width="1.3" stroke-linejoin="round"/>
-      <line x1="70" y1="43" x2="252" y2="43" stroke="#17181a" stroke-width="2.4" stroke-linecap="round"/>
-      <line x1="160" y1="43" x2="160" y2="55" stroke="#17181a" stroke-width="1"/>
-      <path d="M94 18 L94 36 M88 30 L94 37 L100 30" stroke="#2b9fbd" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M228 18 L228 36 M222 30 L228 37 L234 30" stroke="#dd5a2b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <line x1="94" y1="64" x2="160" y2="64" stroke="#cfc8ba" stroke-dasharray="3 3"/>
-      <line x1="160" y1="64" x2="228" y2="64" stroke="#cfc8ba" stroke-dasharray="3 3"/>
-      <text x="118" y="76" font-size="8.5" fill="#9a9385" font-family="monospace">L2</text>
-      <text x="188" y="76" font-size="8.5" fill="#9a9385" font-family="monospace">L1</text>
-    </svg>`,
-    pulley: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="64" y1="16" x2="256" y2="16" stroke="#17181a" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="160" cy="36" r="16" stroke="#17181a" stroke-width="1.4"/>
-      <circle cx="160" cy="36" r="3" fill="#17181a"/>
-      <path d="M144 36 L144 72 M176 36 L176 54" stroke="#2b9fbd" stroke-width="1.4"/>
-      <rect x="128" y="72" width="32" height="20" rx="2" stroke="#2b9fbd" stroke-width="1.4"/>
-      <path d="M176 56 L176 70 M170 64 L176 71 L182 64" stroke="#dd5a2b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`,
-    wheel: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="118" cy="46" r="33" stroke="#17181a" stroke-width="1.6"/>
-      <circle cx="118" cy="46" r="11" stroke="#17181a" stroke-width="1.3"/>
-      <line x1="118" y1="46" x2="151" y2="46" stroke="#dd5a2b" stroke-width="1.2" stroke-dasharray="3 2"/>
-      <line x1="118" y1="46" x2="118" y2="35" stroke="#2b9fbd" stroke-width="1.2"/>
-      <text x="132" y="42" font-size="8.5" fill="#dd5a2b" font-family="monospace">R</text>
-      <text x="122" y="40" font-size="8.5" fill="#2b9fbd" font-family="monospace">r</text>
-      <line x1="118" y1="79" x2="118" y2="88" stroke="#cfc8ba" stroke-dasharray="3 3"/>
-      <path d="M206 22 L206 56" stroke="#2b9fbd" stroke-width="1.2" stroke-dasharray="3 2"/>
-      <rect x="190" y="58" width="32" height="20" rx="2" stroke="#2b9fbd" stroke-width="1.4"/>
-      <path d="M230 30 L230 48 M224 42 L230 49 L236 42" stroke="#dd5a2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`,
-    incline: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M58 80 L262 80 L262 26 Z" stroke="#17181a" stroke-width="1.5" stroke-linejoin="round"/>
-      <rect x="152" y="42" width="24" height="24" rx="2" transform="rotate(-16 164 54)" fill="#fff" stroke="#2b9fbd" stroke-width="1.4"/>
-      <line x1="278" y1="80" x2="278" y2="26" stroke="#cfc8ba" stroke-dasharray="3 3"/>
-      <line x1="272" y1="80" x2="284" y2="80" stroke="#cfc8ba"/>
-      <line x1="272" y1="26" x2="284" y2="26" stroke="#cfc8ba"/>
-      <text x="286" y="56" font-size="8.5" fill="#9a9385" font-family="monospace">h</text>
-      <text x="150" y="92" font-size="8.5" fill="#9a9385" font-family="monospace">s</text>
-      <path d="M196 40 L214 30 M206 29 L215 29 L214 38" stroke="#dd5a2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`,
-    screw: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="62" y="14" width="24" height="66" rx="2" stroke="#17181a" stroke-width="1.3"/>
-      <path d="M62 24 L86 33 M62 36 L86 45 M62 48 L86 57 M62 60 L86 69" stroke="#dd5a2b" stroke-width="1.2"/>
-      <line x1="40" y1="14" x2="108" y2="14" stroke="#17181a" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M136 80 L248 80 L248 34 Z" stroke="#17181a" stroke-width="1.2" stroke-linejoin="round"/>
-      <text x="182" y="92" font-size="8.5" fill="#9a9385" font-family="monospace">2πR</text>
-      <text x="254" y="58" font-size="8.5" fill="#9a9385" font-family="monospace">p</text>
-    </svg>`,
-    wedge: `<svg viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="92" y="30" width="136" height="50" rx="3" stroke="#17181a" stroke-width="1.4"/>
-      <path d="M160 14 L174 32 L146 32 Z" stroke="#dd5a2b" stroke-width="1.5" stroke-linejoin="round" fill="#fff"/>
-      <line x1="160" y1="32" x2="160" y2="80" stroke="#e6e0d3" stroke-width="1.2"/>
-      <path d="M136 52 L114 52 M120 46 L113 52 L120 58" stroke="#2b9fbd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M184 52 L206 52 M200 46 L207 52 L200 58" stroke="#2b9fbd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M160 6 L160 12 M155 7 L160 2 L165 7" stroke="#dd5a2b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`
+    lever: miniLever,
+    pulley: miniPulley,
+    wheel: miniWheel,
+    incline: miniIncline,
+    screw: miniScrew,
+    wedge: miniWedge
   };
+
+  function renderMini() {
+    const m = state.machine;
+    $('mini').innerHTML = MINI[m](state.variant[m]);
+  }
 
   /* ---------------- dom ---------------- */
 
@@ -611,6 +765,7 @@
         state.variant[state.machine] = v.key;
         active.setVariant(v.key);
         applyCamera(active.camera);
+        renderMini();
         renderVariants();
         syncSlider();
         refreshChipValues();
@@ -672,7 +827,7 @@
     });
 
     $('slLabel').textContent = SLIDERS[state.machine][state.lang];
-    $('mini').innerHTML = MINI[state.machine];
+    renderMini();
     $('watermark').textContent = CONTENT[state.machine].no;
     $('pageNum').textContent = String(ORDER.indexOf(state.machine) + 1).padStart(2, '0') + ' / ' + String(ORDER.length).padStart(2, '0');
 

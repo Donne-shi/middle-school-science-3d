@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>落入天王星 · Falling into Uranus</title>
+<meta name="description" content="一次想象中的下潜：从 42,000 公里外落向天王星，穿过甲烷云、深部大气、超临界冰幔，直到岩石核心。结构、成分与温度随深度实时呈现。">
+<meta name="theme-color" content="#05070a">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#04070a;
+  --ink:#eef4f5;
+  --ink-2:#cfdadc;
+  --muted:#93a3a7;
+  --dim:#5d6d72;
+  --dim-2:#3f4d52;
+  --line:rgba(226,244,247,.14);
+  --line-2:rgba(226,244,247,.07);
+  --ac:#8fd3dd;
+  --pad:clamp(20px,3.2vw,54px);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+::selection{background:var(--ac);color:#05070a}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 88% at 50% 46%,rgba(0,0,0,0) 40%,rgba(0,0,0,.34) 76%,rgba(0,0,0,.72) 100%)}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:4}
+.scrim::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,7,10,.84) 0%,rgba(3,7,10,.52) 17%,rgba(3,7,10,.10) 36%,transparent 50%)}
+.scrim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;
+  background:linear-gradient(180deg,transparent,rgba(3,7,10,.58) 62%,rgba(3,7,10,.82))}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- masthead ---------- */
+.mast{position:fixed;left:var(--pad);top:clamp(26px,4.6vh,52px);z-index:12;width:min(486px,44vw)}
+.idx{display:flex;align-items:baseline;gap:7px;font-family:var(--mono);font-size:13px;letter-spacing:.28em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:15px}
+.idx i{font-style:normal;color:var(--dim-2)}
+.mast h1{margin:14px 0 0;font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:.02em}
+.mast h1 .cn{display:block;font-size:clamp(32px,4vw,53.5px);color:var(--ink);text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.mast h1 .en{display:block;margin-top:9px;font-family:var(--mono);font-size:13px;letter-spacing:.42em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:13.5px;letter-spacing:.16em;color:var(--muted)}
+.kicker i{width:22px;height:1px;background:var(--ac);opacity:.7;flex:none}
+.tag{margin:11px 0 0;font-family:var(--serif);font-size:18px;line-height:1.75;color:var(--ink-2);opacity:.9;max-width:32ch;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+
+.chips{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:26px 0 0;padding:0;
+  border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.chips li{padding:11px 0 12px;min-width:0}
+.chips b{display:flex;align-items:baseline;gap:4px;font-family:var(--mono);font-weight:400;font-size:18px;
+  letter-spacing:.01em;color:var(--ink);white-space:nowrap;text-shadow:0 1px 10px rgba(0,0,0,.7)}
+.chips b u{text-decoration:none;font-size:10.5px;letter-spacing:.1em;color:var(--dim);transform:translateY(-1px)}
+.chips li>span{display:block;margin-top:5px;font-size:11px;letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+/* the cloud-top segment is a bright haze — keep the readouts legible on it */
+.mast .idx,.mast .kicker,.mast .chips b,.mast .chips li>span,.mast .sub{
+  text-shadow:0 1px 12px rgba(0,0,0,.62),0 0 26px rgba(0,0,0,.38)}
+.sub{margin:10px 0 0;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--dim);display:flex;gap:14px;flex-wrap:wrap}
+.sub b{font-weight:400;color:var(--ink-2)}
+
+/* ---------- structure panel ---------- */
+.struct{position:fixed;right:var(--pad);top:clamp(74px,10vh,104px);width:clamp(312px,27vw,392px);z-index:12;
+  display:flex;flex-direction:column;height:min(596px,calc(100vh - 218px));
+  padding:13px 14px 28px;border-radius:15px;border:1px solid rgba(226,244,247,.10);
+  background:linear-gradient(178deg,rgba(9,17,22,.62),rgba(4,8,11,.74));
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
+  box-shadow:0 24px 70px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.04)}
+.sh{display:flex;align-items:baseline;gap:9px;font-size:12px;letter-spacing:.24em;color:var(--dim)}
+.sh b{font-weight:400;color:var(--ink-2)}
+.sh i{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--dim-2)}
+.sec{position:relative;flex:1;display:flex;gap:11px;margin-top:13px;min-height:0}
+.layers{flex:1;display:flex;flex-direction:column;min-width:0}
+.ly{position:relative;padding:7px 10px 8px 12px;border-left:1px solid var(--line-2);min-height:0;overflow:hidden;
+  transition:background .5s ease,border-color .5s ease}
+.ly::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:transparent;transition:background .5s ease}
+.ly.is-on{background:rgba(143,211,221,.055)}
+.ly.is-on::before{background:var(--ac)}
+.ly b{display:block;font-weight:400;font-size:15.5px;letter-spacing:.2em;color:var(--ink-2)}
+.ly em{display:block;margin-top:3px;font-style:normal;font-family:var(--mono);font-size:11px;
+  letter-spacing:.08em;color:var(--dim)}
+.ly p{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.ly p s{text-decoration:none;color:var(--dim-2)}
+.therm{position:relative;width:104px;flex:none}
+.therm svg{display:block;width:100%;height:100%;overflow:visible}
+.tcap{position:absolute;left:0;bottom:-10px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim-2)}
+.tcap.r{left:auto;right:0}
+.tval{font-family:var(--mono);font-size:12px;fill:var(--ink);letter-spacing:.04em}
+
+/* ---------- note ---------- */
+.note{position:fixed;left:var(--pad);bottom:calc(118px + 3vh);z-index:12;width:min(392px,40vw);
+  padding:15px 17px 16px;border-radius:13px;border:1px solid rgba(226,244,247,.09);
+  background:linear-gradient(180deg,rgba(5,11,15,.76),rgba(3,7,10,.86));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;transform:translateY(9px);transition:opacity .55s ease,transform .55s ease;pointer-events:none}
+.note.is-on{opacity:1;transform:none}
+.note kbd{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--ac);
+  border:1px solid rgba(143,211,221,.28);border-radius:2px;padding:3px 7px;background:rgba(143,211,221,.07)}
+.note h3{margin:11px 0 0;font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:.02em;color:var(--ink)}
+.note p{margin:7px 0 0;font-size:15px;line-height:1.85;color:var(--ink-2);opacity:.86;letter-spacing:.02em}
+
+/* ---------- timeline ---------- */
+.tl{position:fixed;left:var(--pad);right:var(--pad);bottom:clamp(26px,4vh,44px);z-index:14}
+.tl-head{display:flex;align-items:center;gap:14px;margin-bottom:9px}
+.tl-play{appearance:none;background:none;border:1px solid var(--line);border-radius:20px;color:var(--ink-2);
+  font:inherit;font-size:12px;letter-spacing:.18em;padding:5px 13px;cursor:pointer;transition:.25s;
+  flex:none;white-space:nowrap}
+.tl-play:hover{border-color:var(--ac);color:var(--ink)}
+.tl-sp{margin-left:auto;display:flex;gap:2px}
+.tl-sp button{appearance:none;background:none;border:0;color:var(--dim);font:inherit;font-family:var(--mono);
+  font-size:12px;letter-spacing:.06em;padding:4px 7px;cursor:pointer;border-bottom:1px solid transparent}
+.tl-sp button.is-on{color:var(--ac);border-bottom-color:var(--ac)}
+.track{position:relative;height:2px;background:rgba(226,244,247,.13);cursor:pointer}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ac);opacity:.85}
+.head-dot{position:absolute;top:-4px;left:0;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+  background:#eaf9fb;box-shadow:0 0 16px var(--ac)}
+.stages{display:flex;margin-top:12px;gap:6px}
+.stages span{font-size:11.5px;letter-spacing:.14em;color:var(--dim);white-space:nowrap;position:relative;padding-top:7px}
+.stages span::before{content:"";position:absolute;left:0;top:0;width:1px;height:4px;background:var(--dim-2)}
+.stages span.is-on{color:var(--ink)}
+.stages span.is-on::before{background:var(--ac)}
+.stages span i{display:block;font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  color:var(--dim-2);margin-top:2px}
+
+/* ---------- back / language ---------- */
+.topright{position:fixed;right:var(--pad);top:clamp(22px,3.4vh,38px);z-index:16;
+  display:flex;align-items:center;gap:14px}
+.lang{display:flex;align-items:center;gap:1px;padding:2px;border:1px solid var(--line);border-radius:30px;
+  background:rgba(4,9,12,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.lang button{appearance:none;border:0;background:none;font:inherit;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;color:var(--dim);padding:6px 8px;border-radius:20px;cursor:pointer;line-height:1;
+  transition:color .22s,background .22s}
+.lang button:hover{color:var(--ink-2)}
+.lang button.is-on{background:var(--ac);color:#04090c}
+.back{display:inline-flex;align-items:center;gap:7px;
+  font-size:13px;letter-spacing:.18em;color:var(--muted);text-decoration:none;transition:color .25s}
+.back:hover{color:var(--ink)}
+.back svg{opacity:.7}
+
+.you{position:fixed;left:0;top:0;z-index:11;pointer-events:none;width:26px;transform:translate(-50%,-50%);
+  color:#dff3f7;transition:opacity .4s ease}
+.you svg{display:block;width:100%;height:auto;filter:drop-shadow(0 0 7px rgba(190,236,245,.85))}
+.you span{position:absolute;left:50%;top:100%;transform:translate(-50%,6px);font-family:var(--mono);
+  font-size:10px;letter-spacing:.3em;color:var(--ac);opacity:.85}
+.trail{position:fixed;left:0;top:0;z-index:10;pointer-events:none;height:1px;transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(190,236,245,0),rgba(190,236,245,.55));opacity:.55}
+
+/* ---------- end card ---------- */
+.end{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .9s ease;background:radial-gradient(60% 50% at 50% 55%,rgba(0,0,0,.55),rgba(0,0,0,.86))}
+.end.is-on{opacity:1;pointer-events:auto}
+.end-in{text-align:center;max-width:520px;padding:0 24px}
+.end-in p{margin:0;font-family:var(--mono);font-size:12px;letter-spacing:.34em;color:var(--ac)}
+.end-in h2{margin:16px 0 0;font-family:var(--serif);font-weight:400;font-size:clamp(25.5px,3vw,40.5px);letter-spacing:.04em}
+.end-in small{display:block;margin-top:14px;font-size:15px;line-height:1.9;color:var(--muted)}
+.end-in button{margin-top:26px;appearance:none;background:none;border:1px solid var(--line);border-radius:24px;
+  color:var(--ink-2);font:inherit;font-size:13.5px;letter-spacing:.22em;padding:9px 22px;cursor:pointer;transition:.25s}
+.end-in button:hover{border-color:var(--ac);color:var(--ink)}
+
+.hstruct{display:none}
+
+/* the live readouts step aside for the end card */
+body.ended .mast,body.ended .struct,body.ended .note,body.ended .tl,
+body.ended .hstruct,body.ended .you,body.ended .trail{
+  opacity:0!important;transition:opacity .9s ease;pointer-events:none}
+
+/* ---------- english mode ---------- */
+/* the medium readout is a phrase, not a number: let each column take the width
+   it needs and spread the four across the same rule */
+@media (min-width:561px){
+  body.lang-en .chips{grid-template-columns:repeat(4,auto);justify-content:space-between;column-gap:12px}
+  body.lang-en .chips b{font-size:16px}
+}
+body.lang-en .mast h1 .cn{font-family:"Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+  font-size:clamp(30px,3.55vw,46px);line-height:1.04;letter-spacing:.005em}
+body.lang-en .mast h1 .en{font-family:var(--serif);font-size:15px;letter-spacing:.3em;text-transform:none}
+body.lang-en .kicker{font-size:12px;letter-spacing:.05em;flex-wrap:wrap}
+body.lang-en .tag{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:16.5px;line-height:1.7;max-width:34ch}
+body.lang-en .chips li>span{font-size:10px;letter-spacing:.07em}
+body.lang-en .ly b{font-size:14px;letter-spacing:.08em}
+body.lang-en .ly p{font-size:11px;line-height:1.4}
+body.lang-en .note h3{font-size:20.5px;line-height:1.25}
+body.lang-en .note p{font-size:13.5px;line-height:1.7}
+body.lang-en .end-in h2{line-height:1.16;text-wrap:balance}
+body.lang-en .end-in small{font-size:14px;line-height:1.8}
+body.lang-en .stages span{letter-spacing:.06em}
+body.lang-en .stages span i{text-transform:none;letter-spacing:.02em}
+body.lang-en .tl-hint{letter-spacing:.1em}
+
+@media (max-width:1080px){
+  .struct{width:270px}
+  .ly p{display:none}
+  body.lang-en .ly b{font-size:13px}
+  /* the range string is the same in both languages and was folding here */
+  .ly em{font-size:10px;letter-spacing:.04em}
+  body.lang-en .chips b{font-size:15px}
+}
+@media (max-width:900px){
+  .mast{width:auto;right:var(--pad)}
+  .mast h1 .cn{font-size:clamp(29px,7.5vw,40.5px)}
+  .tag{font-size:16px;max-width:44ch}
+  .struct{display:none}
+  .note{width:auto;right:var(--pad);bottom:calc(152px + 2vh);padding:13px 14px 14px}
+  .note p{font-size:14px;line-height:1.8}
+  .hstruct{display:flex;position:fixed;left:var(--pad);right:var(--pad);bottom:calc(104px + 2vh);z-index:13;
+    gap:1px;height:3px}
+  .hstruct i{display:block;height:100%;background:rgba(226,244,247,.13);position:relative}
+  .hstruct i.on{background:var(--ac)}
+  .hstruct b{position:absolute;left:0;bottom:9px;font-weight:400;font-family:var(--sans);font-size:11px;
+    letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+  .stages span{font-size:10px;letter-spacing:.08em}
+  .stages span i{display:none}
+  .chips b{font-size:17.5px}
+  .tl-hint{display:none}
+  .hstruct{height:4px}
+}
+@media (max-width:560px){
+  .chips{grid-template-columns:repeat(2,1fr);gap:0}
+  .chips li{padding:8px 0 9px}
+  .kicker{font-size:12px;letter-spacing:.1em}
+  .stages{gap:4px}
+  .stages span{font-size:10px;letter-spacing:.04em}
+  /* the language pill now shares the top row: the kicker has to give way */
+  .idx{font-size:11px;letter-spacing:.16em}
+  body.lang-en .hstruct b{font-size:9px;letter-spacing:0}
+  body.lang-en .chips b{font-size:15.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  .note,.end{transition:none}
+}
+/* headless screenshots and reduced motion: no transition frames */
+.no-anim *,.no-anim *::before,.no-anim *::after{transition:none!important;animation:none!important}
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="vex"></div>
+<div class="scrim"></div>
+<div class="grain"></div>
+
+<div class="topright">
+  <div class="lang" id="lang" role="group" aria-label="语言 Language">
+    <button type="button" data-lang="zh" class="is-on" aria-pressed="true">中</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="back" id="back" href="#">
+    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+      <path d="M12 4H1M4 1L1 4l3 3" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <span data-en="Atlas">返回图鉴</span>
+  </a>
+</div>
+
+<header class="mast">
+  <div class="idx"><b>U</b><i>·</i><span>URANUS</span><i>·</i><span>DESCENT</span></div>
+  <h1><span class="cn" data-en="Falling into Uranus">落入天王星</span><span class="en" data-en="落入天王星">Falling into Uranus</span></h1>
+  <div class="kicker"><i></i><span data-en="Ice giant · 19.19 AU · axial tilt 97.77°">冰巨星 · 19.19 AU · 轴倾角 97.77°</span></div>
+  <p class="tag" data-en="There is no ground to land on. Only a fluid that keeps thickening, and a temperature that keeps climbing.">没有地面可以着陆。只有越来越稠密的流体，和一路升高的温度。</p>
+
+  <ul class="chips">
+    <li><b><i id="cDepth">42,000</i><u>km</u></b><span id="lDepth">距云顶</span></li>
+    <li><b><i id="cPress">0</i><u>bar</u></b><span data-en="Pressure">压力</span></li>
+    <li><b><i id="cTemp">76</i><u>K</u></b><span id="lTemp">−197 °C</span></li>
+    <li><b><i id="cMed">真空</i></b><span data-en="Medium">所在介质</span></li>
+  </ul>
+  <p class="sub"><span data-en="Terminal velocity <b id='cVel'>—</b> km/h">终端速度 <b id="cVel">—</b> km/h</span><span data-en="Descent <b id='cPct'>0%</b>">下潜进度 <b id="cPct">0%</b></span></p>
+</header>
+
+<aside class="struct">
+  <div class="sh"><b data-en="STRUCTURE">内部结构</b><i data-en="内部结构">STRUCTURE</i><i style="margin-left:auto">T →</i></div>
+  <div class="sec">
+    <div class="layers">
+      <div class="ly is-on" data-k="atm" style="flex:19.7 1 0">
+        <b data-en="Atmosphere">大气层</b>
+        <em>0 – 5,000 km</em>
+        <p data-en="Hydrogen 82.5% · helium 15.2%<br>methane 2.3%<s> + trace hydrocarbons</s>">氢 82.5% · 氦 15.2%<br>甲烷 2.3%<s>（其余为微量烃）</s></p>
+      </div>
+      <div class="ly" data-k="ice" style="flex:59.2 1 0">
+        <b data-en="Ice mantle">冰幔</b>
+        <em>5,000 – 20,000 km</em>
+        <p data-en="Supercritical water, ammonia, methane<br><s>≈ 80% of the volume, 2,000 – 4,900 K</s>">水、氨、甲烷的超临界流体<br><s>约占体积的 80%，温度 2,000 – 4,900 K</s></p>
+      </div>
+      <div class="ly" data-k="core" style="flex:21.1 1 0">
+        <b data-en="Rocky core">岩石核</b>
+        <em>20,000 – 25,362 km</em>
+        <p data-en="Silicates and iron<s>, ~0.5 Earth masses</s>">硅酸盐与铁<s>，约 0.5 个地球质量</s></p>
+      </div>
+    </div>
+    <div class="therm">
+      <svg id="tchart" preserveAspectRatio="none"></svg>
+      <span class="tcap">76 K</span>
+      <span class="tcap r" id="tmax">5,400 K</span>
+    </div>
+  </div>
+</aside>
+
+<div class="hstruct" id="hstruct">
+  <i style="flex:19.7 1 0"><b data-en="Atmosphere">大气层</b></i>
+  <i style="flex:59.2 1 0"><b data-en="Ice mantle">冰幔</b></i>
+  <i style="flex:21.1 1 0"><b data-en="Rocky core">岩石核</b></i>
+</div>
+
+<div class="note" id="note">
+  <kbd id="nK">0 km</kbd>
+  <h3 id="nH"></h3>
+  <p id="nP"></p>
+</div>
+
+<div class="you" id="you">
+  <svg viewBox="0 0 14 22" fill="none" aria-hidden="true">
+    <circle cx="7" cy="3" r="2.1" fill="currentColor"/>
+    <path d="M7 5.4v6.4M7 7.2 3.2 10M7 7.2 10.8 10M7 11.8 3.6 18.4M7 11.8 10.4 18.4"
+          stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+  <span data-en="You">你</span>
+</div>
+<div class="trail" id="trail"></div>
+
+<footer class="tl">
+  <div class="tl-head">
+    <button class="tl-play" id="play" type="button">暂停</button>
+    <span class="tcap tl-hint" style="position:static;font-size:11px;letter-spacing:.18em;color:var(--dim-2)" data-en="Click the timeline to jump · Space to play or pause">点击时间轴可跳转 · 空格播放／暂停</span>
+    <div class="tl-sp" id="sp">
+      <button data-s="0.6" type="button">0.6×</button>
+      <button data-s="1" class="is-on" type="button">1×</button>
+      <button data-s="2" type="button">2×</button>
+      <button data-s="4" type="button">4×</button>
+    </div>
+  </div>
+  <div class="track" id="track">
+    <div class="fill" id="fill"></div>
+    <div class="head-dot" id="hdot"></div>
+  </div>
+  <div class="stages" id="stages"></div>
+</footer>
+
+<div class="end" id="end">
+  <div class="end-in">
+    <p>END OF TRANSMISSION</p>
+    <h2 data-en="Below this, the signal stops">再往下，就没有信号了</h2>
+    <small data-en="25,362 km, 8 million atmospheres, 5,400 K.<br>No probe has ever been here — every number on this page comes from a model, not a measurement.">25,362 公里，8 百万个大气压，5,400 K。<br>至今没有任何探测器到过这里——页面上的每一个数字，都是模型算出来的，不是量出来的。</small>
+    <button id="again" type="button" data-en="Run it again">再看一次</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const $ = s => document.querySelector(s);
+
+  /* -------------------------------------------------------- language --- */
+  const LANG_KEY = "atlas-lang";
+  let lang = "zh";
+  try {
+    if (/[?&]lang=en/.test(location.search)) lang = "en";
+    else if (localStorage.getItem(LANG_KEY) === "en") lang = "en";
+  } catch (e) { /* private mode */ }
+  const T = (zh, en) => lang === "en" ? en : zh;
+  const TITLE = { zh: "落入天王星 · Falling into Uranus", en: "Falling into Uranus · 落入天王星" };
+
+  function applyStatic(){
+    document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+    document.body.classList.toggle("lang-en", lang === "en");
+    document.title = TITLE[lang];
+    for (const el of document.querySelectorAll("[data-en]")){
+      if (el.dataset.zh === undefined) el.dataset.zh = el.innerHTML;
+      el.innerHTML = lang === "en" ? el.dataset.en : el.dataset.zh;
+    }
+    for (const b of document.querySelectorAll("#lang button")){
+      const on = b.dataset.lang === lang;
+      b.classList.toggle("is-on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+
+  const canvas = $("#gl");
+  const gl = canvas.getContext("webgl2", { antialias: false, alpha: false, depth: false,
+                                           powerPreference: "high-performance" });
+
+  /* ---------------------------------------------------------- profile -- */
+  // depth km, pressure bar, temperature K, medium (a key — the label is drawn per language)
+  const MED = {
+    gas:   ["氢氦大气", "H–He atmosphere"],
+    fluid: ["氢氦流体", "H–He fluid"],
+    ice:   ["超临界冰", "Supercritical ice"],
+    core:  ["岩石核", "Rock core"]
+  };
+  const PROF = [
+    [0,      1,      76,   "gas"],
+    [10,     1.6,    78,   "gas"],
+    [40,     4,      96,   "gas"],
+    [120,    28,     150,  "gas"],
+    [300,    260,    235,  "gas"],
+    [700,    2.6e3,  430,  "fluid"],
+    [1500,   1.2e4,  800,  "fluid"],
+    [3000,   4.2e4,  1400, "fluid"],
+    [5000,   1.6e5,  2100, "ice"],
+    [8000,   6.0e5,  2900, "ice"],
+    [12000,  1.6e6,  3600, "ice"],
+    [16000,  3.4e6,  4200, "ice"],
+    [20000,  6.0e6,  4900, "core"],
+    [23000,  7.2e6,  5200, "core"],
+    [25362,  8.0e6,  5400, "core"]
+  ];
+
+  // timeline t → depth, hand-paced so the visible atmosphere gets room to breathe
+  const TSTOPS = [
+    [0.200, 0], [0.270, 8], [0.330, 25], [0.390, 60], [0.450, 140],
+    [0.500, 280], [0.550, 520], [0.600, 900], [0.650, 1500], [0.720, 5000],
+    [0.780, 8000], [0.840, 12000], [0.890, 16000], [0.945, 20000],
+    [0.970, 22500], [1.000, 25362]
+  ];
+
+  const STAGES = [
+    { t0: 0.00, t1: 0.13, cn: "接近", en: "APPROACH" },
+    { t0: 0.13, t1: 0.20, cn: "进入", en: "ENTRY" },
+    { t0: 0.20, t1: 0.72, cn: "大气层", en: "ATMOSPHERE" },
+    { t0: 0.72, t1: 0.945, cn: "冰幔", en: "ICE MANTLE" },
+    { t0: 0.945, t1: 1.00, cn: "岩石核", en: "CORE" }
+  ];
+
+  const NOTES = [
+    { t0: 0.002, t1: 0.118, k: "距离 42,000 km", ke: "42,000 km out",
+      h: "一颗没有任何表情的星球", he: "A planet with no expression at all",
+      p: "天王星的大气以氢和氦为主。甲烷吸收红光，把它染成统一的青蓝色。1986 年旅行者 2 号飞过时，整颗星球几乎找不到一朵云。",
+      pe: "Uranus' atmosphere is mostly hydrogen and helium. Methane absorbs red light and leaves a single flat cyan. When Voyager 2 flew past in 1986 it could hardly find one cloud." },
+    { t0: 0.132, t1: 0.212, k: "0 km · 1.0 bar · 76 K", ke: "0 km · 1.0 bar · 76 K",
+      h: "这里就是「表面」", he: "This is the “surface”",
+      p: "天王星没有地面。所谓表面，只是压力等于 1 个地球大气的那一层。从这里往下，再也没有可以站立的地方。",
+      pe: "Uranus has no ground. What we call the surface is only the level where the pressure equals one Earth atmosphere. Below it there is nowhere left to stand." },
+    { t0: 0.245, t1: 0.355, k: "≈ 8 km · 1.5 bar · 76 K", ke: "≈ 8 km · 1.5 bar · 76 K",
+      h: "甲烷冰晶做成的薄纱", he: "Gauze spun from methane ice",
+      p: "−197 °C 的甲烷在这里凝成冰晶。云很薄，薄到几乎不投影子，只让天空更白一点——这也是它看上去如此平淡的原因。",
+      pe: "At −197 °C methane condenses into ice crystals. The clouds are so thin they barely cast a shadow; they only make the sky a little whiter, which is why the planet looks so plain." },
+    { t0: 0.395, t1: 0.505, k: "≈ 120 km · 28 bar · 150 K", ke: "≈ 120 km · 28 bar · 150 K",
+      h: "氢开始不像气体了", he: "Hydrogen stops acting like a gas",
+      p: "压力升到几十个大气压，氢氦被压得彼此靠拢，密度迅速上涨。你会感到「空气」在托着你，落速慢了下来。",
+      pe: "At tens of atmospheres the hydrogen and helium are pressed close together and the density climbs fast. You would feel the air holding you up, and your fall would slow." },
+    { t0: 0.555, t1: 0.665, k: "≈ 1,500 km · 1.2×10⁴ bar · 800 K", ke: "≈ 1,500 km · 1.2×10⁴ bar · 800 K",
+      h: "没有分界线的地方", he: "A place with no dividing line",
+      p: "从气体到流体，中间没有一条可以指认的界线。温度已经 800 K，可它仍然算「大气」——只是越来越稠、越来越热。",
+      pe: "There is no line you can point at where gas becomes fluid. It is already 800 K and still counted as atmosphere — only thicker, and hotter." },
+    { t0: 0.745, t1: 0.845, k: "≈ 8,000 km · 6×10⁵ bar · 2,900 K", ke: "≈ 8,000 km · 6×10⁵ bar · 2,900 K",
+      h: "冰幔：一片超临界海洋", he: "The ice mantle: a supercritical ocean",
+      p: "水、氨、甲烷在这里既不是冰，也不是液体。它们处在超临界状态——没有表面，没有气泡，只有一团既像液体又像气体的热流。天王星约 80% 的体积由它构成。",
+      pe: "Water, ammonia and methane here are neither ice nor liquid. They are supercritical: no surface, no bubbles, just a hot flow that behaves like both. It makes up about 80% of Uranus by volume." },
+    { t0: 0.872, t1: 0.935, k: "≈ 15,000 km · 3×10⁶ bar · 4,100 K", ke: "≈ 15,000 km · 3×10⁶ bar · 4,100 K",
+      h: "有机分子被拆开", he: "Organic molecules come apart",
+      p: "3,000 K 以上，甲烷不再存在。碳和氢重新组合，科学家认为钻石可能在这一层短暂析出，然后又熔回去。这里的「冰」是滚烫的。",
+      pe: "Above 3,000 K methane no longer exists. Carbon and hydrogen recombine, and some scientists think diamonds may briefly precipitate here before melting back. The ice at this depth is scalding." },
+    { t0: 0.952, t1: 0.988, k: "≈ 21,000 km · 6×10⁶ bar · 4,900 K", ke: "≈ 21,000 km · 6×10⁶ bar · 4,900 K",
+      h: "岩石核", he: "The rocky core",
+      p: "一个约 0.5 个地球质量的岩石核，温度接近 5,000 K——和太阳表面差不多热。它被压在 6 百万个大气压之下，密度是水的十几倍。",
+      pe: "A rocky core of about 0.5 Earth masses, close to 5,000 K — roughly as hot as the Sun's surface. It sits under 6 million atmospheres, a dozen times denser than water." }
+  ];
+
+  /* --------------------------------------------------------- shaders --- */
+  const VS = `#version 300 es
+  in vec2 aPos;
+  void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
+
+  const FS = `#version 300 es
+  precision highp float;
+  out vec4 fragColor;
+
+  uniform vec2  uRes;
+  uniform float uTime;
+  uniform float uD;
+  uniform float uMix;
+  uniform float uCamZ;
+  uniform float uFlash;
+
+  float hash21(vec2 p){
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+  float vnoise(vec2 p){
+    vec2 i = floor(p), f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash21(i), hash21(i + vec2(1.0, 0.0)), u.x),
+               mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x), u.y);
+  }
+  float fbm(vec2 p){
+    float s = 0.0, a = 0.5;
+    for (int i = 0; i < 5; i++){ s += a * vnoise(p); p = p * 2.03 + 17.1; a *= 0.5; }
+    return s;
+  }
+
+  vec3 spaceCol(vec2 p){
+    vec2 gp = (p + vec2(2.13, 1.71)) * 74.0;
+    vec2 gi = floor(gp);
+    float h = hash21(gi);
+    float star = 0.0;
+    if (h > 0.982) {
+      vec2 gv = fract(gp) - 0.5;
+      star = smoothstep(0.32, 0.0, length(gv)) * (0.4 + 0.6 * (0.5 + 0.5 * sin(uTime * 1.4 + h * 60.0)));
+    }
+    vec3 col = mix(vec3(0.006, 0.010, 0.017), vec3(0.019, 0.027, 0.038), p.y + 0.5);
+    col += vec3(0.70, 0.80, 0.92) * star * 0.85;
+
+    vec3 ro = vec3(0.0, 0.0, uCamZ);
+    vec3 rd = normalize(vec3(p * 0.95, -1.55));
+    float b = dot(ro, rd);
+    float c = dot(ro, ro) - 1.0;
+    float hh = b * b - c;
+    float tHit = -1.0;
+    if (hh > 0.0) tHit = -b - sqrt(hh);
+
+    // rings: Uranus's equator is tipped 98°, so they read almost vertical
+    vec3 rn = normalize(vec3(0.80, 0.42, 0.44));
+    float dn = dot(rd, rn);
+    if (abs(dn) > 1e-4) {
+      float tp = -dot(ro, rn) / dn;
+      if (tp > 0.0 && (tHit < 0.0 || tp < tHit)) {
+        vec3 P2 = ro + rd * tp;
+        float rr = length(P2);
+        if (rr > 1.26 && rr < 2.02) {
+          float g = smoothstep(1.26, 1.34, rr) * smoothstep(2.02, 1.94, rr);
+          float fine = 0.42 + 0.58 * sin(rr * 92.0) * sin(rr * 25.0 + 1.2);
+          col = mix(col, vec3(0.50, 0.62, 0.66), g * fine * 0.42);
+        }
+      }
+    }
+
+    if (tHit > 0.0) {
+      vec3 P = ro + rd * tHit;
+      vec3 N = normalize(P);
+      float lat = asin(clamp(N.y, -1.0, 1.0));
+      float band = 0.5 + 0.5 * sin(lat * 12.0 + fbm(vec2(N.x * 2.4, N.z * 2.4)) * 2.0);
+      vec3 base = mix(vec3(0.40, 0.64, 0.72), vec3(0.60, 0.80, 0.85), band * 0.55);
+      vec3 L = normalize(vec3(-0.60, 0.32, 0.73));
+      float lam = max(dot(N, L), 0.0);
+      vec3 lit = base * (0.050 + 1.05 * lam);
+      float rim = pow(1.0 - max(dot(N, -rd), 0.0), 2.6);
+      lit += vec3(0.40, 0.68, 0.84) * rim * 0.85;
+      col = lit;
+    } else {
+      float b2 = dot(ro, rd);
+      float d2 = sqrt(max(dot(ro, ro) - b2 * b2, 0.0));
+      col += vec3(0.30, 0.58, 0.74) * smoothstep(1.34, 1.0, d2) * 0.42;
+    }
+    return col;
+  }
+
+  vec3 insideCol(vec2 p){
+    float t = uD;
+    float sp = 0.28 + 1.9 * t;
+    float tt = uTime;
+
+    // stratified wisps: high frequency in y, low in x — the clouds rush upward
+    float a1 = fbm(vec2(p.x * 0.85, p.y * 4.4 - tt * sp * 0.55));
+    float a2 = fbm(vec2(p.x * 1.70 + 7.3, p.y * 8.2 - tt * sp * 1.10));
+    float a3 = fbm(vec2(p.x * 3.30 + 3.1, p.y * 14.5 - tt * sp * 2.00));
+    float cl = a1 * 0.56 + a2 * 0.29 + a3 * 0.15;
+
+    // smear along the fall direction so it reads as speed, not texture
+    float cl2 = fbm(vec2(p.x * 0.85, p.y * 4.4 - tt * sp * 0.55 - 0.085));
+    cl = mix(cl, cl2, 0.5);
+    float dens = smoothstep(0.26, 0.72, cl);
+
+    // the cloud top is a bright haze, not a white-out: keep the base low enough
+    // that the +1.6 wisp gain still lands under 1.0
+    vec3 sky = mix(vec3(0.42, 0.58, 0.62), vec3(0.22, 0.44, 0.50), smoothstep(0.00, 0.20, t));
+    sky = mix(sky, vec3(0.055, 0.155, 0.190), smoothstep(0.16, 0.40, t));
+    sky = mix(sky, vec3(0.042, 0.125, 0.145), smoothstep(0.38, 0.56, t));
+    sky = mix(sky, vec3(0.030, 0.140, 0.150), smoothstep(0.54, 0.70, t));
+    sky = mix(sky, vec3(0.095, 0.205, 0.180), smoothstep(0.68, 0.84, t));
+    sky = mix(sky, vec3(0.42, 0.115, 0.030), smoothstep(0.86, 0.99, t));
+
+    vec3 wisp = sky * 1.6 + vec3(0.055, 0.100, 0.105) * (1.0 - 0.35 * t);
+    vec3 col = mix(sky, wisp, dens * (1.0 - 0.40 * smoothstep(0.45, 0.82, t)));
+
+    // lit from above; the ceiling dims as the medium thickens
+    col *= (0.84 + 0.46 * (0.5 - p.y)) * (1.0 - 0.22 * smoothstep(0.10, 0.55, t));
+
+    // slow luminous filaments: the supercritical mantle read
+    float mantle = smoothstep(0.50, 0.64, t) * (1.0 - smoothstep(0.86, 0.96, t));
+    float fil = pow(vnoise(vec2(p.x * 1.15, p.y * 2.30 - tt * sp * 0.30) * 3.4), 3.2);
+    col += vec3(0.24, 0.62, 0.58) * fil * mantle * 0.62;
+
+    // thin speed streaks near the top of the fall
+    float sl = pow(vnoise(vec2(p.x * 1.9, p.y * 34.0 - tt * sp * 3.2)), 9.0);
+    col += vec3(0.55, 0.74, 0.78) * sl * 0.30 * (1.0 - smoothstep(0.08, 0.42, t));
+
+    // molten veins near the core
+    float coreV = smoothstep(0.88, 1.0, t);
+    float veins = pow(vnoise(vec2(p.x * 2.2, p.y * 2.8 - tt * 0.30) * 2.4), 2.2);
+    col += vec3(1.00, 0.56, 0.22) * veins * coreV * 0.34;
+
+    // heat rising from below
+    float heat = smoothstep(0.68, 1.0, t);
+    col += vec3(0.95, 0.30, 0.055) * heat * smoothstep(-0.18, 0.66, -p.y) * 0.95;
+    col += vec3(1.00, 0.68, 0.36) * pow(heat, 3.0) * 0.60;
+
+    return col;
+  }
+
+  void main(){
+    vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+    vec3 a = spaceCol(p);
+    vec3 b = insideCol(p);
+    vec3 col = mix(a, b, uMix);
+    col = mix(col, vec3(0.84, 0.95, 1.0), uFlash * 0.9);
+
+    float v = 1.0 - 0.52 * pow(length(p * vec2(0.82, 1.0)), 2.1);
+    col *= clamp(v, 0.0, 1.0);
+    col += (hash21(gl_FragCoord.xy + fract(uTime) * 91.7) - 0.5) * 0.020;
+    fragColor = vec4(max(col, 0.0), 1.0);
+  }`;
+
+  /* ------------------------------------------------------------ gl ------ */
+  let U = {}, ready = false;
+  if (gl) {
+    const sh = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(s)); return null;
+      }
+      return s;
+    };
+    const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (vs && fs) {
+      const pr = gl.createProgram();
+      gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+      if (gl.getProgramParameter(pr, gl.LINK_STATUS)) {
+        gl.useProgram(pr);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(pr, "aPos");
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        ["uRes", "uTime", "uD", "uMix", "uCamZ", "uFlash"].forEach(n => {
+          U[n] = gl.getUniformLocation(pr, n);
+        });
+        ready = true;
+      } else {
+        console.error(gl.getProgramInfoLog(pr));
+      }
+    }
+  }
+
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    const w = Math.round(window.innerWidth * DPR), h = Math.round(window.innerHeight * DPR);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    if (gl) gl.viewport(0, 0, w, h);
+    drawChart();
+  }
+  window.addEventListener("resize", resize);
+
+  /* --------------------------------------------------------- the fall --- */
+  const S = { t: 0, playing: true, speed: 1, dur: 62, clock: 0 };
+  const qs = new URLSearchParams(location.search);
+  if (qs.has("t")) { S.t = Math.max(0, Math.min(1, parseFloat(qs.get("t")) || 0)); }
+  const STILL = qs.has("still");
+  if (STILL) { S.playing = false; document.documentElement.classList.add("no-anim"); }
+
+  const easeIn = x => x * x;
+  const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+
+  function depthAt(t) {
+    if (t <= TSTOPS[0][0]) return 0;
+    for (let i = 1; i < TSTOPS.length; i++) {
+      if (t <= TSTOPS[i][0]) {
+        const a = TSTOPS[i - 1], b = TSTOPS[i];
+        return a[1] + (b[1] - a[1]) * ((t - a[0]) / (b[0] - a[0]));
+      }
+    }
+    return 25362;
+  }
+
+  function profAt(d) {
+    if (d <= 0) return PROF[0];
+    for (let i = 1; i < PROF.length; i++) {
+      if (d <= PROF[i][0]) {
+        const a = PROF[i - 1], b = PROF[i];
+        const u = (d - a[0]) / (b[0] - a[0]);
+        return [
+          d,
+          Math.pow(10, Math.log10(a[1]) + (Math.log10(b[1]) - Math.log10(a[1])) * u),
+          a[2] + (b[2] - a[2]) * u,
+          b[3]
+        ];
+      }
+    }
+    return PROF[PROF.length - 1];
+  }
+
+  const SUP = { "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+  const sup = n => String(n).split("").map(c => SUP[c] || c).join("");
+  function fmtP(p) {
+    if (p < 10) return p.toFixed(1);
+    if (p < 1000) return String(Math.round(p));
+    const e = Math.floor(Math.log10(p));
+    return (p / Math.pow(10, e)).toFixed(1) + "×10" + sup(e);
+  }
+  const fmtInt = n => Math.round(n).toLocaleString("en-US");
+
+  /* ------------------------------------------------------------ chart --- */
+  const chart = $("#tchart");
+  let CH = { w: 88, h: 300 };
+  const TMIN = 76, TMAX = 5400;
+  const tx = T => (Math.sqrt(T) - Math.sqrt(TMIN)) / (Math.sqrt(TMAX) - Math.sqrt(TMIN));
+
+  function drawChart() {
+    if (!chart) return;
+    const box = chart.parentElement.getBoundingClientRect();
+    const w = Math.max(40, box.width), h = Math.max(80, box.height);
+    CH = { w, h };
+    chart.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const padL = 6, padR = 8, padT = 2, padB = 2;
+    const X = T => padL + tx(T) * (w - padL - padR);
+    const Y = d => padT + (d / 25362) * (h - padT - padB);
+
+    let path = "";
+    for (let i = 0; i < PROF.length; i++) {
+      const d = PROF[i][0], T = PROF[i][2];
+      path += (i ? "L" : "M") + X(T).toFixed(1) + " " + Y(d).toFixed(1);
+    }
+    // grid: depth boundaries
+    let grid = "";
+    [5000, 20000].forEach(d => {
+      grid += `<line x1="0" y1="${Y(d).toFixed(1)}" x2="${w}" y2="${Y(d).toFixed(1)}"
+               stroke="rgba(226,244,247,.13)" stroke-width="1" stroke-dasharray="2 3"/>`;
+    });
+    [76, 500, 2000, 5400].forEach(T => {
+      const x = X(T).toFixed(1);
+      grid += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="rgba(226,244,247,.055)" stroke-width="1"/>`;
+    });
+
+    chart.innerHTML =
+      `<g>${grid}</g>` +
+      `<path d="${path}" fill="none" stroke="rgba(143,211,221,.55)" stroke-width="1.3"
+             stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<circle id="tdot" r="3.2" fill="#eaf9fb"/>` +
+      `<circle id="tglow" r="9" fill="rgba(143,211,221,.22)"/>`;
+    chart._X = X; chart._Y = Y;
+  }
+
+  /* ------------------------------------------------------------ notes --- */
+  const noteEl = $("#note");
+  let noteIdx = -1;
+  function updateNote(t) {
+    let idx = -1;
+    for (let i = 0; i < NOTES.length; i++) if (t >= NOTES[i].t0 && t < NOTES[i].t1) idx = i;
+    if (idx === noteIdx) return;
+    noteIdx = idx;
+    if (idx < 0) { noteEl.classList.remove("is-on"); return; }
+    const n = NOTES[idx];
+    $("#nK").textContent = lang === "en" ? n.ke : n.k;
+    $("#nH").textContent = lang === "en" ? n.he : n.h;
+    $("#nP").textContent = lang === "en" ? n.pe : n.p;
+    noteEl.classList.remove("is-on");
+    // restart the transition so the card re-enters
+    void noteEl.offsetWidth;
+    noteEl.classList.add("is-on");
+  }
+
+  /* ------------------------------------------------------------- you ---- */
+  const you = $("#you"), trail = $("#trail");
+
+  function paintYou(t) {
+    const a = clamp01(t / 0.132);
+    if (t > 0.138) { you.style.opacity = "0"; trail.style.opacity = "0"; return; }
+    const e = easeIn(a);
+    const W = window.innerWidth, H = window.innerHeight;
+    const x = W * (0.30 + 0.20 * e);
+    const y = H * (0.20 + 0.29 * e);
+    const sc = 1 - 0.62 * e;
+    you.style.opacity = String(1 - smoothstep(0.82, 1, a) * 0.9);
+    you.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-50%) scale(${sc.toFixed(3)})`;
+
+    const tx2 = W * (0.30 + 0.20 * Math.max(0, e - 0.16));
+    const ty2 = H * (0.20 + 0.29 * Math.max(0, e - 0.16));
+    const dx = x - tx2, dy = y - ty2;
+    const len = Math.hypot(dx, dy);
+    trail.style.opacity = String(0.5 * (1 - smoothstep(0.7, 1, a)));
+    trail.style.width = len.toFixed(1) + "px";
+    trail.style.transform = `translate(${tx2.toFixed(1)}px,${ty2.toFixed(1)}px) rotate(${Math.atan2(dy, dx)}rad)`;
+  }
+  function smoothstep(a, b, x) {
+    const t = clamp01((x - a) / (b - a || 1e-6));
+    return t * t * (3 - 2 * t);
+  }
+
+  /* ------------------------------------------------------------ paint --- */
+  const stageEl = $("#stages");
+  /* the stage strip carries both names; only the emphasis changes */
+  const tc = str => str.charAt(0) + str.slice(1).toLowerCase();
+  function paintStages(){
+    stageEl.innerHTML = STAGES.map(s => lang === "en"
+      ? `<span data-t="${s.t0}">${tc(s.en)}<i>${s.cn}</i></span>`
+      : `<span data-t="${s.t0}">${s.cn}<i>${s.en}</i></span>`).join("");
+  }
+  paintStages();
+
+  const lyEls = [...document.querySelectorAll(".ly")];
+  const hEls = [...document.querySelectorAll("#hstruct i")];
+
+  function paintHUD(t, depth) {
+    const p = profAt(depth);
+    /* the temperature is called temp, not T: T() is the language helper */
+    const temp = p[2], P = p[1], med = MED[p[3]];
+    const approach = t < 0.20;
+
+    $("#cDepth").textContent = approach
+      ? fmtInt(42000 * (1 - clamp01((t - 0.02) / 0.18)))
+      : fmtInt(depth);
+    $("#lDepth").textContent = approach ? T("距云顶", "To cloud top") : T("深度", "Depth");
+
+    $("#cPress").textContent = approach ? "0" : fmtP(P);
+    $("#cTemp").textContent = approach ? "58" : Math.round(temp);
+    $("#lTemp").textContent = approach ? "−215 °C" : (Math.round(temp - 273.15) + " °C");
+    $("#cMed").textContent = approach
+      ? (t < 0.10 ? T("真空", "Vacuum") : T("稀薄外层", "Thin outer layer"))
+      : T(med[0], med[1]);
+
+    const v = approach
+      ? 42000 * Math.pow(0.03, clamp01((t - 0.02) / 0.18))
+      : 1250 * Math.exp(-depth / 2600) + 38;
+    $("#cVel").textContent = fmtInt(v);
+    $("#cPct").textContent = Math.round(t * 100) + "%";
+
+    // structure highlight
+    const kind = approach ? "atm" : (depth < 5000 ? "atm" : depth < 20000 ? "ice" : "core");
+    lyEls.forEach(el => el.classList.toggle("is-on", el.dataset.k === kind));
+    hEls.forEach((el, i) => el.classList.toggle("on", i === (kind === "atm" ? 0 : kind === "ice" ? 1 : 2)));
+
+    // temperature dot
+    if (chart._X) {
+      const dot = chart.querySelector("#tdot"), glow = chart.querySelector("#tglow");
+      if (dot) {
+        const x = chart._X(temp), y = chart._Y(depth);
+        dot.setAttribute("cx", x.toFixed(1)); dot.setAttribute("cy", y.toFixed(1));
+        glow.setAttribute("cx", x.toFixed(1)); glow.setAttribute("cy", y.toFixed(1));
+      }
+    }
+
+    // timeline
+    $("#fill").style.width = (t * 100).toFixed(2) + "%";
+    $("#hdot").style.left = (t * 100).toFixed(2) + "%";
+    [...stageEl.children].forEach((el, i) =>
+      el.classList.toggle("is-on", t >= STAGES[i].t0 && (i === STAGES.length - 1 || t < STAGES[i + 1].t0)));
+
+    setEnded(t > 0.995);
+  }
+
+  // the readouts retire with the transmission, so the end card stands alone
+  function setEnded(on) {
+    $("#end").classList.toggle("is-on", on);
+    document.body.classList.toggle("ended", on);
+  }
+
+  /* ------------------------------------------------------------ loop ---- */
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.06, Math.max(0.001, (now - last) / 1000));
+    last = now;
+    S.clock += dt;
+    if (S.playing) {
+      S.t += dt / S.dur * S.speed;
+      if (S.t >= 1) { S.t = 1; S.playing = false; $("#play").textContent = T("重播", "Replay"); }
+    }
+    const t = S.t;
+    const depth = depthAt(t);
+    const dNorm = depth / 25362;
+    const vProg = clamp01((t - 0.20) / 0.80);
+
+    // camera dolly during the approach
+    const camZ = 8.0 - 6.7 * easeIn(clamp01(t / 0.175));
+    const mix = smoothstep(0.128, 0.196, t);
+    const flash = Math.max(0, 1 - Math.abs(t - 0.166) / 0.030) * (t > 0.12 && t < 0.21 ? 1 : 0);
+
+    if (ready && gl) {
+      gl.uniform2f(U.uRes, canvas.width, canvas.height);
+      gl.uniform1f(U.uTime, S.clock);
+      gl.uniform1f(U.uD, vProg);
+      gl.uniform1f(U.uMix, mix);
+      gl.uniform1f(U.uCamZ, camZ);
+      gl.uniform1f(U.uFlash, flash);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    paintYou(t);
+    paintHUD(t, depth);
+    updateNote(t);
+    requestAnimationFrame(tick);
+  }
+
+  /* ------------------------------------------------------------- ui ----- */
+  function setPlaying(v) {
+    if (S.t >= 1 && v) { S.t = 0; setEnded(false); }
+    S.playing = v;
+    $("#play").textContent = v ? T("暂停", "Pause") : (S.t >= 1 ? T("重播", "Replay") : T("播放", "Play"));
+  }
+  $("#play").addEventListener("click", () => setPlaying(!S.playing));
+  $("#track").addEventListener("click", e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    S.t = clamp01((e.clientX - r.left) / r.width);
+    setEnded(false);
+    if (!S.playing) setPlaying(true); else $("#play").textContent = T("暂停", "Pause");
+  });
+  $("#sp").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    S.speed = parseFloat(b.dataset.s);
+    [...$("#sp").children].forEach(x => x.classList.toggle("is-on", x === b));
+  });
+  $("#again").addEventListener("click", () => { S.t = 0; setEnded(false); setPlaying(true); });
+  window.addEventListener("keydown", e => {
+    if (e.code === "Space") { e.preventDefault(); setPlaying(!S.playing); }
+    if (e.key === "ArrowRight") { S.t = clamp01(S.t + 0.02); }
+    if (e.key === "ArrowLeft") { S.t = clamp01(S.t - 0.02); }
+    if (e.key === "r" || e.key === "R") { S.t = 0; setPlaying(true); }
+  });
+
+  const back = $("#back");
+  back.href = location.protocol === "file:" ? "太阳系行星图鉴.html" : "./";
+
+  /* the switch: readings repaint by themselves, the rest is re-lettered once */
+  function setLang(next){
+    if (next === lang) return;
+    lang = next;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* private mode */ }
+    applyStatic();
+    paintStages();
+    noteIdx = -1;                       // force the card to re-enter with the new text
+    updateNote(S.t);
+    setPlaying(S.playing);              // re-letters play / pause / replay
+  }
+  $("#lang").addEventListener("click", e => {
+    const b = e.target.closest("button[data-lang]");
+    if (b) setLang(b.dataset.lang);
+  });
+
+  /* ------------------------------------------------------------ boot ---- */
+  applyStatic();
+  resize();
+  if (STILL) { $("#play").textContent = T("播放", "Play"); }
+  requestAnimationFrame(tick);
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

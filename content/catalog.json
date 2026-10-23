@@ -7,20 +7,20 @@
       "name": "天文学",
       "english": "Astronomy",
       "eyebrow": "从地球出发，重新认识宇宙",
-      "description": "看见天体的形状、运动与尺度，沿着问题一步步走进太阳系。",
-      "description_en": "Explore the shapes, motions, and scale of celestial bodies as you journey into the Solar System.",
+      "description": "从太阳系走向恒星与宇宙，打开独立演示，观察天体、尺度与探索任务。",
+      "description_en": "Explore the Solar System, stars, and the wider universe through standalone visual lessons.",
       "accent": "#197a91",
-      "status": "太阳系专题已开放",
-      "status_en": "Solar System topic available",
+      "status": "7 个天文学演示已开放",
+      "status_en": "7 astronomy lessons available",
       "topics": [
         {
           "slug": "solar-system",
           "name": "太阳系",
           "english": "The Solar System",
-          "description": "从一颗恒星出发，认识八颗行星与太阳系的边界。",
-          "description_en": "Start with our star and explore the eight planets and the outer Solar System.",
-          "status": "演示制作中",
-          "status_en": "Interactive lessons in progress",
+          "description": "认识八颗行星、太阳系的层次，并体验天王星下降与地火转移。",
+          "description_en": "Explore eight planets, the Solar System’s layers, Uranus, and a journey to Mars.",
+          "status": "2 个演示已开放 · 2 个本地预览",
+          "status_en": "2 lessons available · 2 local previews",
           "lessons": [
             {
               "slug": "atlas",
@@ -40,7 +40,117 @@
               "description_en": "Travel from planetary orbits to the Kuiper Belt and Oort Cloud.",
               "interaction": "尺度图解 · 光行时",
               "interaction_en": "Scale diagram · Light travel time",
-              "href": "demos/solar-system/structure.html"
+              "href": "demos/solar-system/structure.html",
+              "published": true
+            },
+            {
+              "slug": "uranus-fall",
+              "name": "落入天王星",
+              "english": "Falling into Uranus",
+              "description": "沿着探测器的下降路径，观察天王星的大气层。",
+              "description_en": "Follow a probe’s descent through the atmosphere of Uranus.",
+              "interaction": "交互模拟 · 大气分层",
+              "interaction_en": "Interactive simulation · Atmospheric layers",
+              "href": "demos/solar-system/uranus-fall.html",
+              "published": true
+            },
+            {
+              "slug": "earth-to-mars",
+              "name": "地球到火星",
+              "english": "Earth to Mars",
+              "description": "观察一次简化的地火转移任务。",
+              "description_en": "Explore a simplified Earth-to-Mars transfer mission.",
+              "interaction": "轨道转移 · 任务时间",
+              "interaction_en": "Orbital transfer · Mission timeline",
+              "href": "demos/solar-system/earth-to-mars.html"
+            }
+          ]
+        },
+        {
+          "slug": "universe",
+          "name": "宇宙现象",
+          "english": "The Universe",
+          "description": "从宇宙早期到黑洞，观察宏大尺度上的物理过程。",
+          "description_en": "Explore the early universe and black holes at cosmic scales.",
+          "status": "2 个演示已开放",
+          "status_en": "2 lessons available",
+          "lessons": [
+            {
+              "slug": "bigbang",
+              "name": "宇宙大爆炸",
+              "english": "The Big Bang",
+              "description": "沿时间线认识早期宇宙的演化。",
+              "description_en": "Follow a timeline of the early universe.",
+              "interaction": "交互时间线 · 宇宙演化",
+              "interaction_en": "Interactive timeline · Cosmic evolution",
+              "href": "demos/solar-system/bigbang.html",
+              "published": true
+            },
+            {
+              "slug": "blackhole",
+              "name": "黑洞",
+              "english": "Black Holes",
+              "description": "观察黑洞附近光与空间的教学示意。",
+              "description_en": "Explore a visual model of light and space near a black hole.",
+              "interaction": "3D 演示 · 引力",
+              "interaction_en": "3D visual · Gravity",
+              "href": "demos/solar-system/blackhole.html",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "stellar-sky",
+          "name": "恒星与星空",
+          "english": "Stars & Night Sky",
+          "description": "认识恒星的大小、光谱与一生，并探索星座图解。",
+          "description_en": "Study star sizes, spectra, life cycles, and constellation patterns.",
+          "status": "2 个演示已开放",
+          "status_en": "2 lessons available",
+          "lessons": [
+            {
+              "slug": "stars",
+              "name": "恒星图鉴",
+              "english": "Star Atlas",
+              "description": "比较恒星大小、光谱类型与演化阶段。",
+              "description_en": "Compare star sizes, spectral types, and evolutionary stages.",
+              "interaction": "图鉴 · 赫罗图",
+              "interaction_en": "Atlas · H-R diagram",
+              "href": "demos/solar-system/stars.html",
+              "published": true
+            },
+            {
+              "slug": "constellations",
+              "name": "星座图解",
+              "english": "Constellation Atlas",
+              "description": "在星空图上辨认星座，并了解视角与距离。",
+              "description_en": "Find constellations and compare apparent patterns with distance.",
+              "interaction": "星空图解 · 交互观察",
+              "interaction_en": "Sky map · Interactive observation",
+              "href": "demos/solar-system/constellations.html",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "moon-exploration",
+          "name": "登月探索",
+          "english": "Moon Exploration",
+          "description": "沿阿波罗 11 号的任务线索，观察人类登月。",
+          "description_en": "Follow Apollo 11 and explore the first human Moon landing.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "moonlanding",
+              "name": "人类登月",
+              "english": "Moon Landing",
+              "description": "通过交互场景了解登月任务与月面环境。",
+              "description_en": "Explore a Moon landing mission and the lunar surface.",
+              "interaction": "3D 场景 · 任务过程",
+              "interaction_en": "3D scene · Mission sequence",
+              "href": "demos/solar-system/moonlanding.html",
+              "published": true
             }
           ]
         }
@@ -51,11 +161,11 @@
       "name": "物理学",
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
-      "description": "从汽车的受力与运动，走向杠杆、滑轮等简单机械。",
-      "description_en": "Explore forces and motion with a car, then investigate levers, pulleys, and other simple machines.",
+      "description": "从汽车的受力与运动，走向简单机械，再探索电与磁。",
+      "description_en": "Explore forces and motion, simple machines, then electricity and magnetism.",
       "accent": "#ba572e",
-      "status": "2 个物理演示已开放",
-      "status_en": "2 physics lessons available",
+      "status": "3 个物理演示已开放",
+      "status_en": "3 physics lessons available",
       "topics": [
         {
           "slug": "forces-and-motion",
@@ -97,6 +207,28 @@
               "interaction": "6 个章节 · 3D 操作 · 中英双语",
               "interaction_en": "6 chapters · 3D interaction · Bilingual",
               "href": "demos/physics/simple-machines/index.html",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "electricity-and-magnetism",
+          "name": "电与磁",
+          "english": "Electricity & Magnetism",
+          "description": "从静电与磁现象出发，探索电流、电路、电磁感应及电功率。",
+          "description_en": "Explore static electricity, magnetism, current, circuits, induction, and electric power.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "electricity-lab",
+              "name": "电与磁 3D 实验室",
+              "english": "Electricity & Magnetism 3D Lab",
+              "description": "通过 13 个互动章节观察电磁现象，搭建电路并调节实验参数。",
+              "description_en": "Explore 13 interactive chapters, assemble circuits, and adjust experiment parameters.",
+              "interaction": "13 个章节 · 3D 操作 · 中英双语",
+              "interaction_en": "13 chapters · 3D interaction · Bilingual",
+              "href": "demos/physics/electricity-lab/index.html",
               "published": true
             }
           ]

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>黑洞 · Black Hole</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#030407;
+  --ink:#f4ede2;
+  --ink-2:#d8d1c5;
+  --muted:#a5a29d;
+  --dim:#6b6f7c;
+  --dim-2:#4a4e5a;
+  --line:rgba(244,237,226,.12);
+  --line-2:rgba(244,237,226,.065);
+  --ac:#e8bb87;
+  --ac-soft:rgba(232,187,135,.16);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","Source Han Serif CN",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --pad:clamp(22px,3.4vw,54px);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);overflow:hidden;background:#030407;
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--ac);color:#0a0705}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0;
+  touch-action:none;cursor:grab}
+#gl.dragging{cursor:grabbing}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(122% 92% at 50% 47%,rgba(0,0,0,0) 40%,rgba(0,0,0,.36) 74%,rgba(0,0,0,.78) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.045;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:4}
+.scrim::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,4,7,.90) 0%,rgba(3,4,7,.72) 20%,rgba(3,4,7,.24) 40%,transparent 56%)}
+.scrim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30%;
+  background:linear-gradient(180deg,transparent,rgba(3,4,7,.55) 60%,rgba(3,4,7,.84))}
+
+/* ---------- back + language ---------- */
+.topright{position:fixed;right:var(--pad);top:clamp(24px,4vh,44px);z-index:20;
+  display:flex;align-items:center;gap:9px}
+.lang{display:flex;align-items:center;gap:1px;padding:2px;border:1px solid var(--line);border-radius:30px;
+  background:rgba(7,8,12,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.lang button{appearance:none;border:0;background:none;font:inherit;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;color:var(--dim);padding:6px 8px;border-radius:20px;cursor:pointer;line-height:1;
+  transition:color .22s,background .22s}
+.lang button:hover{color:var(--ink-2)}
+.lang button.is-on{background:var(--ac);color:#0a0705}
+.back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  padding:9px 15px;border:1px solid var(--line);border-radius:30px;
+  transition:border-color .25s,color .25s,background .25s}
+.back:hover{border-color:var(--ac);color:var(--ink);background:rgba(255,255,255,.03)}
+.back svg{opacity:.8}
+
+/* ---------- masthead ---------- */
+.mast{position:fixed;left:var(--pad);top:clamp(26px,4.6vh,52px);z-index:12;width:min(470px,42vw);pointer-events:none}
+.idx{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:15px;letter-spacing:0}
+.idx i{font-style:normal;color:var(--dim-2)}
+.mast h1{margin:15px 0 0;font-family:var(--serif);font-weight:400;line-height:.98;letter-spacing:.06em}
+.mast h1 .cn{display:block;font-size:clamp(46px,5.4vw,74px);color:var(--ink);
+  text-shadow:0 2px 26px rgba(0,0,0,.72)}
+.mast h1 .en{display:block;margin-top:10px;font-family:var(--mono);font-size:12.5px;letter-spacing:.46em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:13px;letter-spacing:.14em;color:var(--muted)}
+.kicker i{width:24px;height:1px;background:var(--ac);opacity:.75;flex:none}
+.tag{margin:12px 0 0;font-family:var(--serif);font-size:17px;line-height:1.9;color:var(--ink-2);
+  max-width:21em;opacity:.9;text-shadow:0 1px 16px rgba(0,0,0,.7)}
+
+.chips{list-style:none;display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;
+  column-gap:14px;margin:26px 0 0;padding:0;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+  text-shadow:0 1px 12px rgba(0,0,0,.7)}
+.chips li{padding:11px 0 12px;min-width:0}
+.chips b{display:flex;align-items:baseline;gap:3px;font-family:var(--mono);font-weight:400;font-size:19px;
+  color:#fdf6ea;line-height:1.15;white-space:nowrap}
+.chips b u{text-decoration:none;font-size:10.5px;letter-spacing:.06em;color:rgba(247,240,228,.72);transform:translateY(-1px)}
+.chips li>span{display:block;margin-top:5px;font-size:11px;letter-spacing:.14em;color:rgba(247,240,228,.55);white-space:nowrap}
+
+/* ---------- observation panel ---------- */
+.panel{position:fixed;right:var(--pad);top:clamp(84px,12vh,112px);width:clamp(292px,24vw,338px);z-index:12;
+  padding:15px 16px 15px;border-radius:15px;border:1px solid rgba(247,240,228,.10);
+  background:linear-gradient(178deg,rgba(16,14,18,.66),rgba(5,5,9,.8));
+  -webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);
+  box-shadow:0 24px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.04)}
+.ph{display:flex;align-items:baseline;gap:9px;font-size:12px;letter-spacing:.24em;color:var(--dim)}
+.ph b{font-weight:400;color:var(--ink-2)}
+.ph i{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--dim-2)}
+.ph.sect{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-2)}
+.rows{margin-top:11px;display:flex;flex-direction:column;gap:1px}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:5px 0}
+.row>span{font-size:12.5px;letter-spacing:.1em;color:var(--muted)}
+.row>span i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  color:var(--dim-2);margin-left:7px;text-transform:uppercase}
+.row>b{font-family:var(--mono);font-weight:400;font-size:14px;color:var(--ink);white-space:nowrap}
+.row>b u{text-decoration:none;font-size:10px;color:rgba(247,240,228,.6);margin-left:2px}
+
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px}
+.pv button{appearance:none;font:inherit;font-size:12.5px;letter-spacing:.14em;color:var(--muted);
+  background:rgba(255,255,255,.022);border:1px solid var(--line-2);border-radius:9px;
+  padding:8px 4px;cursor:pointer;transition:.25s}
+.pv button:hover{border-color:rgba(232,187,135,.4);color:var(--ink)}
+.pv button.is-on{border-color:rgba(232,187,135,.55);background:rgba(232,187,135,.1);color:var(--ink)}
+
+.tg{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.tg button{appearance:none;font:inherit;font-size:12px;letter-spacing:.1em;cursor:pointer;
+  padding:7px 12px;border-radius:20px;border:1px solid var(--line-2);background:transparent;color:var(--dim);
+  transition:.25s;display:inline-flex;align-items:center;gap:6px}
+.tg button::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--dim-2);transition:.25s}
+.tg button.is-on{color:var(--ink-2);border-color:rgba(232,187,135,.32);background:rgba(232,187,135,.07)}
+.tg button.is-on::before{background:var(--ac);box-shadow:0 0 8px rgba(232,187,135,.8)}
+.pfoot{margin-top:13px;padding-top:11px;border-top:1px solid var(--line-2);
+  display:flex;justify-content:space-between;gap:10px;font-size:10.5px;letter-spacing:.1em;color:var(--dim-2)}
+
+/* ---------- caption ---------- */
+.cap{position:fixed;left:var(--pad);bottom:calc(var(--pad) + 6px);z-index:12;max-width:min(430px,42vw);pointer-events:none}
+.cap b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--ac);opacity:.85;
+  text-transform:uppercase;margin-bottom:8px}
+.cap p{margin:0;font-size:14px;line-height:1.85;color:var(--muted);letter-spacing:.02em;
+  text-shadow:0 1px 14px rgba(0,0,0,.8);transition:opacity .4s}
+.hint{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--pad) - 4px);z-index:12;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim-2);white-space:nowrap;pointer-events:none}
+.hint b{color:var(--dim);font-weight:400}
+
+/* ---------- callouts ---------- */
+.anno{position:fixed;inset:0;z-index:8;pointer-events:none;opacity:0;transition:opacity .6s}
+.anno.is-on{opacity:1}
+.anno line{stroke:rgba(247,240,228,.32);stroke-width:1}
+.anno .ring{fill:none;stroke:rgba(247,240,228,.34);stroke-width:1;stroke-dasharray:3 5}
+.anno .ring.inner{stroke:rgba(247,240,228,.22);stroke-dasharray:2 4}
+.anno text{font-family:var(--mono);font-size:8.5px;letter-spacing:.17em;fill:rgba(247,240,228,.6);text-transform:uppercase;
+  paint-order:stroke;stroke:rgba(3,4,7,.85);stroke-width:3px}
+.anno text.cn{font-family:var(--sans);font-size:12px;letter-spacing:.14em;fill:rgba(247,240,228,.88)}
+
+/* ---------- english mode ---------- */
+body.lang-en .mast h1 .cn{font-family:"Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+  font-size:clamp(40px,4.5vw,62px);line-height:1.02;letter-spacing:.005em}
+body.lang-en .mast h1 .en{font-family:var(--serif);font-size:17px;letter-spacing:.34em;text-transform:none}
+body.lang-en .kicker{font-size:12px;letter-spacing:.06em;line-height:1.5;flex-wrap:wrap}
+body.lang-en .tag{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:16px;line-height:1.72;max-width:24em}
+body.lang-en .chips li>span{font-size:10px;letter-spacing:.08em}
+body.lang-en .cap p{font-size:13.5px;line-height:1.72}
+body.lang-en .hint{letter-spacing:.14em}
+body.lang-en .row>span i{margin-left:6px}
+
+@media (max-width:1080px){
+  body.lang-en .chips li>span{font-size:9.5px;letter-spacing:.04em;
+    text-shadow:0 1px 10px rgba(3,4,7,.95),0 0 18px rgba(3,4,7,.8)}
+  body.lang-en .tg button{font-size:11.5px;letter-spacing:.02em;padding:6px 9px;gap:5px}
+  .panel{width:286px}
+  .mast{width:min(430px,40vw)}
+}
+@media (max-width:900px){
+  .scrim::before{background:linear-gradient(180deg,rgba(3,4,7,.92) 0%,rgba(3,4,7,.74) 20%,
+    rgba(3,4,7,.3) 40%,rgba(3,4,7,.06) 54%,transparent 64%)}
+  .mast{width:auto;right:var(--pad)}
+  .mast h1 .cn{font-size:clamp(38px,7.4vw,52px)}
+  .tag{font-size:15.5px;max-width:30ch}
+  .chips{max-width:min(100%,440px)}
+  /* at this width the chip row runs the whole strip and crosses the disc's
+     hot rim, so the numbers need a darker bed than a single soft shadow */
+  .chips b{text-shadow:0 1px 14px rgba(3,4,7,.92),0 0 24px rgba(3,4,7,.7)}
+  .chips li>span{color:rgba(247,240,228,.7);
+    text-shadow:0 1px 10px rgba(3,4,7,.95),0 0 20px rgba(3,4,7,.85)}
+  .panel{left:var(--pad);right:var(--pad);width:auto;top:auto;bottom:calc(var(--pad) + 4px);
+    padding:12px 14px 13px}
+  .panel .rows,.panel .pfoot{display:none}
+  .cap{display:none}
+  .hint{display:none}
+  .pv{grid-template-columns:repeat(4,1fr)}
+  .ph.sect{margin-top:11px;padding-top:10px}
+}
+@media (max-width:560px){
+  .chips{grid-template-columns:repeat(2,1fr);gap:0}
+  .chips b{font-size:17px}
+  .tag{display:none}
+  .pv button{font-size:11.5px;letter-spacing:.06em;padding:7px 2px}
+  .tg button{font-size:11.5px;padding:6px 10px}
+  .anno{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .anno,.cap p{transition:none}
+}
+.no-gl #gl{display:none}
+.no-gl body,.no-gl .fallback{background:#05060a}
+.fallback{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:30;
+  text-align:center;color:var(--muted);font-size:15px;line-height:1.9;padding:40px}
+.no-gl .fallback{display:flex}
+</style>
+</head>
+<body class="view">
+
+<canvas id="gl"></canvas>
+<div class="vex"></div>
+<div class="grain"></div>
+<div class="scrim"></div>
+
+<div class="topright">
+  <div class="lang" id="lang" role="group" aria-label="语言 Language">
+    <button type="button" data-lang="zh" class="is-on" aria-pressed="true">中</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="back" id="back" href="../../subjects/astronomy/index.html">
+    <svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true">
+      <path d="M10 4.5H1M4 1.5 1 4.5l3 3" stroke="currentColor" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span data-en="Atlas">返回图鉴</span>
+  </a>
+</div>
+
+<div class="mast">
+  <div class="idx"><b>∞</b><i>/</i><span>BLACK HOLE</span></div>
+  <h1><span class="cn" data-en="Black Hole">黑洞</span><span class="en" data-en="黑洞">Schwarzschild Geometry</span></h1>
+  <div class="kicker"><i></i><span data-en="Non-rotating · Schwarzschild · thin disc">非旋转 · 史瓦西度规 · 薄吸积盘</span></div>
+  <p class="tag" data-en="Light goes round in circles here. Half of the disc you see has come around from behind.">光在这里绕圈。你看到的吸积盘，有一半是从它背后绕过来的。</p>
+  <ul class="chips" id="chips">
+    <li><b>1.0<u>r<sub>s</sub></u></b><span data-en="Event horizon">事件视界</span></li>
+    <li><b>1.5<u>r<sub>s</sub></u></b><span data-en="Photon sphere">光子球</span></li>
+    <li><b>5.2<u>r<sub>s</sub></u></b><span data-en="Shadow diameter">阴影直径</span></li>
+    <li><b>3.0<u>r<sub>s</sub></u></b><span data-en="Inner edge ISCO">盘内缘 ISCO</span></li>
+  </ul>
+</div>
+
+<aside class="panel">
+  <div class="ph"><b data-en="OBSERVATION">观测</b><i data-en="观测">OBSERVATION</i></div>
+  <div class="rows">
+    <div class="row"><span data-en="Camera distance<i>相机距离</i>">相机距离<i>distance</i></span><b id="oDist">24.0<u>r<sub>s</sub></u></b></div>
+    <div class="row"><span data-en="Inclination<i>视线倾角</i>">视线倾角<i>inclination</i></span><b id="oTilt">9.2<u>°</u></b></div>
+    <div class="row"><span data-en="Shadow Ø<i>阴影视直径</i>">阴影视直径<i>shadow</i></span><b id="oShadow">12.4<u>°</u></b></div>
+    <div class="row"><span data-en="Doppler peak<i>多普勒峰值</i>">多普勒峰值<i>beaming</i></span><b id="oDop">1.54<u>×</u></b></div>
+  </div>
+
+  <div class="ph sect"><b data-en="VIEWS">视图</b><i data-en="视图">VIEWS</i></div>
+  <div class="pv" id="pv">
+    <button type="button" data-v="edge" class="is-on" data-en="Edge">侧视</button>
+    <button type="button" data-v="tilt" data-en="Tilted">斜视</button>
+    <button type="button" data-v="top" data-en="Face-on">俯视</button>
+    <button type="button" data-v="close" data-en="Close">近距</button>
+  </div>
+
+  <div class="ph sect"><b data-en="LAYERS">叠加</b><i data-en="叠加">LAYERS</i></div>
+  <div class="tg" id="tg">
+    <button type="button" data-t="lens" class="is-on" data-en="Lensing">引力透镜</button>
+    <button type="button" data-t="dop" class="is-on" data-en="Doppler">多普勒</button>
+    <button type="button" data-t="anno" class="is-on" data-en="Labels">标注</button>
+  </div>
+
+  <div class="pfoot"><span data-en="Thin disc · no spin">薄盘近似 · 不含自转</span><b id="oFps">—</b></div>
+</aside>
+
+<div class="cap" id="cap">
+  <b id="capK">EDGE ON</b>
+  <p id="capP">盘面几乎侧对镜头。阴影上方那道弧，是吸积盘背面被引力抬起来的部分。</p>
+</div>
+
+<div class="hint" data-en="<b>Drag</b> to orbit · <b>Wheel</b> to zoom · <b>Double-click</b> to reset"><b>拖动</b> 环绕 · <b>滚轮</b> 远近 · <b>双击</b> 复位</div>
+
+<svg class="anno is-on" id="anno" xmlns="http://www.w3.org/2000/svg">
+  <circle id="anShadow" class="ring"/>
+  <circle id="anHorizon" class="ring inner"/>
+  <g id="anL1"><line/><text class="cn" data-en="Shadow">阴影</text><text class="en" data-en="&#8960; 5.2 r<tspan baseline-shift='sub' font-size='7'>s</tspan>">SHADOW · &#8960; 5.2 r<tspan baseline-shift="sub" font-size="7">s</tspan></text></g>
+  <g id="anL2"><line/><text class="cn" data-en="Horizon">视界</text><text class="en" data-en="1.0 r<tspan baseline-shift='sub' font-size='7'>s</tspan>">HORIZON · 1.0 r<tspan baseline-shift="sub" font-size="7">s</tspan></text></g>
+</svg>
+
+<div class="fallback" data-en="This demo needs WebGL2.<br>Open it in a recent Chrome / Safari / Edge.">这个演示需要 WebGL2。<br>请用较新的 Chrome / Safari / Edge 打开。</div>
+
+<script>
+(function(){
+"use strict";
+const $ = (s) => document.querySelector(s);
+const clamp = (v,a,b) => v < a ? a : v > b ? b : v;
+const params = new URLSearchParams(location.search);
+const STILL = params.get("still") === "1";
+if (STILL) document.documentElement.classList.add("no-anim");
+
+/* ================================================================ language ==
+   Both languages live in the markup; the switch only decides which one is set
+   large. data-zh is captured on the first pass, so there is no dictionary to
+   drift away from the text. */
+const LANG_KEY = "atlas-lang";
+let lang = "zh";
+try {
+  if (/[?&]lang=en/.test(location.search)) lang = "en";
+  else if (localStorage.getItem(LANG_KEY) === "en") lang = "en";
+} catch (e) { /* private mode */ }
+const T = (zh, en) => lang === "en" ? en : zh;
+
+const TITLE = { zh: "黑洞 · Black Hole", en: "Black Hole · 黑洞" };
+
+function applyStatic(){
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  document.body.classList.toggle("lang-en", lang === "en");
+  document.title = TITLE[lang];
+  for (const el of document.querySelectorAll("[data-en]")){
+    if (el.dataset.zh === undefined) el.dataset.zh = el.innerHTML;
+    el.innerHTML = lang === "en" ? el.dataset.en : el.dataset.zh;
+  }
+  for (const b of document.querySelectorAll("#lang button")){
+    const on = b.dataset.lang === lang;
+    b.classList.toggle("is-on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+applyStatic();
+
+const canvas = $("#gl");
+const gl = canvas.getContext("webgl2", { antialias: false, alpha: false, powerPreference: "high-performance" });
+if (!gl) { document.documentElement.classList.add("no-gl"); return; }
+
+/* ============================================================== shaders === */
+const VS = `#version 300 es
+void main(){
+  vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+
+uniform vec2  uRes;
+uniform float uTime;
+uniform vec3  uCam;
+uniform float uFov;
+uniform float uLens;
+uniform float uDisk;
+uniform float uDop;
+uniform float uShift;
+
+const float RIN  = 3.0;      // ISCO, in r_s
+const float ROUT = 14.0;
+const int   MAXS = 300;
+
+float hash12(vec2 p){
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+vec3 hash32(vec2 p){
+  vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
+  p3 += dot(p3, p3.yxz + 33.33);
+  return fract((p3.xxy + p3.yzz) * p3.zyx);
+}
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  float a = hash12(i);
+  float b = hash12(i + vec2(1.0, 0.0));
+  float c = hash12(i + vec2(0.0, 1.0));
+  float d = hash12(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+float fbm(vec2 p){
+  float s = 0.0, a = 0.5;
+  for (int i = 0; i < 4; i++){ s += a * vnoise(p); p *= 2.03; a *= 0.5; }
+  return s;
+}
+
+vec3 stars(vec3 d){
+  vec3 c = vec3(0.0);
+  for (int k = 0; k < 2; k++){
+    float sc = (k == 0) ? 110.0 : 300.0;
+    vec3 p = d * sc;
+    vec3 i = floor(p);
+    vec3 h = hash32(i.xy + i.z * 37.0);
+    float dist = length(p - i - h);
+    float br = smoothstep(0.11, 0.0, dist) * ((k == 0) ? 1.0 : 0.42);
+    c += mix(vec3(0.70, 0.80, 1.0), vec3(1.0, 0.87, 0.68), h.y) * br * pow(h.x, 6.0);
+  }
+  float band = exp(-pow(abs(dot(d, vec3(0.34, 0.80, 0.49))) * 2.7, 2.0));
+  c += vec3(0.040, 0.045, 0.070) * band * (0.55 + 0.9 * fbm(d.xz * 7.0 + d.y * 3.0));
+  return c;
+}
+
+vec3 bb(float t){
+  t = clamp(t, 0.0, 1.2);
+  vec3 c = mix(vec3(0.30, 0.055, 0.012), vec3(1.0, 0.33, 0.055), smoothstep(0.0, 0.42, t));
+  c = mix(c, vec3(1.0, 0.60, 0.20), smoothstep(0.38, 0.66, t));
+  c = mix(c, vec3(1.0, 0.87, 0.60), smoothstep(0.64, 0.86, t));
+  c = mix(c, vec3(1.0, 0.97, 0.93), smoothstep(0.86, 1.05, t));
+  return c;
+}
+
+// emission at a point of the disc, given the photon's travel direction there
+vec3 disc(vec3 pos, float r, vec3 rayDir){
+  float az = atan(pos.z, pos.x);
+  float lr = log(r);
+  float ang = az + lr * 1.55 - uTime * 0.45 / sqrt(r);
+  vec2 q = vec2(cos(ang), sin(ang));
+  float n = fbm(q * 3.1 + vec2(lr * 2.6, lr * 0.9));
+  n = 0.32 + 1.32 * n;
+  n *= 0.72 + 0.60 * vnoise(vec2(cos(ang * 7.0), sin(ang * 7.0)) * 3.0 + vec2(0.0, lr * 2.6));
+  n = clamp(n, 0.0, 2.4);
+
+  float x   = (r - RIN) / (ROUT - RIN);
+  float T   = pow(RIN / r, 0.75);
+  float rim = smoothstep(0.0, 0.022, x);            // near-hard inner edge
+  float fall = 1.0 - smoothstep(0.55, 1.0, x);      // soft outer falloff
+  float I   = pow(T, 2.1) * rim * fall * n;
+  I *= 1.0 + 1.9 * exp(-x * 26.0);                  // white-hot inner rim
+
+  if (uDop > 0.5){
+    vec3 vhat = normalize(cross(vec3(0.0, 1.0, 0.0), pos));
+    float beta = sqrt(min(0.95, 0.5 / r));          // circular orbit, v/c
+    float gm   = 1.0 / sqrt(1.0 - beta * beta);
+    float shift = 1.0 / (gm * (1.0 - beta * dot(vhat, -rayDir)));
+    shift *= sqrt(max(0.0, 1.0 - 1.0 / r));         // gravitational redshift
+    I *= pow(shift, 3.0);
+    T *= shift;
+  }
+  return bb(T) * I * 1.62;
+}
+
+void main(){
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+  uv.y += uShift;                  // portrait screens give the masthead its room
+
+  vec3 fw = normalize(-uCam);
+  vec3 rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
+  vec3 up = cross(rt, fw);
+  vec3 rd = normalize(fw + (uv.x * rt + uv.y * up) * 2.0 * tan(uFov * 0.5));
+
+  float r0 = length(uCam);
+  vec3  e1 = uCam / r0;
+
+  /* ---- no lensing: straight rays, flat disc, horizon-sized shadow ---- */
+  if (uLens < 0.5){
+    vec3 col = vec3(0.0);
+    float b2 = dot(rd, uCam);
+    float det = b2 * b2 - (r0 * r0 - 1.0);
+    if (det > 0.0){
+      float tt = -b2 - sqrt(det);
+      if (tt > 0.0) { fragColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
+    }
+    if (uDisk > 0.5 && abs(rd.y) > 1e-4){
+      float tp = -uCam.y / rd.y;
+      if (tp > 0.0){
+        vec3 p = uCam + rd * tp;
+        float rp = length(p);
+        if (rp > RIN && rp < ROUT) col += disc(p, rp, rd);
+      }
+    }
+    if (dot(col, col) < 1e-7) col = stars(rd);
+    fragColor = vec4(pow(1.0 - exp(-col * 1.25), vec3(0.92)), 1.0);
+    return;
+  }
+
+  /* ---- geodesic integration in the plane spanned by camera and ray ---- */
+  float vr = dot(rd, e1);
+  vec3  perp = rd - e1 * vr;
+  float vt = length(perp);
+  vec3  e2;
+  if (vt < 1e-4){ e2 = normalize(cross(e1, vec3(0.0, 1.0, 0.0))); vt = 1e-4; }
+  else e2 = perp / vt;
+
+  float u  = 1.0 / r0;
+  float du = -u * vr / vt;
+  float phi = 0.0;
+
+  // the ray meets the equatorial plane where e1.y*cos + e2.y*sin = 0
+  float A = e1.y, B = e2.y;
+  float nextC = atan(B, A) + 1.5707963;
+  if (nextC < 0.0) nextC += 3.14159265;
+
+  vec3  hitPos = vec3(0.0);
+  vec3  hitDir = rd;
+  float hitR = -1.0;
+  bool  captured = false;
+  vec3  escDir = rd;
+
+  for (int i = 0; i < MAXS; i++){
+    float r = 1.0 / max(u, 1e-6);
+    float dphi = mix(0.019, 0.090, smoothstep(1.15, 12.0, r));
+
+    float a1 = 1.5 * u * u - u;                     // d2u/dphi2
+    float um = u + du * dphi * 0.5;
+    float dm = du + a1 * dphi * 0.5;
+    float a2 = 1.5 * um * um - um;
+    float uN = u + dm * dphi;
+    float duN = du + a2 * dphi;
+    float phiN = phi + dphi;
+
+    if (uDisk > 0.5 && nextC > phi && nextC <= phiN){
+      float f  = (nextC - phi) / dphi;
+      float uC = mix(u, uN, f);
+      float duC = mix(du, duN, f);
+      float rC = 1.0 / max(uC, 1e-6);
+      if (rC > RIN && rC < ROUT){
+        float c = cos(nextC), s = sin(nextC);
+        hitPos = rC * (c * e1 + s * e2);
+        float rad = -duC / max(uC * uC, 1e-6);
+        hitDir = normalize(rad * (c * e1 + s * e2) + rC * (-s * e1 + c * e2));
+        hitR = rC;
+      }
+      nextC += 3.14159265;
+    }
+
+    u = uN; du = duN; phi = phiN;
+
+    if (u > 0.9995){ captured = true; break; }       // crossed the horizon
+    if (hitR > 0.0) break;                           // the disc is opaque
+    if (du < 0.0 && 1.0 / max(u, 1e-6) > 46.0){      // outbound and far: free
+      float c = cos(phi), s = sin(phi);
+      float rp = -du / max(u * u, 1e-8);
+      escDir = normalize(rp * (c * e1 + s * e2) + (1.0 / max(u, 1e-8)) * (-s * e1 + c * e2));
+      break;
+    }
+    if (phi > 12.0){ captured = true; break; }       // wound up, effectively trapped
+  }
+
+  vec3 col = vec3(0.0);
+  if (hitR > 0.0) col = disc(hitPos, hitR, hitDir);
+  else if (!captured) col = stars(escDir);
+
+  col = pow(1.0 - exp(-col * 1.25), vec3(0.92));
+  fragColor = vec4(col, 1.0);
+}`;
+
+function compile(type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+  throw new Error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+
+const U = {};
+["uRes","uTime","uCam","uFov","uLens","uDisk","uDop","uShift"].forEach(n => U[n] = gl.getUniformLocation(prog, n));
+gl.bindVertexArray(gl.createVertexArray());
+
+/* ================================================================ state === */
+const VIEWS = {
+  edge:  { az: 0.86, el: 0.062, d: 27, k: "EDGE ON",
+    p: ["盘面几乎侧对镜头。阴影上方那道弧，是吸积盘背面被引力抬起来的部分。",
+        "The disc is nearly edge-on. That arc above the shadow is the far side, lifted by gravity."] },
+  tilt:  { az: 0.86, el: 0.30,  d: 31, k: "TILTED",
+    p: ["稍微抬高视角，盘的近侧压过阴影下方，远侧绕到上方——同一个盘，两个像。",
+        "Raise the camera and the near side drops below the shadow while the far side climbs over it — one disc, two images."] },
+  top:   { az: 0.86, el: 1.22,  d: 30, k: "FACE ON",
+    p: ["从上方看，盘是一个完整的圆环，阴影是个干净的圆。此时透镜只体现在环的宽度上。",
+        "From above the disc is a complete ring and the shadow a clean circle; lensing now shows only in the ring's width."] },
+  close: { az: 0.86, el: 0.075, d: 15.5,k:"CLOSE",
+    p: ["贴近光子球。阴影张角撑满画面，盘的旋臂被拉成横贯画面的一条亮带。",
+        "Close to the photon sphere. The shadow fills the frame and the arms are stretched into one bright band."] }
+};
+/* the caption block speaks in keys, so a language switch can re-letter it */
+const CAP = {
+  free: ["自由视角。影子的边界与盘的走向随倾角改变。",
+         "Free camera. The shadow's edge and the disc's sweep follow the tilt."],
+  lensOn: ["光沿弯曲的时空走。盘背面绕到阴影上方，边缘被拉成一道细环。",
+           "Light follows curved spacetime: the far side climbs over the shadow and the rim is drawn into a thin ring."],
+  lensOff: ["关掉透镜：光走直线。盘变回一个普通的扁环，阴影也缩回视界大小。",
+            "Lensing off: light travels straight. The disc falls back to a flat ring and the shadow shrinks to the horizon."]
+};
+
+const S = {
+  az: 0.86, el: 0.062, d: 27,
+  taz: 0.86, tel: 0.062, td: 27,
+  vaz: 0, vel: 0,
+  lens: 1, dop: 1, anno: 1, shift: 0,
+  fov: 40 * Math.PI / 180,
+  q: 0.85, frame: 0, acc: 0, fps: 0,
+  idle: 0, view: "edge",
+  t: 0
+};
+
+const start = params.get("view");
+const freeCam = params.has("az") || params.has("el") || params.has("d");
+if (start && VIEWS[start]) {
+  const v = VIEWS[start];
+  S.az = S.taz = v.az; S.el = S.tel = v.el; S.d = S.td = v.d; S.view = start;
+}
+if (params.get("az")) { S.az = S.taz = parseFloat(params.get("az")); }
+if (params.get("el")) { S.el = S.tel = parseFloat(params.get("el")); }
+if (params.get("d"))  { S.d  = S.td  = parseFloat(params.get("d"));  }
+if (freeCam) S.view = null;
+if (params.get("lens") === "0") S.lens = 0;
+if (params.get("dop") === "0") S.dop = 0;
+if (params.get("anno") === "0") S.anno = 0;
+
+/* ================================================================ view ==== */
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+function layout(){ S.shift = innerWidth <= 900 ? 0.045 : 0; }
+function size(){
+  const w = innerWidth, h = innerHeight;
+  let s = DPR * S.q;
+  const maxPx = 1.8e6;                       // phones and 5K panels both land here
+  if (w * s * h * s > maxPx) s = Math.sqrt(maxPx / (w * h));
+  canvas.width = Math.max(2, Math.round(w * s));
+  canvas.height = Math.max(2, Math.round(h * s));
+}
+
+/* ================================================================ input === */
+let dragging = false, lastX = 0, lastY = 0, moved = 0;
+const pts = new Map();
+let pinch0 = 0, pinchD0 = 0;
+
+canvas.addEventListener("pointerdown", e => {
+  canvas.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  dragging = true; moved = 0;
+  lastX = e.clientX; lastY = e.clientY;
+  canvas.classList.add("dragging");
+  S.idle = 0;
+  if (pts.size === 2){
+    const [a, b] = [...pts.values()];
+    pinch0 = Math.hypot(a.x - b.x, a.y - b.y);
+    pinchD0 = S.td;
+  }
+});
+
+canvas.addEventListener("pointermove", e => {
+  if (!pts.has(e.pointerId)) return;
+  pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pts.size === 2){
+    const [a, b] = [...pts.values()];
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+    if (pinch0 > 0) S.td = clamp(pinchD0 * pinch0 / Math.max(dist, 1), 4.2, 70);
+    S.idle = 0;
+    return;
+  }
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  moved += Math.abs(dx) + Math.abs(dy);
+  S.taz -= dx * 0.0055;
+  S.tel = clamp(S.tel + dy * 0.0042, -1.42, 1.42);
+  S.vaz = -dx * 0.0055;
+  S.vel = dy * 0.0042;
+  S.idle = 0;
+  setView(null);
+});
+
+function endPointer(e){
+  pts.delete(e.pointerId);
+  if (pts.size === 0){
+    dragging = false;
+    canvas.classList.remove("dragging");
+    if (moved > 6) hideAnno();
+  }
+}
+canvas.addEventListener("pointerup", endPointer);
+canvas.addEventListener("pointercancel", endPointer);
+
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  S.td = clamp(S.td * Math.exp(e.deltaY * 0.0012), 4.2, 70);
+  S.idle = 0;
+  setView(null);
+}, { passive: false });
+
+canvas.addEventListener("dblclick", () => {
+  applyView("edge");
+});
+
+/* ================================================================ panel === */
+const capK = $("#capK"), capP = $("#capP");
+let capTimer = 0, capId = "";
+
+/* the caption is addressed by id, never by finished text: a switch has to be
+   able to re-letter whatever is on screen without restarting the animation */
+function capOf(id){
+  const v = VIEWS[id];
+  const rec = v ? { k: v.k, p: T(v.p[0], v.p[1]) }
+                : { k: id === "free" ? "FREE" : id === "lensOn" ? "LENSING ON" : "LENSING OFF",
+                    p: T(CAP[id][0], CAP[id][1]) };
+  return rec;
+}
+function setCap(id, instant){
+  if (capId === id) return;
+  capId = id;
+  const put = () => {
+    const c = capOf(id);
+    capK.textContent = c.k;
+    capP.textContent = c.p;
+    capP.style.opacity = "1";
+  };
+  if (instant) { clearTimeout(capTimer); put(); return; }
+  capP.style.opacity = "0";
+  clearTimeout(capTimer);
+  capTimer = setTimeout(put, 180);
+}
+
+function applyView(name){
+  const v = VIEWS[name];
+  S.taz = v.az; S.tel = v.el; S.td = v.d;
+  S.vaz = S.vel = 0;
+  S.idle = 0;
+  S.view = name;
+  [...$("#pv").children].forEach(b => b.classList.toggle("is-on", b.dataset.v === name));
+  setCap(name);
+  showAnno();
+}
+function setView(name){
+  if (name) { applyView(name); return; }
+  if (S.view){
+    S.view = null;
+    [...$("#pv").children].forEach(b => b.classList.remove("is-on"));
+    setCap("free");
+  }
+}
+$("#pv").addEventListener("click", e => {
+  const b = e.target.closest("button[data-v]");
+  if (b) applyView(b.dataset.v);
+});
+$("#tg").addEventListener("click", e => {
+  const b = e.target.closest("button[data-t]");
+  if (!b) return;
+  const k = b.dataset.t;
+  S[k] = S[k] ? 0 : 1;
+  b.classList.toggle("is-on", !!S[k]);
+  if (k === "anno") S.anno ? showAnno() : hideAnno();
+  if (k === "lens") setCap(S.lens ? "lensOn" : "lensOff");
+});
+
+/* ================================================================ callouts */
+const anno = $("#anno");
+const panelEl = $(".panel");
+function showAnno(){ if (S.anno) anno.classList.add("is-on"); }
+function hideAnno(){ anno.classList.remove("is-on"); }
+
+function placeAnno(){
+  const W = innerWidth, H = innerHeight;
+  anno.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const cx = W / 2, cy = H / 2 + S.shift * H;
+  const R = (r) => Math.tan(Math.asin(Math.min(1, r / S.d))) / Math.tan(S.fov / 2) * (H / 2);
+  const Rs = R(2.5980762);
+  const Rh = R(1.0);
+
+  const on = !!S.anno && Rs < H * 0.44;
+  const ring1 = $("#anShadow"), ring2 = $("#anHorizon");
+  ring1.setAttribute("cx", cx); ring1.setAttribute("cy", cy); ring1.setAttribute("r", Rs);
+  ring2.setAttribute("cx", cx); ring2.setAttribute("cy", cy); ring2.setAttribute("r", Rh);
+  ring1.style.opacity = (on && S.lens) ? 1 : 0;
+  ring2.style.opacity = on ? 1 : 0;
+  $("#anHorizon").style.display = Rh > 16 ? "" : "none";
+
+  const label = (g, rad, ang, dx, dy, anchor, vis) => {
+    const ax = cx + rad * Math.cos(ang), ay = cy + rad * Math.sin(ang);
+    /* a fixed element has no offsetParent, so the guard has to be the rect */
+    const pb = panelEl ? panelEl.getBoundingClientRect() : null;
+    const panelL = (pb && pb.width && W > 900) ? pb.left : W;
+    const bx = clamp(ax + dx, 84, Math.min(W - 84, panelL - 150));
+    const by = clamp(ay + dy, 60, H - 60);
+    const line = g.querySelector("line");
+    line.setAttribute("x1", ax); line.setAttribute("y1", ay);
+    line.setAttribute("x2", bx); line.setAttribute("y2", by);
+    const [tcn, ten] = g.querySelectorAll("text");
+    tcn.setAttribute("x", bx + 7); tcn.setAttribute("y", by + 3); tcn.setAttribute("text-anchor", anchor);
+    ten.setAttribute("x", bx + 7); ten.setAttribute("y", by + 16); ten.setAttribute("text-anchor", anchor);
+    g.style.opacity = (on && vis) ? 1 : 0;
+  };
+  label($("#anL1"), Rs, -0.62, 54, -40, "start", S.lens);
+  label($("#anL2"), Rh, -1.571, 0, -26, "middle", true);
+}
+
+/* ================================================================ loop ==== */
+let prev = performance.now();
+
+function draw(now){
+  const dt = Math.min(0.05, Math.max(0.001, (now - prev) / 1000));
+  prev = now;
+  S.t += dt;
+
+  if (!dragging){
+    if (Math.abs(S.vaz) > 1e-5 || Math.abs(S.vel) > 1e-5){
+      S.taz += S.vaz; S.tel = clamp(S.tel + S.vel, -1.42, 1.42);
+      S.vaz *= 0.93; S.vel *= 0.93;
+    }
+    S.idle += dt;
+    if (S.idle > 4 && !STILL) S.taz += 0.055 * dt;
+  }
+
+  S.az += (S.taz - S.az) * 0.16;
+  S.el += (S.tel - S.el) * 0.16;
+  S.d  += (S.td  - S.d ) * 0.16;
+  S.d = clamp(S.d, 4.1, 72);
+
+  const ce = Math.cos(S.el), se = Math.sin(S.el);
+  const cam = [Math.cos(S.az) * ce * S.d, se * S.d, Math.sin(S.az) * ce * S.d];
+
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.uniform2f(U.uRes, canvas.width, canvas.height);
+  gl.uniform1f(U.uTime, S.t);
+  gl.uniform3f(U.uCam, cam[0], cam[1], cam[2]);
+  gl.uniform1f(U.uFov, S.fov);
+  gl.uniform1f(U.uLens, S.lens);
+  gl.uniform1f(U.uDisk, 1);
+  gl.uniform1f(U.uDop, S.dop);
+  gl.uniform1f(U.uShift, S.shift);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  // readouts (throttled)
+  if ((S.frame & 7) === 0) readouts();
+  if ((S.frame % 45) === 0) fpsOut();
+  placeAnno();
+
+  // adaptive resolution
+  S.acc += dt; S.frame++;
+  if (S.frame % 45 === 0){
+    const avg = S.acc / 45;
+    S.fps = Math.round(1 / Math.max(avg, 1e-3));
+    if (avg > 0.026 && S.q > 0.45){ S.q = Math.max(0.45, S.q - 0.08); size(); }
+    else if (avg < 0.0185 && S.q < 0.92){ S.q = Math.min(0.92, S.q + 0.03); size(); }
+    S.acc = 0;
+  }
+
+  requestAnimationFrame(draw);
+}
+
+let lastRO = "";
+function readouts(){
+  const deg = S.el * 180 / Math.PI;
+  const th = Math.asin(Math.min(1, 2.5980762 / S.d)) * 2 * 180 / Math.PI;
+  const dop = 1.54;
+  const key = `${S.d.toFixed(1)}${deg.toFixed(0)}${S.dop}`;
+  if (key === lastRO) return;
+  lastRO = key;
+  $("#oDist").innerHTML = S.d.toFixed(1) + "<u>r<sub>s</sub></u>";
+  $("#oTilt").innerHTML = (Math.abs(deg)).toFixed(1) + "<u>°</u>";
+  $("#oShadow").innerHTML = th.toFixed(1) + "<u>°</u>";
+  $("#oDop").innerHTML = S.dop ? dop.toFixed(2) + "<u>×</u>" : "<u>" + T("关闭", "off") + "</u>";
+}
+function fpsOut(){ $("#oFps").textContent = S.fps ? S.fps + " FPS" : "—"; }
+
+/* the switch: no shader state is touched, only the lettering */
+function setLang(next){
+  if (next === lang) return;
+  lang = next;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* private mode */ }
+  applyStatic();
+  lastRO = ""; readouts();
+  if (capId){ const id = capId; capId = ""; setCap(id, true); }
+  placeAnno();
+}
+$("#lang").addEventListener("click", e => {
+  const b = e.target.closest("button[data-lang]");
+  if (b) setLang(b.dataset.lang);
+});
+
+/* ================================================================ boot ==== */
+layout();
+size();
+addEventListener("resize", () => { layout(); size(); placeAnno(); });
+$("#back").href = location.protocol === "file:" ? "太阳系行星图鉴.html" : "./";
+if (S.view) applyView(S.view);
+else {
+  [...$("#pv").children].forEach(b => b.classList.remove("is-on"));
+  setCap("free", true);
+}
+[...$("#tg").children].forEach(b => {
+  const k = b.dataset.t;
+  b.classList.toggle("is-on", !!S[k]);
+});
+anno.classList.toggle("is-on", !!S.anno);
+requestAnimationFrame(draw);
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

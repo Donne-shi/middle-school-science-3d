@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05060a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g'%3E%3Cstop offset='0' stop-color='%23fff6e0'/%3E%3Cstop offset='.55' stop-color='%23e8bb87'/%3E%3Cstop offset='1' stop-color='%23b06030'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='14' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='24' fill='none' stroke='%23e8bb87' stroke-opacity='.35' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='30' fill='none' stroke='%23e8bb87' stroke-opacity='.15'/%3E%3C/svg%3E">
+<meta name="description" content="恒星交互课堂：从红矮星到特超巨星的真实大小对比、主序星光谱特征、太阳的一生与大质量恒星的黑洞归宿。An interactive stellar classroom: star sizes, spectra, the Sun's life and the road to black holes.">
+<title>恒星 · Stars — 大小、光谱与一生</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  :root{
+    --bg:#04050a;
+    --ink:#f4ecdf;
+    --muted:#b3b2b5;
+    --dim:#7b7e8c;
+    --gold:#e8bb87;
+    --gold-2:#c98a55;
+    --red:#cf5a3d;
+    --line:rgba(244,236,223,.12);
+    --glass:rgba(12,14,20,.66);
+    --panel-w:382px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  body{
+    margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
+    font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  #stage{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0;touch-action:none;cursor:grab}
+  body.is-drag #stage{cursor:grabbing}
+  body.mode-sun #stage,body.mode-bh #stage{cursor:default}
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+    background:radial-gradient(125% 95% at 42% 46%,rgba(0,0,0,0) 38%,rgba(0,0,0,.42) 78%,rgba(0,0,0,.72) 100%)}
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ---------- masthead ---------- */
+  .masthead{position:fixed;left:clamp(20px,3vw,46px);top:clamp(20px,3.4vh,42px);z-index:5;
+    max-width:min(46vw,470px);pointer-events:none;transition:opacity .4s}
+  body.focused .masthead{opacity:.32}
+  .masthead:hover{opacity:1}
+  .eyebrow{display:flex;align-items:center;gap:9px;font-size:9.5px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase}
+  .eyebrow i{font-style:normal;color:rgba(255,255,255,.25)}
+  .hub-back{margin-right:7px;padding:3.5px 11px 3.5px 9px;border:1px solid rgba(244,236,223,.22);border-radius:20px;
+    color:#cfc7ba;text-decoration:none;letter-spacing:.16em;white-space:nowrap;pointer-events:auto;
+    transition:color .25s,border-color .25s,background .25s}
+  .hub-back:hover{color:#0a0705;border-color:var(--gold);background:var(--gold)}
+  .lang{display:flex;align-items:center;gap:1px;padding:2px;margin-right:9px;border:1px solid rgba(244,236,223,.18);
+    border-radius:20px;pointer-events:auto}
+  .lang button{appearance:none;border:0;background:none;font:inherit;font-family:var(--mono);font-size:9px;
+    letter-spacing:.1em;color:var(--dim);padding:4px 7px;border-radius:20px;cursor:pointer;line-height:1;transition:.2s}
+  .lang button:hover{color:#cfc7ba}
+  .lang button.is-on{background:var(--gold);color:#0a0705}
+  .pulse{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(232,187,135,.6);animation:pulse 3.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,187,135,.55)}70%{box-shadow:0 0 0 7px rgba(232,187,135,0)}100%{box-shadow:0 0 0 0 rgba(232,187,135,0)}}
+  .masthead h1{display:flex;align-items:flex-end;gap:.28em;margin:.22em 0 .3em;font-weight:600;line-height:.86;letter-spacing:0}
+  .masthead h1 .cn{font-size:clamp(44px,5.2vw,72px);letter-spacing:.06em;text-shadow:0 0 60px rgba(232,187,135,.18)}
+  .masthead h1 .en{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:clamp(10px,.95vw,13px);font-weight:400;
+    letter-spacing:.5em;text-transform:uppercase;color:var(--gold);padding-bottom:.72em}
+  .lede{margin:0;font-size:13px;line-height:1.75;color:#cfc7ba;letter-spacing:.02em}
+  .lede span{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:5px}
+  .chips{display:flex;gap:0;list-style:none;margin:26px 0 0;padding:0}
+  .chips li{padding:0 20px;border-left:1px solid var(--line)}
+  .chips li:first-child{padding-left:0;border-left:0}
+  .chips b{display:block;font-family:var(--mono);font-size:19px;font-weight:400;color:#f7efe1;letter-spacing:.02em}
+  .chips span{display:block;margin-top:4px;font-size:9px;letter-spacing:.1em;color:var(--dim)}
+  .chips em{display:block;font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(123,126,140,.8);margin-top:2px}
+
+  /* ---------- panel ---------- */
+  .panel{position:fixed;right:clamp(16px,2.2vw,32px);top:clamp(16px,3vh,32px);bottom:clamp(16px,3vh,32px);
+    width:var(--panel-w);z-index:8;display:flex;flex-direction:column;overflow:hidden;
+    background:linear-gradient(175deg,rgba(17,19,27,.74),rgba(8,9,14,.86));
+    border:1px solid var(--line);border-radius:20px;
+    -webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2);
+    box-shadow:0 34px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05)}
+  .panel-top{display:flex;align-items:flex-start;padding:12px 12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;flex:1}
+  .tab{appearance:none;border:0;background:none;padding:9px 4px 13px;cursor:pointer;font:inherit;color:var(--dim);
+    display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;font-size:12.5px;letter-spacing:.06em;transition:color .25s}
+  .tab span{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.72}
+  .tab:hover{color:#cfc7ba}
+  .tab.is-active{color:var(--ink)}
+  .tab.is-active::after{content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 12px rgba(232,187,135,.5)}
+  .panel-close{display:none;appearance:none;background:none;border:0;color:var(--dim);font-size:22px;line-height:1;
+    width:34px;height:34px;cursor:pointer;margin-top:2px}
+  .panel-close:hover{color:var(--ink)}
+  .panel::before{content:"";position:absolute;left:1px;right:1px;bottom:34px;height:30px;pointer-events:none;z-index:3;
+    background:linear-gradient(to top,rgba(10,11,17,.92),rgba(10,11,17,0))}
+  .panel-body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px 20px 24px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.16) transparent}
+  .panel-body::-webkit-scrollbar{width:4px}
+  .panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:4px}
+  .panel-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 20px 12px;
+    border-top:1px solid rgba(255,255,255,.06);font-size:8.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .panel-foot a{color:var(--gold-2);text-decoration:none}
+  .panel-foot a:hover{color:var(--gold)}
+  .pane{display:none;animation:fade .35s ease}
+  .pane.is-active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .sect-title{display:flex;align-items:baseline;gap:9px;margin:24px 0 8px;font-size:10.5px;letter-spacing:.16em;
+    color:var(--gold);text-transform:uppercase}
+  .sect-title:first-child{margin-top:2px}
+  .sect-title span{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;letter-spacing:.16em;color:var(--dim)}
+  .prose{margin:8px 0 0;font-size:11.5px;line-height:1.8;color:#b6b1a8;letter-spacing:.02em}
+  .prose b{color:#e2d8c6;font-weight:500}
+  .prose .en{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(123,126,140,.8);margin-top:3px}
+
+  /* fact rows */
+  .facts{padding-top:2px}
+  .fact{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;padding:8.5px 0;
+    border-bottom:1px dashed rgba(255,255,255,.07)}
+  .fact:last-child{border-bottom:0}
+  .fk b{display:block;font-weight:400;font-size:12px;color:#e7ddcd;letter-spacing:.02em}
+  .fk span{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dim);margin-top:2px}
+  .fv{font-family:var(--mono);font-size:11.5px;color:#f8f1e5;text-align:right;white-space:nowrap;letter-spacing:-.01em}
+  .fv u{text-decoration:none;font-size:8.5px;color:var(--dim);margin-left:2px}
+  .fv em{display:block;font-family:var(--mono);font-style:normal;font-size:8.5px;color:var(--gold-2);margin-top:3px;letter-spacing:0}
+
+  .note{border-left:2px solid rgba(232,187,135,.4);padding:2px 0 2px 11px;margin:14px 0 0;font-size:10px;line-height:1.65;color:var(--dim)}
+  .note b{color:var(--gold-2);font-weight:500}
+  .credit{margin:18px 0 0;font-size:8px;line-height:1.6;letter-spacing:.03em;color:rgba(123,126,140,.85)}
+
+  /* spectral rows */
+  .spec-band{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:10px 0 4px;border:1px solid rgba(255,255,255,.08)}
+  .spec-band i{flex:1;display:grid;place-items:center;font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;
+    font-size:10px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+  .spec-row{display:grid;grid-template-columns:26px 1fr 74px;gap:11px;align-items:center;padding:7.5px 0;border-bottom:1px dashed rgba(255,255,255,.07)}
+  .spec-row:last-child{border-bottom:0}
+  .spec-badge{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:0 0 12px color-mix(in srgb,var(--c) 45%,transparent),inset -4px -3px 8px rgba(0,0,0,.5)}
+  .spec-info b{display:block;font-size:11.5px;font-weight:500;color:#e7ddcd}
+  .spec-info span{display:block;font-family:var(--mono);font-size:8.5px;color:var(--dim);margin-top:2px;letter-spacing:0}
+  .spec-bar{text-align:right}
+  .spec-bar em{display:block;font-style:normal;font-family:var(--mono);font-size:9.5px;color:#f0e6d4;margin-bottom:3px}
+  .spec-bar i{display:block;height:3px;border-radius:2px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+  .spec-bar i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--c);border-radius:2px}
+
+  /* star cards */
+  .star-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;background:rgba(255,255,255,.022);
+    position:relative;overflow:hidden;cursor:pointer;transition:border-color .25s,background .25s}
+  .star-card:hover{border-color:rgba(232,187,135,.4);background:rgba(232,187,135,.05)}
+  .star-card::after{content:"";position:absolute;right:16px;top:15px;width:32px;height:32px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.6),var(--mc,#e8bb87) 46%,rgba(0,0,0,.35) 100%);
+    box-shadow:inset -5px -4px 9px rgba(0,0,0,.45),0 0 14px color-mix(in srgb,var(--mc,#e8bb87) 35%,transparent);opacity:.85}
+  .star-card h3{margin:0;display:flex;align-items:baseline;gap:8px;font-size:14px;font-weight:500;letter-spacing:.03em}
+  .star-card h3 em{font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:8px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold)}
+  .star-card .mstat{font-family:var(--mono);font-size:9px;color:var(--dim);margin:5px 0 7px;letter-spacing:.01em}
+  .star-card p{margin:0;font-size:11px;line-height:1.62;color:#b6b1a8;padding-right:38px}
+  .star-card .go{margin-top:7px;font-size:9px;letter-spacing:.1em;color:var(--gold-2);opacity:0;transition:opacity .25s}
+  .star-card:hover .go{opacity:1}
+
+  /* stage list (panel) */
+  .tl{position:relative;margin:2px 0 0;padding-left:17px}
+  .tl::before{content:"";position:absolute;left:3px;top:8px;bottom:8px;width:1px;
+    background:linear-gradient(180deg,rgba(232,187,135,.65),rgba(232,187,135,.06))}
+  .tl-item{position:relative;padding:0 0 14px;cursor:pointer}
+  .tl-item:hover h4{color:var(--gold)}
+  .tl-item:last-child{padding-bottom:2px}
+  .tl-item::before{content:"";position:absolute;left:-17px;top:5px;width:5px;height:5px;border-radius:50%;
+    background:var(--gold);box-shadow:0 0 0 3px rgba(232,187,135,.12)}
+  .tl-year{font-family:var(--mono);font-size:8.5px;color:var(--gold);letter-spacing:.12em}
+  .tl-item h4{margin:2px 0 3px;font-size:12px;font-weight:500;color:#eee5d8;transition:color .2s}
+  .tl-item h4 em{font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-left:6px}
+  .tl-item p{margin:0;font-size:10.5px;line-height:1.6;color:#a8a49e}
+
+  /* onion rows */
+  .onion-row{display:grid;grid-template-columns:20px 1fr auto;gap:11px;align-items:center;padding:6.5px 0;border-bottom:1px dashed rgba(255,255,255,.07)}
+  .onion-row:last-child{border-bottom:0}
+  .onion-row i{width:20px;height:20px;border-radius:50%;background:var(--c);box-shadow:0 0 10px color-mix(in srgb,var(--c) 40%,transparent);opacity:.9}
+  .onion-row b{display:block;font-size:11.5px;font-weight:500;color:#e7ddcd}
+  .onion-row span{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:1px}
+  .onion-row em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:#f0e6d4;text-align:right}
+  .onion-row.hot em{color:#cf8a6a}
+
+  /* ---------- timeline (sun / bh modes) ---------- */
+  .timeline{position:fixed;bottom:86px;z-index:9;width:min(640px,calc(100vw - var(--panel-w) - 36px));
+    left:calc((100vw - var(--panel-w))/2);transform:translateX(-50%) translateY(16px);
+    padding:13px 18px 11px;border-radius:18px;background:rgba(10,12,18,.78);border:1px solid var(--line);
+    -webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2);
+    box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);
+    opacity:0;pointer-events:none;transition:opacity .35s,transform .35s}
+  body.mode-sun .timeline,body.mode-bh .timeline{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+  .tl-head{display:flex;align-items:baseline;gap:12px;margin-bottom:9px}
+  .tl-age{font-family:var(--mono);font-size:16px;color:#f7efe1;white-space:nowrap;letter-spacing:-.01em}
+  .tl-age small{font-size:9px;color:var(--dim);margin-left:2px}
+  .tl-stage{font-size:12.5px;font-weight:500;color:var(--gold);letter-spacing:.04em;white-space:nowrap}
+  .tl-stage em{font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-left:6px}
+  .tl-note{flex:1;text-align:right;font-size:9.5px;color:var(--dim);line-height:1.4;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-trackwrap{position:relative;padding:5px 0 3px;cursor:pointer;touch-action:none}
+  .tl-track{position:relative;height:13px;border-radius:7px;overflow:hidden;display:flex;border:1px solid rgba(255,255,255,.08)}
+  .tl-seg{height:100%}
+  .tl-seg:hover{filter:brightness(1.25)}
+  .tl-cursor{position:absolute;top:0px;width:2px;height:21px;background:#fff;border-radius:2px;box-shadow:0 0 10px rgba(255,255,255,.9);pointer-events:none;transform:translateX(-1px)}
+  .tl-now{position:absolute;top:-3px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold);pointer-events:none;filter:drop-shadow(0 0 4px rgba(232,187,135,.9));z-index:2}
+  .tl-marks{display:flex;margin-top:5px;cursor:pointer}
+  .tl-mark{font-size:8.5px;letter-spacing:.06em;color:var(--dim);text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:2px 1px;transition:color .2s}
+  .tl-mark:hover{color:var(--gold)}
+
+  /* ---------- detail card (focused star) ---------- */
+  .detail{position:fixed;left:clamp(20px,3vw,46px);top:212px;width:min(312px,42vw);z-index:8;
+    padding:16px 18px 14px;border-radius:18px;background:rgba(12,14,20,.78);border:1px solid var(--line);
+    -webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2);
+    box-shadow:0 26px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);
+    opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .35s,transform .35s}
+  body.focused .detail{opacity:1;pointer-events:auto;transform:none}
+  .detail-close{position:absolute;right:10px;top:8px;appearance:none;border:0;background:none;color:var(--dim);font-size:19px;
+    width:28px;height:28px;cursor:pointer;line-height:1}
+  .detail-close:hover{color:var(--ink)}
+  .d-eyebrow{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .d-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--c,#e8bb87);box-shadow:0 0 8px var(--c,#e8bb87)}
+  .detail h3{margin:7px 0 2px;display:flex;align-items:baseline;gap:9px;font-size:22px;font-weight:600;letter-spacing:.04em}
+  .detail h3 em{font-style:normal;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  .d-facts{margin:10px 0 4px}
+  .d-desc{margin:8px 0 0;font-size:10.5px;line-height:1.72;color:#b6b1a8;border-top:1px dashed rgba(255,255,255,.09);padding-top:9px}
+  .d-fate{display:flex;align-items:center;gap:7px;margin-top:9px;padding:7px 10px;border-radius:9px;
+    background:rgba(207,90,61,.08);border:1px solid rgba(207,90,61,.25);font-size:10px;color:#e8c4a8;letter-spacing:.02em}
+  .d-fate i{font-style:normal;font-size:11px}
+  .d-nav{display:flex;gap:8px;margin-top:11px}
+  .d-nav button{appearance:none;flex:1;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#d9d3c7;border-radius:9px;
+    padding:7px 4px;font:inherit;font-size:10px;letter-spacing:.06em;cursor:pointer;transition:background .2s,border-color .2s}
+  .d-nav button:hover{background:rgba(232,187,135,.12);border-color:rgba(232,187,135,.35)}
+  .d-nav button.arrow{flex:0 0 40px;font-size:13px}
+
+  /* ---------- dock ---------- */
+  .dock{position:fixed;left:50%;bottom:clamp(14px,2.6vh,26px);transform:translateX(-50%);z-index:10;
+    display:flex;align-items:center;gap:3px;padding:7px;border-radius:999px;
+    background:rgba(10,12,18,.76);border:1px solid var(--line);
+    -webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2);
+    box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);max-width:calc(100vw - 20px)}
+  .btn{appearance:none;border:1px solid transparent;background:rgba(255,255,255,.03);color:#d9d3c7;border-radius:999px;
+    padding:8px 11px;font:inherit;font-size:10px;letter-spacing:.05em;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;line-height:1.1;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+  .btn span{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:6.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+  .btn:hover{background:rgba(255,255,255,.08)}
+  .btn:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+  .btn.toggle.is-on{background:rgba(232,187,135,.13);border-color:rgba(232,187,135,.32);color:#ffe8c8}
+  .btn.toggle.is-on span{color:rgba(232,187,135,.7)}
+  .btn.mode.is-on{background:rgba(232,187,135,.16);border-color:rgba(232,187,135,.45);color:#ffe8c8}
+  .btn.mode.is-on span{color:rgba(232,187,135,.75)}
+  .btn.icon{width:34px;height:34px;padding:0;justify-content:center;border-radius:50%;flex:none}
+  .btn.icon svg{width:13px;height:13px;fill:currentColor;display:block}
+  .dock-sep{width:1px;height:22px;background:var(--line);margin:0 4px;flex:none}
+  .speed{display:flex;align-items:center;gap:9px;padding:0 8px}
+  .speed label{display:flex;flex-direction:column;font-size:9px;letter-spacing:.06em;color:var(--dim);line-height:1.2}
+  .speed label span{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:6px;letter-spacing:.16em;text-transform:uppercase}
+  #speed{-webkit-appearance:none;appearance:none;width:78px;height:2px;border-radius:2px;outline:none;cursor:pointer;
+    background:linear-gradient(90deg,var(--gold-2) 0%,var(--gold) var(--fill,26%),rgba(255,255,255,.14) var(--fill,26%))}
+  #speed::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 3px rgba(232,187,135,.16)}
+  #speed::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--gold)}
+  #speedOut{font-family:var(--mono);font-size:9.5px;color:var(--gold);min-width:33px;text-align:right}
+  body.mode-compare .only-life{display:none}
+  .ico-play{display:none}
+  body.is-playing .ico-play{display:none}
+  body:not(.is-playing) .ico-play{display:block}
+  body:not(.is-playing) .ico-pause{display:none}
+
+  .hint{position:fixed;left:clamp(20px,3vw,46px);bottom:clamp(20px,3.2vh,34px);z-index:5;
+    font-size:9.5px;letter-spacing:.08em;color:rgba(163,164,174,.7);line-height:1.7;pointer-events:none;transition:opacity .3s}
+  .hint span{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:7.5px;
+    letter-spacing:.16em;text-transform:uppercase;color:rgba(123,126,140,.7)}
+  .hint em{display:block;font-style:normal;font-size:8px;letter-spacing:.08em;color:rgba(123,126,140,.65);margin-top:5px}
+  body.focused .hint{display:none}
+
+  .open-panel{display:none;position:fixed;right:16px;top:calc(16px + env(safe-area-inset-top));z-index:11;transition:opacity .25s,transform .25s;appearance:none;
+    border:1px solid rgba(232,187,135,.3);background:rgba(10,12,18,.7);color:var(--gold);
+    border-radius:999px;padding:8px 13px;font:inherit;font-size:10px;letter-spacing:.08em;cursor:pointer;
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);align-items:center;gap:5px}
+  .open-panel span{font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:6.5px;letter-spacing:.16em;color:#a99c8b}
+
+  /* ---------- boot ---------- */
+  .boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#04050a;transition:opacity .9s ease}
+  .boot.is-done{opacity:0;pointer-events:none}
+  .boot-inner{display:flex;flex-direction:column;align-items:center;gap:18px}
+  .boot .ring{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.12);border-top-color:var(--gold);
+    animation:spin 1.1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .boot p{margin:0;font-size:10px;letter-spacing:.14em;color:var(--dim);text-align:center;line-height:1.9}
+  .boot p span{display:block;font-family:"Helvetica Neue",Avenir,system-ui,sans-serif;font-size:8px;letter-spacing:.18em;text-transform:uppercase}
+
+  /* HR diagram */
+  .hr-wrap{border:1px solid var(--line);border-radius:14px;padding:10px 8px 8px;background:rgba(255,255,255,.02);margin-top:8px}
+  .hr-wrap svg,.hr-big svg{width:100%;height:auto;display:block}
+  .hr-wrap g[data-star],.hr-big g[data-star]{cursor:pointer}
+  .hr-wrap g[data-star] circle,.hr-big g[data-star] circle{transition:filter .2s}
+  .hr-wrap g[data-star]:hover circle,.hr-big g[data-star]:hover circle{filter:brightness(1.35) drop-shadow(0 0 3px rgba(255,255,255,.55))}
+  .hr-wrap g[data-star]:hover text,.hr-big g[data-star]:hover text{fill:#ffe8c8 !important}
+  .hr-zoom{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:9px;padding:7px 0;
+    background:rgba(232,187,135,.07);border:1px solid rgba(232,187,135,.22);border-radius:9px;color:var(--gold);
+    font-family:inherit;font-size:10.5px;letter-spacing:.08em;cursor:pointer;transition:background .2s,border-color .2s}
+  .hr-zoom em{font-style:normal;font-family:"Helvetica Neue",Avenir,sans-serif;font-size:8px;letter-spacing:.18em;color:rgba(232,187,135,.6)}
+  .hr-zoom:hover{background:rgba(232,187,135,.15);border-color:rgba(232,187,135,.45)}
+
+  /* 赫罗图全尺寸浮层 */
+  .hr-modal{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:3vh 3vw;
+    background:rgba(2,3,7,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .hr-modal.on{display:flex;animation:hrIn .28s ease both}
+  @keyframes hrIn{from{opacity:0}to{opacity:1}}
+  .hr-sheet{width:min(880px,94vw);max-height:94vh;overflow:auto;padding:22px 26px 20px;border-radius:20px;
+    border:1px solid rgba(244,236,223,.14);background:linear-gradient(180deg,rgba(17,19,27,.97),rgba(7,8,13,.99));
+    box-shadow:0 40px 120px rgba(0,0,0,.72);animation:hrSheet .34s cubic-bezier(.2,.9,.3,1) both}
+  @keyframes hrSheet{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+  .hr-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+  .hr-sheet-head b{display:block;font-size:15px;font-weight:600;letter-spacing:.12em;color:#f7efe1}
+  .hr-sheet-head span{display:block;margin-top:5px;font-family:"Helvetica Neue",Avenir,sans-serif;font-size:8.5px;letter-spacing:.26em;color:var(--dim)}
+  .hr-x{width:30px;height:30px;flex:0 0 auto;border-radius:50%;border:1px solid var(--line);background:transparent;
+    color:var(--muted);cursor:pointer;font-size:12px;line-height:1;transition:.2s}
+  .hr-x:hover{border-color:rgba(232,187,135,.5);color:var(--gold)}
+  .hr-cap{margin:12px 0 0;font-size:11.5px;line-height:1.85;color:#a9a6a0}
+  .hr-cap b{color:var(--gold);font-weight:500}
+  body.hr-open{overflow:hidden}
+  @media (max-width:780px){.hr-sheet{padding:16px 15px 14px;border-radius:16px}.hr-cap{font-size:10.5px}}
+
+  @media (max-width:1240px){
+    :root{--panel-w:352px}
+    .masthead{max-width:38vw}
+    body:not(.focused) .hint{display:none}
+  }
+  @media (max-width:980px){
+    .masthead{max-width:44vw}
+    .chips li{padding:0 13px}
+    .chips b{font-size:16px}
+    .lede{font-size:12px}
+    .masthead h1 .cn{font-size:42px}
+  }
+  @media (max-width:1024px){
+    .panel{left:0;right:0;top:0;bottom:0;width:100%;border-radius:0;border:0;z-index:30;
+      padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+      transform:translateX(101%);transition:transform .42s cubic-bezier(.22,.61,.36,1);box-shadow:none}
+    body.panel-open .open-panel{opacity:0;pointer-events:none;transform:translateY(-6px)}
+    .panel.is-open{transform:none}
+    .panel-close{display:block}
+    .panel-body{padding:16px 22px 30px}
+    .open-panel{display:flex}
+    .masthead{max-width:none;right:96px}
+    .masthead h1 .cn{font-size:40px}
+    .lede{font-size:11.5px}
+    .chips{margin-top:16px}
+    .chips li:nth-child(3){display:none}
+    .chips b{font-size:15px}
+    .dock{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));transform:none;justify-content:flex-start;gap:2px;padding:6px;overflow-x:auto}
+    /* 自动外边距：放得下时居中，放不下时从左端开始、右端可滑动，不会把首项裁掉 */
+    .dock > .btn:first-child{margin-left:auto}
+    .dock > .btn:last-child{margin-right:auto}
+    .speed{padding:0 5px}
+    #speed{width:58px}
+    .vignette{background:radial-gradient(120% 80% at 50% 42%,rgba(0,0,0,0) 35%,rgba(0,0,0,.5) 85%)}
+    .timeline{left:50%;transform:translateX(-50%) translateY(16px);width:min(640px,calc(100vw - 24px));bottom:80px}
+    body.mode-sun .timeline,body.mode-bh .timeline{transform:translateX(-50%)}
+    .detail{left:12px;right:12px;top:auto;bottom:78px;width:auto;max-height:44vh;overflow-y:auto}
+  }
+  @media (max-width:520px){
+    .masthead{right:86px;left:16px;top:calc(16px + env(safe-area-inset-top))}
+    .masthead h1 .cn{font-size:34px}
+    .masthead h1 .en{letter-spacing:.36em}
+    .eyebrow{font-size:8px;letter-spacing:.22em}
+    body.lang-en .eb{display:none}   /* 英文太长，会压到「Info」按钮 */
+    .lede{font-size:10.5px}
+    .lede span{font-size:7.5px;letter-spacing:.1em}
+    .chips{gap:0;margin-top:14px}
+    .chips li{padding:0 11px}
+    .chips b{font-size:13px}
+    .chips span{font-size:7px}
+    .chips em{display:none}
+    .btn{padding:7px 8px;font-size:9px}
+    .btn span{display:none}
+    .speed label{display:none}
+    .speed{gap:6px}
+    #speed{width:48px}
+    .dock-sep{margin:0 1px}
+    .tl-note{display:none}
+    .tl-mark{font-size:7.5px;letter-spacing:0;padding:2px 0}
+    .tl-mark:last-child{overflow:visible;transform:translateX(4px)}   /* 最窄的一段放不下两个字，让它压进内边距 */
+  }
+  @media (prefers-reduced-motion:reduce){
+    .pulse{animation:none}
+    .pane{animation:none}
+  }
+
+  /* ---------- english mode ----------
+     This page prints both languages on every label, so the switch decides which
+     one leads. The markup pair is always «lead / gloss»; data-en swaps the two
+     texts, and the rules below retune the gloss slots for CJK. */
+  body.lang-en .masthead h1 .cn{font-family:"Iowan Old Style",Palatino,Georgia,"Times New Roman",serif;
+    font-size:clamp(34px,3.9vw,54px);letter-spacing:.005em;line-height:1.02;text-wrap:balance}
+  body.lang-en .masthead h1 .en{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif;
+    font-size:13px;letter-spacing:.2em;text-transform:none;padding-bottom:.46em}
+  body.lang-en .lede{font-size:12.5px;line-height:1.68}
+  body.lang-en .lede span{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif;
+    font-size:11px;letter-spacing:.05em;text-transform:none;margin-top:4px}
+  /* every slot that now carries the chinese gloss */
+  body.lang-en .chips em,
+  body.lang-en .tab span,
+  body.lang-en .sect-title span,
+  body.lang-en .prose span,
+  body.lang-en .fk span,
+  body.lang-en .tl-item h4 em,
+  body.lang-en .onion-row span,
+  body.lang-en .tl-stage em,
+  body.lang-en .detail h3 em,
+  body.lang-en .star-card h3 em,
+  body.lang-en .hr-zoom em,
+  body.lang-en .hr-sheet-head span{
+    font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif;
+    font-size:9px;letter-spacing:.05em;text-transform:none}
+  body.lang-en .prose span{font-size:9.5px;line-height:1.62;letter-spacing:.02em;margin-top:5px}
+  body.lang-en .sect-title{letter-spacing:.12em}
+  body.lang-en .tl-item h4{font-size:11.5px}
+  body.lang-en .tl-mark{letter-spacing:0}
+  body.lang-en .hr-cap{font-size:11px}
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="恒星交互动画 Interactive stellar animation"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<header class="masthead">
+  <div class="eyebrow">
+    <a class="hub-back" id="hubBack" href="../../topics/astronomy/stellar-sky/index.html" aria-label="返回太阳系图鉴" data-en="← Atlas">← 图鉴</a>
+    <div class="lang" id="lang" role="group" aria-label="语言 Language">
+      <button type="button" data-lang="zh" class="is-on" aria-pressed="true">中</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <span class="pulse"></span><span class="eb" data-en="Cosmos<i>/</i>Universe<i>/</i>Stellar">Cosmos<i>/</i>宇宙<i>/</i>Stellar</span>
+  </div>
+  <h1><span class="cn" data-en="Stars">恒星</span><span class="en" data-en="恒星">Stars</span></h1>
+  <p class="lede" data-en="The furnaces of the cosmos — from red dwarfs to hypergiants<span>宇宙的熔炉 · 从红矮星到特超巨星的一生</span>">宇宙的熔炉 · 从红矮星到特超巨星的一生<span>The furnaces of the cosmos — from red dwarfs to hypergiants</span></p>
+  <ul class="chips">
+    <li><b>~10²²</b><span data-en="stars in the observable universe<em>可观测宇宙中的恒星</em>">颗 · 可观测宇宙恒星<em>stars in the universe</em></span></li>
+    <li><b>76%</b><span data-en="of the Milky Way's stars are red dwarfs<em>银河系恒星中红矮星占比</em>">银河系恒星是红矮星<em>of stars are red dwarfs</em></span></li>
+    <li><b>2,150</b><span data-en="R☉ · largest known radius<em>已知最大恒星半径</em>">R☉ · 已知最大恒星半径<em>largest known radius</em></span></li>
+  </ul>
+</header>
+
+<aside class="panel" id="panel" aria-label="恒星资料 Stellar facts">
+  <div class="panel-top">
+    <div class="tabs" role="tablist" aria-label="资料分类 Fact categories">
+      <button class="tab is-active" role="tab" aria-selected="true" data-tab="overview" data-en="Overview<span>概览</span>">概览<span>Overview</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="stars" data-en="Stars<span>名星录</span>">名星录<span>Stars</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="sun" data-en="Sun<span>太阳一生</span>">太阳一生<span>Sun</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="bh" data-en="Black hole<span>黑洞</span>">黑洞<span>Black hole</span></button>
+    </div>
+    <button class="panel-close" id="panelClose" aria-label="关闭资料 Close facts">×</button>
+  </div>
+
+  <div class="panel-body" id="panelBody">
+    <!-- ============ OVERVIEW ============ -->
+    <section class="pane is-active" data-pane="overview" role="tabpanel">
+      <p class="prose" style="margin-top:4px" data-en="<b>A star is a sphere of plasma gathered by its own gravity</b>, its core fusion holding off collapse while it pours light and heat into space. Mass decides almost everything: the heavier the star, the brighter it burns and the sooner it dies.<span class='en'>恒星是自身引力聚拢的等离子体球 —— 质量决定亮度，也决定终局。</span>"><b>恒星，是由自身引力聚拢的等离子体球</b>，核心的核聚变抵住坍缩，向宇宙倾泻光与热。质量几乎决定一切：质量越大，烧得越亮，也死得越早。<span class="en">A star is a sphere of plasma lit by core fusion — mass decides its brightness and its fate.</span></p>
+      <p class="prose" data-en="<b>Colour is temperature</b>: blue-white stars run above 20,000 K, orange-red ones sit near 3,000 K. Look up, and the colour of every star is reporting its own heat.<span class='en'>颜色即温度 —— 蓝白恒星超过 20,000 K，红色恒星不过 3,000 K。</span>"><b>颜色即温度</b>：蓝白色恒星表面超过 20,000 K，橙红色恒星只有 3,000 K 上下。仰望星空时，每一颗星的颜色都在报告它的体温。<span class="en">Color is temperature — blue-white stars blaze past 20,000 K; red ones barely reach 3,000 K.</span></p>
+
+      <div class="sect-title" data-en="Main sequence · O–M <span>主序星 · 光谱序列</span>">主序星 · 光谱序列 <span>Main sequence · O–M</span></div>
+      <p class="prose" data-en="About 90% of all stars spend their lives on the <b>main sequence</b>, quietly burning hydrogen into helium. Temperature sorts them into seven classes — O, B, A, F, G, K, M:">约 90% 的恒星一生处于<b>主序</b>——核心稳定地把氢烧成氦。天文学按温度把它们编为 O、B、A、F、G、K、M 七型：</p>
+      <div class="spec-band" aria-hidden="true">
+        <i style="background:linear-gradient(#9db4ff,#5a7bd4);color:#0a1022">O</i>
+        <i style="background:linear-gradient(#aabfff,#7188d8);color:#0a1022">B</i>
+        <i style="background:linear-gradient(#d5e0ff,#9fb0e2);color:#0a1022">A</i>
+        <i style="background:linear-gradient(#fbf8ef,#d8d2ba);color:#0a1022">F</i>
+        <i style="background:linear-gradient(#ffe9b8,#e6bf72);color:#0a1022">G</i>
+        <i style="background:linear-gradient(#ffcf8f,#d99a4e);color:#0a1022">K</i>
+        <i style="background:linear-gradient(#ffab6b,#cf6a35);color:#0a1022">M</i>
+      </div>
+      <div class="facts" style="margin-top:6px">
+        <div class="spec-row" style="--c:#9db4ff"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type O · blue">O 型 · 蓝</b><span data-en="≥ 30,000 K · ≥ 16 M☉ · life &lt; 10 Myr · Alnitak">≥ 30,000 K · ≥ 16 M☉ · 寿命 &lt; 1,000 万年 · 参宿三</span></div><div class="spec-bar"><em>0.00003%</em><i style="--w:1%"></i></div></div>
+        <div class="spec-row" style="--c:#aabfff"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type B · blue-white">B 型 · 蓝白</b><span data-en="10,000–30,000 K · 2–16 M☉ · Rigel, Spica">10,000–30,000 K · 2–16 M☉ · 参宿七、角宿一</span></div><div class="spec-bar"><em>0.13%</em><i style="--w:4%"></i></div></div>
+        <div class="spec-row" style="--c:#d5e0ff"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type A · white">A 型 · 白</b><span data-en="7,500–10,000 K · 1.4–2 M☉ · Sirius, Vega">7,500–10,000 K · 1.4–2 M☉ · 天狼星、织女星</span></div><div class="spec-bar"><em>0.6%</em><i style="--w:6%"></i></div></div>
+        <div class="spec-row" style="--c:#fbf8ef"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type F · yellow-white">F 型 · 黄白</b><span data-en="6,000–7,500 K · 1–1.4 M☉ · Procyon">6,000–7,500 K · 1–1.4 M☉ · 南河三</span></div><div class="spec-bar"><em>3%</em><i style="--w:12%"></i></div></div>
+        <div class="spec-row" style="--c:#ffe9b8"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type G · yellow">G 型 · 黄</b><span data-en="5,200–6,000 K · 0.8–1 M☉ · the Sun">5,200–6,000 K · 0.8–1 M☉ · 太阳</span></div><div class="spec-bar"><em>7.6%</em><i style="--w:20%"></i></div></div>
+        <div class="spec-row" style="--c:#ffcf8f"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type K · orange">K 型 · 橙</b><span data-en="3,700–5,200 K · 0.5–0.8 M☉ · Alpha Centauri B">3,700–5,200 K · 0.5–0.8 M☉ · 南门二 B</span></div><div class="spec-bar"><em>12%</em><i style="--w:26%"></i></div></div>
+        <div class="spec-row" style="--c:#ffab6b"><div class="spec-badge"></div><div class="spec-info"><b data-en="Type M · red">M 型 · 红</b><span data-en="2,400–3,700 K · 0.08–0.45 M☉ · Proxima">2,400–3,700 K · 0.08–0.45 M☉ · 比邻星</span></div><div class="spec-bar"><em>76%</em><i style="--w:100%"></i></div></div>
+      </div>
+      <p class="note" data-en="<b>Lifespan</b> — A 0.1 M☉ red dwarf burns for trillions of years; a 60 M☉ blue giant dies in mere millions.<br><b>寿命与质量的悬殊</b> — 0.1 M☉ 的红矮星可以燃烧数万亿年，而 60 M☉ 的蓝巨星只需几百万年就燃尽。燃烧越旺，谢幕越快。"><b>寿命与质量的悬殊</b> — 0.1 M☉ 的红矮星可以燃烧数万亿年，而 60 M☉ 的蓝巨星只需几百万年就燃尽。燃烧越旺，谢幕越快。<br><b>Lifespan</b> — A 0.1 M☉ red dwarf burns for trillions of years; a 60 M☉ blue giant dies in mere millions.</p>
+
+      <div class="sect-title" data-en="H–R diagram · click a star <span>赫罗图 · 点击圆点聚焦</span>">赫罗图 · 点击圆点聚焦 <span>H–R diagram · click a star</span></div>
+      <div class="hr-wrap">
+        <div id="hrDiagram"></div>
+        <button class="hr-zoom" id="hrZoom" type="button" data-en="<span aria-hidden='true'>⤢</span> Open full size <em>放大细看</em>"><span aria-hidden="true">⤢</span> 放大细看 <em>FULL SIZE</em></button>
+      </div>
+      <p class="note" data-en="<b>Reading it</b> — surface temperature runs along the bottom (hot on the left), luminosity up the side on a log scale. About 90% of stars gather on the <b>main sequence</b> from top left to bottom right; giants and supergiants swell to the upper right, white-dwarf embers sit at the lower left — every one of them was once a main-sequence star. Dot size follows the star's physical size."><b>读图</b> — 横轴是表面温度（左热右冷），纵轴是光度（对数）。约 90% 的恒星聚集在左上到右下的<b>主序带</b>上；右上方是膨胀的巨星与超巨星，左下方是白矮星余烬——它们都曾是主序星。圆点大小约为恒星实体的相对大小。</p>
+    </section>
+
+    <!-- ============ STARS ============ -->
+    <section class="pane" data-pane="stars" role="tabpanel">
+      <p class="prose" style="margin-top:4px" data-en="From 0.15 to 2,150 solar radii — <b>click any star to zoom in on the canvas</b> at true scale, with the Sun drawn in for reference.<span class='en'>点击任意一颗星，在画布中按真实比例放大（聚焦视图附太阳参照点）。</span>">从 0.15 倍到 2,150 倍太阳半径——<b>点击任意一颗星，在画布中放大聚焦</b>，查看真实比例（聚焦视图附太阳参照点）。<span class="en">Click any star to zoom in at true scale, with the Sun shown for reference.</span></p>
+      <div class="sect-title" data-en="Roll of honour · by radius <span>名星录 · 按大小排序</span>">名星录 · 按大小排序 <span>By radius</span></div>
+      <div id="starCards"></div>
+      <p class="note" data-en="<b>On scale</b> — the overview compresses radii by a cube root so everything fits on one screen; the focused view is at <b>true scale</b>, with the Sun drawn at that same scale."><b>比例说明</b> — 全景采用立方根压缩比例以便同屏浏览；点击后的聚焦视图为<b>真实比例</b>，并给出该比例下的太阳参照点。</p>
+    </section>
+
+    <!-- ============ SUN ============ -->
+    <section class="pane" data-pane="sun" role="tabpanel">
+      <div class="sect-title" data-en="The Sun's life <span>太阳的一生</span>">太阳的一生 <span>The Sun's life</span></div>
+      <div class="facts">
+        <div class="fact"><div class="fk"><b data-en="Current age">当前年龄</b><span data-en="当前年龄">Current age</span></div><div class="fv" data-en="4.57<u>Gyr</u><em>mid main sequence</em>">45.7<u>亿年</u><em>主序中段</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Main-sequence span">主序总寿命</b><span data-en="主序总寿命">Main-sequence span</span></div><div class="fv" data-en="~10<u>Gyr</u><em>~6 Gyr to go</em>">~100<u>亿年</u><em>还剩 ~60 亿年</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Red-giant peak">红巨星峰值半径</b><span data-en="红巨星峰值半径">Red-giant peak</span></div><div class="fv" data-en="~256<u>R☉</u><em>about 1.2 AU</em>">~256<u>R☉</u><em>约 1.2 AU</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Final remnant">最终残骸</b><span data-en="最终残骸">Final remnant</span></div><div class="fv" data-en="0.54<u>M☉</u><em>an Earth-sized white dwarf</em>">0.54<u>M☉</u><em>地球大小白矮星</em></div></div>
+      </div>
+
+      <div class="sect-title" data-en="Stages · click to jump <span>阶段时间轴</span>">阶段时间轴 <span>Stages · 点击跳转</span></div>
+      <div class="tl" id="sunStages">
+        <div class="tl-item" data-u="0.03"><div class="tl-year" data-en="0 – 50 Myr">0 – 0.5 亿年</div><h4 data-en="Protostar<em>星云 · 原恒星</em>">星云 · 原恒星<em>Protostar</em></h4><p data-en="A molecular cloud collapses under its own gravity; the centre grows hotter as a glowing accretion disc wraps around it.">分子云在自身引力下坍缩，中心越压越热，被发光的吸积盘包裹。</p></div>
+        <div class="tl-item" data-u="0.25"><div class="tl-year" data-en="50 Myr – 10.6 Gyr">0.5 – 106 亿年</div><h4 data-en="Main sequence<em>主序星</em>">主序星<em>Main sequence</em></h4><p data-en="Core hydrogen fusion ignites and burns steadily for about 10 billion years. It is 4.57 Gyr old now, already 30% brighter than at birth.">核心氢聚变点燃，稳定燃烧约 100 亿年。现在 45.7 亿岁，光度已比诞生时亮 30%。</p></div>
+        <div class="tl-item" data-u="0.56"><div class="tl-year" data-en="10.6 – 11.6 Gyr">106 – 116 亿年</div><h4 data-en="Subgiant<em>亚巨星</em>">亚巨星<em>Subgiant</em></h4><p data-en="Core hydrogen runs out; fusion moves into a shell, and the Sun begins to swell and turn orange.">核心氢耗尽，聚变转移到壳层，太阳开始膨胀、变橙。</p></div>
+        <div class="tl-item" data-u="0.705"><div class="tl-year" data-en="11.6 – 12.2 Gyr">116 – 122 亿年</div><h4 data-en="Red giant<em>红巨星</em>">红巨星<em>Red giant</em></h4><p data-en="The hydrogen shell burns fiercely. The Sun swells to ~256 R☉, swallows Mercury and Venus and closes on Earth's orbit; at the tip, the helium flash fires.">氢壳层剧烈燃烧，太阳膨胀至约 256 倍半径，吞没水星与金星，逼近地球轨道；顶端触发氦闪。</p></div>
+        <div class="tl-item" data-u="0.76"><div class="tl-year" data-en="12.2 – 12.45 Gyr">122 – 124.5 亿年</div><h4 data-en="Helium burning<em>水平分支</em>">水平分支<em>Helium burning</em></h4><p data-en="Helium fuses steadily into carbon and oxygen; the Sun shrinks back to about 10 R☉ and stays there for ~100 million years.">核心氦稳定聚变为碳和氧，太阳回缩到约 10 R☉，安享约 1 亿年。</p></div>
+        <div class="tl-item" data-u="0.90"><div class="tl-year" data-en="12.45 – 12.7 Gyr">124.5 – 127 亿年</div><h4 data-en="AGB<em>渐近巨星</em>">渐近巨星<em>AGB</em></h4><p data-en="Helium and hydrogen shells burn in turn; the Sun swells again, pulses violently, and loses much of its envelope to the stellar wind.">氦壳与氢壳交替燃烧，太阳再次膨胀并剧烈脉动，大量外层被星风吹散。</p></div>
+        <div class="tl-item" data-u="0.945"><div class="tl-year" data-en="~12.7 Gyr">~127 亿年</div><h4 data-en="Planetary nebula<em>行星状星云</em>">行星状星云<em>Planetary nebula</em></h4><p data-en="The envelope is thrown off entirely, blooming for some ten thousand years as a glowing shell with the hot core left bare at its centre.">外层被彻底抛离，形成短暂绽放一万年的发光气体壳，中心露出炽热核心。</p></div>
+        <div class="tl-item" data-u="0.99"><div class="tl-year" data-en="12.7 Gyr → for ever">127 亿年 → 永远</div><h4 data-en="White dwarf<em>白矮星</em>">白矮星<em>White dwarf</em></h4><p data-en="An Earth-sized ember of carbon and oxygen, glowing on stored heat, cooling slowly for tens of billions of years.">地球大小的碳氧余烬，靠余温发光，将在百亿年里缓慢冷却暗淡。</p></div>
+      </div>
+
+      <div class="sect-title" data-en="The furnace <span>太阳炉膛</span>">太阳炉膛 <span>The furnace</span></div>
+      <div class="facts">
+        <div class="fact"><div class="fk"><b data-en="Core temperature">核心温度</b><span data-en="核心温度">Core temperature</span></div><div class="fv" data-en="15.7<u>M K</u>">1,570<u>万 K</u></div></div>
+        <div class="fact"><div class="fk"><b data-en="Fusion rate">每秒烧氢</b><span data-en="每秒烧氢">Fusion rate</span></div><div class="fv" data-en="600<u>Mt/s</u><em>yielding 596 Mt of helium</em>">6<u>亿吨</u><em>产出 5.96 亿吨氦</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Mass to energy">质量→能量</b><span data-en="质量→能量">Mass to energy</span></div><div class="fv" data-en="4<u>Mt/s</u><em>E = mc²</em>">400<u>万吨/秒</u><em>E = mc²</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Photon escape">光子逃逸耗时</b><span data-en="光子逃逸耗时">Photon escape</span></div><div class="fv" data-en="~100<u>kyr</u><em>core to surface</em>">~10<u>万年</u><em>从核心到表面</em></div></div>
+      </div>
+      <p class="note" data-en="<b>Earth's fate</b> — The red-giant Sun will reach ~1.2 AU. Earth's orbit will drift outward as the Sun loses mass, but most models still have it engulfed; even if it survived, the oceans would have boiled and the rock melted long before.<br><b>地球的命运</b> — 红巨星阶段的太阳半径将达约 1.2 AU。地球轨道虽会因太阳抛物而外移，但多数模型认为它难逃吞噬；即使幸存，海洋早已沸腾、岩石早已熔化。"><b>地球的命运</b> — 红巨星阶段的太阳半径将达约 1.2 AU。地球轨道虽会因太阳抛物而外移，但多数模型认为它难逃吞噬；即使幸存，海洋早已沸腾、岩石早已熔化。<br><b>Earth's fate</b> — The red-giant Sun will reach ~1.2 AU; Earth will likely be engulfed, and would be molten long before.</p>
+    </section>
+
+    <!-- ============ BLACK HOLE ============ -->
+    <section class="pane" data-pane="bh" role="tabpanel">
+      <div class="sect-title" data-en="Mass thresholds <span>通往黑洞的质量门槛</span>">通往黑洞的质量门槛 <span>Mass thresholds</span></div>
+      <p class="prose" data-en="Not every star can become a black hole. <b>Initial mass</b> writes the ending at the moment of birth:">不是每颗恒星都能成为黑洞。<b>初始质量</b>在诞生那一刻就写好了终局：</p>
+      <div class="facts">
+        <div class="fact"><div class="fk"><b data-en="&lt; 8 M☉ (Sun included)">&lt; 8 M☉（含太阳）</b><span data-en="小质量恒星">Light stars</span></div><div class="fv" data-en="White dwarf<em>via a planetary nebula</em>">白矮星<em>经行星状星云</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="8 – 25 M☉">8 – 25 M☉</b><span data-en="大质量恒星">Massive stars</span></div><div class="fv" data-en="Neutron star<em>via a core-collapse supernova</em>">中子星<em>经核坍缩超新星</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="≳ 25 M☉">≳ 25 M☉</b><span data-en="极大质量恒星">Very massive stars</span></div><div class="fv" data-en="Black hole<em>after a supernova / direct collapse</em>">黑洞<em>超新星后 / 直接坍缩</em></div></div>
+      </div>
+      <p class="note" data-en="<b>The limit</b> — Once the remnant passes about 3 M☉ (the TOV limit), neutron degeneracy pressure can no longer hold gravity off, and matter falls into the horizon unopposed.<br><b>临界点</b> — 残骸质量一旦超过约 3 M☉（TOV 极限），中子简并压也撑不住引力，物质将无阻碍地坍缩进视界。"><b>临界点</b> — 残骸质量一旦超过约 3 M☉（TOV 极限），中子简并压也撑不住引力，物质将无阻碍地坍缩进视界。<br><b>The limit</b> — Beyond ~3 M☉ no known force can halt collapse.</p>
+
+      <div class="sect-title" data-en="Onion shells · the collapse of time <span>洋葱核心</span>">洋葱核心 · 时间的坍缩 <span>Onion shells</span></div>
+      <p class="prose" data-en="A massive star ends its life fusing in onion shells, faster the deeper you go — from <b>millions of years</b> down to <b>a fraction of a second</b>:">大质量恒星晚年像洋葱一样层层聚变，越往内越快——从<b>百万年</b>到<b>几分之一秒</b>：</p>
+      <div style="margin-top:8px">
+        <div class="onion-row" style="--c:#a8b6c9"><i></i><div><b data-en="Hydrogen → helium">氢 → 氦</b><span data-en="氢 → 氦">Hydrogen</span></div><em data-en="~7 Myr">~700 万年</em></div>
+        <div class="onion-row" style="--c:#d9c07a"><i></i><div><b data-en="Helium → carbon">氦 → 碳</b><span data-en="氦 → 碳">Helium</span></div><em data-en="~1 Myr">~100 万年</em></div>
+        <div class="onion-row" style="--c:#d98a5c"><i></i><div><b data-en="Carbon → neon / magnesium">碳 → 氖 / 镁</b><span data-en="碳 → 氖 / 镁">Carbon</span></div><em data-en="~1,000 yr">~1,000 年</em></div>
+        <div class="onion-row" style="--c:#8f9fd9"><i></i><div><b data-en="Neon → oxygen">氖 → 氧</b><span data-en="氖 → 氧">Neon</span></div><em data-en="~1 yr">~1 年</em></div>
+        <div class="onion-row" style="--c:#9fb6dd"><i></i><div><b data-en="Oxygen → silicon / sulphur">氧 → 硅 / 硫</b><span data-en="氧 → 硅 / 硫">Oxygen</span></div><em data-en="~2 yr">~2 年</em></div>
+        <div class="onion-row" style="--c:#e8e2d5"><i></i><div><b data-en="Silicon → iron">硅 → 铁</b><span data-en="硅 → 铁">Silicon</span></div><em data-en="~1 day">~1 天</em></div>
+        <div class="onion-row hot" style="--c:#6a6f7e"><i></i><div><b data-en="Iron core · the end">铁核 · 终点</b><span data-en="铁核 · 终点">Iron core</span></div><em data-en="collapse &lt; 0.25 s">坍缩 &lt; 0.25 秒</em></div>
+      </div>
+      <p class="note" data-en="<b>Iron is the end</b> — Fusing iron absorbs energy instead of releasing it. Once the iron core passes ~1.4 M☉ it collapses in under a second, and the rebounding shock and neutrinos blow the star apart as a type-II supernova — briefly a billion times the Sun's brightness.<br><b>铁是终点</b> — 铁聚变不再释放能量反而吸收能量。当铁核超过约 1.4 M☉，它在不到一秒内坍缩，反弹激波与中微子把恒星炸成 II 型超新星。"><b>铁是终点</b> — 铁聚变不再释放能量反而吸收能量。当铁核超过约 1.4 M☉，它在不到一秒内坍缩，反弹激波与中微子把恒星炸成 II 型超新星——亮度可达太阳的十亿倍。<br><b>Iron is the end</b> — Fusion of iron absorbs energy; the overgrown core collapses in under a second.</p>
+
+      <div class="sect-title" data-en="Timeline · click to jump <span>演化时间轴</span>">演化时间轴 <span>Stages · 点击跳转</span></div>
+      <div class="tl" id="bhStages">
+        <div class="tl-item" data-u="0.035"><div class="tl-year" data-en="0 – 100 kyr">0 – 10 万年</div><h4 data-en="Collapse<em>分子云坍缩</em>">分子云坍缩<em>Collapse</em></h4><p data-en="A vast cloud core collapses at speed; the massive protostar is almost born in one jump.">巨大云核在引力下高速坍缩，大质量原恒星几乎是「跳着」诞生的。</p></div>
+        <div class="tl-item" data-u="0.2"><div class="tl-year" data-en="100 kyr – 5.6 Myr">10 万 – 560 万年</div><h4 data-en="O star<em>O 型主序星</em>">O 型主序星<em>O star</em></h4><p data-en="A 25 M☉ blue-white blaze, some 100,000 times the Sun's luminosity with a ferocious wind — and only a few million years to burn.">25 M☉ 的蓝白烈焰，光度约 10 万倍太阳，星风猛烈——却只烧几百万年。</p></div>
+        <div class="tl-item" data-u="0.37"><div class="tl-year" data-en="5.6 – 6.1 Myr">560 – 610 万年</div><h4 data-en="Blue supergiant<em>蓝超巨星</em>">蓝超巨星<em>Blue supergiant</em></h4><p data-en="Core hydrogen is spent and it starts to swell; helium is about to ignite and the element forge opens.">核心氢耗尽，开始膨胀；氦即将点燃，元素锻造开炉。</p></div>
+        <div class="tl-item" data-u="0.57"><div class="tl-year" data-en="6.1 – 6.9 Myr">610 – 690 万年</div><h4 data-en="Red supergiant<em>红超巨星</em>">红超巨星<em>Red supergiant</em></h4><p data-en="It swells to about 1,000 R☉, shedding its envelope in pulsations and a steady wind.">膨胀到约 1,000 R☉，脉动与星风不断抛失外层。</p></div>
+        <div class="tl-item" data-u="0.69"><div class="tl-year" data-en="~6.9 Myr">~690 万年</div><h4 data-en="Onion shells<em>洋葱核心</em>">洋葱核心<em>Onion shells</em></h4><p data-en="Fusion shells march inward, layer by layer, until the iron core can grow no further.">聚变层逐层向内推进，直到铁核积重难返。</p></div>
+        <div class="tl-item" data-u="0.84"><div class="tl-year" data-en="7 Myr · an instant">700 万年 · 一瞬</div><h4 data-en="Core-collapse SN<em>坍缩 · 超新星</em>">坍缩 · 超新星<em>Core-collapse SN</em></h4><p data-en="The iron core collapses in 0.25 s; a type-II supernova flashes as bright as a whole galaxy.">铁核 0.25 秒内坍缩，II 型超新星爆发，亮度堪比整个星系。</p></div>
+        <div class="tl-item" data-u="0.97"><div class="tl-year" data-en="afterwards">之后</div><h4 data-en="Black hole<em>黑洞</em>">黑洞<em>Black hole</em></h4><p data-en="A ~15 M☉ remnant sinks behind the horizon; only the X-rays of its accretion disc still speak for it.">约 15 M☉ 的残骸沉入视界，只剩吸积盘的 X 射线诉说存在。</p></div>
+      </div>
+
+      <div class="sect-title" data-en="Known black holes <span>已知的黑洞</span>">已知的黑洞 <span>Known black holes</span></div>
+      <div class="facts">
+        <div class="fact"><div class="fk"><b data-en="Cygnus X-1">天鹅座 X-1</b><span data-en="天鹅座 X-1 · 1971 年">Cygnus X-1 · 1971</span></div><div class="fv" data-en="21 M☉<em>the first ever confirmed</em>">21 M☉<em>首个被确认</em></div></div>
+        <div class="fact"><div class="fk"><b>GW150914</b><span data-en="LIGO · 2015 年">LIGO · 2015</span></div><div class="fv" data-en="36 + 29 M☉<em>two black holes merging</em>">36 + 29 M☉<em>双黑洞并合</em></div></div>
+        <div class="fact"><div class="fk"><b data-en="Gaia BH1">盖亚 BH1</b><span data-en="盖亚 BH1">Gaia BH1</span></div><div class="fv" data-en="~10 M☉<em>the nearest · 1,560 ly</em>">~10 M☉<em>最近的 · 1,560 ly</em></div></div>
+        <div class="fact"><div class="fk"><b>M87*</b><span data-en="事件视界望远镜 · 2019 年">EHT · 2019</span></div><div class="fv" data-en="6.5 G M☉<em>the first black-hole image</em>">65 亿 M☉<em>首张黑洞照片</em></div></div>
+      </div>
+      <p class="note" data-en="<b>Seeing the invisible</b> — A black hole emits nothing of its own. We find them by three kinds of evidence: the blazing X-ray disc in a binary, the strange gravitational dance of a companion star, and gravitational waves or direct imaging.<br><b>如何「看见」黑洞</b> — 黑洞本身不发光。我们靠三类线索找到它：双星系统中炽热的 X 射线吸积盘、伴星诡异的「引力舞蹈」、以及引力波与直接成像。"><b>如何「看见」黑洞</b> — 黑洞本身不发光。我们靠三类线索找到它：双星系统中炽热的 X 射线吸积盘、伴星诡异的「引力舞蹈」、以及引力波与直接成像。<br><b>Seeing the invisible</b> — via X-rays, stellar wobbles, gravitational waves and direct imaging.</p>
+    </section>
+  </div>
+
+  <div class="panel-foot">
+    <span>Data · NASA / ESA / IAU · 2026</span>
+    <a href="https://science.nasa.gov/universe/stars/" target="_blank" rel="noopener">NASA ↗</a>
+  </div>
+</aside>
+
+<div class="timeline" id="timeline" aria-label="阶段时间轴 Stage timeline">
+  <div class="tl-head">
+    <div class="tl-age" id="ageVal">45.7<small>亿岁</small></div>
+    <div class="tl-stage" id="stageName">主序星<em>Main sequence</em></div>
+    <div class="tl-note" id="stageNote">核心氢聚变 · 稳定燃烧</div>
+  </div>
+  <div class="tl-trackwrap" id="tlTrackwrap">
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-cursor" id="tlCursor"></div>
+  </div>
+  <div class="tl-marks" id="tlMarks"></div>
+</div>
+
+<div class="detail" id="detail" aria-label="恒星详情 Star detail">
+  <button class="detail-close" id="detailClose" aria-label="关闭详情 Close">×</button>
+  <div class="d-eyebrow" id="dEyebrow"><i></i><span id="dSpec">G2V</span></div>
+  <h3 id="dName">太阳<em>Sun</em></h3>
+  <div class="d-facts facts" id="dFacts"></div>
+  <p class="d-desc" id="dDesc"></p>
+  <div class="d-fate" id="dFate"><i>☠</i><span>终局：红巨星 → 白矮星</span></div>
+  <div class="d-nav">
+    <button class="arrow" id="dPrev" aria-label="上一颗 Previous star">←</button>
+    <button id="dBack" data-en="Back to overview">返回全景</button>
+    <button class="arrow" id="dNext" aria-label="下一颗 Next star">→</button>
+  </div>
+</div>
+
+<div class="dock" role="group" aria-label="模式与控制 Mode and controls">
+  <button class="btn mode is-on" data-mode="compare" id="mCompare" data-en="Compare<span>对比</span>">对比<span>Compare</span></button>
+  <button class="btn mode" data-mode="sun" id="mSun" data-en="Sun's life<span>太阳一生</span>">太阳一生<span>Sun's life</span></button>
+  <button class="btn mode" data-mode="bh" id="mBh" data-en="Black hole<span>黑洞</span>">黑洞<span>Black hole</span></button>
+  <div class="dock-sep only-life"></div>
+  <button class="btn icon only-life" id="playBtn" aria-label="播放或暂停 Play or pause" aria-pressed="false">
+    <svg class="ico-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg>
+    <svg class="ico-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2.6c0-.8.9-1.3 1.6-.9l7 5.4c.6.45.6 1.35 0 1.8l-7 5.4c-.7.4-1.6-.1-1.6-.9V2.6z"/></svg>
+  </button>
+  <div class="speed only-life">
+    <label for="speed" data-en="Speed<span>速度</span>">速度<span>Speed</span></label>
+    <input id="speed" type="range" min="0" max="100" value="43" aria-label="播放速度 Playback speed">
+    <output id="speedOut">1.0×</output>
+  </div>
+  <div class="dock-sep"></div>
+  <button class="btn toggle is-on" id="labelsBtn" aria-pressed="true" data-en="Labels<span>标签</span>">标签<span>Labels</span></button>
+  <button class="btn icon" id="resetBtn" aria-label="重置 Reset">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3a5 5 0 1 0 4.9 6h-1.6A3.5 3.5 0 1 1 8 4.5c.9 0 1.7.35 2.3.9L8.7 7H13V2.7l-1.7 1.7A4.97 4.97 0 0 0 8 3z"/></svg>
+  </button>
+</div>
+
+<div class="hint" id="hint" data-en="Drag · Scroll · Click a star to focus<span>拖拽平移 · 滚轮缩放 · 点击恒星放大</span><em>The overview is a compressed scale · the focused view is true scale (Sun shown for reference)</em>">拖拽平移 · 滚轮缩放 · 点击恒星放大<span>Drag · Scroll · Click a star to focus</span><em>全景为压缩比例 · 聚焦为真实比例（附太阳参照）</em></div>
+
+<button class="open-panel" id="openPanel" aria-label="打开资料 Open facts" data-en="Info<span>资料</span>">资料<span>Info</span></button>
+
+<div class="boot" id="boot">
+  <div class="boot-inner">
+    <div class="ring"></div>
+    <p data-en="Igniting the stars…<span>正在点亮群星…</span>">正在点亮群星…<span>Igniting the stars</span></p>
+  </div>
+</div>
+<noscript><div class="boot" style="opacity:1;pointer-events:auto"><div class="boot-inner"><p>需要 JavaScript<span>This page requires JavaScript</span></p></div></div></noscript>
+
+<div class="hr-modal" id="hrModal" aria-hidden="true">
+  <div class="hr-sheet" role="dialog" aria-modal="true" aria-label="赫罗图 全尺寸">
+    <div class="hr-sheet-head">
+      <div><b data-en="H–R diagram">赫罗图</b><span data-en="赫罗图 · 全尺寸">HERTZSPRUNG–RUSSELL DIAGRAM</span></div>
+      <button class="hr-x" id="hrClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="hr-big" id="hrBig"></div>
+    <p class="hr-cap" data-en="Surface temperature runs along the bottom (hot on the left), luminosity up the side on a log scale with the Sun at 1. About 90% of stars are packed onto the <b>main sequence</b> from top left to bottom right; giants and supergiants fill the upper right, white-dwarf embers the lower left. <b>Click any star</b> to open it at true scale.">横轴是表面温度（左热右冷），纵轴是光度（对数，太阳 = 1）。约 90% 的恒星挤在左上到右下的<b>主序带</b>上；右上是膨胀的巨星与超巨星，左下是白矮星的余烬。<b>点击任一恒星</b>即可进入真实比例聚焦视图。</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* =====================================================================
+     恒星图鉴 · Stars — 单文件 Canvas 交互课件
+     模式：对比（压缩全景 + 真实比例聚焦）/ 太阳一生 / 黑洞之路
+     ===================================================================== */
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const TAU = Math.PI * 2;
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+  function kelvinRGB(k) {
+    k = clamp(k, 1000, 40000) / 100;
+    let r, g, b;
+    if (k <= 66) { r = 255; g = 99.47 * Math.log(k) - 161.12; }
+    else { r = 329.7 * Math.pow(k - 60, -0.1332); g = 288.12 * Math.pow(k - 60, -0.0755); }
+    if (k >= 66) b = 255;
+    else if (k <= 19) b = 0;
+    else b = 138.52 * Math.log(k - 10) - 305.04;
+    return [clamp(r, 0, 255), clamp(g, 0, 255), clamp(b, 0, 255)];
+  }
+  const rgbs = (c, a) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+  const rgbsF = (c, f, a) => `rgba(${clamp(c[0] * f, 0, 255) | 0},${clamp(c[1] * f, 0, 255) | 0},${clamp(c[2] * f, 0, 255) | 0},${a})`;
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const fmtN = n => n.toLocaleString('zh-CN');
+  const R_SUN_KM = 696340;
+
+  /* ===================== 语言 ===================== */
+  const LANG_KEY = 'atlas-lang';
+  let lang = 'zh';
+  try {
+    if (/[?&]lang=en/.test(location.search)) lang = 'en';
+    else if (localStorage.getItem(LANG_KEY) === 'en') lang = 'en';
+  } catch (e) { /* private mode */ }
+  const T = (zh, en) => lang === 'en' ? en : zh;
+  const TITLE = { zh: '恒星 · Stars — 大小、光谱与一生', en: 'Stars · 恒星 — size, spectrum and fate' };
+  const fmtEN = n => n.toLocaleString('en-US');
+
+  /* The panel prose is bilingual in the markup; this holds the english for the
+     data rows — radius, age, distance, fate — which only ever existed in chinese */
+  const SE = {
+    proxima: { cls: 'Red dwarf', age: '4.85 Gyr', life: '~10¹² yr', dist: '4.24 ly', fate: 'cooling slowly, far in the future',
+      desc: "The nearest star to the Sun, yet far too faint to see with the eye. Small red dwarfs make up about 76% of the galaxy's stars and live for trillions of years — since the universe began, not one has reached the end of its life. It has at least two planets; one of them, Proxima b, sits in the habitable zone." },
+    barnard: { cls: 'Red dwarf', age: '~10 Gyr', life: '~hundreds of Gyr', dist: '5.96 ly', fate: 'cooling slowly, far in the future',
+      desc: "The fastest-moving star in the sky — 10.3 arcseconds a year, a Moon's width in about 180 years. It has burned quietly for some 10 billion years, an old neighbour astronomers have hunted for a century." },
+    cenb: { cls: 'Orange dwarf', age: '~5.8 Gyr', life: '~25 Gyr', dist: '4.37 ly', fate: 'White dwarf',
+      desc: "One member of Alpha Centauri, the nearest star system to us. A K-type orange dwarf is calmer and longer-lived than the Sun, with gentler flares — a prime target in the search for habitable planets." },
+    sun: { cls: 'Yellow dwarf', age: '4.57 Gyr', life: '~10 Gyr on the main sequence', dist: '—', fate: 'Red giant → white dwarf',
+      desc: "Our star, half-way through its main-sequence life. Its core fuses 600 million tonnes of hydrogen every second, turning four million tonnes of mass into pure light. It brightens by about 10% every 1.1 billion years — enough, in a few billion, to reshape Earth's climate." },
+    sirius: { cls: 'White main-sequence star', age: '~240 Myr', life: '~1 Gyr', dist: '8.60 ly', fate: 'White dwarf',
+      desc: "The brightest star in the night sky, magnitude −1.46. Twice the Sun's mass and burning profligately, it will leave the main sequence in about a billion years. Its companion, Sirius B, is already a white dwarf — a preview of how it will end." },
+    vega: { cls: 'White main-sequence star', age: '~460 Myr', life: '~1 Gyr', dist: '25 ly', fate: 'White dwarf',
+      desc: "One corner of the Summer Triangle, the pole star 12,000 years ago, and due to be one again. It spins so fast — once every 12.5 hours — that its equator is visibly flattened. For generations it was the standard against which magnitudes were measured." },
+    pollux: { cls: 'Orange giant', age: '~7.2 Gyr', life: 'left the main sequence', dist: '34 ly', fate: 'White dwarf',
+      desc: "The orange giant of the Gemini twins: core hydrogen spent, it now shines by burning hydrogen in a shell. One of the nearest giants visible to the eye, and host to a confirmed planet, Pollux b. This is roughly what the Sun will look like in five billion years." },
+    arcturus: { cls: 'Orange-red giant', age: '~7.1 Gyr', life: 'giant stage', dist: '36.7 ly', fate: 'White dwarf',
+      desc: "The brightest star of the northern sky, and a trailer for the Sun's old age. It carries about 7 billion years of history and crosses the galactic disc at 122 km/s — an outsider passing through our neighbourhood." },
+    aldebaran: { cls: 'Orange-red giant', age: '~6.4 Gyr', life: 'giant stage', dist: '65 ly', fate: 'White dwarf',
+      desc: "The eye of Taurus, some 44 times the Sun's diameter. Put it where the Sun is and its surface would swallow Mercury and close on Venus. The Hyades cluster lies in front of it, as if the eye were filling with tears." },
+    rigel: { cls: 'Blue supergiant', age: '~8 Myr', life: '~10 Myr', dist: '860 ly', fate: 'type-II supernova → black hole',
+      desc: "The blue supergiant at Orion's left foot, radiating about 120,000 Suns. It is only 8 million years old — and already in its final years. Its mass guarantees a spectacular exit: a core-collapse supernova, and a black hole behind it." },
+    antares: { cls: 'Red supergiant', age: '~12 Myr', life: '~15 Myr', dist: '550 ly', fate: 'type-II supernova → neutron star',
+      desc: "The heart of Scorpius, its name meaning 'rival of Mars'. Placed at the Sun's position, its surface would reach past the orbit of Mars. Born at 15–18 M☉, it will end as a supernova and most likely leave a neutron star." },
+    betelgeuse: { cls: 'Red supergiant', age: '~8.5 Myr', life: '~10 Myr', dist: '550 ly', fate: 'type-II supernova → neutron star / black hole',
+      desc: "Orion's left shoulder, the most famous dying giant in the sky. Late in 2019 it dimmed sharply — a cloud of dust it had thrown off was hiding it. It is in its last million years: when it goes it will shine like a half Moon, visible in daylight. Born at 16–19 M☉, whether its remnant is a neutron star or a black hole is still argued over." },
+    stephenson: { cls: 'Red hypergiant', age: '—', life: 'order of 20 Myr', dist: '~19,000 ly', fate: 'direct collapse → black hole (expected)',
+      desc: "One of the largest stars known by volume, though the measurement is disputed. At the Sun's position its surface would swallow Jupiter's orbit and close on Saturn — some 4,300 times the Sun's diameter and 100 billion times its volume. Burning at that rate, it can only last tens of millions of years." }
+  };
+  const se = (s, k) => (lang === 'en' && SE[s.id] && SE[s.id][k]) || s[k];
+  /* canvas and diagram labels need to stay short — the compare view leaves only
+     ~70 px between neighbours once the radii squeeze together */
+  const EN_SHORT = {
+    proxima: 'Proxima', barnard: 'Barnard', cenb: 'α Cen B', sun: 'Sun', sirius: 'Sirius',
+    vega: 'Vega', pollux: 'Pollux', arcturus: 'Arcturus', aldebaran: 'Aldebaran',
+    rigel: 'Rigel', antares: 'Antares', betelgeuse: 'Betelgeuse', stephenson: 'Stephenson 2-18',
+  };
+  const sn = s => lang === 'en' ? (EN_SHORT[s.id] || s.en) : s.name;
+
+  /* ===================== 恒星数据 ===================== */
+  const STARS = [
+    { id: 'proxima', name: '比邻星', en: 'Proxima Centauri', spec: 'M5.5V', cls: '红矮星', R: 0.154, M: 0.122, T: 3042, L: 0.0017, age: '48.5 亿年', life: '~10¹² 年', dist: '4.24 光年', fate: '极遥远未来缓慢冷却', fateType: 'wd',
+      desc: '距太阳最近的恒星，却暗得肉眼不可见。小质量红矮星占银河系恒星约 76%，寿命长达数万亿年——宇宙诞生至今，还没有一颗红矮星走到生命尽头。它至少拥有两颗行星，其中比邻星 b 位于宜居带内。' },
+    { id: 'barnard', name: '巴纳德星', en: "Barnard's Star", spec: 'M4V', cls: '红矮星', R: 0.196, M: 0.144, T: 3134, L: 0.0035, age: '~100 亿年', life: '~数千亿年', dist: '5.96 光年', fate: '极遥远未来缓慢冷却', fateType: 'wd',
+      desc: '自行最大的恒星——每年在天球上移动 10.3 角秒，约 180 年就能走完一个月亮直径。它已安静燃烧约 100 亿年，是天文学家搜寻了上百年的「老邻居」。' },
+    { id: 'cenb', name: '南门二 B', en: 'Alpha Centauri B', spec: 'K1V', cls: '橙矮星', R: 0.863, M: 0.907, T: 5260, L: 0.5, age: '~58 亿年', life: '~250 亿年', dist: '4.37 光年', fate: '白矮星', fateType: 'wd',
+      desc: '离我们最近的恒星系统「南门二」三合星的一员。K 型橙矮星比太阳更冷静、更长寿，耀斑也更温和，是搜寻宜居行星的黄金目标。' },
+    { id: 'sun', name: '太阳', en: 'The Sun', spec: 'G2V', cls: '黄矮星', R: 1, M: 1, T: 5772, L: 1, age: '45.7 亿年', life: '主序 ~100 亿年', dist: '—', fate: '红巨星 → 白矮星', fateType: 'wd',
+      desc: '我们的恒星，正值主序生涯中点。核心每秒将 6 亿吨氢聚变为氦，把 400 万吨质量纯粹化作光。它正以约每 11 亿年增亮 10% 的节奏走向晚年——数十亿年后，这一变化将足以重塑地球气候。' },
+    { id: 'sirius', name: '天狼星 A', en: 'Sirius A', spec: 'A1V', cls: '白主序星', R: 1.711, M: 2.063, T: 9940, L: 25.4, age: '~2.4 亿年', life: '~10 亿年', dist: '8.60 光年', fate: '白矮星', fateType: 'wd',
+      desc: '全天最亮恒星，视星等 −1.46。质量两倍于太阳，燃烧也更挥霍——仅约 10 亿年就会离开主序。它身旁已绕着一颗白矮星伴星「天狼 B」：那是它老去之后模样的预演。' },
+    { id: 'vega', name: '织女星', en: 'Vega', spec: 'A0V', cls: '白主序星', R: 2.362, M: 2.135, T: 9602, L: 40.7, age: '~4.6 亿年', life: '~10 亿年', dist: '25 光年', fate: '白矮星', fateType: 'wd',
+      desc: '夏季大三角的一角，也曾是 1.2 万年前的「北极星」，还会在未来重返那个位置。它自转飞快——12.5 小时一圈，赤道被明显甩扁，是测量星等的历代标准星。' },
+    { id: 'pollux', name: '北河三', en: 'Pollux', spec: 'K0III', cls: '橙巨星', R: 11.46, M: 1.91, T: 4666, L: 43, age: '~72 亿年', life: '已离开主序', dist: '34 光年', fate: '白矮星', fateType: 'wd',
+      desc: '双子座「双子」之一的橙巨星——核心氢已耗尽，如今靠壳层氢燃烧膨胀发光。它是肉眼可见的最近巨星之一，身旁还确认有一颗系外行星「北河三 b」。这大致就是太阳 50 多亿年后的模样。' },
+    { id: 'arcturus', name: '大角星', en: 'Arcturus', spec: 'K1.5III', cls: '橙红巨星', R: 25.4, M: 1.08, T: 4286, L: 170, age: '~71 亿年', life: '巨星阶段', dist: '36.7 光年', fate: '白矮星', fateType: 'wd',
+      desc: '北天最亮恒星，太阳年老后的「预告片」。它携带着约 70 亿年的岁月，以每秒 122 公里的速度巡过银河盘面——一颗误入本地的「外来者」。' },
+    { id: 'aldebaran', name: '毕宿五', en: 'Aldebaran', spec: 'K5III', cls: '橙红巨星', R: 44.1, M: 1.16, T: 3910, L: 439, age: '~64 亿年', life: '巨星阶段', dist: '65 光年', fate: '白矮星', fateType: 'wd',
+      desc: '金牛座的「牛眼」，直径约 44 倍太阳。若放在太阳的位置，表面将吞没水星、逼近金星。前景上还叠着一串毕星团，仿佛牛眼含泪。' },
+    { id: 'rigel', name: '参宿七', en: 'Rigel', spec: 'B8Ia', cls: '蓝超巨星', R: 78.9, M: 21, T: 12100, L: 120000, age: '~800 万年', life: '~1,000 万年', dist: '860 光年', fate: 'II 型超新星 → 黑洞', fateType: 'bh',
+      desc: '猎户座左足的蓝超巨星，总辐射约 12 万倍太阳。它只活了约 800 万年——却已步入暮年。足够的质量注定了壮烈谢幕：核坍缩超新星，随后留下一颗黑洞。' },
+    { id: 'antares', name: '心宿二', en: 'Antares', spec: 'M1.5Iab', cls: '红超巨星', R: 680, M: 12, T: 3660, L: 75900, age: '~1,200 万年', life: '~1,500 万年', dist: '550 光年', fate: 'II 型超新星 → 中子星', fateType: 'ns',
+      desc: '天蝎座之心，名字本义「火星的对手」。若置于太阳位置，表面将超过火星轨道。它的初始质量约 15–18 M☉：终局是超新星，遗骸多半是一颗中子星。' },
+    { id: 'betelgeuse', name: '参宿四', en: 'Betelgeuse', spec: 'M1-2Ia', cls: '红超巨星', R: 764, M: 16.5, T: 3650, L: 126000, age: '~850 万年', life: '~1,000 万年', dist: '550 光年', fate: 'II 型超新星 → 中子星/黑洞', fateType: 'bh',
+      desc: '猎户座左肩，夜空最著名的垂死巨星。2019 年末它曾大幅变暗——原来是喷出的尘埃云遮住了自己。它已步入生命最后一百万年：爆发时的亮度将堪比半个月亮，白昼可见。它的初始质量约 16–19 M☉，遗骸是中子星还是黑洞，学界仍有争论。' },
+    { id: 'stephenson', name: '史蒂文森 2-18', en: 'Stephenson 2-18', spec: 'M6I', cls: '红特超巨星', R: 2150, M: 30, T: 3200, L: 440000, age: '—', life: '~2,000 万年量级', dist: '~19,000 光年', fate: '直接坍缩 → 黑洞（预计）', fateType: 'bh',
+      desc: '已知体积最大的恒星之一（测量尚有争议）。若置于太阳位置，其表面将吞没木星轨道、直逼土星——直径约为太阳的 4,300 倍、体积约 100 亿倍。如此挥霍的燃烧只能维持千万年量级。' },
+  ];
+  STARS.forEach((s, i) => { s.seed = 1234 + i * 777; s.idx = i; });
+
+  /* ===================== canvas ===================== */
+  const cvs = $('#stage');
+  const ctx = cvs.getContext('2d');
+  let W = 0, H = 0, DPR = 1;
+  const panelW = () => W > 1024 ? 382 : 0;
+  const sceneCX = () => (W - panelW()) / 2 + (W > 1024 ? 40 : 0);
+
+  /* ===================== 星空背景 ===================== */
+  let bgLayer = null;
+  const twinks = [];
+  function buildBackdrop() {
+    bgLayer = document.createElement('canvas');
+    bgLayer.width = W * DPR; bgLayer.height = H * DPR;
+    const c = bgLayer.getContext('2d');
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.fillStyle = '#04050a'; c.fillRect(0, 0, W, H);
+    // 深空星云雾
+    const nebulae = [
+      [W * .18, H * .22, Math.max(W, H) * .32, '58,52,88', .055],
+      [W * .78, H * .68, Math.max(W, H) * .38, '88,48,42', .045],
+      [W * .55, H * .12, Math.max(W, H) * .25, '42,58,80', .05],
+    ];
+    for (const [x, y, r, col, a] of nebulae) {
+      const g = c.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`);
+      c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    // 银河带
+    c.save();
+    c.translate(W * .5, H * .5); c.rotate(-.42);
+    const mg = c.createLinearGradient(0, -H * .5, 0, H * .5);
+    mg.addColorStop(0, 'rgba(200,205,230,0)'); mg.addColorStop(.42, 'rgba(200,205,230,.035)');
+    mg.addColorStop(.5, 'rgba(220,222,240,.05)'); mg.addColorStop(.58, 'rgba(200,205,230,.035)');
+    mg.addColorStop(1, 'rgba(200,205,230,0)');
+    c.fillStyle = mg; c.fillRect(-W * .9, -H * .5, W * 1.8, H);
+    c.restore();
+    // 星点
+    const rnd = mulberry32(42);
+    const n = Math.round(W * H / 3400);
+    for (let i = 0; i < n; i++) {
+      const x = rnd() * W, y = rnd() * H;
+      const m = rnd();
+      let r = m < .86 ? .5 + rnd() * .7 : m < .975 ? 1 + rnd() * .8 : 1.6 + rnd() * 1.1;
+      const hue = rnd();
+      const col = hue < .68 ? [235, 238, 250] : hue < .84 ? [255, 226, 180] : [200, 215, 255];
+      const a = .25 + rnd() * .6;
+      c.fillStyle = rgbs(col, a);
+      c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
+      if (r > 1.5 && rnd() < .5) {
+        c.strokeStyle = rgbs(col, a * .5); c.lineWidth = .6;
+        c.beginPath();
+        c.moveTo(x - r * 3.2, y); c.lineTo(x + r * 3.2, y);
+        c.moveTo(x, y - r * 3.2); c.lineTo(x, y + r * 3.2);
+        c.stroke();
+      }
+    }
+    // 闪烁星（主循环绘制）
+    twinks.length = 0;
+    for (let i = 0; i < 26; i++) {
+      twinks.push({ x: rnd() * W, y: rnd() * H, r: 1 + rnd() * 1.2, ph: rnd() * TAU, sp: .5 + rnd() * 1.6, c: rnd() < .7 ? [240, 240, 255] : [255, 220, 180] });
+    }
+  }
+
+  /* ===================== 恒星纹理工厂 ===================== */
+  const texCache = new Map();
+  function starTextures(star) {
+    let t = texCache.get(star.id);
+    if (t) return t;
+    const surf = makeSurface(star, 256);
+    const glow = makeGlow(star, 512);
+    const lum = Math.log10(1 + star.L);
+    const proms = [];
+    if (star.R >= .5) {
+      const rnd = mulberry32(star.seed + 9);
+      const np = star.R > 100 ? 6 : 4;
+      for (let i = 0; i < np; i++) proms.push({ a: rnd() * TAU, w: .35 + rnd() * .7, h: .18 + rnd() * .38, ph: rnd() * TAU, sp: .25 + rnd() * .5 });
+    }
+    t = { surf, glow, glowFactor: clamp(1.5 + lum * .55, 1.55, 4.4), proms, flareT: 2 + Math.random() * 4, flare: 0 };
+    texCache.set(star.id, t);
+    return t;
+  }
+  function makeSurface(star, S) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = S;
+    const c = cv.getContext('2d');
+    const col = kelvinRGB(star.T);
+    const cx = S / 2, R = S / 2;
+    // 圆形裁剪：四角必须保持透明，否则恒星球体外会露出方形暗底
+    c.save();
+    c.beginPath(); c.arc(cx, cx, R, 0, TAU); c.clip();
+    const g = c.createRadialGradient(cx - S * .13, cx - S * .13, S * .04, cx, cx, R);
+    g.addColorStop(0, rgbsF(col, 1.42, 1));
+    g.addColorStop(.48, rgbsF(col, 1.02, 1));
+    g.addColorStop(.86, rgbsF(col, .58, 1));
+    g.addColorStop(1, rgbsF(col, .34, 1));
+    c.fillStyle = g; c.fillRect(0, 0, S, S);
+    // 米粒斑 / 对流胞
+    const rnd = mulberry32(star.seed);
+    const isGiant = star.R > 8;
+    const spots = isGiant ? 64 : 150;
+    for (let i = 0; i < spots; i++) {
+      const a = rnd() * TAU, rr = Math.sqrt(rnd()) * R * .93;
+      const x = cx + Math.cos(a) * rr, y = cx + Math.sin(a) * rr;
+      const rad = S * (isGiant ? .024 + rnd() * .07 : .008 + rnd() * .032);
+      const bright = rnd() < .55;
+      const al = isGiant ? .05 + rnd() * .09 : .04 + rnd() * .085;
+      const f = bright ? 1.4 + rnd() * .55 : .38 + rnd() * .3;
+      const gg = c.createRadialGradient(x, y, 0, x, y, rad);
+      gg.addColorStop(0, rgbsF(col, f, al));
+      gg.addColorStop(1, rgbsF(col, f, 0));
+      c.fillStyle = gg; c.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+    // 临边增亮（大气边缘）
+    const rim = c.createRadialGradient(cx, cx, R * .8, cx, cx, R);
+    rim.addColorStop(0, 'rgba(0,0,0,0)');
+    rim.addColorStop(.82, rgbsF(col, 1.5, .10));
+    rim.addColorStop(1, rgbsF(col, 1.7, .22));
+    c.fillStyle = rim;
+    c.beginPath(); c.arc(cx, cx, R, 0, TAU); c.fill();
+    c.restore();
+    return cv;
+  }
+  function makeGlow(star, S) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = S;
+    const c = cv.getContext('2d');
+    const col = kelvinRGB(star.T);
+    const lum = Math.log10(1 + star.L);
+    const peak = clamp(.30 + lum * .08, .28, .74);
+    const g = c.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    g.addColorStop(0, rgbsF(col, 1.25, peak));
+    g.addColorStop(.16, rgbsF(col, 1.1, peak * .48));
+    g.addColorStop(.4, rgbsF(col, 1, peak * .16));
+    g.addColorStop(.72, rgbsF(col, .95, .035));
+    g.addColorStop(1, rgbsF(col, .9, 0));
+    c.fillStyle = g; c.fillRect(0, 0, S, S);
+    return cv;
+  }
+  // 通用绘制：本体 + 光晕
+  function drawStar(x, y, d, tex, rot, alpha) {
+    const r = d / 2;
+    if (r < 1.1) { // 远小于像素：画光点
+      ctx.globalAlpha = alpha;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = rgbs(kelvinRGB(3000), .9);
+      ctx.beginPath(); ctx.arc(x, y, Math.max(r, .8), 0, TAU); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      return;
+    }
+    ctx.globalAlpha = alpha;
+    // glow
+    ctx.globalCompositeOperation = 'lighter';
+    const gd = d * tex.glowFactor;
+    ctx.drawImage(tex.glow, x - gd / 2, y - gd / 2, gd, gd);
+    // surface
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.save();
+    ctx.translate(x, y); if (rot) ctx.rotate(rot);
+    ctx.drawImage(tex.surf, -r, -r, d, d);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+  // 日珥弧（聚焦时）
+  function drawProminences(x, y, r, tex, t, alpha) {
+    ctx.globalCompositeOperation = 'lighter';
+    for (const p of tex.proms) {
+      const life = Math.sin(t * p.sp + p.ph);
+      if (life <= 0) continue;
+      const h = p.h * life;
+      const a1 = p.a + t * .05, a2 = a1 + p.w;
+      const x1 = x + Math.cos(a1) * r, y1 = y + Math.sin(a1) * r;
+      const x2 = x + Math.cos(a2) * r, y2 = y + Math.sin(a2) * r;
+      const am = (a1 + a2) / 2;
+      const cr = r * (1 + h * 1.35);
+      const cxp = x + Math.cos(am) * cr, cyp = y + Math.sin(am) * cr;
+      const al = Math.pow(life, 2) * .5 * alpha;
+      ctx.strokeStyle = `rgba(255,190,120,${al})`;
+      ctx.lineWidth = Math.max(1.4, r * .012); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(cxp, cyp, x2, y2); ctx.stroke();
+      ctx.strokeStyle = `rgba(255,230,180,${al * .4})`;
+      ctx.lineWidth = Math.max(3, r * .03);
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(cxp, cyp, x2, y2); ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /* ===================== 对比模式：布局与相机 ===================== */
+  const BASE = 60, GAP = 52;
+  let layout = [];
+  function layoutCompare() {
+    layout = [];
+    let x = 0;
+    for (const s of STARS) {
+      const rc = Math.cbrt(s.R) * BASE / 2;
+      layout.push({ s, wx: x + rc, rc });
+      x += rc * 2 + GAP;
+    }
+  }
+  const cam = { x: 0, z: 1 };
+  let hoverStar = null;
+
+  function renderCompare(dt, t) {
+    // 全景层
+    const cx = sceneCX(), cy = H * .46;
+    const pa = 1 - .88 * focusT;
+    if (pa > .01) {
+      ctx.globalAlpha = pa;
+      // 基线
+      ctx.strokeStyle = 'rgba(244,236,223,.06)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+      const vs = .06 + .1 * (1 - focusT);
+      for (const it of layout) {
+        const sx = (it.wx - cam.x) * cam.z + cx;
+        const dr = it.rc * cam.z;
+        if (sx + dr * 5 < -50 || sx - dr * 5 > W + 50) continue;
+        const tex = starTextures(it.s);
+        const rot = t * .025 * (it.s.R > 100 ? .4 : 1);
+        // hover 增强
+        let ga = 1;
+        if (it.s === hoverStar) ga = 1.35;
+        ctx.globalAlpha = pa;
+        if (ga > 1) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = pa * .3; const gd = dr * 2 * tex.glowFactor; ctx.drawImage(tex.glow, sx - gd / 2, cy - gd / 2, gd, gd); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = pa; }
+        drawStar(sx, cy, dr * 2, tex, rot, pa);
+        if (ga > 1) { ctx.strokeStyle = 'rgba(232,187,135,.5)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(sx, cy, dr + 4, 0, TAU); ctx.stroke(); }
+        // 太阳基准环
+        if (it.s.id === 'sun') {
+          ctx.strokeStyle = 'rgba(232,187,135,.45)'; ctx.lineWidth = 1;
+          ctx.setLineDash([3, 5]);
+          ctx.beginPath(); ctx.arc(sx, cy, dr + 9, 0, TAU); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        // 标签
+        if (labelsOn) {
+          const ly = cy + dr + 16;
+          ctx.textAlign = 'center';
+          const hot = it.s === hoverStar;
+          ctx.fillStyle = hot ? '#ffe8c8' : (it.s.id === 'sun' ? '#e8bb87' : '#e9e2d2');
+          ctx.font = lang === 'en'
+            ? '500 11px "Iowan Old Style",Palatino,Georgia,serif'
+            : '500 11px "PingFang SC","Noto Sans SC",sans-serif';
+          ctx.fillText(sn(it.s), sx, ly);
+          ctx.fillStyle = 'rgba(140,143,155,.95)';
+          ctx.font = '9px ui-monospace,Menlo,monospace';
+          ctx.fillText(`Ø ${it.s.R < 1 ? it.s.R : it.s.R >= 100 ? fmtN(Math.round(it.s.R)) : it.s.R} R☉`, sx, ly + 12);
+          if (it.s.id === 'sun') {
+            ctx.fillStyle = 'rgba(232,187,135,.8)';
+            ctx.font = '8.5px sans-serif';
+            ctx.fillText(T('基准 · 基准比例尺', 'reference · the scale bar'), sx, ly + 24);
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+    // 聚焦层
+    if (focus && focusT > 0) renderFocused(dt, t);
+  }
+  function sy() { return H * .46; }
+
+  /* ===================== 聚焦视图（真实比例） ===================== */
+  let focus = null, focusT = 0, focusShown = 0;
+  function renderFocused(dt, t) {
+    const s = focus;
+    const cx = sceneCX(), cy = H * .47;
+    const perR = Math.min(H * .36, 560); // px per R☉
+    const trueD = 2 * s.R * perR;
+    const minD = 110;
+    const capD = Math.min(Math.max(trueD, minD), H * 2.6);
+    const scaled = capD / trueD; // 若被压缩显示
+    const scaleIn = .82 + .18 * easeOutCubic(focusT);
+    const d = capD * scaleIn;
+    const tex = starTextures(s);
+    const rot = t * (s.R > 300 ? .012 : .045);
+    // 环境光
+    const lum = Math.log10(1 + s.L);
+    ctx.globalCompositeOperation = 'lighter';
+    const amb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .7);
+    const col = kelvinRGB(s.T);
+    amb.addColorStop(0, rgbsF(col, 1, clamp(.03 + lum * .012, .03, .12) * focusT));
+    amb.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = amb; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+    // 红矮星耀斑
+    if (s.cls === '红矮星') {
+      tex.flareT -= dt;
+      if (tex.flareT < 0) { tex.flare = 1; tex.flareT = 3 + Math.random() * 6; }
+      tex.flare *= Math.pow(.25, dt);
+    }
+    const flareA = tex.flare || 0;
+    drawStar(cx, cy, d, tex, rot, focusT * (1 + flareA * .5));
+    if (flareA > .04) { // 局部亮斑
+      ctx.globalCompositeOperation = 'lighter';
+      const fx = cx + Math.cos(t * 1.7) * d * .18, fy = cy + Math.sin(t * 1.3) * d * .15;
+      const fg = ctx.createRadialGradient(fx, fy, 0, fx, fy, d * .3);
+      fg.addColorStop(0, `rgba(255,235,200,${flareA * .55 * focusT})`);
+      fg.addColorStop(1, 'rgba(255,235,200,0)');
+      ctx.fillStyle = fg; ctx.fillRect(fx - d * .3, fy - d * .3, d * .6, d * .6);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    // 日珥
+    if (s.R >= .5) drawProminences(cx, cy, d / 2, tex, t, focusT);
+    // 光谱色标
+    const r0 = Math.min(d / 2, Math.max(W, H));
+    ctx.globalAlpha = focusT;
+    // 太阳参照（真实比例）
+    const sunD = Math.max(d / s.R, .5);
+    const refX = cx + Math.min(d / 2 + 90, W - panelW() - 70), refY = cy - Math.min(d / 2, H * .34);
+    if (refX < W - 16) {
+      const drawD = Math.max(sunD, 2);
+      ctx.strokeStyle = 'rgba(244,236,223,.18)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(refX, refY, 15, 0, TAU); ctx.stroke();
+      ctx.fillStyle = '#ffdf9e';
+      ctx.beginPath(); ctx.arc(refX, refY, drawD / 2, 0, TAU); ctx.fill();
+      if (sunD < 2) { ctx.strokeStyle = 'rgba(255,223,158,.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(refX, refY, 5.5, 0, TAU); ctx.stroke(); }
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(232,187,135,.95)';
+      ctx.font = '9px sans-serif';
+      ctx.fillText(sunD < 2
+        ? T(`该比例下太阳仅 ${sunD.toFixed(1)} px`, `the Sun at this scale: ${sunD.toFixed(1)} px`)
+        : T('太阳 · 真实比例', 'the Sun · same scale'), refX, refY + 30);
+      ctx.fillStyle = 'rgba(123,126,140,.9)';
+      ctx.font = '8px ui-monospace,monospace';
+      ctx.fillText(T(`Ø 比例 1 : ${fmtN(Math.round(s.R * 10) / 10)}`, `Ø ratio 1 : ${fmtN(Math.round(s.R * 10) / 10)}`), refX, refY + 42);
+    }
+    // 超屏标注
+    if (trueD > H * 1.02 && scaled >= .999) {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(232,187,135,.9)';
+      ctx.font = '10.5px sans-serif';
+      ctx.fillText(T(`※ 真实直径约为屏幕高度的 ${(trueD / H).toFixed(1)} 倍 · 视野仅见其局部`,
+        `※ true diameter is about ${(trueD / H).toFixed(1)}× the screen height · you are seeing only part of it`), cx, 64);
+    } else if (scaled < .999) {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(140,143,155,.9)';
+      ctx.font = '9px sans-serif';
+      ctx.fillText(T('※ 星体已按真实比例显示（视图已达上限）', '※ true scale — the view has reached its limit'), cx, 64);
+    }
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(123,126,140,.8)';
+    ctx.font = '8.5px sans-serif';
+    ctx.fillText(T('真实比例 · TRUE SCALE', 'TRUE SCALE · 真实比例'), cx, Math.min(cy + d / 2, H - 130) + 18);
+    ctx.globalAlpha = 1;
+  }
+
+
+  /* ===================== 太阳的一生 ===================== */
+  const SUN_KEYS = [
+    { u: 0, age: 0, R: 0, T: 100, L: .01, form: 'cloud' },
+    { u: .02, age: .008, R: 2.6, T: 3500, L: 8, form: 'cloud' },
+    { u: .05, age: .018, R: 3.2, T: 3900, L: 14, form: 'proto' },
+    { u: .08, age: .05, R: 1.0, T: 5600, L: .75, form: 'main' },
+    { u: .42, age: 4.57, R: 1.0, T: 5772, L: 1, form: 'main' },
+    { u: .50, age: 10.6, R: 1.27, T: 5650, L: 1.4, form: 'main' },
+    { u: .62, age: 11.6, R: 2.3, T: 5200, L: 2.4, form: 'sub' },
+    { u: .72, age: 12.2, R: 256, T: 3100, L: 2300, form: 'rgb' },
+    { u: .76, age: 12.26, R: 10, T: 4700, L: 50, form: 'hb' },
+    { u: .80, age: 12.45, R: 10, T: 4700, L: 50, form: 'hb' },
+    { u: .92, age: 12.7, R: 200, T: 3400, L: 5000, form: 'agb' },
+    { u: .955, age: 12.75, R: 1.2, T: 90000, L: 3500, form: 'pne' },
+    { u: .97, age: 12.8, R: .013, T: 80000, L: 900, form: 'pne' },
+    { u: 1, age: 14, R: .013, T: 8000, L: .004, form: 'wd' },
+  ];
+  const SUN_STAGES = [
+    { id: 'cloud', u0: 0, u1: .08, name: '星云 · 原恒星', en: 'Protostar', color: '#6b7f9e', note: '分子云在引力下坍缩 · 中心升温', ne: 'cloud collapsing · core heats up' },
+    { id: 'main', u0: .08, u1: .50, name: '主序星', en: 'Main sequence', color: '#e8bb87', note: '核心氢聚变 · 稳定燃烧 100 亿年', ne: 'core hydrogen fusion · a steady 10 Gyr' },
+    { id: 'sub', u0: .50, u1: .62, name: '亚巨星', en: 'Subgiant', color: '#d99a62', note: '核心氢耗尽 · 壳层点燃 · 开始膨胀', ne: 'core hydrogen spent · shell ignites · swelling' },
+    { id: 'rgb', u0: .62, u1: .72, name: '红巨星', en: 'Red giant', color: '#cf5a3d', note: '膨胀至 ~256 R☉ · 吞没水星金星 · 氦闪', ne: 'to ~256 R☉ · Mercury and Venus engulfed · helium flash' },
+    { id: 'hb', u0: .72, u1: .80, name: '水平分支', en: 'Helium burning', color: '#e2b06a', note: '核心氦聚变 · 收缩趋稳约 1 亿年', ne: 'core helium fusion · settles for ~100 Myr' },
+    { id: 'agb', u0: .80, u1: .92, name: '渐近巨星', en: 'AGB', color: '#b8503a', note: '双层壳燃烧 · 剧烈脉动 · 抛失外层', ne: 'two shells burning · violent pulsation · envelope lost' },
+    { id: 'pne', u0: .92, u1: .97, name: '行星状星云', en: 'Planetary nebula', color: '#7fc7b5', note: '外层吹散成发光的壳 · 暴露核心', ne: 'envelope blown into a glowing shell · core exposed' },
+    { id: 'wd', u0: .97, u1: 1, name: '白矮星', en: 'White dwarf', color: '#8fb6dd', note: '地球大小的余烬 · 缓慢冷却', ne: 'an Earth-sized ember · cooling slowly' },
+  ];
+  function sampleKeys(keys, u) {
+    if (u <= keys[0].u) return { ...keys[0] };
+    for (let i = 1; i < keys.length; i++) {
+      if (u <= keys[i].u) {
+        const a = keys[i - 1], b = keys[i];
+        const t = (u - a.u) / (b.u - a.u || 1);
+        const lerpL = (x, y) => Math.pow(10, lerp(Math.log10(Math.max(x, 1e-6)), Math.log10(Math.max(y, 1e-6)), t));
+        return { u, age: lerp(a.age, b.age, t), R: lerpL(a.R, b.R), T: lerp(a.T, b.T, t), L: lerpL(a.L, b.L), form: t < .5 ? a.form : b.form };
+      }
+    }
+    return { ...keys[keys.length - 1] };
+  }
+  const stageAt = (stages, u) => stages.find(s => u >= s.u0 && u < s.u1) || stages[stages.length - 1];
+
+  const PLANETS = [
+    { n: '水星', en: 'Mercury', a: .387, c: '#a8a29a' },
+    { n: '金星', en: 'Venus', a: .723, c: '#d9b077' },
+    { n: '地球', en: 'Earth', a: 1.0, c: '#7fa8d9' },
+    { n: '火星', en: 'Mars', a: 1.524, c: '#c47b5a' },
+  ];
+  const plName = pl => lang === 'en' ? pl.en : pl.n;
+  const RSUN_AU = .00465;
+  let sunU = .42;
+
+  const tempTex = {};
+  function formTex(id, T, L, seed) {
+    if (!isFinite(T)) T = 5800;
+    if (!isFinite(L)) L = 1;
+    const key = id + '_' + Math.round(T);
+    if (!tempTex[key]) tempTex[key] = starTextures({ id: key, T, L, seed: seed || 7, R: 2, cls: 'x' });
+    return tempTex[key];
+  }
+
+  function renderSun(dt, t) {
+    const p = sampleKeys(SUN_KEYS, sunU);
+    const st = stageAt(SUN_STAGES, sunU);
+    const cx = sceneCX(), cy = H * .44;
+    const AUpx = Math.min(W * .40, H * .30) / 1.7;
+    // 轨道
+    if (labelsOn && ['main', 'sub', 'rgb', 'hb', 'agb'].includes(p.form)) {
+      for (const pl of PLANETS) {
+        const rr = pl.a * AUpx;
+        const engulfed = rr < p.R * RSUN_AU * AUpx * .92 && p.R > 20;
+        ctx.strokeStyle = engulfed ? 'rgba(207,90,61,.28)' : 'rgba(244,236,223,.10)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(cx, cy, rr, 0, TAU); ctx.stroke();
+        if (!engulfed) {
+          const ang = t * .12 / Math.pow(pl.a, 1.5) + pl.a * 2.2;
+          const px = cx + Math.cos(ang) * rr, py = cy + Math.sin(ang) * rr;
+          const danger = p.R * RSUN_AU > pl.a * .82 && p.R > 20;
+          ctx.fillStyle = danger ? '#e8756a' : pl.c;
+          ctx.beginPath(); ctx.arc(px, py, danger ? 3.4 : 2.6, 0, TAU); ctx.fill();
+          if (labelsOn) {
+            ctx.fillStyle = danger ? 'rgba(232,117,106,.9)' : 'rgba(179,178,181,.85)';
+            ctx.font = '8.5px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(danger ? plName(pl) + ' ✕' : plName(pl), px, py - 7);
+          }
+        } else if (labelsOn) {
+          ctx.fillStyle = 'rgba(207,90,61,.75)';
+          ctx.font = '8.5px sans-serif'; ctx.textAlign = 'center';
+          const ea = -Math.PI / 2.3 + pl.a * 2.2;
+          ctx.fillText(plName(pl) + T(' 已被吞噬', ' engulfed'), cx + Math.cos(ea) * rr, cy + Math.sin(ea) * rr - 4);
+        }
+      }
+    }
+    // 主角
+    if (p.form === 'cloud' || p.form === 'proto') {
+      // 尘埃云
+      const rnd = mulberry32(20);
+      for (let i = 0; i < 7; i++) {
+        const a = rnd() * TAU, rr = (0.3 + rnd() * .9) * AUpx * 1.1;
+        const x = cx + Math.cos(a) * rr * 1.3, y = cy + Math.sin(a) * rr * .7;
+        const r = AUpx * (.35 + rnd() * .5);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, 'rgba(72,60,52,.34)'); g.addColorStop(1, 'rgba(72,60,52,0)');
+        ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+      // 吸积盘
+      const pr = clamp((sunU - .02) / .06, 0, 1);
+      const coreR = lerp(AUpx * .05, 26, pr);
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(-.34); ctx.scale(1, .32);
+      const dg = ctx.createRadialGradient(0, 0, coreR * .6, 0, 0, AUpx * .75);
+      dg.addColorStop(0, 'rgba(255,190,120,.55)'); dg.addColorStop(.5, 'rgba(210,130,70,.22)'); dg.addColorStop(1, 'rgba(210,130,70,0)');
+      ctx.fillStyle = dg; ctx.beginPath(); ctx.arc(0, 0, AUpx * .75, 0, TAU); ctx.fill();
+      ctx.restore();
+      // 原恒星核心
+      const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 2.4);
+      cg.addColorStop(0, 'rgba(255,220,170,.95)'); cg.addColorStop(.4, 'rgba(255,170,100,.5)'); cg.addColorStop(1, 'rgba(255,170,100,0)');
+      ctx.fillStyle = cg; ctx.fillRect(cx - coreR * 2.4, cy - coreR * 2.4, coreR * 4.8, coreR * 4.8);
+      ctx.fillStyle = '#ffdba8';
+      ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, TAU); ctx.fill();
+      // 双极喷流
+      const jl = AUpx * (0.6 + .3 * Math.sin(t * .8));
+      for (const dir of [-1, 1]) {
+        const jg = ctx.createLinearGradient(cx, cy, cx + dir * jl * .3, cy + dir * jl);
+        jg.addColorStop(0, 'rgba(160,190,255,.4)'); jg.addColorStop(1, 'rgba(160,190,255,0)');
+        ctx.strokeStyle = jg; ctx.lineWidth = 5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(cx, cy + dir * coreR); ctx.lineTo(cx + dir * jl * .12, cy + dir * jl); ctx.stroke();
+      }
+    } else if (p.form === 'pne') {
+      // 行星状星云：扩散壳
+      const pneU = clamp((sunU - .92) / .05, 0, 1);
+      const coreR = Math.max(p.R * RSUN_AU * AUpx, 2.2);
+      const shell = AUpx * (.25 + pneU * 1.05);
+      const fade = 1 - Math.pow(pneU, 1.6) * .55;
+      ctx.globalCompositeOperation = 'lighter';
+      for (const [rr, col, lw, al] of [
+        [shell, '127,199,181', 10, .16 * fade],
+        [shell * .8, '217,106,138', 5, .22 * fade],
+        [shell * 1.18, '127,199,181', 2.5, .3 * fade],
+      ]) {
+        ctx.strokeStyle = `rgba(${col},${al})`; ctx.lineWidth = lw;
+        ctx.beginPath(); ctx.arc(cx, cy, rr, 0, TAU); ctx.stroke();
+        // 椭圆内壳
+        ctx.save(); ctx.translate(cx, cy); ctx.scale(1, .82);
+        ctx.strokeStyle = `rgba(${col},${al * .8})`; ctx.lineWidth = lw * 1.4;
+        ctx.beginPath(); ctx.arc(0, 0, rr * .92, 0, TAU); ctx.stroke();
+        ctx.restore();
+      }
+      // 中央照亮
+      const ig = ctx.createRadialGradient(cx, cy, 0, cx, cy, shell);
+      ig.addColorStop(0, `rgba(190,225,255,${.18 * fade})`); ig.addColorStop(1, 'rgba(190,225,255,0)');
+      ctx.fillStyle = ig; ctx.fillRect(cx - shell, cy - shell, shell * 2, shell * 2);
+      ctx.globalCompositeOperation = 'source-over';
+      // 白矮星核心 + 星芒
+      drawWD(cx, cy, coreR, t);
+      if (labelsOn) { ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(143,182,221,.95)'; ctx.font = '9px sans-serif'; ctx.fillText(T('炽热核心 → 白矮星', 'a scorching core → white dwarf'), cx, cy + shell + 16); }
+    } else if (p.form === 'wd') {
+      drawWD(cx, cy, Math.max(p.R * RSUN_AU * AUpx, 3), t);
+      if (labelsOn) {
+        ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(143,182,221,.9)'; ctx.font = '9px sans-serif';
+        ctx.fillText(T('地球大小 · 仅靠余温发光', 'Earth-sized · glowing with leftover heat'), cx, cy + 34);
+        ctx.fillStyle = 'rgba(123,126,140,.85)'; ctx.font = '8.5px sans-serif';
+        ctx.fillText(T('将在百亿年间缓慢冷却、暗淡', 'it will cool and fade over tens of billions of years'), cx, cy + 48);
+      }
+    } else {
+      // 恒星球（main/sub/rgb/hb/agb）
+      const agbPulse = p.form === 'agb' ? 1 + .09 * Math.sin(t * 2.4) : 1;
+      const dispR = Math.max(p.R * RSUN_AU * AUpx, 26) * agbPulse;
+      const tex = formTex('sun_' + p.form, p.T, p.L, 30 + Math.round(p.T / 500));
+      drawStar(cx, cy, dispR * 2, tex, t * .015, 1);
+      if (p.R > 20) drawProminences(cx, cy, dispR, tex, t, 1);
+      // 现在标记
+      if (Math.abs(sunU - .42) < .012) {
+        ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(232,187,135,.95)'; ctx.font = '10px sans-serif';
+        ctx.fillText(T('☉ 现在 · 45.7 亿岁', '☉ now · 4.57 Gyr old'), cx, cy + dispR + 22);
+      }
+    }
+    // 环境亮度
+    const lum = Math.log10(1 + p.L);
+    if (lum > 1.5) {
+      ctx.globalCompositeOperation = 'lighter';
+      const ag = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .75);
+      const col = kelvinRGB(p.T);
+      ag.addColorStop(0, rgbsF(col, 1, clamp((lum - 1.5) * .016, 0, .09)));
+      ag.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = ag; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    if (labelsOn) {
+      ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(207,130,100,.8)'; ctx.font = '9px sans-serif';
+      if (p.form === 'rgb') ctx.fillText(T('⊙ 半径 ≈ 1.2 AU · 水星金星轨道已没入', '⊙ radius ≈ 1.2 AU · Mercury, Venus inside'), 18, H - 118);
+      else if (p.form === 'agb') ctx.fillText(T('⊙ 外层剧烈脉动 · 星风正抛失物质', '⊙ the envelope pulsates · wind strips it away'), 18, H - 118);
+    }
+    updateTLDisplay('sun', p, st);
+  }
+  function drawWD(x, y, r, t) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 8);
+    g.addColorStop(0, 'rgba(200,225,255,.5)'); g.addColorStop(.3, 'rgba(170,205,255,.14)'); g.addColorStop(1, 'rgba(170,205,255,0)');
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = g; ctx.fillRect(x - r * 8, y - r * 8, r * 16, r * 16);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#eaf3ff';
+    ctx.beginPath(); ctx.arc(x, y, Math.max(r, 2.6), 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(220,236,255,.75)'; ctx.lineWidth = .9;
+    const L = r * 5.5;
+    ctx.beginPath();
+    ctx.moveTo(x - L, y); ctx.lineTo(x + L, y); ctx.moveTo(x, y - L); ctx.lineTo(x, y + L);
+    ctx.stroke();
+  }
+
+  /* ===================== 黑洞之路 ===================== */
+  const BH_KEYS = [
+    { u: 0, age: 0, form: 'cloud', R: 0, T: 6000, L: .01 },
+    { u: .07, age: .1, form: 'o', R: 9, T: 40000, L: 100000 },
+    { u: .32, age: 5.6, form: 'o', R: 9.5, T: 39500, L: 105000 },
+    { u: .42, age: 6.1, form: 'bsg', R: 25, T: 25000, L: 150000 },
+    { u: .60, age: 6.9, form: 'rsg', R: 1000, T: 3500, L: 150000 },
+    { u: .78, age: 7.0, form: 'onion', R: 1000, T: 3500, L: 150000 },
+    { u: .90, age: 7.03, form: 'sn', R: 1000, T: 3500, L: 150000 },
+    { u: 1, age: 7.1, form: 'bh', R: 1000, T: 3500, L: 150000 },
+  ];
+  const BH_STAGES = [
+    { id: 'cloud', u0: 0, u1: .07, name: '分子云坍缩', en: 'Collapse', color: '#6b7f9e', note: '大质量云核快速坍缩', ne: 'a massive cloud core collapses fast' },
+    { id: 'o', u0: .07, u1: .32, name: 'O 型主序星', en: 'O star', color: '#9db4ff', note: '25 M☉ 蓝白烈焰 · 光度 10 万倍太阳', ne: '25 M☉ blue-white blaze · 10⁵ L☉' },
+    { id: 'bsg', u0: .32, u1: .42, name: '蓝超巨星', en: 'Blue supergiant', color: '#aabfff', note: '核心氢耗尽 · 开始膨胀', ne: 'core hydrogen spent · swelling' },
+    { id: 'rsg', u0: .42, u1: .60, name: '红超巨星', en: 'Red supergiant', color: '#cf5a3d', note: '膨胀至 ~1,000 R☉ · 剧烈星风', ne: 'to ~1,000 R☉ · a violent wind' },
+    { id: 'onion', u0: .60, u1: .78, name: '洋葱核心', en: 'Onion shells', color: '#d9c07a', note: '聚变逐层向内 · 元素一层层锻造', ne: 'fusion moves inward · elements forged shell by shell' },
+    { id: 'sn', u0: .78, u1: .90, name: '坍缩 · 超新星', en: 'Core-collapse SN', color: '#fff2dd', note: '铁核 0.25 秒坍缩 · II 型超新星', ne: 'iron core collapses in 0.25 s · type-II supernova' },
+    { id: 'bh', u0: .90, u1: 1, name: '黑洞', en: 'Black hole', color: '#8f7fb8', note: '~15 M☉ 恒星级黑洞 · 引力称王', ne: 'a ~15 M☉ stellar black hole · gravity wins' },
+  ];
+  const ONION = [
+    { el: 'H', t: '~700 万年', e: '~7 Myr', c: '#a8b6c9' },
+    { el: 'He', t: '~100 万年', e: '~1 Myr', c: '#d9c07a' },
+    { el: 'C', t: '~1,000 年', e: '~1,000 yr', c: '#d98a5c' },
+    { el: 'Ne', t: '~1 年', e: '~1 yr', c: '#8f9fd9' },
+    { el: 'O', t: '~2 年', e: '~2 yr', c: '#9fb6dd' },
+    { el: 'Si', t: '~1 天', e: '~1 day', c: '#e8e2d5' },
+    { el: 'Fe', t: '坍缩 <0.25 s', e: 'collapse <0.25 s', c: '#6a6f7e' },
+  ];
+  let bhU = .07;
+  let snParts = null;
+
+  function renderBH(dt, t) {
+    const p = sampleKeys(BH_KEYS, bhU);
+    const st = stageAt(BH_STAGES, bhU);
+    const cx = sceneCX(), cy = H * .46;
+    const m = Math.min(W, H);
+    if (p.form === 'cloud') {
+      const rnd = mulberry32(33);
+      for (let i = 0; i < 9; i++) {
+        const a = rnd() * TAU, rr = (.25 + rnd() * .8) * m * .3;
+        const x = cx + Math.cos(a) * rr * 1.4, y = cy + Math.sin(a) * rr * .8;
+        const r = m * (.14 + rnd() * .22);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, 'rgba(56,52,74,.4)'); g.addColorStop(1, 'rgba(56,52,74,0)');
+        ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+      const coreR = m * .02 * (1 + .1 * Math.sin(t * 3));
+      const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 6);
+      cg.addColorStop(0, 'rgba(255,240,220,.85)'); cg.addColorStop(.35, 'rgba(255,200,140,.3)'); cg.addColorStop(1, 'rgba(255,200,140,0)');
+      ctx.fillStyle = cg; ctx.fillRect(cx - coreR * 6, cy - coreR * 6, coreR * 12, coreR * 12);
+      ctx.fillStyle = '#fff3dd';
+      ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, TAU); ctx.fill();
+    } else if (p.form === 'onion') {
+      renderOnion(cx, cy, m * .3, t);
+    } else if (p.form === 'sn') {
+      // 闪光
+      const fu = (bhU - .78) / .12;
+      const flash = Math.pow(Math.max(0, 1 - fu * 2.6), 1.6);
+      if (flash > .01) { ctx.fillStyle = `rgba(255,248,235,${flash * .9})`; ctx.fillRect(0, 0, W, H); }
+      // 冲击波环
+      const shock = m * (.08 + fu * 1.15);
+      for (const [rr, col, al] of [
+        [shock, '255,238,210', (1 - fu) * .8],
+        [shock * .82, '232,160,92', (1 - fu) * .5],
+        [shock * .6, '207,90,61', (1 - fu) * .3],
+      ]) {
+        ctx.strokeStyle = `rgba(${col},${al})`;
+        ctx.lineWidth = Math.max(1.2, 7 * (1 - fu));
+        ctx.beginPath(); ctx.arc(cx, cy, rr, 0, TAU); ctx.stroke();
+      }
+      // 粒子
+      if (!snParts) { snParts = []; const rnd = mulberry32(7); for (let i = 0; i < 46; i++) snParts.push({ a: rnd() * TAU, sp: .6 + rnd() * 1.3, rr: rnd() }); }
+      ctx.globalCompositeOperation = 'lighter';
+      for (const q of snParts) {
+        const d = shock * (.75 + q.rr * .35);
+        const x1 = cx + Math.cos(q.a) * d, y1 = cy + Math.sin(q.a) * d;
+        const x2 = cx + Math.cos(q.a) * (d + 16 * q.sp), y2 = cy + Math.sin(q.a) * (d + 16 * q.sp);
+        ctx.strokeStyle = `rgba(255,230,190,${(1 - fu) * .55 * q.sp})`;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      // 中心残光
+      const rem = Math.max(0, .35 - fu * .5);
+      if (rem > 0) {
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, m * .1);
+        g.addColorStop(0, `rgba(255,255,250,${rem * 2})`); g.addColorStop(1, 'rgba(255,255,250,0)');
+        ctx.fillStyle = g; ctx.fillRect(cx - m * .1, cy - m * .1, m * .2, m * .2);
+      }
+      ctx.textAlign = 'center'; ctx.fillStyle = `rgba(255,242,221,${clamp(fu * 2, 0, .95)})`;
+      ctx.font = lang === 'en' ? '600 15px "Iowan Old Style",Palatino,Georgia,serif' : '600 15px "PingFang SC",sans-serif';
+      ctx.fillText(T('II 型超新星 · 光度可达太阳 10 亿倍', 'A type-II supernova · up to a billion Suns in luminosity'), cx, 92);
+    } else if (p.form === 'bh') {
+      const ba = clamp((bhU - .90) / .07, 0, 1);
+      drawBlackHole(cx, cy, m * .115 * easeOutCubic(ba), t, ba);
+      if (labelsOn && ba > .5) {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(200,190,230,.9)'; ctx.font = '9.5px sans-serif';
+        ctx.fillText(T('~15 M☉ 恒星级黑洞 · 事件视界直径 ~90 km', 'a ~15 M☉ stellar black hole · event horizon ≈ 90 km across'), cx, cy + m * .34);
+        ctx.fillStyle = 'rgba(123,126,140,.85)'; ctx.font = '8.5px sans-serif';
+        ctx.fillText(T('金色细环为光子球 · 光在此绕行甚至逆行', 'the thin gold ring is the photon sphere · light orbits, even runs backwards, here'), cx, cy + m * .34 + 15);
+      }
+    } else {
+      // O / BSG / RSG 恒星球
+      const pulse = p.form === 'rsg' ? 1 + .06 * Math.sin(t * 1.8) : 1;
+      const dispR = { o: m * .10, bsg: m * .15, rsg: m * .34 }[p.form] * pulse;
+      const tex = formTex('bh_' + p.form, p.T, p.L, 55 + Math.round(p.T / 900));
+      drawStar(cx, cy, dispR * 2, tex, t * .012, 1);
+      drawProminences(cx, cy, dispR, tex, t, .9);
+      // 星风粒子
+      ctx.globalCompositeOperation = 'lighter';
+      const col = kelvinRGB(p.T);
+      const nw = 26;
+      for (let i = 0; i < nw; i++) {
+        const a = (i / nw) * TAU + t * .1;
+        const ph = (t * .55 + i * .618) % 1;
+        const rr = dispR * (1 + ph * .8);
+        const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+        const x2 = cx + Math.cos(a) * (rr + 22), y2 = cy + Math.sin(a) * (rr + 22);
+        ctx.strokeStyle = rgbsF(col, 1.15, (1 - ph) * .22);
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x2, y2); ctx.stroke();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      // 太阳参照
+      const refX = cx + dispR + 74, refY = cy - dispR * .72;
+      if (refX < W - panelW() - 50) {
+        const sunD = Math.max(dispR * 2 / p.R, 1.6);
+        ctx.strokeStyle = 'rgba(244,236,223,.18)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(refX, refY, 15, 0, TAU); ctx.stroke();
+        ctx.fillStyle = '#ffdf9e';
+        ctx.beginPath(); ctx.arc(refX, refY, sunD / 2, 0, TAU); ctx.fill();
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(232,187,135,.95)'; ctx.font = '9px sans-serif';
+        ctx.fillText(sunD < 3
+          ? T(`太阳 · 该比例下 ${sunD.toFixed(1)} px`, `the Sun at this scale: ${sunD.toFixed(1)} px`)
+          : T('太阳 · 真实比例', 'the Sun · same scale'), refX, refY + 30);
+      }
+      // 阶段注记
+      if (labelsOn) {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(191,194,207,.9)'; ctx.font = '9.5px sans-serif';
+        const notes = lang === 'en'
+          ? { o: 'surface ~40,000 K · the wind sheds billions of tonnes a second', bsg: 'helium is about to ignite · the forge opens', rsg: 'pulsation and wind keep stripping the envelope' }
+          : { o: '表面 ~40,000 K · 星风每秒抛失千万亿吨', bsg: '氦即将点燃 · 元素锻造开炉', rsg: '脉动与星风不断抛失外层' };
+        ctx.fillText(notes[p.form] || '', cx, cy + dispR + 30);
+      }
+    }
+    updateTLDisplay('bh', p, st);
+  }
+  function renderOnion(cx, cy, R0, t) {
+    const prog = clamp((bhU - .60) / .18, 0, 1);
+    const ratios = [1, .86, .72, .58, .45, .33, .19];
+    const active = Math.min(6, Math.floor(prog * 7));
+    const fePress = prog > .8 ? (prog - .8) / .2 : 0;
+    // 外圈脉动
+    const pulse = 1 + .012 * Math.sin(t * 2.2);
+    ctx.save();
+    ctx.translate(cx, cy); ctx.scale(pulse, pulse);
+    for (let i = 0; i < 7; i++) {
+      const r = R0 * ratios[i];
+      const o = ONION[i];
+      const lit = i >= active; // 内层已点燃（聚变向内推进）
+      ctx.fillStyle = o.c;
+      ctx.globalAlpha = lit ? .92 : .5;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+      // 层界线
+      ctx.strokeStyle = 'rgba(4,5,10,.55)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.stroke();
+      // 活动燃烧环（正在燃烧的最内层）
+      if (i === active && prog < .82) {
+        const bw = 2.5 + 1.5 * Math.sin(t * 4);
+        ctx.strokeStyle = 'rgba(255,240,200,.85)'; ctx.lineWidth = bw;
+        ctx.beginPath(); ctx.arc(0, 0, r * .97, 0, TAU); ctx.stroke();
+      }
+      // 铁核闪烁
+      if (i === 6 && fePress > 0) {
+        ctx.strokeStyle = `rgba(255,120,80,${fePress * (0.5 + .5 * Math.sin(t * 14))})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(0, 0, r * 1.04, 0, TAU); ctx.stroke();
+      }
+      // 标签（宽层画双行）
+      const mid = (ratios[i] + (i < 6 ? ratios[i + 1] : 0)) / 2;
+      const ly = -R0 * mid * .92;
+      if (i < 3 || r > 54) {
+        ctx.fillStyle = 'rgba(8,10,16,.92)';
+        ctx.font = '600 12px ui-monospace,monospace'; ctx.textAlign = 'center';
+        ctx.fillText(o.el, 0, ly);
+        if (r > 70) {
+          ctx.fillStyle = 'rgba(8,10,16,.78)';
+          ctx.font = '7.5px sans-serif';
+          ctx.fillText(lang === 'en' ? o.e : o.t, 0, ly + 11);
+        }
+      }
+    }
+    ctx.restore();
+    // 中心 Fe 高亮
+    const feG = ctx.createRadialGradient(cx, cy, 0, cx, cy, R0 * .2);
+    feG.addColorStop(0, `rgba(220,225,240,${.35 + fePress * .4})`); feG.addColorStop(1, 'rgba(220,225,240,0)');
+    ctx.fillStyle = feG; ctx.fillRect(cx - R0 * .2, cy - R0 * .2, R0 * .4, R0 * .4);
+    // 标题与进度
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(232,187,135,.95)';
+    ctx.font = lang === 'en' ? '600 14px "Iowan Old Style",Palatino,Georgia,serif' : '600 14px "PingFang SC",sans-serif';
+    ctx.fillText(T('聚变正逐层向核心推进', 'Fusion is working its way inward'), cx, cy - R0 - 26);
+    ctx.fillStyle = 'rgba(140,143,155,.95)'; ctx.font = '9px sans-serif';
+    ctx.fillText(prog < .82
+      ? T(`当前燃烧层：${ONION[active].el} · 已持续 ${ONION[active].t}`,
+        `now burning: ${ONION[active].el} · lasting ${ONION[active].e}`)
+      : T('铁核已达极限 · 即将坍缩', 'the iron core is spent · collapse is imminent'), cx, cy - R0 - 11);
+    if (fePress > .2) {
+      ctx.fillStyle = `rgba(232,110,80,${fePress})`; ctx.font = '600 11px sans-serif';
+      ctx.fillText(T('⚠ 铁不再释放能量', '⚠ iron releases no more energy'), cx, cy + R0 + 24);
+    }
+  }
+  function drawBlackHole(x, y, R, t, alpha) {
+    ctx.globalAlpha = alpha;
+    const diskR = R * 2.7, tilt = .26, rot = -.16;
+    ctx.save(); ctx.translate(x, y);
+    // 后侧吸积盘（远半）
+    drawAccretion(diskR, tilt, rot, t, 'back');
+    // 引力透镜微光（顶部弧）
+    ctx.globalCompositeOperation = 'lighter';
+    const lg = ctx.createRadialGradient(0, -R * .55, 0, 0, -R * .55, R * .9);
+    lg.addColorStop(0, 'rgba(255,214,160,.16)'); lg.addColorStop(1, 'rgba(255,214,160,0)');
+    ctx.fillStyle = lg; ctx.fillRect(-R, -R * 1.5, R * 2, R * 1.6);
+    ctx.globalCompositeOperation = 'source-over';
+    // 视界（纯黑）
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.fill();
+    // 光子环
+    ctx.strokeStyle = 'rgba(255,233,201,.9)';
+    ctx.lineWidth = Math.max(1.2, R * .014);
+    ctx.shadowColor = 'rgba(255,220,160,.9)'; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.13, 0, TAU); ctx.stroke();
+    ctx.shadowBlur = 0;
+    // 前侧吸积盘（近半）
+    drawAccretion(diskR, tilt, rot, t, 'front');
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+  function drawAccretion(diskR, tilt, rot, t, half) {
+    ctx.save(); ctx.rotate(rot);
+    const strokeRings = [
+      [.62, .34, '255,246,225'], [.78, .30, '255,232,190'],
+      [.95, .22, '245,205,140'], [1.12, .13, '226,160,90'],
+    ];
+    for (const [f, al, col] of strokeRings) {
+      const rr = diskR * f;
+      ctx.strokeStyle = `rgba(${col},${al})`;
+      ctx.lineWidth = Math.max(2, diskR * .075 * f);
+      ctx.beginPath();
+      if (half === 'front') ctx.ellipse(0, 0, rr, rr * tilt, 0, 0, Math.PI);
+      else ctx.ellipse(0, 0, rr, rr * tilt, 0, Math.PI, TAU);
+      ctx.stroke();
+    }
+    // 多普勒亮斑（前侧左侧更亮）
+    if (half === 'front') {
+      const g = ctx.createLinearGradient(-diskR, 0, diskR, 0);
+      g.addColorStop(0, 'rgba(255,255,250,.28)'); g.addColorStop(.5, 'rgba(255,255,250,0)'); g.addColorStop(1, 'rgba(255,255,250,0)');
+      ctx.save();
+      ctx.beginPath(); ctx.ellipse(0, 0, diskR * 1.14, diskR * 1.14 * tilt, 0, 0, Math.PI); ctx.clip();
+      ctx.fillStyle = g; ctx.fillRect(-diskR * 1.2, -diskR * tilt - 2, diskR * 2.4, diskR * tilt * 2 + 4);
+      ctx.restore();
+    }
+    // 流动纹理
+    ctx.strokeStyle = 'rgba(255,235,200,.14)';
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([diskR * .28, diskR * .62]);
+    ctx.lineDashOffset = -t * 40 * (half === 'front' ? 1 : .7);
+    ctx.beginPath();
+    if (half === 'front') ctx.ellipse(0, 0, diskR * .82, diskR * .82 * tilt, 0, 0, Math.PI);
+    else ctx.ellipse(0, 0, diskR * .82, diskR * .82 * tilt, 0, Math.PI, TAU);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  /* ===================== 时间轴组件 ===================== */
+  const tlWrap = $('#tlTrackwrap'), tlTrack = $('#tlTrack'), tlCursor = $('#tlCursor'), tlMarks = $('#tlMarks');
+  const ageVal = $('#ageVal'), stageName = $('#stageName'), stageNote = $('#stageNote');
+  let curMode = 'compare';
+  let tlLastStage = '', tlLastAge = '';
+  /* 时间轴标记的短名——窄段放不下完整词条，双语各给一个 */
+  const MARK = {
+    sun: { cloud: '星云/Proto', main: '主序/Main', sub: '亚巨/Sub', rgb: '红巨/Red', hb: '氦燃/He', agb: 'AGB/AGB', pne: '行星状/PNe', wd: '白矮/WD' },
+    bh: { cloud: '云核/Cloud', o: 'O 型/O', bsg: '蓝超/BSG', rsg: '红超/RSG', onion: '洋葱/Onion', sn: '超新星/SN', bh: '黑洞/BH' },
+  };
+  const markFor = (mode, s) => ((MARK[mode] || {})[s.id] || (lang === 'en' ? s.en : s.name)).split('/')[lang === 'en' ? 1 : 0];
+  function buildTimeline() {
+    const stages = curMode === 'sun' ? SUN_STAGES : BH_STAGES;
+    tlTrack.innerHTML = '';
+    tlWrap.querySelectorAll('.tl-now').forEach(n => n.remove());
+    tlMarks.innerHTML = '';
+    tlLastStage = ''; tlLastAge = '';
+    for (const s of stages) {
+      const seg = document.createElement('div');
+      seg.className = 'tl-seg';
+      seg.style.flex = String(s.u1 - s.u0);
+      seg.style.background = s.color;
+      seg.title = lang === 'en' ? s.en : s.name;
+      tlTrack.appendChild(seg);
+      const mk = document.createElement('div');
+      mk.className = 'tl-mark';
+      mk.style.flex = String(s.u1 - s.u0);
+      mk.textContent = markFor(curMode, s);
+      mk.title = lang === 'en' ? s.en : s.name;
+      mk.addEventListener('click', e => { e.stopPropagation(); setU((s.u0 + s.u1) / 2); });
+      tlMarks.appendChild(mk);
+    }
+    // 太阳「现在」标记
+    if (curMode === 'sun') {
+      const now = document.createElement('div');
+      now.className = 'tl-now'; now.title = T('现在 · 45.7 亿岁', 'now · 4.57 Gyr');
+      now.style.left = '42%';
+      tlWrap.appendChild(now);
+    }
+  }
+  function updateTLDisplay(mode, p, st) {
+    const u = mode === 'sun' ? sunU : bhU;
+    tlCursor.style.left = (u * 100) + '%';
+    let ageHTML;
+    if (mode === 'sun') {
+      ageHTML = lang === 'en'
+        ? (p.age < 1 ? `${Math.max(1, Math.round(p.age * 1000))}<small>Myr</small>` : `${p.age.toFixed(2)}<small>Gyr</small>`)
+        : (p.age < 1 ? `${Math.max(1, Math.round(p.age * 1000))}<small>百万岁</small>` : `${(p.age * 10).toFixed(1)}<small>亿岁</small>`);
+    } else if (lang === 'en') {
+      ageHTML = st.id === 'sn' ? `7,000,000<small> yr + 0.25 s</small>` : st.id === 'bh' ? `7<small>Myr later</small>` : `${p.age.toFixed(2)}<small>Myr</small>`;
+    } else {
+      ageHTML = st.id === 'sn' ? `7,000,000<small>年 + 0.25 s</small>` : st.id === 'bh' ? `700<small>万年后</small>` : `${Math.max(1, Math.round(p.age * 100))}<small>万岁</small>`;
+    }
+    if (ageHTML !== tlLastAge) { tlLastAge = ageHTML; ageVal.innerHTML = ageHTML; }
+    if (st.id !== tlLastStage || st._lang !== lang) {
+      tlLastStage = st.id; st._lang = lang;
+      stageName.innerHTML = lang === 'en' ? `${st.en}<em>${st.name}</em>` : `${st.name}<em>${st.en}</em>`;
+      stageNote.textContent = (lang === 'en' && st.ne) || st.note;
+    }
+  }
+  function setU(u) {
+    u = clamp(u, 0, 1);
+    const stages = curMode === 'sun' ? SUN_STAGES : BH_STAGES;
+    for (const s of stages) for (const b of [s.u0, s.u1]) if (b > 0 && b < 1 && Math.abs(u - b) < .006) u = b;
+    if (curMode === 'sun') sunU = u; else bhU = u;
+    if (curMode === 'bh' && u < .78) snParts = null;
+  }
+  // 时间轴拖动
+  let tlDrag = false;
+  const trackToU = e => {
+    const r = tlWrap.getBoundingClientRect();
+    return clamp((e.clientX - r.left) / r.width, 0, 1);
+  };
+  tlWrap.addEventListener('pointerdown', e => { tlDrag = true; tlWrap.setPointerCapture(e.pointerId); setU(trackToU(e)); });
+  tlWrap.addEventListener('pointermove', e => { if (tlDrag) setU(trackToU(e)); });
+  tlWrap.addEventListener('pointerup', () => tlDrag = false);
+
+  /* ===================== 模式与 dock ===================== */
+  let playing = false, speed = 1, labelsOn = true;
+  const hintEl = $('#hint');
+  /* built lazily, so the hint always follows the language on screen */
+  const HINTS = {
+    compare: () => T('拖拽平移 · 滚轮缩放 · 点击恒星放大<span>Drag · Scroll · Click a star to focus</span><em>全景为压缩比例 · 聚焦为真实比例（附太阳参照）</em>',
+      'Drag · scroll · click a star to focus<span>拖拽平移 · 滚轮缩放 · 点击恒星放大</span><em>The overview is a compressed scale · the focused view is true scale, with the Sun for reference</em>'),
+    sun: () => T('拖动时间轴 · 点击阶段跳转<span>Drag the timeline · Click a stage</span><em>主序阶段恒星本体放大显示 · 巨星与轨道按真实比例</em>',
+      'Drag the timeline · click a stage to jump<span>拖动时间轴 · 点击阶段跳转</span><em>Star enlarged on the main sequence · giant and orbits at true scale</em>'),
+    bh: () => T('拖动时间轴 · 点击阶段跳转<span>Drag the timeline · Click a stage</span><em>25 M☉ 大质量恒星的一生 · 从蓝焰到黑洞</em>',
+      'Drag the timeline · click a stage to jump<span>拖动时间轴 · 点击阶段跳转</span><em>The life of a 25 M☉ star · from blue flame to black hole</em>'),
+  };
+  function setMode(m) {
+    if (m === curMode) return;
+    curMode = m;
+    const keepOpen = document.body.classList.contains('panel-open');
+    document.body.className = 'mode-' + m + (playing ? ' is-playing' : '') + (keepOpen ? ' panel-open' : '')
+      + (lang === 'en' ? ' lang-en' : '');
+    $$('.btn.mode').forEach(b => b.classList.toggle('is-on', b.dataset.mode === m));
+    blurFocus();
+    hoverStar = null; cvs.style.cursor = '';
+    if (m !== 'compare') buildTimeline();
+    hintEl.innerHTML = HINTS[m]();
+    if (m !== 'compare') togglePlay(true);
+    else togglePlay(false);
+  }
+  function togglePlay(force) {
+    playing = force !== undefined ? force : !playing;
+    document.body.classList.toggle('is-playing', playing);
+    $('#playBtn').setAttribute('aria-pressed', String(playing));
+  }
+  $$('.btn.mode').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  $('#playBtn').addEventListener('click', () => togglePlay());
+  const speedEl = $('#speed'), speedOut = $('#speedOut');
+  function setSpeed() {
+    const v = +speedEl.value / 100;
+    speed = .25 + v * 1.75;
+    speedOut.textContent = speed.toFixed(speed < 1 ? 2 : 1) + '×';
+    speedEl.style.setProperty('--fill', speedEl.value + '%');
+  }
+  speedEl.addEventListener('input', setSpeed); setSpeed();
+  $('#labelsBtn').addEventListener('click', () => {
+    labelsOn = !labelsOn;
+    $('#labelsBtn').classList.toggle('is-on', labelsOn);
+    $('#labelsBtn').setAttribute('aria-pressed', String(labelsOn));
+  });
+  $('#resetBtn').addEventListener('click', () => {
+    if (curMode === 'compare') { blurFocus(); resetCam(); cam.z = .85; }
+    else { setU(curMode === 'sun' ? .42 : .07); togglePlay(false); }
+  });
+  function camHomeX() { const it = layout.find(l => l.s.id === 'sun'); return it ? it.wx : 0; }
+  let camTargetX = null;
+  function resetCam() { camTargetX = camHomeX(); }
+
+  /* ===================== 面板 ===================== */
+  $$('.tab').forEach(tab => tab.addEventListener('click', () => {
+    $$('.tab').forEach(t => { t.classList.toggle('is-active', t === tab); t.setAttribute('aria-selected', t === tab); });
+    $$('.pane').forEach(p => p.classList.toggle('is-active', p.dataset.pane === tab.dataset.tab));
+  }));
+  const panel = $('#panel');
+  $('#openPanel').addEventListener('click', () => { panel.classList.add('is-open'); document.body.classList.add('panel-open'); });
+  $('#panelClose').addEventListener('click', () => { panel.classList.remove('is-open'); document.body.classList.remove('panel-open'); });
+
+  /* ===================== 名星录卡片 ===================== */
+  const cardsWrap = $('#starCards');
+  function buildCards() {
+    cardsWrap.innerHTML = '';
+    for (const s of STARS) {
+      const col = kelvinRGB(s.T);
+      const card = document.createElement('article');
+      card.className = 'star-card';
+      card.style.setProperty('--mc', rgbs(col, 1));
+      const num = lang === 'en' ? fmtEN : fmtN;
+      const desc = se(s, 'desc');
+      const lead = lang === 'en'
+        ? desc.split(/(?<=\.)\s/)[0]
+        : desc.split('。')[0] + '。';
+      card.innerHTML = `<h3>${lang === 'en' ? s.en : s.name}<em>${s.spec}</em></h3>
+        <div class="mstat">Ø ${s.R} R☉ · ${s.M} M☉ · ${num(s.T)} K · ${s.L >= 1000 ? num(s.L) : s.L} L☉ · ${se(s, 'dist')}</div>
+        <p>${lead}</p>
+        <div class="go">${T('点击聚焦 · 真实比例 →', 'Click to focus · true scale →')}</div>`;
+      card.addEventListener('click', () => {
+        if (curMode !== 'compare') setMode('compare');
+        focusStar(s);
+        if (W <= 1024) { panel.classList.remove('is-open'); document.body.classList.remove('panel-open'); }
+      });
+      cardsWrap.appendChild(card);
+    }
+  }
+  buildCards();
+
+  /* ===================== 赫罗图（交互式） ===================== */
+  const SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  const supNum = n => String(n).split('').map(ch => SUP[ch] || ch).join('');
+  function hrSVG() {
+    const lg = Math.log10;
+    // 绘图区：x 46→310（温度 40000→3000K），y 32→256（光度 10⁶→10⁻⁴）
+    const PX0 = 46, PX1 = 310, PY0 = 32, PY1 = 256;
+    const X = T => PX0 + (4.602 - lg(T)) / 1.125 * (PX1 - PX0);
+    const Y = L => PY0 + (6 - lg(Math.max(L, 1e-6))) / 10 * (PY1 - PY0);
+    const clr = T => { const c = kelvinRGB(T); return `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`; };
+    const FS = 7.2, FF = 'PingFang SC,sans-serif';
+    let s = `<svg viewBox="0 0 380 316" role="img" aria-label="${T('赫罗图：光度对温度，含主序带、巨星、超巨星与白矮星', 'Hertzsprung–Russell diagram: luminosity against temperature, with the main sequence, giants, supergiants and white dwarfs')}">`;
+    // ---- 网格 ----
+    for (let e = 6; e >= -4; e--) {
+      const y = PY0 + (6 - e) / 10 * (PY1 - PY0);
+      s += `<line x1="${PX0}" y1="${y.toFixed(1)}" x2="${PX1}" y2="${y.toFixed(1)}" stroke="rgba(244,236,223,${e === 0 ? .17 : e % 2 === 0 ? .055 : .026})" stroke-width="1"/>`;
+    }
+    // y 轴刻度
+    for (const e of [6, 4, 2, 0, -2, -4]) {
+      const y = PY0 + (6 - e) / 10 * (PY1 - PY0);
+      const lab = e === 0 ? '1' : '10' + supNum(e);
+      s += `<text x="42" y="${(y + 2.4).toFixed(1)}" font-size="6.4" fill="#6a6e7c" text-anchor="end" font-family="ui-monospace,Menlo,monospace">${lab}</text>`;
+    }
+    // x 轴温度刻度
+    for (const T of [30000, 20000, 10000, 7000, 4000, 3000]) {
+      const x = X(T);
+      s += `<line x1="${x.toFixed(1)}" y1="${PY1}" x2="${x.toFixed(1)}" y2="${PY1 + 5}" stroke="rgba(244,236,223,.22)"/>`;
+      s += `<text x="${x.toFixed(1)}" y="${PY1 + 16}" font-size="6.4" fill="#6a6e7c" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${(T / 1000) + ',000'}</text>`;
+    }
+    // 轴
+    s += `<line x1="${PX0}" y1="${PY0}" x2="${PX0}" y2="${PY1}" stroke="rgba(244,236,223,.18)"/>`;
+    s += `<line x1="${PX0}" y1="${PY1}" x2="${PX1}" y2="${PY1}" stroke="rgba(244,236,223,.18)"/>`;
+    // 轴标题
+    s += `<text x="8" y="22" font-size="7" fill="#7b7e8c" font-family="Helvetica Neue,sans-serif" letter-spacing="1.2">${T('光度 L☉', 'LUMINOSITY L☉')}</text>`;
+    s += `<text x="178" y="294" font-size="7" fill="#7b7e8c" text-anchor="middle" font-family="Helvetica Neue,sans-serif" letter-spacing="1">${T('表面温度 K →', 'SURFACE TEMPERATURE K →')}</text>`;
+    // 光谱型
+    const SPEC = [[35000, 'O'], [20000, 'B'], [9000, 'A'], [6800, 'F'], [5700, 'G'], [4500, 'K'], [3300, 'M']];
+    for (const [T, L] of SPEC) {
+      s += `<text x="${X(T).toFixed(1)}" y="${PY1 - 9}" font-size="8.6" font-weight="600" fill="${clr(T)}" text-anchor="middle" opacity=".82" font-family="Helvetica Neue,sans-serif">${L}</text>`;
+    }
+    // ---- 标签避让骨架 ----
+    const placed = [];
+    const hitBox = r => placed.some(q => !(r.x1 <= q.x0 || r.x0 >= q.x1 || r.y1 <= q.y0 || r.y0 >= q.y1));
+    const tw = (t, fs) => { let w = 0; for (const ch of t) w += ch.charCodeAt(0) > 255 ? fs : fs * .56; return w; };
+    // ---- 区域标签 ----
+    const REG = [
+      { x: 62, y: 41, zh: '超巨星', en: 'Supergiants', subZh: 'SUPERGIANTS', subEn: '超巨星', c: 'rgba(157,180,255,.6)' },
+      { x: 256, y: 94, zh: '巨星 GIANTS', en: 'GIANTS 巨星', c: 'rgba(232,187,135,.58)', ls: 1.2 },
+      { x: 52, y: 176, zh: '主序带 MAIN SEQUENCE', en: 'MAIN SEQUENCE 主序带', c: 'rgba(244,236,223,.44)', ls: .8 },
+      { x: 52, y: 216, zh: '白矮星 WHITE DWARFS', en: 'WHITE DWARFS 白矮星', c: 'rgba(143,182,221,.58)', ls: 1 },
+    ];
+    for (const g of REG) {
+      const main = lang === 'en' ? g.en : g.zh;
+      if (g.subZh) {
+        const sub = lang === 'en' ? g.subEn : g.subZh;
+        s += `<text x="${g.x}" y="${g.y}" font-size="${FS}" fill="${g.c}" letter-spacing="1" font-family="${FF}">${main}</text>`;
+        s += `<text x="${g.x}" y="${g.y + 9.4}" font-size="5.8" fill="${g.c}" letter-spacing="1.3" font-family="Helvetica Neue,sans-serif">${sub}</text>`;
+        placed.push({ x0: g.x - 2, y0: g.y - FS * 1.02 - 1, x1: g.x + Math.max(52, tw(main, FS) + 3), y1: g.y + 11.4 });
+      } else {
+        s += `<text x="${g.x}" y="${g.y}" font-size="${FS}" fill="${g.c}" letter-spacing="${g.ls}" font-family="Helvetica Neue,sans-serif">${main}</text>`;
+        placed.push({ x0: g.x - 2, y0: g.y - FS * 1.02 - 1, x1: g.x + tw(main, FS) + main.length * g.ls + 2, y1: g.y + FS * .34 + 1 });
+      }
+    }
+    // 主序带点串
+    const MS = [
+      [40000, 3e5, 8.5], [30000, 3e4, 7.6], [22000, 7e3, 6.8], [17000, 2.2e3, 6.1],
+      [14000, 8e2, 5.5], [11000, 2.2e2, 5], [9500, 63, 4.6], [8600, 30, 4.3],
+      [7800, 13, 4], [7000, 5.5, 3.8], [6400, 2.6, 3.6], [6000, 1.35, 3.4],
+      [5600, .75, 3.3], [5200, .42, 3.1], [4700, .2, 2.9], [4200, .09, 2.7],
+      [3700, .03, 2.5], [3300, .008, 2.3], [3000, .002, 2.1],
+    ];
+    for (const [T, L, r] of MS) {
+      s += `<circle cx="${X(T).toFixed(1)}" cy="${Y(L).toFixed(1)}" r="${r}" fill="${clr(T)}" opacity=".5"/>`;
+    }
+    // 主序带圆点作为“软障碍”，标签优先绕开，实在没位才允许压过
+    const soft = MS.map(([T, L, r]) => ({ x0: X(T) - r, y0: Y(L) - r, x1: X(T) + r, y1: Y(L) + r }));
+    // ---- 代表恒星（可点击） ----
+    const HRP = [
+      { id: 'stephenson', T: 3200, L: 440000, r: 9 },
+      { id: 'rigel', T: 12100, L: 120000, r: 6.4 },
+      { id: 'betelgeuse', T: 3650, L: 126000, r: 8.2 },
+      { id: 'antares', T: 3660, L: 75900, r: 6.8 },
+      { id: 'aldebaran', T: 3910, L: 439, r: 5.4 },
+      { id: 'arcturus', T: 4286, L: 170, r: 5 },
+      { id: 'pollux', T: 4666, L: 43, r: 4.2 },
+      { id: 'vega', T: 9602, L: 40.7, r: 3.3 },
+      { id: 'sirius', T: 9940, L: 25.4, r: 3.1 },
+      { id: 'sun', T: 5772, L: 1, r: 4.4, sun: true },
+      { id: 'cenb', T: 5260, L: .5, r: 2.8 },
+      { id: 'barnard', T: 3134, L: .0035, r: 2.5 },
+      { id: 'proxima', T: 3042, L: .0017, r: 2.5 },
+      { id: null, name: '北极星', nameEn: 'Polaris', T: 6018, L: 1260, r: 4.8 },
+      { id: null, name: '天狼星 B', nameEn: 'Sirius B', T: 25000, L: .026, r: 2.4, wd: true },
+    ];
+    const pts = HRP.map(p => {
+      const star = p.id ? STARS.find(v => v.id === p.id) : null;
+      return { ...p, star, x: X(p.T), y: Y(p.L), name: star ? sn(star) : (lang === 'en' ? p.nameEn : p.name) };
+    });
+    // 圆点先占位，随后的文字不得压在其上
+    for (const p of pts) {
+      const rr = p.sun ? p.r + 3.6 : p.r;
+      placed.push({ x0: p.x - rr - 1.6, y0: p.y - rr - 1.6, x1: p.x + rr + 1.6, y1: p.y + rr + 1.6 });
+    }
+    for (const p of pts) {
+      const tip = p.star ? `${p.name} · ${p.star.spec} · ${T('点击聚焦', 'click to focus')}` : `${p.name} · ${T('恒星', 'star')}`;
+      s += `<g ${p.id ? `data-star="${p.id}"` : ''} style="cursor:${p.id ? 'pointer' : 'default'}"><title>${tip}</title>`;
+      if (p.sun) s += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(p.r + 3.6).toFixed(1)}" fill="none" stroke="rgba(232,187,135,.5)" stroke-width=".7" stroke-dasharray="2 2.4"/>`;
+      s += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.r}" fill="${clr(p.T)}" stroke="rgba(4,5,10,.55)" stroke-width=".7"/>`;
+      s += `</g>`;
+    }
+    // ---- 标签自动避让：16 个方向 × 3 圈半径，逐级放宽 ----
+    const DIRS = [];
+    for (const k of [1, 1.55, 2.15]) for (let a = 0; a < 16; a++) {
+      const th = -a / 16 * Math.PI * 2;           // 从正右开始逆时针扫
+      DIRS.push([Math.cos(th), Math.sin(th), k]);
+    }
+    const tryLab = (p, strict, useSoft, force) => {
+      const w = tw(p.name, FS) + .8, gap = 5 + (p.sun ? 3.6 : 0);
+      for (const [cx, cy, k] of DIRS) {
+        const anchor = cx > .28 ? 'start' : cx < -.28 ? 'end' : 'middle';
+        const tx = p.x + cx * gap * k;
+        const by = p.y + cy * 8.2 * k;
+        const x0 = (anchor === 'start' ? tx : anchor === 'end' ? tx - w : tx - w / 2) - .4;
+        const r = { x0, y0: by - FS * 1.02, x1: x0 + w, y1: by + FS * .34 };
+        if (r.y0 < 13 || r.y1 > PY1 + 1) continue;
+        if (strict ? (r.x0 < PX0 - 4 || r.x1 > PX1 + 4) : (r.x0 < 40 || r.x1 > 375)) continue;
+        if (!force && hitBox(r)) continue;
+        if (!force && useSoft && soft.some(q => !(r.x1 <= q.x0 || r.x0 >= q.x1 || r.y1 <= q.y0 || r.y0 >= q.y1))) continue;
+        placed.push(r);
+        return `<text x="${tx.toFixed(1)}" y="${by.toFixed(1)}" font-size="${FS}" text-anchor="${anchor}" fill="${p.sun ? '#e8bb87' : p.wd ? 'rgba(143,182,221,.92)' : 'rgba(207,210,226,.86)'}" font-family="${FF}">${p.name}</text>`;
+      }
+      return '';
+    };
+    const order = pts.filter(p => p.name).sort((a, b) => (b.sun ? 1 : 0) - (a.sun ? 1 : 0) || b.r - a.r);
+    let queue = [];
+    for (const p of order) { const t = tryLab(p, true, true); if (t) s += t; else queue.push(p); }
+    const q2 = [];
+    for (const p of queue) { const t = tryLab(p, false, true); if (t) s += t; else q2.push(p); }
+    const q3 = [];
+    for (const p of q2) { const t = tryLab(p, false, false); if (t) s += t; else q3.push(p); }
+    // 最后兜底：宁可挤一点也不丢标签
+    for (const p of q3) s += tryLab(p, false, false, true);
+    s += `</svg>`;
+    return s;
+  }
+
+  function bindHR(el) {
+    if (!el || el._hrBound) return;
+    el._hrBound = true;
+    el.addEventListener('click', e => {
+      const g = e.target.closest('[data-star]');
+      if (!g) return;
+      const star = STARS.find(v => v.id === g.dataset.star);
+      if (!star) return;
+      closeHR();
+      if (curMode !== 'compare') setMode('compare');
+      focusStar(star);
+      if (W <= 1024) { panel.classList.remove('is-open'); document.body.classList.remove('panel-open'); }
+    });
+  }
+
+  function buildHR() {
+    const svg = hrSVG();
+    for (const id of ['hrDiagram', 'hrBig']) {
+      const el = $('#' + id);
+      if (el) { el.innerHTML = svg; bindHR(el); }
+    }
+    const m = $('#hrModal'), z = $('#hrZoom'), c = $('#hrClose');
+    if (m && z && !m._wired) {
+      m._wired = true;
+      z.addEventListener('click', () => { m.classList.add('on'); m.setAttribute('aria-hidden', 'false'); document.body.classList.add('hr-open'); });
+      c && c.addEventListener('click', closeHR);
+      m.addEventListener('click', e => { if (e.target === m) closeHR(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && m.classList.contains('on')) closeHR(); });
+    }
+  }
+
+  function closeHR() {
+    const m = $('#hrModal'); if (!m || !m.classList.contains('on')) return;
+    m.classList.remove('on'); m.setAttribute('aria-hidden', 'true'); document.body.classList.remove('hr-open');
+  }
+
+  /* ===================== 语言切换 ===================== */
+  function applyStatic(){
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    document.body.classList.toggle('lang-en', lang === 'en');
+    document.title = TITLE[lang];
+    for (const el of $$('[data-en]')){
+      if (el.dataset.zh === undefined) el.dataset.zh = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.zh;
+    }
+    for (const b of $$('#lang button')){
+      const on = b.dataset.lang === lang;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
+
+  function setLang(next){
+    if (next === lang) return;
+    lang = next;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* private mode */ }
+    applyStatic();
+    buildCards();                 // 名星录：名字、单位、距离
+    buildHR();                    // 赫罗图：轴标题、区域名、星名
+    if (focus) focusStar(focus);  // 详情卡：数值单位与描述
+    if (curMode !== 'compare') buildTimeline();
+    hintEl.innerHTML = HINTS[curMode]();
+    tlLastStage = ''; tlLastAge = '';   // 强制下一帧重绘年龄与阶段
+  }
+  for (const b of $$('#lang button')) b.addEventListener('click', () => setLang(b.dataset.lang));
+
+  /* ===================== 聚焦 / 详情卡 ===================== */
+  const dFateIco = { wd: '◍', ns: '✦', bh: '⬤' };
+  function focusStar(s) {
+    focus = s;
+    hoverStar = null; cvs.style.cursor = '';
+    document.body.classList.add('focused');
+    const col = kelvinRGB(s.T);
+    $('#dEyebrow').style.setProperty('--c', rgbs(col, 1));
+    $('#dSpec').textContent = `${s.spec} · ${se(s, 'cls')}`;
+    $('#dName').innerHTML = lang === 'en' ? `${s.en}<em>${s.name}</em>` : `${s.name}<em>${s.en}</em>`;
+    const rows = [
+      [T('半径', 'Radius'), `${s.R} R☉`, `${(lang === 'en' ? fmtEN : fmtN)(Math.round(s.R * R_SUN_KM))} km`],
+      [T('质量', 'Mass'), `${s.M} M☉`, `${(s.M * 1.989).toFixed(2)}×10³⁰ kg`],
+      [T('表面温度', 'Surface temp'), `${(lang === 'en' ? fmtEN : fmtN)(s.T)} K`, `${(s.T - 273).toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN')} ℃`],
+      [T('光度', 'Luminosity'), s.L >= 1000 ? `${(lang === 'en' ? fmtEN : fmtN)(s.L)} L☉` : `${s.L} L☉`, T('总辐射 / bolometric', 'bolometric')],
+      [T('年龄', 'Age'), se(s, 'age'), ''], [T('寿命', 'Lifespan'), se(s, 'life'), ''], [T('距离', 'Distance'), se(s, 'dist'), ''],
+    ];
+    $('#dFacts').innerHTML = rows.map(([k, v, e]) => `<div class="fact"><div class="fk"><b>${k}</b></div><div class="fv">${v}${e ? `<em>${e}</em>` : ''}</div></div>`).join('');
+    $('#dDesc').textContent = se(s, 'desc');
+    $('#dFate').innerHTML = `<i>${dFateIco[s.fateType] || '◍'}</i><span>${T('终局：', 'Fate: ')}${se(s, 'fate')}</span>`;
+  }
+  function blurFocus() {
+    if (!focus) return;
+    focus = null;
+    document.body.classList.remove('focused');
+  }
+  $('#detailClose').addEventListener('click', blurFocus);
+  $('#dBack').addEventListener('click', blurFocus);
+  $('#dPrev').addEventListener('click', () => focus && focusStar(STARS[(focus.idx - 1 + STARS.length) % STARS.length]));
+  $('#dNext').addEventListener('click', () => focus && focusStar(STARS[(focus.idx + 1) % STARS.length]));
+
+  /* ===================== 画布交互（对比模式） ===================== */
+  let dragging = false, dragMoved = 0, lastX = 0, lastY = 0;
+  cvs.addEventListener('pointerdown', e => {
+    if (curMode !== 'compare') return;
+    dragging = true; dragMoved = 0; lastX = e.clientX; lastY = e.clientY;
+    cvs.setPointerCapture(e.pointerId);
+  });
+  cvs.addEventListener('pointermove', e => {
+    if (curMode !== 'compare') return;
+    if (dragging) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      dragMoved += Math.abs(dx) + Math.abs(dy);
+      if (dragMoved > 4) { cam.x -= dx / cam.z; document.body.classList.add('is-drag'); camTargetX = null; }
+      lastX = e.clientX; lastY = e.clientY;
+    } else {
+      const h = hitTest(e.clientX, e.clientY);
+      hoverStar = h ? h.s : null;
+      cvs.style.cursor = h ? 'pointer' : '';
+    }
+  });
+  cvs.addEventListener('pointerup', e => {
+    document.body.classList.remove('is-drag');
+    if (curMode !== 'compare') return;
+    dragging = false;
+    if (dragMoved <= 4) {
+      if (focus) { blurFocus(); return; }
+      const h = hitTest(e.clientX, e.clientY);
+      if (h) focusStar(h.s);
+    }
+  });
+  cvs.addEventListener('wheel', e => {
+    if (curMode !== 'compare' || focus) return;
+    e.preventDefault();
+    const oldZ = cam.z;
+    cam.z = clamp(cam.z * Math.pow(1.0016, -e.deltaY), .5, 3);
+    // 以鼠标位置为缩放锚点
+    const cx = sceneCX();
+    cam.x += (e.clientX - cx) * (1 / oldZ - 1 / cam.z);
+    camTargetX = null;
+  }, { passive: false });
+  function hitTest(mx, my) {
+    if (focus) return null;
+    const cx = sceneCX(), cy = H * .46;
+    for (let i = layout.length - 1; i >= 0; i--) {
+      const it = layout[i];
+      const sx = (it.wx - cam.x) * cam.z + cx;
+      const dr = Math.max(it.rc * cam.z, 8) + 20;
+      if (Math.abs(mx - sx) < dr && Math.abs(my - cy) < dr + 26) {
+        const rr = Math.hypot(mx - sx, my - cy);
+        if (rr < dr) return it;
+      }
+    }
+    return null;
+  }
+  window.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'Escape' && focus) blurFocus();
+    if (curMode === 'compare' && focus && e.key === 'ArrowLeft') $('#dPrev').click();
+    if (curMode === 'compare' && focus && e.key === 'ArrowRight') $('#dNext').click();
+    if (curMode !== 'compare' && e.key === ' ') { e.preventDefault(); togglePlay(); }
+  });
+
+  /* ===================== 面板阶段列表点击 ===================== */
+  $$('#sunStages .tl-item').forEach(el => el.addEventListener('click', () => { setMode('sun'); setU(+el.dataset.u); togglePlay(false); }));
+  $$('#bhStages .tl-item').forEach(el => el.addEventListener('click', () => { setMode('bh'); setU(+el.dataset.u); togglePlay(false); }));
+
+  /* ===================== 主循环 ===================== */
+  let lastTS = 0, TT = 0, booted = false;
+  function frame(ts) {
+    const dt = Math.min(.05, (ts - lastTS) / 1000 || .016);
+    lastTS = ts; TT += dt;
+    // 聚焦过渡
+    if (focus && focusT < 1) focusT = Math.min(1, focusT + dt * 2.4);
+    if (!focus && focusT > 0) focusT = Math.max(0, focusT - dt * 3);
+    // 播放
+    if (playing && curMode !== 'compare') {
+      const dur = curMode === 'sun' ? 46 : 34;
+      let u = (curMode === 'sun' ? sunU : bhU) + dt / dur * speed;
+      if (u >= 1) { u = 1; togglePlay(false); }
+      setU(u);
+    }
+    // 背景层
+    ctx.clearRect(0, 0, W, H);
+    if (bgLayer) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(bgLayer, 0, 0); ctx.restore(); }
+    // 闪烁星
+    ctx.globalCompositeOperation = 'lighter';
+    for (const tw of twinks) {
+      const a = .3 + .5 * (Math.sin(TT * tw.sp + tw.ph) * .5 + .5);
+      ctx.fillStyle = rgbs(tw.c, a);
+      ctx.beginPath(); ctx.arc(tw.x, tw.y, tw.r, 0, TAU); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    // 相机回位缓动
+    if (camTargetX !== null) { cam.x = lerp(cam.x, camTargetX, 1 - Math.pow(.001, dt)); if (Math.abs(cam.x - camTargetX) < .5) camTargetX = null; }
+    // 场景（单帧异常不中断动画链）
+    try {
+      if (curMode === 'compare') renderCompare(dt, TT);
+      else if (curMode === 'sun') renderSun(dt, TT);
+      else renderBH(dt, TT);
+    } catch (err) {
+      if (!frame._errLogged) { console.warn('渲染帧异常：', err); frame._errLogged = true; }
+    }
+    if (!booted) { booted = true; setTimeout(() => $('#boot').classList.add('is-done'), 450); }
+    requestAnimationFrame(frame);
+  }
+
+  /* ===================== init ===================== */
+  function resize() {
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cvs.width = W * DPR; cvs.height = H * DPR;
+    cvs.style.width = W + 'px'; cvs.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    buildBackdrop();
+    layoutCompare();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  cam.x = camHomeX();
+  cam.z = .85;
+  for (const s of STARS) starTextures(s);
+  buildHR();
+  document.body.className = 'mode-compare' + (lang === 'en' ? ' lang-en' : '');
+  applyStatic();
+  hintEl.innerHTML = HINTS[curMode]();
+  /* the page is reachable from the atlas hub; the way back depends on where it
+     is being served from */
+  const hb = document.getElementById('hubBack');
+  if (hb) hb.href = /\/site\//.test(location.pathname) ? 'index.html'
+    : location.protocol === 'file:' ? '太阳系行星图鉴.html' : './';
+  requestAnimationFrame(frame);
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>
