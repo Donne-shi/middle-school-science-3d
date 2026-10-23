@@ -86,12 +86,34 @@
       "name": "生物学",
       "english": "Biology",
       "eyebrow": "从微观结构认识生命",
-      "description": "观察生命的形态与结构。具体演示将随课程逐步加入。",
-      "description_en": "Observe the forms and structures of living things. Interactive lessons will be added over time.",
+      "description": "从细胞的形态与结构出发，观察生命的多样性。",
+      "description_en": "Explore life's diversity through the forms and structures of cells.",
       "accent": "#428258",
-      "status": "内容筹备中",
-      "status_en": "Coming soon",
-      "topics": []
+      "status": "细胞专题本地预览",
+      "status_en": "Cell topic in local preview",
+      "topics": [
+        {
+          "slug": "cell-world",
+          "name": "细胞世界",
+          "english": "The Cell World",
+          "description": "从原核细胞、真核细胞到病毒，对照三维结构与显微图像。",
+          "description_en": "Compare 3D structures and microscope images of prokaryotes, eukaryotes, and viruses.",
+          "status": "本地预览 · 素材核对中",
+          "status_en": "Local preview · Image credits under review",
+          "lessons": [
+            {
+              "slug": "cell-atlas",
+              "name": "细胞形态图鉴",
+              "english": "Cell Atlas",
+              "description": "观察 26 个标本的三维示意结构，并与显微图像并排比较。演示正文目前为中文。",
+              "description_en": "Explore 26 interactive specimens alongside microscope images. The lesson text is currently in Chinese.",
+              "interaction": "3D 旋转 · 剖切 · 显微对照",
+              "interaction_en": "3D rotation · Cutaway · Microscope comparison",
+              "href": "demos/biology/cell-atlas/index.html"
+            }
+          ]
+        }
+      ]
     },
     {
       "slug": "chemistry",

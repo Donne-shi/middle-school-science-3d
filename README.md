@@ -2,7 +2,7 @@
 
 面向中学科学课堂与自主探索的静态多页面网站，设有物理学、天文学、生物学、化学四个学科入口。每个学科首页和每个演示都有独立地址；内容随课程制作逐步加入。
 
-目前已开放物理学《牛顿车库》和化学《原子图鉴》互动演示。天文学的太阳系行星图鉴与太阳系结构页可在本地预览；**这些演示的部分贴图来源尚未核实，因此本地导入的演示被 Git 忽略，未纳入公开仓库。**详情见 [素材与授权记录](docs/ASSETS.md)。
+目前已开放物理学《牛顿车库》和化学《原子图鉴》互动演示。生物学已设“细胞世界”专题，《细胞形态图鉴》的 26 标本演示可在本地预览；天文学的太阳系演示也可在本地预览。**细胞图鉴内嵌显微照片和太阳系部分贴图的来源与授权尚未核实，因此演示副本被 Git 忽略，暂未纳入公开仓库。**详情见 [素材与授权记录](docs/ASSETS.md)。
 
 ## 页面结构
 
@@ -11,6 +11,8 @@ site/index.html                                四学科总入口
 site/subjects/astronomy/index.html             天文学独立入口
 site/subjects/physics/index.html               物理学独立入口
 site/subjects/biology/index.html               生物学独立入口
+site/topics/biology/cell-world/index.html      细胞世界专题
+preview/demos/biology/cell-atlas/index.html    细胞形态图鉴本地预览
 site/subjects/chemistry/index.html             化学独立入口
 site/topics/astronomy/solar-system/index.html  太阳系专题
 site/topics/physics/forces-and-motion/index.html 力与运动专题
@@ -29,13 +31,16 @@ preview/                                       本地演示预览，Git 忽略
 ```bash
 python3 scripts/build_site.py --local
 python3 scripts/import_local_demos.py --source /path/to/科学课程/site
+python3 scripts/import_cell_atlas.py --source /path/to/细胞图鉴-单文件版.html
 python3 scripts/check_site.py --local
 python3 -m http.server 8000 --directory preview
 ```
 
-浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版的牛顿车库和原子图鉴可直接打开；太阳系演示保留介绍卡片，素材核查前不显示无效链接。本地预览版会自动复制已公开的演示，并可打开导入的太阳系单页。
+浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版的牛顿车库和原子图鉴可直接打开；细胞图鉴和太阳系演示保留介绍卡片，素材核查前不显示无效链接。本地预览版会自动复制已公开的演示，并可打开导入的细胞图鉴及太阳系单页。
 
 导入脚本只读取提供的源目录，并在仓库内生成本地预览副本。它不会修改原始演示文件。生成副本增加“返回太阳系专题”入口，并修正地球与木星的对比标签、太阳系结构的返回链接，以及地火转移中的一句易误解文案。每次源页面更新后，可重新运行导入命令。
+
+细胞图鉴导入脚本同样不修改原稿。预览副本增加“返回细胞世界”入口，并把封面上的“3 个域”改为“3 大类”，避免将病毒误称为生物学的域。图鉴正文目前为中文，外层课程目录支持中英文切换。
 
 ## 添加内容
 

@@ -120,6 +120,7 @@ def topic_page(subject: dict, topic: dict) -> None:
     visual_zh, visual_en = {
         "astronomy": ("一颗恒星 · 八颗行星", "ONE STAR · EIGHT PLANETS"),
         "physics": ("一辆车 · 三条定律", "ONE CAR · THREE LAWS"),
+        "biology": ("二十六个标本 · 多样的生命", "26 SPECIMENS · DIVERSITY OF LIFE"),
         "chemistry": ("十二个模型 · 一条发现之路", "TWELVE VIEWS · ONE STORY OF DISCOVERY"),
     }[slug]
     intro = f'''<section class="topic-intro"><div><span class="eyebrow eyebrow-line">TOPIC / {e(topic["english"])}</span>{tr(topic["name"], topic["english"], "h1")}{tr(topic["description"], topic["description_en"], "p")}</div><div class="topic-visual topic-visual-{e(slug)}" aria-hidden="true">{tr(visual_zh, visual_en)}</div></section>'''
@@ -137,12 +138,14 @@ def topic_page(subject: dict, topic: dict) -> None:
     guidance_zh, guidance_en = {
         "astronomy": ("建议先看行星图鉴，再用太阳系结构理解更远的尺度。", "Start with the planet atlas, then use the Solar System structure lesson to explore greater distances."),
         "physics": ("从受力图开始，依次探索牛顿三大定律。", "Start with force diagrams, then explore Newton's three laws in order."),
+        "biology": ("先选择一类标本，再旋转、剖切，并对照真实显微图像。", "Choose a specimen, rotate and cut away its model, then compare it with a microscope image."),
         "chemistry": ("从道尔顿模型开始，观察每一次新证据如何改写原子图景。", "Start with Dalton and watch new evidence reshape each atomic model."),
     }[slug]
     section = f'''<section aria-labelledby="lesson-title"><div class="section-heading"><div><span class="eyebrow">INTERACTIVE LESSONS</span>{tr("选择一个演示", "Choose a lesson", "h2", 'id="lesson-title"')}</div>{tr(guidance_zh, guidance_en, "p")}</div><div class="lesson-grid">{''.join(cards)}</div></section>'''
     note_zh, note_en = {
         "astronomy": ("天体尺寸、距离和时间如经过视觉调整，以各演示页的标注为准。", "Visual scales for size, distance, and time are explained in each lesson."),
         "physics": ("汽车模型、力箭头和场景为教学示意；数值及简化条件见演示说明。", "The car, force arrows, and scene are teaching models; see the lesson for values and assumptions."),
+        "biology": ("三维形态经过教学简化，标本大小不按同一比例；显微图片的来源与授权仍在核对。", "The 3D models are simplified and not shown at a common scale; image credits and licenses are still under review."),
         "chemistry": ("历史模型体现提出时的认识，轨道图像为教学示意；比例不代表真实原子。", "Historical models reflect ideas of their time; orbital views are teaching illustrations, not literal scale models."),
     }[slug]
     note = '<div class="context-bar">' + tr("适合课堂展示与自主探索", "For classroom and independent exploration") + tr(note_zh, note_en) + '</div>'
