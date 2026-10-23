@@ -89,7 +89,7 @@ def home() -> None:
     body = f'''<div class="container"><section class="home-hero" aria-labelledby="home-title"><div>
   <span class="eyebrow eyebrow-line">MIDDLE SCHOOL SCIENCE · 3D ATLAS</span>
   <h1 class="serif" id="home-title">{tr("把科学", "Bring science")}<br>{tr("放到眼前。", "into view.", "em")}</h1>
-  {tr("从一颗行星的纹理，到一辆汽车的受力。选择一个学科，亲手旋转、观察，带着问题进入科学的世界。", "From a planet's surface to the forces acting on a car. Choose a subject, explore it yourself, and follow your questions into science.", "p")}
+  {tr("从行星的纹理，到汽车的受力与简单机械。选择一个学科，亲手旋转、观察，带着问题进入科学的世界。", "From a planet's surface to car forces and simple machines. Choose a subject, explore it yourself, and follow your questions into science.", "p")}
   <div class="hero-note"><a class="text-link" href="{link(current, 'subjects/astronomy/index.html')}">{tr("从天文学开始", "Start with astronomy")} <span class="arrow" aria-hidden="true">→</span></a>{tr("四个学科 · 持续更新", "Four subjects · Growing library", attrs='class="tiny"')}</div>
   </div><div class="scientific-window" role="img" {aria("四个学科围绕科学探索的轨道示意", "Four subjects arranged around a science discovery orbit")}><i class="axis-x"></i><i class="axis-y"></i><i class="orbit"></i><i class="orbit orbit-2"></i><i class="orbit orbit-3"></i><i class="core"></i><i class="plot-node node-a"></i><i class="plot-node node-b"></i><i class="plot-node node-c"></i><i class="plot-node node-d"></i><span class="plot-label label-a">ASTRONOMY</span><span class="plot-label label-b">PHYSICS</span><span class="plot-label label-c">BIOLOGY</span><span class="plot-label label-d">CHEMISTRY</span>{tr("四种探索方式", "FOUR WAYS TO EXPLORE", attrs='class="window-index"')}</div></section>
   <section aria-labelledby="fields-title"><div class="section-heading"><div><span class="eyebrow">CHOOSE A FIELD</span>{tr("四条进入科学的路径", "Four paths into science", "h2", 'id="fields-title"')}</div>{tr("每个学科都可以独立打开；具体演示会随着课程制作逐步加入。", "Open any subject on its own. More interactive lessons will be added as they are completed.", "p")}</div><div class="subject-grid">{''.join(cards)}</div></section></div>'''
@@ -123,6 +123,8 @@ def topic_page(subject: dict, topic: dict) -> None:
         "biology": ("二十六个标本 · 多样的生命", "26 SPECIMENS · DIVERSITY OF LIFE"),
         "chemistry": ("十二个模型 · 一条发现之路", "TWELVE VIEWS · ONE STORY OF DISCOVERY"),
     }[slug]
+    if slug == "physics" and topic["slug"] == "simple-machines":
+        visual_zh, visual_en = "六种机械 · 力与距离", "SIX MACHINES · FORCE & DISTANCE"
     intro = f'''<section class="topic-intro"><div><span class="eyebrow eyebrow-line">TOPIC / {e(topic["english"])}</span>{tr(topic["name"], topic["english"], "h1")}{tr(topic["description"], topic["description_en"], "p")}</div><div class="topic-visual topic-visual-{e(slug)}" aria-hidden="true">{tr(visual_zh, visual_en)}</div></section>'''
     cards = []
     for index, lesson in enumerate(topic["lessons"], start=1):
@@ -141,10 +143,15 @@ def topic_page(subject: dict, topic: dict) -> None:
         "biology": ("先选择一类标本，再旋转、剖切，并对照真实显微图像。", "Choose a specimen, rotate and cut away its model, then compare it with a microscope image."),
         "chemistry": ("从道尔顿模型开始，观察每一次新证据如何改写原子图景。", "Start with Dalton and watch new evidence reshape each atomic model."),
     }[slug]
+    if slug == "physics" and topic["slug"] == "simple-machines":
+        guidance_zh, guidance_en = (
+            "选择一种机械，调节参数，比较力与距离如何变化。",
+            "Choose a machine, adjust its parameters, and compare changes in force and distance.",
+        )
     section = f'''<section aria-labelledby="lesson-title"><div class="section-heading"><div><span class="eyebrow">INTERACTIVE LESSONS</span>{tr("选择一个演示", "Choose a lesson", "h2", 'id="lesson-title"')}</div>{tr(guidance_zh, guidance_en, "p")}</div><div class="lesson-grid">{''.join(cards)}</div></section>'''
     note_zh, note_en = {
         "astronomy": ("天体尺寸、距离和时间如经过视觉调整，以各演示页的标注为准。", "Visual scales for size, distance, and time are explained in each lesson."),
-        "physics": ("汽车模型、力箭头和场景为教学示意；数值及简化条件见演示说明。", "The car, force arrows, and scene are teaching models; see the lesson for values and assumptions."),
+        "physics": ("三维模型、力箭头和场景为教学示意；数值及简化条件见各演示说明。", "The 3D models, force arrows, and scenes are teaching illustrations; see each lesson for values and assumptions."),
         "biology": ("三维形态经过教学简化，标本大小不按同一比例；显微图片的来源与授权仍在核对。", "The 3D models are simplified and not shown at a common scale; image credits and licenses are still under review."),
         "chemistry": ("历史模型体现提出时的认识，轨道图像为教学示意；比例不代表真实原子。", "Historical models reflect ideas of their time; orbital views are teaching illustrations, not literal scale models."),
     }[slug]

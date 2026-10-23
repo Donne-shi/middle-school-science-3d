@@ -51,11 +51,11 @@
       "name": "物理学",
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
-      "description": "从一辆汽车开始，观察受力、运动与牛顿三大定律。",
-      "description_en": "Use a car to explore forces, motion, and Newton's three laws.",
+      "description": "从汽车的受力与运动，走向杠杆、滑轮等简单机械。",
+      "description_en": "Explore forces and motion with a car, then investigate levers, pulleys, and other simple machines.",
       "accent": "#ba572e",
-      "status": "牛顿车库已开放",
-      "status_en": "Newton's Garage available",
+      "status": "2 个物理演示已开放",
+      "status_en": "2 physics lessons available",
       "topics": [
         {
           "slug": "forces-and-motion",
@@ -75,6 +75,28 @@
               "interaction": "3D 汽车 · 双语 · 五章实验",
               "interaction_en": "3D car · Bilingual · Five chapters",
               "href": "demos/physics/newton-garage/index.html",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "simple-machines",
+          "name": "简单机械",
+          "english": "Simple Machines",
+          "description": "通过六种可操作的三维机械，观察力、距离与功之间的关系。",
+          "description_en": "Explore six interactive 3D machines and the relationships among force, distance, and work.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "simple-machines-3d",
+              "name": "简单机械 3D 实验室",
+              "english": "Simple Machines 3D Lab",
+              "description": "操作杠杆、滑轮、轮轴、斜面、螺旋与楔子，调节参数并观察示意受力。",
+              "description_en": "Operate levers, pulleys, wheels and axles, inclines, screws, and wedges; adjust parameters and inspect forces.",
+              "interaction": "6 个章节 · 3D 操作 · 中英双语",
+              "interaction_en": "6 chapters · 3D interaction · Bilingual",
+              "href": "demos/physics/simple-machines/index.html",
               "published": true
             }
           ]

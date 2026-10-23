@@ -6,6 +6,10 @@ MIT 许可证只用于本项目可授权的原创代码和文档。第三方素�
 
 源文件由项目作者提供，位于 `newton-motion-lab/`，包括页面、样式、脚本、单文件版和预览图。公开副本位于 `site/demos/physics/newton-garage/`；仅在网站版 `index.html` 增加返回物理学的链接和样式，课程演示主体保持原样。预览图为用户提供的页面截图。演示依赖本地 `assets/three.min.js`，文件头注明 Three.js r128、2010–2021 three.js authors、MIT；完整许可文本保存在同目录的 `THREE_LICENSE.txt`。
 
+## 已接入：简单机械 3D 实验室
+
+源文件由项目作者提供，位于 `WorkBuddy AI/simple-machines-3d/`。公开副本位于 `site/demos/physics/simple-machines/`，包含六种简单机械的双语互动演示。原有的 `app.js`、`scenes.js`、`styles.css` 和 `three.min.js` 原样复制；仅在网站版 `index.html` 添加返回物理学的链接和两份独立的导航样式、脚本。没有发现外部图片或在线运行依赖。本地 `three.min.js` 文件头注明 2010–2023 The Three.js Authors、MIT；许可文本见同目录 `THREE_LICENSE.txt`。原始目录未修改。
+
 ## 已接入：原子图鉴
 
 源页面、样式、脚本与说明由项目作者提供，原始目录为 `Documents/gemini/科学模型/`。公开副本位于 `site/demos/chemistry/atomic-atlas/`；本项目在副本中调整明亮主题、窄屏排版、站内导航与部分科学表述。页面中的模型与背景由本地 Canvas 和 CSS 绘制，未发现单独的外部图片或字体文件。原始目录未修改。
