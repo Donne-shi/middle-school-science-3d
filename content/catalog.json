@@ -10,8 +10,8 @@
       "description": "从太阳系走向恒星与宇宙，打开独立演示，观察天体、尺度与探索任务。",
       "description_en": "Explore the Solar System, stars, and the wider universe through standalone visual lessons.",
       "accent": "#197a91",
-      "status": "7 个天文学演示已开放",
-      "status_en": "7 astronomy lessons available",
+      "status": "11 个天文学演示已开放",
+      "status_en": "11 astronomy lessons available",
       "topics": [
         {
           "slug": "solar-system",
@@ -19,8 +19,8 @@
           "english": "The Solar System",
           "description": "认识八颗行星、太阳系的层次，并体验天王星下降与地火转移。",
           "description_en": "Explore eight planets, the Solar System’s layers, Uranus, and a journey to Mars.",
-          "status": "2 个演示已开放 · 2 个本地预览",
-          "status_en": "2 lessons available · 2 local previews",
+          "status": "4 个演示已开放",
+          "status_en": "4 lessons available",
           "lessons": [
             {
               "slug": "atlas",
@@ -30,7 +30,9 @@
               "description_en": "Rotate, zoom in, and observe the Sun and planets.",
               "interaction": "3D 漫游 · 天体资料",
               "interaction_en": "3D exploration · Planet facts",
-              "href": "demos/solar-system/atlas.html"
+              "href": "demos/solar-system/atlas.html",
+              "published": true,
+              "screenshot": "assets/solar-system-atlas-preview.png"
             },
             {
               "slug": "structure",
@@ -62,7 +64,8 @@
               "description_en": "Explore a simplified Earth-to-Mars transfer mission.",
               "interaction": "轨道转移 · 任务时间",
               "interaction_en": "Orbital transfer · Mission timeline",
-              "href": "demos/solar-system/earth-to-mars.html"
+              "href": "demos/solar-system/earth-to-mars.html",
+              "published": true
             }
           ]
         },
@@ -70,10 +73,10 @@
           "slug": "universe",
           "name": "宇宙现象",
           "english": "The Universe",
-          "description": "从宇宙早期到黑洞，观察宏大尺度上的物理过程。",
-          "description_en": "Explore the early universe and black holes at cosmic scales.",
-          "status": "2 个演示已开放",
-          "status_en": "2 lessons available",
+          "description": "从宇宙早期与黑洞，继续探索暗物质、暗能量和宇宙膨胀。",
+          "description_en": "Explore the early universe, black holes, dark matter, dark energy, and cosmic expansion.",
+          "status": "3 个演示已开放",
+          "status_en": "3 lessons available",
           "lessons": [
             {
               "slug": "bigbang",
@@ -95,6 +98,18 @@
               "interaction": "3D 演示 · 引力",
               "interaction_en": "3D visual · Gravity",
               "href": "demos/solar-system/blackhole.html",
+              "published": true
+            },
+            {
+              "slug": "dark-universe",
+              "name": "暗物质与暗能量",
+              "english": "Dark Matter & Dark Energy",
+              "description": "通过交互场景探索宇宙的质能组成、暗物质的引力效应与暗能量。",
+              "description_en": "Explore the cosmic mass-energy budget, gravitational evidence for dark matter, and dark energy.",
+              "interaction": "WebGL2 · 宇宙组成 · 参数探索",
+              "interaction_en": "WebGL2 · Cosmic composition · Interactive controls",
+              "href": "demos/solar-system/dark-universe.html",
+              "screenshot": "assets/astronomy-dark-universe.png",
               "published": true
             }
           ]
@@ -136,10 +151,10 @@
           "slug": "moon-exploration",
           "name": "登月探索",
           "english": "Moon Exploration",
-          "description": "沿阿波罗 11 号的任务线索，观察人类登月。",
-          "description_en": "Follow Apollo 11 and explore the first human Moon landing.",
-          "status": "1 个演示已开放",
-          "status_en": "1 lesson available",
+          "description": "从月球轨道与月相开始，再观察日食、月食和人类登月。",
+          "description_en": "Explore lunar orbits and phases, solar and lunar eclipses, and the human Moon landing.",
+          "status": "2 个演示已开放",
+          "status_en": "2 lessons available",
           "lessons": [
             {
               "slug": "moonlanding",
@@ -150,6 +165,18 @@
               "interaction": "3D 场景 · 任务过程",
               "interaction_en": "3D scene · Mission sequence",
               "href": "demos/solar-system/moonlanding.html",
+              "published": true
+            },
+            {
+              "slug": "moon-phases",
+              "name": "月相与食",
+              "english": "Moon Phases & Eclipses",
+              "description": "切换月相、日食与月食，观察太阳、地球和月球的几何关系。",
+              "description_en": "Switch between lunar phases and eclipses to explore the Sun–Earth–Moon geometry.",
+              "interaction": "WebGL2 · 月相 · 日食与月食",
+              "interaction_en": "WebGL2 · Lunar phases · Solar and lunar eclipses",
+              "href": "demos/solar-system/moon-phases-large.html",
+              "screenshot": "assets/moon-phases-preview.png",
               "published": true
             }
           ]
@@ -173,6 +200,7 @@
           "english": "Forces & Motion",
           "description": "通过一辆可操作的 3D 汽车，观察受力图与牛顿三大定律。",
           "description_en": "Use an interactive 3D car to study force diagrams and Newton's three laws.",
+          "screenshot": "demos/physics/newton-garage/preview.png",
           "status": "1 个演示已开放",
           "status_en": "1 lesson available",
           "lessons": [
@@ -185,6 +213,7 @@
               "interaction": "3D 汽车 · 双语 · 五章实验",
               "interaction_en": "3D car · Bilingual · Five chapters",
               "href": "demos/physics/newton-garage/index.html",
+              "screenshot": "demos/physics/newton-garage/preview.png",
               "published": true
             }
           ]
@@ -240,11 +269,11 @@
       "name": "生物学",
       "english": "Biology",
       "eyebrow": "从微观结构认识生命",
-      "description": "观察细胞的形态与结构，再追踪光合作用和呼吸作用中的能量转化。",
-      "description_en": "Explore cell structures, photosynthesis, respiration, and the flow of energy in living systems.",
+      "description": "从细胞、人体系统到生命活动，观察生命结构与功能。",
+      "description_en": "Explore life from cells and organ systems to the processes that sustain living things.",
       "accent": "#428258",
-      "status": "细胞能量图鉴已开放",
-      "status_en": "Cellular Energy Atlas available",
+      "status": "细胞、人体系统与病毒专题已开放",
+      "status_en": "Cell, human systems, and virus lessons available",
       "topics": [
         {
           "slug": "cell-world",
@@ -252,9 +281,20 @@
           "english": "The Cell World",
           "description": "从原核细胞、真核细胞到病毒，对照三维结构与显微图像。",
           "description_en": "Compare 3D structures and microscope images of prokaryotes, eukaryotes, and viruses.",
-          "status": "本地预览 · 素材核对中",
-          "status_en": "Local preview · Image credits under review",
+          "status": "病毒图鉴已开放 · 细胞图鉴本地预览",
+          "status_en": "Virus Atlas available · Cell Atlas local preview",
           "lessons": [
+            {
+              "slug": "virus-atlas",
+              "name": "病毒图鉴",
+              "english": "Virus Atlas",
+              "description": "探索七类代表病毒的结构、基因组与复制策略，并对照真实电子显微镜图像。",
+              "description_en": "Explore the structures, genomes, and replication strategies of seven representative viruses, alongside electron micrographs.",
+              "interaction": "7 种病毒 · 3D 模型 · 电镜对照 · 来源署名",
+              "interaction_en": "7 viruses · 3D models · Micrograph comparison · Image credits",
+              "href": "demos/biology/virus-atlas/index.html",
+              "published": true
+            },
             {
               "slug": "cell-atlas",
               "name": "细胞形态图鉴",
@@ -288,6 +328,28 @@
               "published": true
             }
           ]
+        },
+        {
+          "slug": "human-systems",
+          "name": "人体系统",
+          "english": "Human Systems",
+          "description": "以交互式三维人体观察九大系统与代表器官，了解结构如何支持生命活动。",
+          "description_en": "Explore nine organ systems and representative organs in an interactive 3D human model.",
+          "status": "1 个双语演示已开放",
+          "status_en": "1 bilingual lesson available",
+          "lessons": [
+            {
+              "slug": "human-systems-atlas",
+              "name": "人体系统图鉴",
+              "english": "Human Systems Atlas",
+              "description": "旋转人体模型、切换系统、剖切结构并点选器官，查看中英文说明。",
+              "description_en": "Rotate the body, switch systems, clip the model, and select organs for bilingual explanations.",
+              "interaction": "9 大系统 · WebGL 交互 · 中英切换",
+              "interaction_en": "9 systems · WebGL interaction · Chinese / English",
+              "href": "demos/biology/human-systems/index.html",
+              "published": true
+            }
+          ]
         }
       ]
     },
@@ -306,20 +368,21 @@
           "slug": "atomic-structure",
           "name": "原子结构",
           "english": "Atomic Structure",
-          "description": "沿着科学发现的时间线，比较原子模型，并观察电子云与原子轨道。",
-          "description_en": "Follow the discoveries behind atomic models, then explore electron clouds and orbitals.",
+          "description": "沿着 2400 年时间线观察八种原子模型与关键实验。",
+          "description_en": "Follow a 2,400-year timeline of atomic models and the experiments that reshaped them.",
           "status": "1 个演示已开放",
           "status_en": "1 lesson available",
           "lessons": [
             {
-              "slug": "atomic-atlas",
-              "name": "原子图鉴",
-              "english": "Atomic Atlas",
-              "description": "操作 12 个模型与实验视图，理解原子观念如何随证据改变。",
-              "description_en": "Explore 12 models and experiments to see how evidence changed our view of atoms.",
-              "interaction": "模型演进 · 电子云 · 互动实验",
-              "interaction_en": "Model history · Electron clouds · Experiments",
-              "href": "demos/chemistry/atomic-atlas/index.html",
+              "slug": "atom-history",
+              "name": "原子模型2400年",
+              "english": "2,400 Years of Atomic Models",
+              "description": "沿着时间线观察八种原子模型与关键实验，理解科学证据如何改写原子理论。",
+              "description_en": "Follow eight atomic models and the experiments that changed our understanding of atoms.",
+              "interaction": "八种模型 · 六次范式转移 · 中英切换",
+              "interaction_en": "8 models · 6 paradigm shifts · Chinese / English",
+              "href": "demos/chemistry/atom-history/index.html",
+              "screenshot": "assets/atom-history-preview.png",
               "published": true
             }
           ]

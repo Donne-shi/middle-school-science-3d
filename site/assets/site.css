@@ -102,6 +102,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .topic-list, .lesson-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-bottom: 104px; }
 .topic-card, .lesson-card { position: relative; min-height: 238px; padding: 30px 33px; border: 1px solid var(--line); background: #ffffff; box-shadow: 0 10px 30px rgba(34, 92, 109, .045); transition: border-color .2s, transform .2s; }
 .topic-card:hover, a.lesson-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.screenshot-preview { display: block; aspect-ratio: 16 / 9; margin: -30px -33px 24px; overflow: hidden; border-bottom: 1px solid var(--line); background: #e9eff1; }
+.screenshot-preview img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .lesson-card-pending { background: #f1f6f7; }
 .topic-card h3, .lesson-card h3 { margin: 27px 0 7px; font: 500 clamp(27px, 2.6vw, 37px) var(--serif); }
 .topic-card .english, .lesson-card .english { color: var(--accent); font: 10px var(--mono); letter-spacing: .15em; text-transform: uppercase; }

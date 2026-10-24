@@ -1,0 +1,3709 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F5F2EA">
+<meta name="description" content="不可分者：原子模型 2400 年。从德谟克利特到夸克，八种原子模型、六次范式转移，以及那些不肯配合旧模型的实验。An interactive 3D history of the atom, bilingual.">
+<title>不可分者 · 原子模型 2400 年 — ATOMOS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23070a0c'/%3E%3Ccircle cx='32' cy='32' r='4.5' fill='%234fe0a6'/%3E%3Cellipse cx='32' cy='32' rx='25' ry='9' fill='none' stroke='%234fe0a6' stroke-opacity='.75' stroke-width='1.6'/%3E%3Cellipse cx='32' cy='32' rx='25' ry='9' fill='none' stroke='%234fe0a6' stroke-opacity='.45' stroke-width='1.6' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='25' ry='9' fill='none' stroke='%234fe0a6' stroke-opacity='.45' stroke-width='1.6' transform='rotate(-60 32 32)'/%3E%3C/svg%3E">
+<style>
+/* ================= tokens ================= */
+:root{
+  --void:#F5F2EA;
+  --void2:#EFEBE1;
+  --panel:#FFFFFF;
+  --panel2:#FBFAF5;
+  --panel3:#F1EDE2;
+  --ink:#171B1D;
+  --ink2:#3D4649;
+  --muted:#6A7579;
+  --dim:#8D9698;
+  --line:rgba(23,27,29,.10);
+  --line2:rgba(23,27,29,.18);
+  --line3:rgba(23,27,29,.30);
+  --fluoro:#0E7A57;
+  --fluoro-2:#1E9A72;
+  --fluoro-dim:rgba(14,122,87,.13);
+  --brass:#8A6A12;
+  --brass-2:#A7821E;
+  --copper:#B24A20;
+  --cyan:#2C6C92;
+  --serif:"Songti SC","STSong","Source Han Serif SC","Noto Serif CJK SC","SimSun",serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --en:"Helvetica Neue","Avenir Next",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.22,.7,.24,1);
+  --pad:clamp(20px,4.6vw,76px);
+}
+/* ================= base ================= */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--void);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+body.is-locked{overflow:hidden}
+h1,h2,h3,h4,p,ul,ol,figure,dl,dd{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+::selection{background:var(--fluoro);color:#FFFFFF}
+:focus-visible{outline:1px solid var(--fluoro);outline-offset:3px}
+/* ================= backdrop ================= */
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(to right,rgba(23,27,29,.062) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(23,27,29,.062) 1px,transparent 1px);
+  background-size:76px 76px;
+  -webkit-mask-image:radial-gradient(125% 85% at 50% 8%,#000 0%,rgba(0,0,0,.55) 42%,transparent 82%);
+  mask-image:radial-gradient(125% 85% at 50% 8%,#000 0%,rgba(0,0,0,.55) 42%,transparent 82%);
+  opacity:.85;
+}
+.bg-glow{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(46% 38% at 18% 6%,rgba(14,122,87,.075),transparent 70%),
+    radial-gradient(40% 34% at 84% 22%,rgba(138,106,18,.055),transparent 72%),
+    radial-gradient(60% 50% at 50% 100%,rgba(44,108,146,.04),transparent 72%);
+}
+.grain{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* ================= topbar ================= */
+.topbar{
+  position:fixed;left:0;right:0;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:clamp(14px,2.2vh,22px) var(--pad);
+  pointer-events:none;
+  transition:background .4s var(--ease),border-color .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.topbar.is-solid{
+  background:rgba(250,248,242,.88);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);
+  border-bottom-color:var(--line);
+}
+.topbar > *{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{display:block;width:22px;height:22px;flex:0 0 auto}
+.brand-txt{display:flex;flex-direction:column;line-height:1}
+.brand-txt b{font-family:var(--serif);font-size:14px;font-weight:600;letter-spacing:.14em}
+.brand-txt span{font-family:var(--mono);font-size:7.5px;letter-spacing:.2em;color:var(--dim);margin-top:4px}
+.topbar-right{display:flex;align-items:center;gap:18px}
+.tb-note{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.tb-note i{width:4px;height:4px;border-radius:50%;background:var(--fluoro);box-shadow:0 0 8px var(--fluoro);animation:beat 3.4s infinite}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.28}}
+/* language switch */
+.lang{display:flex;align-items:center;padding:2px;border:1px solid var(--line2);border-radius:999px;background:rgba(23,27,29,.55)}
+.lang button{
+  padding:5px 11px;border-radius:999px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  color:var(--muted);transition:color .25s,background .25s;line-height:1;
+}
+.lang button:hover{color:var(--ink2)}
+.lang button.is-on{background:var(--fluoro);color:#FFFFFF;font-weight:600}
+/* ================= hero ================= */
+.hero{
+  position:relative;z-index:2;min-height:min(100svh,760px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(86px,12vh,140px) var(--pad) clamp(30px,4.2vh,48px);
+}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) clamp(190px,17vw,250px);
+  gap:clamp(24px,4vw,64px);align-items:end;
+  flex:0 1 auto;align-content:center;
+}
+.eyebrow{
+  display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--dim);text-transform:uppercase;
+}
+.eyebrow b{color:var(--brass);font-weight:500}
+.eyebrow i{width:22px;height:1px;background:var(--line2);display:block}
+.hero-title{margin:clamp(18px,3vh,30px) 0 0;font-weight:400;line-height:.9}
+.hero-title .cn{
+  display:block;font-family:var(--serif);font-size:clamp(58px,9.6vw,152px);
+  letter-spacing:.06em;text-indent:-.04em;
+  color:#14181A;
+  text-shadow:0 0 80px rgba(14,122,87,.10),0 1px 0 rgba(255,255,255,.75);
+}
+.hero-title .lat{
+  display:block;margin-top:clamp(12px,1.8vh,20px);padding-left:.24em;
+  font-family:var(--en);font-size:clamp(10px,.95vw,13px);font-weight:400;
+  letter-spacing:.46em;color:var(--brass);text-transform:uppercase;
+}
+.hero-lede{
+  margin:clamp(26px,4.4vh,42px) 0 0;max-width:38em;
+  font-size:clamp(13.5px,1.12vw,15.5px);line-height:1.95;color:var(--ink2);letter-spacing:.02em;
+}
+.hero-lede strong{color:var(--ink);font-weight:500}
+.hero-lede .hl{color:var(--fluoro);position:relative}
+.hero-stats{display:flex;flex-wrap:wrap;gap:0;margin:clamp(26px,4.4vh,46px) 0 0}
+.hero-stats li{padding:0 clamp(14px,2vw,26px);border-left:1px solid var(--line)}
+.hero-stats li:first-child{padding-left:0;border-left:0}
+.hero-stats b{display:block;font-family:var(--mono);font-size:clamp(17px,1.5vw,21px);font-weight:400;color:#14181A;letter-spacing:.01em}
+.hero-stats span{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.1em;color:var(--muted)}
+.hero-stats em{display:block;font-style:normal;font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;color:var(--dim);margin-top:3px;text-transform:uppercase}
+/* hero side plate */
+.plate{border-left:1px solid var(--line);padding-left:clamp(14px,1.6vw,22px);padding-bottom:6px}
+.plate-t{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--muted);
+  text-transform:uppercase;margin-bottom:12px;
+}
+.plate ul{display:flex;flex-direction:column;gap:11px}
+.plate li{display:flex;flex-direction:column;gap:3px}
+.plate li b{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--ink);letter-spacing:.03em}
+.plate li span{font-size:9.5px;color:var(--muted);letter-spacing:.04em}
+.plate-rule{height:1px;background:var(--line);margin:14px 0}
+/* hero tube */
+.tube-hero{position:relative;z-index:2;margin-top:clamp(38px,7vh,84px);width:100%}
+.tube-hero svg{display:block;width:100%;height:clamp(40px,5vh,54px)}
+.tube-cap{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:10px;
+  font-family:var(--mono);font-size:8px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;
+}
+.tube-cap span:last-child{text-align:right}
+.tube-cap .cue{display:flex;align-items:center;gap:8px;color:var(--brass-2);letter-spacing:.22em;opacity:.75}
+.tube-cap .cue i{display:block;width:30px;height:1px;background:var(--line2);position:relative;overflow:hidden}
+.tube-cap .cue i::after{content:"";position:absolute;inset:0;background:var(--fluoro);transform:translateX(-100%);animation:sweep 2.8s var(--ease) infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}55%{transform:translateX(0)}100%{transform:translateX(100%)}}
+/* ================= timeline ================= */
+.line-section{position:relative;z-index:2;padding:clamp(46px,6.4vh,84px) 0 clamp(50px,7vh,90px);border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:0 var(--pad);flex-wrap:wrap}
+.sec-head h2{
+  margin-top:12px;font-family:var(--serif);font-weight:400;
+  font-size:clamp(27px,3.1vw,40px);letter-spacing:.05em;line-height:1.25;color:#14181A;
+}
+.sec-head h2 span{color:#93a3a9}
+.sec-note{max-width:34ch;font-size:12px;line-height:1.85;color:#8b9aa1;letter-spacing:.02em;text-align:right}
+@media(max-width:820px){.sec-note{text-align:left;max-width:100%}}
+.rail-wrap{position:relative;margin-top:clamp(22px,3.4vh,36px)}
+.rail{
+  overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;
+  cursor:grab;padding:0 var(--pad);
+  scroll-behavior:smooth;
+}
+.rail::-webkit-scrollbar{display:none}
+.rail.is-drag{cursor:grabbing;scroll-behavior:auto}
+.rail.is-drag .node-card{pointer-events:none}
+.rail-track{position:relative;display:flex;width:max-content;height:clamp(500px,62vh,650px);margin:0 auto}
+/* the tube */
+.rail-tube{
+  position:absolute;left:0;right:0;top:50%;height:54px;transform:translateY(-50%);
+  pointer-events:none;
+}
+.rail-tube .glass{
+  position:absolute;left:0;right:0;top:0;bottom:0;border-radius:999px;
+  background:linear-gradient(to bottom,rgba(255,255,255,.72),rgba(255,255,255,.38) 38%,rgba(232,228,216,.34));
+  border:1px solid rgba(23,27,29,.13);
+  box-shadow:inset 0 1px 0 #ffffff,inset 0 -8px 14px rgba(120,112,95,.07),0 10px 22px -18px rgba(60,55,40,.25);
+}
+.rail-tube .glass::before,.rail-tube .glass::after{
+  content:"";position:absolute;left:26px;right:26px;height:1px;background:rgba(23,27,29,.13);
+}
+.rail-tube .glass::before{top:4px;opacity:.55}
+.rail-tube .glass::after{bottom:4px;opacity:.2}
+.rail-tube .beam{
+  position:absolute;left:0;right:0;top:50%;height:2px;transform:translateY(-50%);
+  background:linear-gradient(90deg,transparent,rgba(14,122,87,.16) 6%,rgba(14,122,87,.62) 50%,rgba(14,122,87,.16) 94%,transparent);
+  box-shadow:0 0 16px rgba(14,122,87,.55),0 0 44px rgba(14,122,87,.2);
+}
+.rail-tube .beam::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(30,154,114,.85),transparent);
+  background-size:180px 100%;background-repeat:no-repeat;
+  animation:beamrun 6.5s linear infinite;
+}
+@keyframes beamrun{0%{background-position:-200px 0}100%{background-position:calc(100% + 200px) 0}}
+.rail-tube .electrode{
+  position:absolute;top:50%;width:9px;height:26px;transform:translateY(-50%);
+  border-radius:3px;background:linear-gradient(to bottom,#9AA4A8,#5A6569);
+  border:1px solid rgba(23,27,29,.18);
+}
+.rail-tube .electrode.l{left:10px}
+.rail-tube .electrode.r{right:10px}
+/* nodes */
+.node{position:relative;flex:0 0 auto;width:clamp(212px,20vw,264px);height:100%;padding:0 clamp(7px,.8vw,11px)}
+.node-hit{position:absolute;inset:0;z-index:4;width:100%;text-align:left;padding:0}
+.node-dot{
+  position:absolute;left:50%;top:50%;width:14px;height:14px;transform:translate(-50%,-50%);
+  border-radius:50%;background:radial-gradient(circle,#8FE8C6 0%,var(--fluoro) 42%,#0B5F44 100%);
+  box-shadow:0 0 0 4px #F5F2EA,0 0 0 5px rgba(23,27,29,.14),0 2px 8px 1px rgba(14,122,87,.28);
+  transition:transform .45s var(--ease),box-shadow .45s var(--ease);
+  z-index:3;
+}
+.node-dot::after{
+  content:"";position:absolute;inset:-9px;border:1px solid rgba(14,122,87,.3);border-radius:50%;
+  animation:halo 3.6s var(--ease) infinite;
+}
+@keyframes halo{0%,100%{transform:scale(.85);opacity:.55}50%{transform:scale(1.18);opacity:0}}
+.node-stem{position:absolute;left:50%;width:1px;background:linear-gradient(to bottom,rgba(14,122,87,.5),rgba(14,122,87,.06));z-index:2}
+.node.up .node-stem{bottom:50%;height:clamp(34px,4.4vh,46px)}
+.node.down .node-stem{top:50%;height:clamp(34px,4.4vh,46px);background:linear-gradient(to top,rgba(14,122,87,.5),rgba(14,122,87,.06))}
+.dot-hit{position:absolute;inset:-16px;border-radius:50%;cursor:pointer}
+.node-card{
+  position:absolute;left:clamp(7px,.8vw,11px);right:clamp(7px,.8vw,11px);
+  border:1px solid rgba(23,27,29,.115);border-radius:13px;overflow:hidden;
+  text-align:left;padding:0;font:inherit;color:inherit;cursor:pointer;
+  background:linear-gradient(168deg,#FFFFFF,rgba(253,252,248,.97));
+  box-shadow:0 12px 26px -20px rgba(58,52,38,.55),0 1px 0 rgba(255,255,255,.9) inset;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  transition:transform .45s var(--ease),border-color .45s var(--ease),box-shadow .45s var(--ease),background .45s var(--ease);
+  z-index:5;
+}
+.node.up .node-card{bottom:calc(50% + clamp(34px,4.4vh,46px))}
+.node.down .node-card{top:calc(50% + clamp(34px,4.4vh,46px))}
+.node-card:hover{
+  transform:translateY(-4px);border-color:rgba(14,122,87,.42);
+  box-shadow:0 20px 40px -20px rgba(58,52,38,.6),0 0 0 1px rgba(14,122,87,.16);
+}
+.node.up .node-card:hover{transform:translateY(-7px)}
+.node:hover .node-dot{transform:translate(-50%,-50%) scale(1.32);box-shadow:0 0 0 4px #F5F2EA,0 0 0 6px rgba(14,122,87,.3),0 3px 12px 2px rgba(14,122,87,.35)}
+.node-thumb{position:relative;aspect-ratio:16/11;background:#EFEBE1;border-bottom:1px solid var(--line)}
+.node-thumb canvas{display:block;width:100%;height:100%}
+.node-thumb::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(80% 80% at 50% 45%,transparent 52%,rgba(245,242,234,.42));
+}
+.node-badge{
+  position:absolute;left:9px;top:8px;z-index:2;
+  font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:rgba(23,27,29,.42);
+}
+.node-yr{
+  position:absolute;right:9px;top:6px;z-index:2;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--brass-2);
+  text-shadow:0 1px 0 rgba(255,255,255,.9),0 0 8px rgba(255,255,255,.7);
+}
+.node-body{padding:11px 12px 13px}
+.node-name{font-family:var(--serif);font-size:15.5px;letter-spacing:.05em;color:#171B1D;line-height:1.35}
+.node-en{
+  display:block;margin-top:4px;font-family:var(--en);font-size:7.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--dim);line-height:1.5;
+}
+.node-person{
+  display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+  font-size:10.5px;color:var(--muted);letter-spacing:.03em;
+}
+.node-person i{width:3px;height:3px;border-radius:50%;background:var(--brass);flex:0 0 auto}
+.node-imp{display:flex;align-items:center;gap:3px;margin-left:auto}
+.node-imp s{display:block;width:9px;height:2px;background:rgba(23,27,29,.14);text-decoration:none}
+.node-imp s.on{background:var(--copper);box-shadow:0 0 6px rgba(178,74,32,.6)}
+/* rail nav */
+.rail-nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:12;
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line2);background:rgba(252,251,246,.94);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  color:var(--ink2);transition:border-color .25s,color .25s,background .25s,opacity .3s;
+}
+.rail-nav:hover{border-color:var(--fluoro);color:var(--fluoro);background:rgba(250,252,249,.96)}
+.rail-nav[disabled]{opacity:.18;pointer-events:none}
+.rail-nav.prev{left:calc(var(--pad) * .34)}
+.rail-nav.next{right:calc(var(--pad) * .34)}
+.rail-nav svg{width:15px;height:15px}
+.rail-foot{
+  display:flex;align-items:center;gap:14px;padding:16px var(--pad) 0;
+  font-family:var(--mono);font-size:8px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;
+}
+.rail-bar{flex:1;height:2px;background:rgba(23,27,29,.12);position:relative;overflow:hidden;max-width:280px;border-radius:2px}
+.rail-bar i{position:absolute;left:0;top:0;bottom:0;width:20%;background:linear-gradient(90deg,rgba(14,122,87,.5),var(--fluoro));opacity:.85;border-radius:2px;transition:transform .2s linear}
+.rail-hint{display:flex;align-items:center;gap:7px}
+/* ================= stage / deck ================= */
+.stage{
+  position:fixed;inset:0;z-index:100;display:none;
+  padding:clamp(8px,1.4vw,20px);
+}
+.stage.is-open{display:block}
+.stage-scrim{
+  position:absolute;inset:0;background:rgba(245,242,234,.88);
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
+  opacity:0;transition:opacity .45s var(--ease);
+}
+.stage.is-in .stage-scrim{opacity:1}
+.deck{
+  position:relative;z-index:2;height:100%;max-width:1560px;margin:0 auto;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(178deg,#FFFDF8,#F3F0E7 60%);
+  border:1px solid rgba(23,27,29,.14);border-radius:clamp(12px,1.1vw,18px);
+  box-shadow:0 40px 120px rgba(0,0,0,.85),inset 0 1px 0 rgba(23,27,29,.06);
+  opacity:0;transform:translateY(18px) scale(.985);
+  transition:opacity .5s var(--ease),transform .55s var(--ease);
+}
+.stage.is-in .deck{opacity:1;transform:none}
+/* deck top */
+.deck-top{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px clamp(12px,1.4vw,20px);border-bottom:1px solid var(--line);
+  background:rgba(252,251,246,.84);flex:0 0 auto;
+}
+.deck-back{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2);letter-spacing:.04em;padding:6px 10px 6px 4px;border-radius:7px;transition:color .25s,background .25s}
+.deck-back:hover{color:var(--fluoro);background:rgba(14,122,87,.07)}
+.deck-back svg{width:13px;height:13px}
+.deck-crumb{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;min-width:0}
+.deck-crumb .c-idx{color:var(--fluoro)}
+.deck-crumb .c-sep{width:16px;height:1px;background:var(--line2)}
+.deck-crumb .c-year{color:var(--brass-2)}
+.deck-crumb .c-name{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deck-actions{display:flex;align-items:center;gap:10px}
+.deck-x{width:30px;height:30px;display:grid;place-items:center;border-radius:7px;color:var(--muted);transition:color .25s,background .25s}
+.deck-x:hover{color:var(--ink);background:rgba(23,27,29,.06)}
+.deck-x svg{width:13px;height:13px}
+/* deck scroll */
+.deck-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(23,27,29,.15) transparent}
+.deck-scroll::-webkit-scrollbar{width:5px}
+.deck-scroll::-webkit-scrollbar-thumb{background:rgba(23,27,29,.15);border-radius:5px}
+.deck-body{
+  display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);
+  align-items:start;
+}
+/* ================= viewer ================= */
+.viewer{
+  position:sticky;top:0;z-index:3;
+  height:clamp(400px,calc(100svh - 158px),820px);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0;background:#EFEBE1;
+}
+.viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px 10px;flex:0 0 auto}
+.seg{display:inline-flex;padding:2px;border:1px solid var(--line2);border-radius:7px;background:rgba(252,251,246,.74)}
+.seg button{
+  padding:6px 12px;border-radius:5px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  color:var(--muted);text-transform:uppercase;transition:color .22s,background .22s;white-space:nowrap;
+}
+.seg button:hover{color:var(--ink2)}
+.seg button.is-on{background:rgba(14,122,87,.14);color:var(--fluoro);box-shadow:inset 0 0 0 1px rgba(14,122,87,.3)}
+.viewer-tag{font-family:var(--mono);font-size:8px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.viewer-tag i{width:4px;height:4px;border-radius:50%;background:var(--copper);box-shadow:0 0 7px var(--copper)}
+.canvas-wrap{position:relative;flex:1;margin:0 14px;border-radius:10px;overflow:hidden;border:1px solid rgba(23,27,29,.09);background:#FAF8F2;min-height:0}
+#view{display:block;width:100%;height:100%;touch-action:none}
+.canvas-wrap::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:10px;
+  box-shadow:inset 0 0 54px rgba(120,112,95,.10),inset 0 1px 0 rgba(255,255,255,.9);
+}
+.cv-hud{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;padding:10px 12px;pointer-events:none;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:rgba(45,54,58,.78);text-transform:uppercase}
+.cv-hud b{color:rgba(14,122,87,.8);font-weight:400}
+/* lab controls */
+.lab-bar{
+  flex:0 0 auto;padding:11px 14px 13px;display:none;flex-wrap:wrap;gap:10px 16px;align-items:center;
+  border-top:1px solid var(--line);background:rgba(255,255,255,.72);
+}
+.lab-bar.is-on{display:flex}
+.ctrl{display:flex;align-items:center;gap:9px;min-width:0}
+.ctrl-k{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+.ctrl-v{font-family:var(--mono);font-size:10.5px;color:var(--fluoro);min-width:44px;text-align:right;letter-spacing:.01em}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:clamp(76px,9vw,116px);height:16px;background:transparent;cursor:ew-resize;
+}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(23,27,29,.16);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--fluoro);
+  margin-top:-4.5px;box-shadow:0 0 0 3px rgba(14,122,87,.14),0 0 10px rgba(14,122,87,.6);
+}
+input[type=range]::-moz-range-track{height:2px;background:rgba(23,27,29,.16)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--fluoro)}
+.mini-btn{
+  padding:6px 11px;border:1px solid var(--line2);border-radius:6px;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.11em;color:var(--ink2);text-transform:uppercase;
+  transition:border-color .22s,color .22s,background .22s;white-space:nowrap;
+}
+.mini-btn:hover{border-color:var(--fluoro);color:var(--fluoro);background:rgba(14,122,87,.07)}
+.mini-btn.is-on{border-color:rgba(14,122,87,.5);color:var(--fluoro);background:rgba(14,122,87,.1)}
+.d-switch{
+  display:inline-flex;align-items:center;gap:10px;margin-top:18px;
+  padding:10px 15px 10px 17px;border:1px solid rgba(14,122,87,.30);border-radius:999px;
+  font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:.035em;
+  color:var(--fluoro);background:rgba(14,122,87,.05);
+  transition:background .22s var(--ease),border-color .22s var(--ease),transform .22s var(--ease);
+}
+.d-switch:hover{background:rgba(14,122,87,.115);border-color:rgba(14,122,87,.62);transform:translateX(3px)}
+.d-switch em{font-style:normal;font-size:13px;line-height:1;transition:transform .22s var(--ease)}
+.d-switch:hover em{transform:translateX(2px)}
+/* ================= dossier ================= */
+.dossier{padding:clamp(20px,2.2vw,34px) clamp(18px,2.2vw,36px) clamp(26px,3vw,40px);overflow:hidden}
+.d-year{font-family:var(--mono);font-size:clamp(30px,3.4vw,46px);line-height:1;color:rgba(138,106,18,.85);letter-spacing:-.01em}
+.d-year u{text-decoration:none;font-size:.4em;letter-spacing:.06em;margin-left:8px;color:var(--dim);vertical-align:middle}
+.d-name{margin-top:14px;font-family:var(--serif);font-weight:400;font-size:clamp(25px,2.5vw,34px);line-height:1.25;letter-spacing:.03em;color:#14181A}
+.d-en{margin-top:8px;font-family:var(--en);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.6}
+.d-person{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.d-person b{font-size:13.5px;font-weight:500;color:var(--ink);letter-spacing:.03em}
+.d-person span{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.06em}
+.d-person em{font-style:normal;font-size:10px;color:var(--muted);margin-left:auto;letter-spacing:.02em}
+.d-claim{
+  margin-top:20px;padding-left:14px;border-left:2px solid rgba(14,122,87,.5);
+  font-family:var(--serif);font-size:clamp(15px,1.5vw,18px);line-height:1.85;color:#2A3134;letter-spacing:.02em;
+}
+.d-core{margin-top:18px;font-size:12.8px;line-height:2;color:var(--ink2);letter-spacing:.015em}
+.d-core b{color:#171B1D;font-weight:500}
+.d-sub{
+  display:flex;align-items:center;gap:8px;margin-top:26px;
+  font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;
+}
+.d-sub i{flex:1;height:1px;background:var(--line)}
+.tenets{display:flex;flex-direction:column;gap:0;margin-top:6px}
+.tenets li{
+  display:grid;grid-template-columns:auto 1fr;gap:11px;padding:10px 0;
+  border-bottom:1px dashed rgba(23,27,29,.07);font-size:12px;line-height:1.75;color:var(--ink2);
+}
+.tenets li:last-child{border-bottom:0}
+.tenets li s{
+  text-decoration:none;font-family:var(--mono);font-size:8.5px;color:var(--fluo);opacity:.7;padding-top:3px;
+}
+.d-quote{
+  margin-top:22px;padding:16px 16px 14px;border:1px solid var(--line);border-radius:9px;
+  background:rgba(23,27,29,.018);position:relative;
+}
+.d-quote p{font-family:var(--serif);font-size:13px;line-height:1.95;color:#2E3538;letter-spacing:.02em}
+.d-quote cite{display:block;margin-top:9px;font-style:normal;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.d-limit{margin-top:20px;padding:12px 14px;border-radius:8px;background:rgba(178,74,32,.06);border:1px solid rgba(178,74,32,.18)}
+.d-limit b{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.16em;color:var(--copper);text-transform:uppercase;margin-bottom:6px}
+.d-limit p{font-size:11.5px;line-height:1.8;color:#6E5C50}
+/* ================= impact ================= */
+.impact{
+  border-top:1px solid var(--line2);padding:clamp(24px,3vw,42px) clamp(18px,2.4vw,40px) clamp(30px,4vw,52px);
+  background:
+    radial-gradient(70% 130% at 12% 0%,rgba(138,106,18,.055),transparent 62%),
+    linear-gradient(180deg,rgba(23,27,29,.014),transparent);
+}
+.impact-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.impact-head h3{font-family:var(--mono);font-size:9px;font-weight:400;letter-spacing:.26em;color:var(--brass);text-transform:uppercase}
+.impact-head .tag{
+  padding:3px 8px;border:1px solid rgba(138,106,18,.3);border-radius:4px;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;color:rgba(138,106,18,.85);text-transform:uppercase;
+}
+.impact-lead{
+  margin-top:16px;max-width:22em;font-family:var(--serif);
+  font-size:clamp(20px,2.6vw,33px);line-height:1.55;letter-spacing:.03em;color:#14181A;
+}
+.impact-lead .mk{color:var(--brass-2)}
+.impact-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.95fr);gap:clamp(22px,3vw,46px);margin-top:clamp(22px,3vw,32px)}
+.impact-list{display:flex;flex-direction:column;gap:0}
+.impact-list li{
+  display:grid;grid-template-columns:auto 1fr;gap:13px;padding:12px 0;border-top:1px solid rgba(23,27,29,.08);
+  font-size:12.5px;line-height:1.85;color:var(--ink2);letter-spacing:.015em;
+}
+.impact-list li b{
+  font-family:var(--mono);font-size:9px;font-weight:400;color:var(--brass);opacity:.8;padding-top:3px;
+}
+.impact-chain{border-left:1px solid var(--line);padding-left:clamp(16px,2vw,26px)}
+.chain-t{font-family:var(--mono);font-size:8px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
+.chain{display:flex;flex-direction:column;gap:0}
+.chain li{
+  position:relative;padding:0 0 16px 18px;font-size:11.5px;line-height:1.6;color:var(--ink2);
+}
+.chain li::before{
+  content:"";position:absolute;left:0;top:5px;width:6px;height:6px;border-radius:50%;
+  background:var(--brass);box-shadow:0 0 9px rgba(138,106,18,.55);
+}
+.chain li::after{
+  content:"";position:absolute;left:2.5px;top:15px;bottom:1px;width:1px;background:linear-gradient(to bottom,rgba(138,106,18,.42),rgba(138,106,18,.06));
+}
+.chain li:last-child{padding-bottom:0}
+.chain li:last-child::after{display:none}
+.chain li b{display:block;font-size:11.5px;font-weight:500;color:#171B1D;letter-spacing:.02em}
+.chain li span{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+/* ================= footer ================= */
+.site-foot{
+  position:relative;z-index:2;border-top:1px solid var(--line);
+  padding:clamp(28px,4vh,44px) var(--pad) clamp(30px,4vh,48px);
+  display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.foot-l{max-width:46ch}
+.foot-l p{font-size:11px;line-height:1.95;color:var(--dim);letter-spacing:.02em}
+.foot-l b{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.foot-r{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+.foot-r div{display:flex;flex-direction:column;gap:5px}
+.foot-r span{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.foot-r b{font-family:var(--mono);font-size:10px;font-weight:400;color:var(--ink2)}
+/* ================= reveal ================= */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .95s var(--ease) both;animation-delay:calc(var(--i,0) * 72ms + 40ms)}
+/* ================= responsive ================= */
+@media(max-width:1180px){
+  .deck-body{grid-template-columns:minmax(0,1fr) minmax(300px,.9fr)}
+}
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .plate{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:16px;display:none}
+  .deck-body{grid-template-columns:1fr;min-height:0}
+  .viewer{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .canvas-wrap{height:clamp(240px,34vh,330px);flex:0 0 auto}
+  .dossier{padding:22px 18px 30px}
+  .impact-grid{grid-template-columns:1fr;gap:24px}
+  .impact-chain{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:20px}
+  .rail-track{height:clamp(430px,54vh,500px)}
+}
+@media(max-width:760px){
+  .tb-note{display:none}
+  .hero{padding-top:clamp(78px,12vh,110px);min-height:0}
+  .hero-title .cn{font-size:clamp(46px,12.5vw,72px)}
+  .hero-stats li{padding:0 12px}
+  .node{width:218px}
+  .rail-nav{display:none}
+  .node-name{font-size:14px}
+  .d-name{font-size:22px}
+  .impact-lead{font-size:19px}
+  .deck-crumb .c-name{display:none}
+  .deck-back span{display:none}
+  .deck-back{padding:8px 8px 8px 6px}
+  .deck-crumb{font-size:8px;gap:7px}
+  .deck-crumb .c-sep{width:9px}
+  .lab-bar{gap:8px 12px}
+}
+@media(max-width:430px){
+  .seg button{padding:6px 9px;font-size:8px}
+  .hero-stats{gap:6px 0}
+  .hero-stats b{font-size:15px}
+  .hero-stats span{font-size:8.5px}
+  .d-core{font-size:12px;line-height:1.95}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+<style id="science-topic-bridge-style">
+.science-topic-back{display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border:1px solid var(--line2);border-radius:99px;background:rgba(255,255,255,.68);color:var(--ink2);font:9px/1.2 var(--mono);letter-spacing:.1em;text-decoration:none;white-space:nowrap;transition:background .2s,border-color .2s,color .2s}
+.science-topic-back:hover,.science-topic-back:focus-visible{border-color:var(--fluoro-2);background:#fff;color:var(--fluoro)}
+@media(max-width:760px){.topbar-right{gap:8px}.science-topic-back{padding:0 8px;font-size:8px}.lang button{padding:5px 8px}}
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar" id="topbar">
+  <a class="brand" href="#top" aria-label="ATOMOS">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="2.1" fill="#4fe0a6"/>
+      <ellipse cx="12" cy="12" rx="9.4" ry="3.4" stroke="#4fe0a6" stroke-opacity=".8" stroke-width=".9"/>
+      <ellipse cx="12" cy="12" rx="9.4" ry="3.4" stroke="#4fe0a6" stroke-opacity=".5" stroke-width=".9" transform="rotate(60 12 12)"/>
+      <ellipse cx="12" cy="12" rx="9.4" ry="3.4" stroke="#4fe0a6" stroke-opacity=".5" stroke-width=".9" transform="rotate(-60 12 12)"/>
+    </svg>
+    <span class="brand-txt"><b data-zh="不可分者" data-en="ATOMOS">不可分者</b><span data-zh="ATOMOS" data-en="ATOMIC THEORY">ATOMOS</span></span>
+  </a>
+  <div class="topbar-right">
+    <a class="science-topic-back" id="scienceTopicBack" href="../../../topics/chemistry/atomic-structure/index.html" data-zh="← 化学专题" data-en="← Chemistry">← 化学专题</a>
+    <span class="tb-note"><i></i><span data-zh="实验笔记 · 互动演示" data-en="Lab Notebook · Interactive">实验笔记 · 互动演示</span></span>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang-btn="zh" class="is-on">中文</button>
+      <button type="button" data-lang-btn="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">
+          <span data-zh="原子理论" data-en="Atomic Theory">原子理论</span>
+          <i></i>
+          <b>460 BCE — 1964 CE</b>
+          <i></i>
+          <span data-zh="八种模型 · 六个实验" data-en="8 models · 6 experiments">八种模型 · 六个实验</span>
+        </p>
+        <h1 class="hero-title">
+          <span class="cn" data-zh="不可分者" data-en="The Indivisible">不可分者</span>
+          <span class="lat">ATOMOS &nbsp;·&nbsp; ἄτομος</span>
+        </h1>
+        <p class="hero-lede" data-zh-html="2400 年间，人类六次改写了原子的样子。每一次，都不是因为谁更聪明，而是因为<span class='hl'>一个实验不肯配合旧模型</span>。<br>这条放电管上，串着八种原子模型，和那些把它们逼出来的仪器。" data-en-html="Six times in 2,400 years, we redrew the atom. Not because someone was cleverer, but because <span class='hl'>an experiment refused to cooperate</span>.<br>Eight models hang on this discharge tube — and so do the instruments that forced them into being.">2400 年间，人类六次改写了原子的样子。每一次，都不是因为谁更聪明，而是因为<span class="hl">一个实验不肯配合旧模型</span>。<br>这条放电管上，串着八种原子模型，和那些把它们逼出来的仪器。</p>
+        <ul class="hero-stats">
+          <li><b>08</b><span data-zh="原子模型" data-en="Atomic models">原子模型</span><em>MODELS</em></li>
+          <li><b>06</b><span data-zh="范式转移" data-en="Paradigm shifts">范式转移</span><em>SHIFTS</em></li>
+          <li><b>2400</b><span data-zh="年" data-en="Years">年</span><em>YEARS</em></li>
+          <li><b>1:8000</b><span data-zh="被弹回的 α 粒子" data-en="Alphas bounced back">被弹回的 α 粒子</span><em>BACKSCATTER</em></li>
+        </ul>
+      </div>
+      <aside class="plate" aria-hidden="true">
+        <p class="plate-t">Scale / 尺度</p>
+        <ul>
+          <li><b>10⁻¹⁰ m</b><span data-zh="原子" data-en="Atom">原子</span></li>
+          <li><b>10⁻¹⁴ m</b><span data-zh="原子核" data-en="Nucleus">原子核</span></li>
+          <li><b>10⁻¹⁵ m</b><span data-zh="质子" data-en="Proton">质子</span></li>
+          <li><b>&lt; 10⁻¹⁸ m</b><span data-zh="夸克（上限）" data-en="Quark (limit)">夸克（上限）</span></li>
+        </ul>
+        <div class="plate-rule"></div>
+        <p class="plate-t">Method / 方法</p>
+        <ul>
+          <li><b data-zh="轰击 · 偏转" data-en="Bombard · Deflect">轰击 · 偏转</b><span data-zh="用粒子探测不可见之物" data-en="Probing the invisible">用粒子探测不可见之物</span></li>
+        </ul>
+      </aside>
+    </div>
+
+    <div class="tube-hero" aria-hidden="true">
+      <svg viewBox="0 0 1200 44" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="tubeGlass" gradientUnits="userSpaceOnUse" x1="0" y1="5" x2="0" y2="39">
+            <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
+            <stop offset=".42" stop-color="#ffffff" stop-opacity=".42"/>
+            <stop offset="1" stop-color="#DBD6C9" stop-opacity=".55"/>
+          </linearGradient>
+          <linearGradient id="beamG" gradientUnits="userSpaceOnUse" x1="0" y1="22" x2="1200" y2="22">
+            <stop offset="0" stop-color="#0E7A57" stop-opacity="0"/>
+            <stop offset=".07" stop-color="#0E7A57" stop-opacity=".9"/>
+            <stop offset=".9" stop-color="#0E7A57" stop-opacity=".9"/>
+            <stop offset="1" stop-color="#0E7A57" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="soft" x="-20%" y="-160%" width="140%" height="420%">
+            <feGaussianBlur stdDeviation="4"/>
+          </filter>
+        </defs>
+        <rect x="0" y="5" width="1200" height="34" rx="17" fill="url(#tubeGlass)" stroke="#171B1D" stroke-opacity=".30" stroke-width="1"/>
+        <line x1="26" y1="7.2" x2="1174" y2="7.2" stroke="#ffffff" stroke-opacity=".9" stroke-width="1.4"/>
+        <line x1="26" y1="36.8" x2="1174" y2="36.8" stroke="#171B1D" stroke-opacity=".12" stroke-width="1"/>
+        <line x1="0" y1="22" x2="1200" y2="22" stroke="url(#beamG)" stroke-width="18" filter="url(#soft)" opacity=".3"/>
+        <line x1="0" y1="22" x2="1200" y2="22" stroke="url(#beamG)" stroke-width="5" opacity=".45"/>
+        <line x1="0" y1="22" x2="1200" y2="22" stroke="url(#beamG)" stroke-width="2" opacity=".95"/>
+        <rect x="7" y="11" width="8" height="22" rx="2.5" fill="#5A6569" stroke="#171B1D" stroke-opacity=".5"/>
+        <rect x="1185" y="9" width="8" height="26" rx="2.5" fill="#5A6569" stroke="#171B1D" stroke-opacity=".5"/>
+        <circle cx="1189" cy="22" r="12" fill="#0E7A57" opacity=".14" filter="url(#soft)"/>
+        <circle cx="1189" cy="22" r="3" fill="#0E7A57"/>
+        <circle r="2.2" fill="#0E7A57">
+          <animateMotion dur="7s" repeatCount="indefinite" path="M12,22 L1186,22"/>
+          <animate attributeName="opacity" dur="7s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;.06;.94;1"/>
+        </circle>
+      </svg>
+      <div class="tube-cap">
+        <span data-zh="阴极 − CATHODE" data-en="CATHODE −">阴极 − CATHODE</span>
+        <span class="cue"><i></i><span data-zh="向下 · 时间线" data-en="SCROLL · TIMELINE">向下 · 时间线</span></span>
+        <span data-zh="荧光屏 · 观测 SCREEN" data-en="SCREEN · OBSERVATION">荧光屏 · 观测 SCREEN</span>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="line-section" id="timeline" aria-labelledby="tl-title">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow"><b>01</b><i></i><span data-zh="横向时间线" data-en="Horizontal timeline">横向时间线</span></p>
+        <h2 id="tl-title" data-zh-html="八个模型，<span>一条放电管</span>" data-en-html="Eight models, <span>one discharge tube</span>">八个模型，<span>一条放电管</span></h2>
+      </div>
+      <p class="sec-note" data-zh="点击任意光斑，进入 3D 演示与关键实验。光斑越亮，它推动科学越深。" data-en="Tap any glow for its 3D model and decisive experiment. Brighter node, deeper impact.">点击任意光斑，进入 3D 演示与关键实验。光斑越亮，它推动科学越深。</p>
+    </div>
+
+    <div class="rail-wrap">
+      <button class="rail-nav prev" id="railPrev" type="button" aria-label="Previous">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 3L5 8l5 5"/></svg>
+      </button>
+      <div class="rail" id="rail" role="region" aria-label="Atomic model timeline" tabindex="0">
+        <div class="rail-track" id="railTrack">
+          <div class="rail-tube" aria-hidden="true">
+            <div class="glass"></div>
+            <div class="beam"></div>
+            <div class="electrode l"></div>
+            <div class="electrode r"></div>
+          </div>
+        </div>
+      </div>
+      <button class="rail-nav next" id="railNext" type="button" aria-label="Next">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+    <div class="rail-foot">
+      <span class="rail-hint">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+        <span data-zh="拖动 / 滚动查看" data-en="Drag / scroll">拖动 / 滚动查看</span>
+      </span>
+      <span class="rail-bar"><i id="railBar"></i></span>
+      <span id="railCount">01 — 08</span>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-l">
+    <b>ATOMOS · 原子模型 2400 年</b>
+    <p data-zh="内容依据教科书与原始文献整理：道尔顿《化学哲学新体系》(1808)、汤姆孙 1897 年阴极射线论文、卢瑟福 1911 年《α 与 β 粒子被物质散射》、玻尔 1913 年三部曲、盖尔曼 1964 年夸克假说。所有 3D 图形由 Canvas 实时绘制，无外部依赖。" data-en="Sources: Dalton's New System of Chemical Philosophy (1808), Thomson's 1897 cathode-ray paper, Rutherford's 1911 scattering paper, Bohr's 1913 trilogy, Gell-Mann's 1964 quark hypothesis. All 3D visuals are rendered live on Canvas, with no external dependencies.">内容依据教科书与原始文献整理：道尔顿《化学哲学新体系》(1808)、汤姆孙 1897 年阴极射线论文、卢瑟福 1911 年《α 与 β 粒子被物质散射》、玻尔 1913 年三部曲、盖尔曼 1964 年夸克假说。所有 3D 图形由 Canvas 实时绘制，无外部依赖。</p>
+  </div>
+  <div class="foot-r">
+    <div><span>Models</span><b>08</b></div>
+    <div><span>Years</span><b>2400</b></div>
+    <div><span>Language</span><b>中 / EN</b></div>
+  </div>
+</footer>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="stage-scrim" id="scrim"></div>
+  <article class="deck" id="deck" role="dialog" aria-modal="true" aria-labelledby="deckTitle"></article>
+</div>
+
+<script>
+/* ============================================================
+   ATOMOS — data
+   8 models, 8 experiments, bilingual
+   ============================================================ */
+var MODELS = [
+{
+  id:'democritus', eraEn:'ANCIENT GREECE', n:'01', year:'前 400', yearEn:'400 BCE', era:'古希腊', color:'#8A6A12', impact:4,
+  scene:'democritus', labType:'zoom',
+  zh:{
+    name:'原子论', sub:'ATOMISM', person:'德谟克利特', life:'约前 460 — 前 370', role:'哲学家 · 阿布德拉',
+    claim:'万物由不可再分的「原子」与「虚空」构成。',
+    core:'德谟克利特没有仪器，只有逻辑。他追问：如果把一块石头不断切半，会永远切下去吗？他判断不会——总会抵达一个不可再分的极限，希腊语 ἄτομος（atomos），意思就是「不可切分」。原子在形状、大小、排列上各不相同，万物性质的差异只是原子组合方式的差异。这是一个纯思辨的模型，却预言了 2200 年后才被实验证实的图景。',
+    tenets:['原子不可分、永恒不变，数量无限、形状各异','原子之间只有虚空；运动不需要推动者','甜、苦、冷、热等宏观性质源于微观排列，而非事物本身','灵魂也由精细的球形原子构成'],
+    quote:{text:'按照通常说法，有甜有苦，有热有冷；按照真实说法，只有原子与虚空。', src:'残篇 · 第欧根尼·拉尔修引述'},
+    limit:'纯思辨，没有任何实验证据；而且他认为原子不可再分——这一点在 1897 年被汤姆孙推翻。',
+    labName:'无限分割', labDesc:'拖动放大滑块，从一块矿石一路推进到它的原子点阵。德谟克利特只能用想象走完的路，20 世纪的扫描隧道显微镜真的走完了。',
+    impactLead:'第一次把「物质是什么」从神话与目的论手里夺回来，交给可推理的微观结构。',
+    impactItems:[
+      '提出「宏观性质源于微观结构」——这是今日化学、材料科学、凝聚态物理共同的底层假设',
+      '被亚里士多德与经院哲学压制近 2000 年，直到 1661 年玻意耳的微粒说、1803 年道尔顿的原子论才让它回到科学',
+      '「原子 + 虚空」的二分，预示了 20 世纪「粒子 + 场」的物理图像'
+    ],
+    chain:[{t:'留基伯与德谟克利特',s:'c. 400 BCE'},{t:'伊壁鸠鲁 · 卢克莱修《物性论》',s:'c. 55 BCE'},{t:'玻意耳 微粒哲学',s:'1661'},{t:'道尔顿 原子论',s:'1803'}]
+  },
+  en:{
+    name:'Atomism', sub:'ATOMISM', person:'Democritus', life:'c. 460 — 370 BCE', role:'Philosopher · Abdera',
+    claim:'All things consist of indivisible atoms and void.',
+    core:'Democritus had no instruments, only logic. He asked: if you halve a stone again and again, can you go on forever? He argued no — you must arrive at a limit that cannot be cut. The Greek word is ἄτομος, atomos: uncuttable. Atoms differ in shape, size and arrangement; every difference in the world is a difference in how they are combined. It was pure speculation, and it predicted a picture that took 2,200 years to verify.',
+    tenets:['Atoms are indivisible, eternal, infinite in number and various in shape','Only void separates atoms; motion needs no mover','Sweet, bitter, cold and hot arise from arrangement, not from the thing itself','Even the soul is made of fine, spherical atoms'],
+    quote:{text:'By convention sweet, by convention bitter, by convention hot, by convention cold; in reality, atoms and void.', src:'Fragment, reported by Diogenes Laërtius'},
+    limit:'Pure speculation with no experimental evidence — and he held atoms to be indivisible, which Thomson overturned in 1897.',
+    labName:'Infinite Division', labDesc:'Drag the magnification slider from a lump of ore down to its atomic lattice. Democritus could only imagine this journey; scanning tunnelling microscopes actually made it in the 20th century.',
+    impactLead:'It took the question of what matter is away from myth and teleology, and handed it to inferable microstructure.',
+    impactItems:[
+      'Established that macroscopic properties arise from microscopic structure — the shared assumption of chemistry, materials science and condensed-matter physics',
+      'Suppressed by Aristotle and scholastic philosophy for nearly 2,000 years, until Boyle (1661) and Dalton (1803) returned it to science',
+      'The atom-and-void dichotomy anticipated the 20th-century picture of particles and fields'
+    ],
+    chain:[{t:'Leucippus & Democritus',s:'c. 400 BCE'},{t:'Epicurus · Lucretius, De Rerum Natura',s:'c. 55 BCE'},{t:'Boyle, corpuscular philosophy',s:'1661'},{t:'Dalton, atomic theory',s:'1803'}]
+  }
+},
+{
+  id:'dalton', eraEn:'CHEMICAL REVOLUTION', n:'02', year:'1803', yearEn:'1803', era:'化学革命', color:'#8A6A12', impact:5,
+  scene:'dalton', labType:'ratio',
+  zh:{
+    name:'实心球模型', sub:'SOLID SPHERE MODEL', person:'约翰·道尔顿', life:'1766 — 1844', role:'化学家 · 曼彻斯特',
+    claim:'原子是坚硬的实心小球；不同元素的小球质量不同。',
+    core:'道尔顿从气体分压和化合质量的研究出发，把德谟克利特的哲学猜想变成了可以计算的科学假设。他为每种元素指定一个原子量，用带花纹的圆球作符号，并断言：原子在化学反应中只是重新排列，从不被创造或毁灭。1803 年他公布第一张原子量表，化学第一次有了「数」。',
+    tenets:['元素由不可分割的原子构成','同种元素的原子质量与性质完全相同；不同元素则不同','化合物由原子按简单整数比结合（定比定律、倍比定律）','化学反应只是原子的重新排列，原子不生不灭'],
+    quote:{text:'化学分解与合成，不过是把原子分开再合起来；没有任何原子被创造，也没有任何原子被毁灭。', src:'《化学哲学新体系》1808'},
+    limit:'认为原子不可再分、没有内部结构。这个假设在 1897 年被阴极射线管击碎。',
+    labName:'倍比定律', labDesc:'同一份碳与不同份数的氧化合，生成 CO 或 CO₂。消耗的氧质量比是 16 : 32 ——恰好 1 : 2。这种整数跳变只有「原子不可再分」才能解释。',
+    impactLead:'让化学从「观察与配方」变成「可以计算、可以预测」的定量科学。',
+    impactItems:[
+      '1803—1808 年建立原子量表，为 1869 年门捷列夫周期表提供了排序依据',
+      '倍比定律成为「原子真实存在」的第一个可测量证据——原子不再是哲学',
+      '化学方程式配平、摩尔概念、化学计量学，全部建立在这套假设之上',
+      '把化学从定性描述推进到可预测的工程学科，直接支撑了 19 世纪的化工革命'
+    ],
+    chain:[{t:'道尔顿 原子论与原子量',s:'1803'},{t:'阿伏伽德罗 分子假说',s:'1811'},{t:'门捷列夫 周期表',s:'1869'},{t:'现代化学计量学',s:'20 世纪'}]
+  },
+  en:{
+    name:'Solid Sphere Model', sub:'SOLID SPHERE MODEL', person:'John Dalton', life:'1766 — 1844', role:'Chemist · Manchester',
+    claim:'Atoms are hard, solid spheres; each element has spheres of a different mass.',
+    core:'Working from gas pressures and combining masses, Dalton turned the philosophical guess of Democritus into a calculable scientific hypothesis. He assigned every element an atomic weight, drew compounds as patterned circles, and asserted that atoms are only rearranged in a reaction — never created or destroyed. His first table of atomic weights appeared in 1803. Chemistry acquired numbers.',
+    tenets:['Elements consist of indivisible atoms','Atoms of the same element are identical in mass and properties; those of different elements differ','Compounds form in simple whole-number ratios (definite and multiple proportions)','Chemical reactions merely rearrange atoms; atoms are neither created nor destroyed'],
+    quote:{text:'Chemical analysis and synthesis go no farther than the separation of particles one from another and their reunion. No new creation or destruction of matter is within the reach of chemical agency.', src:'A New System of Chemical Philosophy, 1808'},
+    limit:'He held atoms to be indivisible and structureless. The cathode-ray tube broke that assumption in 1897.',
+    labName:'Law of Multiple Proportions', labDesc:'One portion of carbon combines with different portions of oxygen to give CO or CO₂. The oxygen masses consumed stand as 16 : 32 — exactly 1 : 2. Only indivisible atoms can produce such jumps.',
+    impactLead:'It turned chemistry from observation and recipe into a quantitative science that could calculate and predict.',
+    impactItems:[
+      'The atomic weight table (1803–1808) gave Mendeleev the ordering principle for the periodic table in 1869',
+      'The law of multiple proportions became the first measurable evidence that atoms are real — no longer philosophy',
+      'Balancing equations, the mole, and stoichiometry all rest on these assumptions',
+      'It moved chemistry from description to a predictive engineering discipline, underpinning the 19th-century chemical industry'
+    ],
+    chain:[{t:'Dalton, atomic theory & weights',s:'1803'},{t:'Avogadro, molecular hypothesis',s:'1811'},{t:'Mendeleev, periodic table',s:'1869'},{t:'Modern stoichiometry',s:'20th c.'}]
+  }
+},
+{
+  id:'thomson', eraEn:'THE ELECTRON', n:'03', year:'1897', yearEn:'1897', era:'电子时代', color:'#0E7A57', impact:5,
+  scene:'thomson', labType:'crt',
+  zh:{
+    name:'葡萄干布丁模型', sub:'PLUM PUDDING MODEL', person:'约瑟夫·约翰·汤姆孙', life:'1856 — 1940', role:'卡文迪许实验室主任 · 1906 诺贝尔物理学奖',
+    claim:'原子是一个带正电的球，电子像葡萄干一样嵌在其中。',
+    core:'1897 年，汤姆孙在真空管两端加上高压，发现阴极射出的「射线」能被电场和磁场偏转。他测出这些粒子的荷质比是氢离子的近 2000 倍——它们比任何已知原子都轻得多。更关键的是：无论用哪种金属做阴极，放出的都是一样的粒子。既然所有原子都能放出同一种东西，原子就必然有内部结构。',
+    tenets:['原子整体呈电中性','正电荷均匀分布在整个球体中','带负电的电子均匀嵌在球内，像葡萄干在布丁里','电子的振动可以发出光，解释原子光谱'],
+    quote:{text:'一切物质的原子，都是由相同的电子构成的。', src:'1897 年英国皇家学会演讲'},
+    limit:'无法解释 α 粒子的大角度散射。1911 年金箔实验直接否定了这个模型。',
+    labName:'阴极射线管', labDesc:'拖动偏转电压，看电子束在极板之间弯曲；再切换磁场方向，让束流朝相反方向偏。汤姆孙正是用这套装置「称」出了电子的重量。',
+    impactLead:'击碎了统治 2300 年的「原子不可分」，人类第一次进入了原子内部。',
+    impactItems:[
+      '发现第一个亚原子粒子——电子，获 1906 年诺贝尔物理学奖',
+      '证明原子可以被「打开」，为整个粒子物理开辟了道路',
+      '阴极射线管技术直接演化出示波器、电子显微镜、X 射线管与电视显像管',
+      '荷质比测量方法成为质谱仪的基础，彻底改变化学分析与同位素研究'
+    ],
+    chain:[{t:'汤姆孙 发现电子',s:'1897'},{t:'密立根 油滴实验测电荷',s:'1909'},{t:'质谱仪 · 同位素',s:'1919'},{t:'电子显微镜',s:'1931'}]
+  },
+  en:{
+    name:'Plum Pudding Model', sub:'PLUM PUDDING MODEL', person:'J. J. Thomson', life:'1856 — 1940', role:'Cavendish Professor · Nobel Prize 1906',
+    claim:'An atom is a sphere of positive charge with electrons embedded like plums.',
+    core:'In 1897 Thomson applied a high voltage across an evacuated tube and found that the rays from the cathode bent in electric and magnetic fields. Their charge-to-mass ratio was nearly 2,000 times that of the hydrogen ion — far lighter than any known atom. Decisively, the same particles came out whatever metal the cathode was made of. If every atom can emit the same thing, atoms must have an inside.',
+    tenets:['The atom is electrically neutral overall','Positive charge is spread evenly through the sphere','Negatively charged electrons are embedded throughout, like plums in a pudding','Electron vibrations could emit light, explaining atomic spectra'],
+    quote:{text:'The atoms of all elements are built up of the same kind of electrons.', src:'Lecture to the Royal Institution, 1897'},
+    limit:'It could not explain large-angle alpha scattering. The gold-foil experiment ruled it out in 1911.',
+    labName:'Cathode Ray Tube', labDesc:'Drag the deflecting voltage to bend the electron beam between the plates, then flip the magnetic field to send it the other way. With this apparatus Thomson effectively weighed the electron.',
+    impactLead:'It shattered a 2,300-year-old doctrine and put humanity inside the atom for the first time.',
+    impactItems:[
+      'Discovered the first subatomic particle, the electron — Nobel Prize in Physics, 1906',
+      'Proved the atom can be opened, clearing the road for all of particle physics',
+      'Cathode-ray technology evolved directly into oscilloscopes, electron microscopes, X-ray tubes and television',
+      'The charge-to-mass method became the mass spectrometer, transforming chemical analysis and isotope research'
+    ],
+    chain:[{t:'Thomson, discovery of the electron',s:'1897'},{t:'Millikan, oil-drop charge',s:'1909'},{t:'Mass spectrometry · isotopes',s:'1919'},{t:'Electron microscope',s:'1931'}]
+  }
+},
+{
+  id:'rutherford', eraEn:'THE NUCLEUS', n:'04', year:'1911', yearEn:'1911', era:'核的发现', color:'#B24A20', impact:5,
+  scene:'rutherford', labType:'scatter',
+  zh:{
+    name:'核式模型', sub:'NUCLEAR / PLANETARY MODEL', person:'欧内斯特·卢瑟福', life:'1871 — 1937', role:'曼彻斯特大学 · 1908 诺贝尔化学奖',
+    claim:'原子的正电荷与几乎全部质量，集中在极小的核里。',
+    core:'1909 年，卢瑟福让盖革和马斯登用 α 粒子轰击金箔。按汤姆孙模型，α 粒子应该像子弹穿过云雾一样几乎不偏转。结果却有约 1/8000 的粒子被弹了回来。卢瑟福后来回忆：「这就像你朝一张纸开炮，炮弹却弹回来打中你。」1911 年他提出：原子中心有一个直径不到原子万分之一的核，却集中了几乎全部质量。原子内部 99.999% 是空的。',
+    tenets:['正电荷与几乎全部质量集中于原子核','核直径约 10⁻¹⁵ m，原子约 10⁻¹⁰ m','电子在核外空间中绕行','原子内部绝大部分是空的（99.999%）'],
+    quote:{text:'这是我一生中最难以置信的事。就像你朝一张纸开炮，炮弹却弹回来打中你。', src:'卢瑟福，1936 年回忆'},
+    limit:'经典电磁学预言：绕核运动的电子会持续辐射能量，并在约 10⁻¹¹ 秒内坠入核中。按这个模型，原子根本不该存在。',
+    labName:'金箔散射', labDesc:'发射 α 粒子，观察它们的轨迹。绝大多数直穿而过，极少数被猛烈弹回。把靶材切回「汤姆孙模型」，大角度散射会完全消失——数据就是判决书。',
+    impactLead:'发现了原子核。人类第一次「看见」原子中心，也第一次知道物质几乎是空的。',
+    impactItems:[
+      '开创「用高能粒子轰击靶材、从散射推断内部结构」的方法论，这是所有加速器物理的源头',
+      '直接催生玻尔模型（1913），并建立了核物理这门学科',
+      '1919 年发现质子、1932 年发现中子，都出自同一实验传统',
+      '遗留的矛盾（电子为何不坠入核）逼出了量子化假设——一次失败比十次成功更有推动力'
+    ],
+    chain:[{t:'卢瑟福 金箔散射',s:'1909—1911'},{t:'玻尔 量子化轨道',s:'1913'},{t:'发现质子',s:'1919'},{t:'发现中子',s:'1932'}]
+  },
+  en:{
+    name:'Nuclear Model', sub:'NUCLEAR / PLANETARY MODEL', person:'Ernest Rutherford', life:'1871 — 1937', role:'University of Manchester · Nobel Prize 1908',
+    claim:'The positive charge and nearly all the mass sit in a minute nucleus.',
+    core:'In 1909 Rutherford had Geiger and Marsden fire alpha particles at gold foil. On the plum-pudding model they should have passed through with barely a deflection, like bullets through mist. Instead about one in 8,000 came back. Rutherford later recalled: it was as if you fired a shell at a piece of tissue paper and it came back and hit you. In 1911 he proposed a nucleus less than a ten-thousandth of the atom across, holding almost all its mass. The atom, he had found, is 99.999% empty.',
+    tenets:['Positive charge and nearly all mass are concentrated in the nucleus','The nucleus is about 10⁻¹⁵ m across; the atom about 10⁻¹⁰ m','Electrons orbit in the space outside','The atom is overwhelmingly empty space'],
+    quote:{text:'It was almost as incredible as if you fired a 15-inch shell at a piece of tissue paper and it came back and hit you.', src:'Rutherford, recalling 1909'},
+    limit:'Classical electromagnetism predicts an orbiting electron radiates continuously and spirals into the nucleus within about 10⁻¹¹ s. On this model, atoms should not exist.',
+    labName:'Gold Foil Scattering', labDesc:'Fire alpha particles and watch their tracks. Almost all go straight through; a few recoil violently. Switch the target back to the Thomson model and the large-angle events vanish entirely — the data is the verdict.',
+    impactLead:'It found the nucleus — the first look inside an atom, and the first proof that matter is almost entirely empty.',
+    impactItems:[
+      'Created the method of bombarding a target and inferring structure from scattering — the origin of all accelerator physics',
+      'Directly produced the Bohr model (1913) and founded nuclear physics as a discipline',
+      'The discovery of the proton (1919) and the neutron (1932) came from the same experimental tradition',
+      'Its unresolved contradiction — why electrons do not fall in — forced the quantum hypothesis. One failure pushed physics further than ten successes'
+    ],
+    chain:[{t:'Rutherford, gold-foil scattering',s:'1909—1911'},{t:'Bohr, quantised orbits',s:'1913'},{t:'Discovery of the proton',s:'1919'},{t:'Discovery of the neutron',s:'1932'}]
+  }
+},
+{
+  id:'bohr', eraEn:'QUANTUM JUMPS', n:'05', year:'1913', yearEn:'1913', era:'量子跃迁', color:'#B24A20', impact:5,
+  scene:'bohr', labType:'spectrum',
+  zh:{
+    name:'量子化轨道模型', sub:'QUANTIZED ORBIT MODEL', person:'尼尔斯·玻尔', life:'1885 — 1962', role:'哥本哈根大学 · 1922 诺贝尔物理学奖',
+    claim:'电子只能待在特定轨道上；跳跃的时候才发光。',
+    core:'卢瑟福的原子在经典物理里活不过一瞬间。1913 年，玻尔直接规定：电子只能在角动量为 h/2π 整数倍的轨道上运动，此时不辐射能量；只有当它从一个轨道跳到另一个轨道，才吸收或放出一份光，能量恰好等于两轨道之差。这个「不讲道理」的假设，把氢光谱五十年未解的谱线一次算准了。',
+    tenets:['定态假设：特定轨道上的电子稳定，不辐射能量','量子化条件：角动量 L = n·h/2π','跃迁假设：hν = E₂ − E₁，一份光对应一次跳跃','对应原理：轨道很大时，量子结果回到经典行为'],
+    quote:{text:'只要我们把量子假设引入原子结构，光谱的谜团就立刻散开了。', src:'玻尔 1913 年「三部曲」论文'},
+    limit:'只对单电子体系（氢、类氢离子）精确成立；无法解释氦以上的光谱、谱线强度与精细结构。',
+    labName:'氢原子光谱', labDesc:'点击能级让电子跃迁，看光子飞出、谱线上亮起对应的线。656 nm 的红色 Hα 线，是宇宙中最常见的颜色之一。',
+    impactLead:'第一次把量子概念装进原子，让「光谱线」从谜题变成原子的指纹。',
+    impactItems:[
+      '一举解释悬置近 50 年的氢光谱之谜，理论波长与实测偏差小于 0.1%',
+      '首次用电子壳层解释元素周期表（2, 8, 8…），把化学与物理统一到同一套规则下',
+      '玻尔研究所在 1920 年代成为量子力学的诞生地，孕育了海森堡、泡利、狄拉克',
+      '「跃迁」概念沿用至今：激光、原子钟、光谱分析、天文测距都靠它工作'
+    ],
+    chain:[{t:'玻尔 氢原子模型',s:'1913'},{t:'泡利 不相容原理',s:'1925'},{t:'量子力学 电子云',s:'1926'},{t:'激光 · 原子钟',s:'1955—'}]
+  },
+  en:{
+    name:'Quantized Orbit Model', sub:'QUANTIZED ORBIT MODEL', person:'Niels Bohr', life:'1885 — 1962', role:'University of Copenhagen · Nobel Prize 1922',
+    claim:'Electrons may occupy only certain orbits; light is emitted only when they jump.',
+    core:'Rutherford’s atom could not survive a single instant under classical physics. In 1913 Bohr simply stipulated: an electron may move only in orbits whose angular momentum is an integer multiple of h/2π, and while there it radiates nothing. Only when it jumps between orbits does it absorb or emit a quantum of light whose energy equals the difference. This apparently arbitrary rule calculated the hydrogen spectrum exactly — a puzzle that had stood for fifty years.',
+    tenets:['Stationary states: electrons in allowed orbits do not radiate','Quantisation: angular momentum L = n·h/2π','Transitions: hν = E₂ − E₁, one quantum per jump','Correspondence: for large orbits the quantum result approaches the classical one'],
+    quote:{text:'As soon as the quantum hypothesis is applied to atomic structure, the riddle of the spectra dissolves.', src:'Bohr, the 1913 trilogy'},
+    limit:'Exact only for one-electron systems. It cannot explain helium and beyond, line intensities, or fine structure.',
+    labName:'Hydrogen Spectrum', labDesc:'Click an energy level to make the electron jump; a photon leaves and its line lights up on the spectrum. The red Hα line at 656 nm is one of the most common colours in the universe.',
+    impactLead:'It put the quantum inside the atom and turned spectral lines from a riddle into a fingerprint.',
+    impactItems:[
+      'Solved a fifty-year-old spectral puzzle at once, with calculated wavelengths within 0.1% of measurement',
+      'Explained the periodic table through electron shells (2, 8, 8…), uniting chemistry and physics under one rule',
+      'The Bohr Institute became the birthplace of quantum mechanics in the 1920s, nurturing Heisenberg, Pauli and Dirac',
+      'The transition concept still runs lasers, atomic clocks, spectroscopy and astronomical distance measurement'
+    ],
+    chain:[{t:'Bohr, hydrogen atom',s:'1913'},{t:'Pauli exclusion principle',s:'1925'},{t:'Quantum mechanics, orbitals',s:'1926'},{t:'Lasers · atomic clocks',s:'1955—'}]
+  }
+},
+{
+  id:'quantum', eraEn:'PARADIGM SHIFT', n:'06', year:'1925', yearEn:'1925', era:'范式转移', color:'#2C6C92', impact:5,
+  scene:'cloud', labType:'slit',
+  zh:{
+    name:'电子云 / 概率模型', sub:'PROBABILITY CLOUD', person:'海森堡 & 薛定谔', life:'1925 — 1926', role:'哥本哈根 / 苏黎世',
+    claim:'电子没有轨道，只有「在哪里被找到」的概率。',
+    core:'1925 年海森堡给出矩阵力学，1926 年薛定谔给出波动方程，两套数学彼此等价，却都指向同一个结论：电子不再沿一条确定的线运动。它的状态由波函数 ψ 描述，|ψ|² 给出在某处找到它的概率密度。所谓「轨道」（orbital）不再是圆圈，而是一团形状由量子数决定的云。1927 年，不确定性原理进一步宣告：位置与动量不可能同时精确。',
+    tenets:['状态由波函数 ψ 完整描述','|ψ|² 等于在某处找到电子的概率密度','不确定性原理：Δx·Δp ≥ ħ/2','测量会改变状态，观测结果本质上是概率性的'],
+    quote:{text:'我想我可以有把握地说，没有人真正理解量子力学。', src:'费曼，1964 年康奈尔讲座'},
+    limit:'它没有、也无法给出直观图像。物理学家接受了计算规则，却至今仍在争论它意味着什么（测量问题、多世界、隐变量）。',
+    labName:'双缝干涉', labDesc:'一个电子一个电子地发射。最初只是杂乱的亮点，累积到上千个，干涉条纹自己浮现出来。打开「观测它走了哪条缝」，条纹立刻消失。',
+    impactLead:'从「确定的轨道」到「概率的云」——这是物理学史上最深的一次观念转变。',
+    impactItems:[
+      '让化学键、元素周期表与材料性质第一次获得第一性原理的解释，催生了整个量子化学',
+      '半导体、激光、核磁共振、LED、扫描隧道显微镜，全部建立在量子力学之上',
+      '现代电子工业的几乎每一条技术路线，都可以追溯到这一次范式转移',
+      '派生出量子计算与量子密码学——把「概率」从麻烦变成了资源'
+    ],
+    chain:[{t:'海森堡 矩阵力学',s:'1925'},{t:'薛定谔 波动方程',s:'1926'},{t:'不确定性原理',s:'1927'},{t:'量子化学 · 半导体 · 量子计算',s:'1930—'}]
+  },
+  en:{
+    name:'Probability Cloud', sub:'PROBABILITY CLOUD', person:'Heisenberg & Schrödinger', life:'1925 — 1926', role:'Copenhagen / Zürich',
+    claim:'The electron has no orbit — only a probability of being found.',
+    core:'Heisenberg produced matrix mechanics in 1925; Schrödinger produced his wave equation in 1926. The two mathematics are equivalent, and both say the same thing: the electron no longer travels a definite line. Its state is a wavefunction ψ, and |ψ|² gives the probability density of finding it somewhere. An orbital is no longer a circle but a cloud whose shape is set by quantum numbers. In 1927 the uncertainty principle added that position and momentum cannot both be sharp.',
+    tenets:['The state is fully described by a wavefunction ψ','|ψ|² is the probability density of finding the electron','Uncertainty principle: Δx·Δp ≥ ħ/2','Measurement changes the state; outcomes are irreducibly probabilistic'],
+    quote:{text:'I think I can safely say that nobody understands quantum mechanics.', src:'Richard Feynman, 1964'},
+    limit:'It offers no intuitive picture, and cannot. Physicists adopted the rules while still arguing over what they mean — measurement, many worlds, hidden variables.',
+    labName:'Double Slit', labDesc:'Fire electrons one at a time. At first they land as scattered dots; after a thousand, interference fringes emerge by themselves. Switch on which-slit detection and the fringes vanish at once.',
+    impactLead:'From a definite orbit to a cloud of probability — the deepest conceptual shift in the history of physics.',
+    impactItems:[
+      'Gave chemical bonding, the periodic table and material properties their first first-principles explanation, creating quantum chemistry',
+      'Semiconductors, lasers, MRI, LEDs and scanning tunnelling microscopes all rest on quantum mechanics',
+      'Nearly every route in the modern electronics industry traces back to this single shift',
+      'Spawned quantum computing and quantum cryptography — turning probability from a nuisance into a resource'
+    ],
+    chain:[{t:'Heisenberg, matrix mechanics',s:'1925'},{t:'Schrödinger, wave equation',s:'1926'},{t:'Uncertainty principle',s:'1927'},{t:'Quantum chemistry · semiconductors · quantum computing',s:'1930—'}]
+  }
+},
+{
+  id:'chadwick', eraEn:'NUCLEAR STRUCTURE', n:'07', year:'1932', yearEn:'1932', era:'核的组成', color:'#B24A20', impact:4,
+  scene:'chadwick', labType:'neutron',
+  zh:{
+    name:'质子—中子核模型', sub:'PROTON–NEUTRON NUCLEUS', person:'詹姆斯·查德威克', life:'1891 — 1974', role:'卡文迪许实验室 · 1935 诺贝尔物理学奖',
+    claim:'原子核里还有不带电的中子，质量与质子几乎相同。',
+    core:'1930 年，博特和贝克尔发现用 α 粒子轰击铍会产生一种穿透力极强的射线。1932 年，查德威克在卡文迪许实验室证明：这种射线由中性粒子组成，质量约等于质子——中子。它解释了为什么同一种元素会有不同的原子量（同位素），也解释了原子序数与质量数为什么会分家。原子核的拼图，到此才完整。',
+    tenets:['原子核由质子（+1）和中子（0）组成','质子数 = 原子序数 = 元素身份','中子数不同 → 同一元素的不同同位素','中子质量约 1.0087 u，略大于质子'],
+    quote:{text:'我终于相信，这种射线就是中性粒子，质量与质子相当。', src:'查德威克，1932 年 2 月致《自然》'},
+    limit:'它没有解决核力本身如何束缚质子与中子——那要等到汤川秀树 1935 年的介子理论。',
+    labName:'铍靶—石蜡实验', labDesc:'α 粒子轰击铍 → 中性射线 → 穿透铅板 → 从石蜡中打出质子。切换不同的屏蔽材料，看什么挡得住它——中子的穿透力正是它的签名。',
+    impactLead:'补上了原子核的最后一块拼图，也顺手打开了核能时代的大门。',
+    impactItems:[
+      '解释了同位素与原子量，让周期表的位置与质量关系彻底自洽',
+      '中子不带电，能轻易进入核内——1938 年哈恩发现核裂变，1942 年实现链式反应',
+      '中子散射成为探测材料与生物大分子结构的关键工具，散裂中子源如今是国家大科学装置',
+      '同一项发现也直接通向核武器。科学影响的伦理两面，在这里第一次如此清晰'
+    ],
+    chain:[{t:'查德威克 发现中子',s:'1932'},{t:'费米 中子轰击元素',s:'1934'},{t:'哈恩 发现核裂变',s:'1938'},{t:'反应堆 · 中子散射',s:'1942—'}]
+  },
+  en:{
+    name:'Proton–Neutron Nucleus', sub:'PROTON–NEUTRON NUCLEUS', person:'James Chadwick', life:'1891 — 1974', role:'Cavendish Laboratory · Nobel Prize 1935',
+    claim:'The nucleus also contains neutrons — uncharged, and almost as heavy as protons.',
+    core:'In 1930 Bothe and Becker found that alpha particles striking beryllium produced a highly penetrating radiation. In 1932 Chadwick showed at the Cavendish that this radiation consisted of neutral particles with roughly the mass of a proton: neutrons. They explained why one element can have several atomic weights (isotopes), and why atomic number and mass number are separate things. The nucleus was finally complete.',
+    tenets:['Nuclei contain protons (+1) and neutrons (0)','Proton number = atomic number = the identity of the element','Different neutron numbers give isotopes of the same element','The neutron mass is about 1.0087 u, slightly above the proton’s'],
+    quote:{text:'I am convinced that the radiation is a neutral particle of about the mass of the proton.', src:'Chadwick, letter to Nature, February 1932'},
+    limit:'It did not explain the nuclear force that binds protons and neutrons — that waited for Yukawa’s meson theory in 1935.',
+    labName:'Beryllium & Paraffin', labDesc:'Alphas strike beryllium → neutral radiation → through lead → protons knocked out of paraffin. Switch the shielding material to see what stops it: penetration is the neutron’s signature.',
+    impactLead:'It completed the nucleus — and opened the door to the nuclear age in the same move.',
+    impactItems:[
+      'Explained isotopes and atomic weights, making the periodic table fully consistent',
+      'Being uncharged, neutrons enter nuclei easily — leading to fission (Hahn, 1938) and the chain reaction (1942)',
+      'Neutron scattering became a key probe of materials and biological structures; spallation sources are now national facilities',
+      'The same discovery led directly to nuclear weapons. Here the ethical double edge of science first became unmistakable'
+    ],
+    chain:[{t:'Chadwick, discovery of the neutron',s:'1932'},{t:'Fermi, neutron bombardment',s:'1934'},{t:'Hahn, nuclear fission',s:'1938'},{t:'Reactors · neutron scattering',s:'1942—'}]
+  }
+},
+{
+  id:'quark', eraEn:'STANDARD MODEL', n:'08', year:'1964', yearEn:'1964', era:'标准模型', color:'#2C6C92', impact:4,
+  scene:'quark', labType:'dis',
+  zh:{
+    name:'夸克模型', sub:'QUARK MODEL', person:'默里·盖尔曼', life:'1929 — 2019', role:'加州理工学院 · 1969 诺贝尔物理学奖',
+    claim:'质子和中子由更基本的夸克组成；而夸克永远不能被单独取出。',
+    core:'1964 年，盖尔曼与茨威格各自提出：质子（uud）和中子（udd）由带分数电荷（+2/3、−1/3）的夸克组成。1968 年，SLAC 用 20 GeV 的高能电子轰击质子，发现大角度散射比「均匀球」的预期多得多——质子内部确实有坚硬的小点。夸克由胶子束缚，因「色禁闭」从未被单独观测到。到目前，没有任何实验发现夸克还有内部结构。',
+    tenets:['质子 = uud，中子 = udd','夸克带分数电荷：+2/3 或 −1/3','胶子传递强相互作用；色禁闭使夸克不能单独存在','质子质量的大部分来自胶子场能量（E=mc²），而非夸克静质量'],
+    quote:{text:'Three quarks for Muster Mark!', src:'乔伊斯《芬尼根的守灵夜》—— 盖尔曼借词命名'},
+    limit:'夸克与胶子从未被单独观测；标准模型仍未纳入引力，也不是终极理论。',
+    labName:'深度非弹性散射', labDesc:'把电子加速到 20 GeV 轰击质子。大多数电子轻轻掠过，少数猛烈弹开——它们撞上了质子内部的夸克。把靶换成「均匀球」，大角度事件会减少一个数量级。',
+    impactLead:'物质结构的第四层。人类至今没有找到夸克有内部结构的任何证据。',
+    impactItems:[
+      '建立标准模型的基础，把强、弱、电磁三种相互作用纳入同一框架',
+      '解释了质子质量的来源：可见宇宙约 99% 的质量来自胶子场的束缚能，而非粒子本身',
+      '催生量子色动力学（QCD），并预测了粲夸克、顶夸克等一系列后被证实的粒子',
+      '1969 年诺贝尔物理学奖；「三夸克」从数学工具变成了可被轰击的实体'
+    ],
+    chain:[{t:'盖尔曼 夸克假说',s:'1964'},{t:'SLAC 深度非弹性散射',s:'1968'},{t:'量子色动力学 QCD',s:'1973'},{t:'标准模型 · 希格斯',s:'2012'}]
+  },
+  en:{
+    name:'Quark Model', sub:'QUARK MODEL', person:'Murray Gell-Mann', life:'1929 — 2019', role:'Caltech · Nobel Prize 1969',
+    claim:'Protons and neutrons are built from quarks — which can never be pulled out alone.',
+    core:'In 1964 Gell-Mann and Zweig independently proposed that the proton (uud) and neutron (udd) are made of quarks carrying fractional charge (+2/3, −1/3). In 1968 SLAC fired 20 GeV electrons at protons and found far more large-angle scattering than a smooth sphere would allow — there were hard points inside. Quarks are bound by gluons and, because of colour confinement, have never been observed in isolation. No experiment has yet found structure inside a quark.',
+    tenets:['Proton = uud; neutron = udd','Quarks carry fractional charge: +2/3 or −1/3','Gluons carry the strong force; colour confinement forbids free quarks','Most of the proton’s mass comes from gluon-field energy (E=mc²), not from quark rest mass'],
+    quote:{text:'Three quarks for Muster Mark!', src:'James Joyce, Finnegans Wake — Gell-Mann’s borrowed name'},
+    limit:'Quarks and gluons have never been seen in isolation; the Standard Model still excludes gravity and is not a final theory.',
+    labName:'Deep Inelastic Scattering', labDesc:'Accelerate electrons to 20 GeV and fire them at protons. Most glide past; a few recoil hard — they hit a quark. Switch the target to a uniform sphere and the large-angle events drop by an order of magnitude.',
+    impactLead:'The fourth layer of matter. No evidence of anything inside a quark has ever been found.',
+    impactItems:[
+      'Became a foundation of the Standard Model, placing the strong, weak and electromagnetic forces in one framework',
+      'Explained where proton mass comes from: about 99% of the visible universe’s mass is gluon binding energy, not particle rest mass',
+      'Produced quantum chromodynamics (QCD) and predicted the charm and top quarks, later confirmed',
+      'Nobel Prize 1969 — the three quarks went from mathematical device to a target you can shoot at'
+    ],
+    chain:[{t:'Gell-Mann, quark hypothesis',s:'1964'},{t:'SLAC deep inelastic scattering',s:'1968'},{t:'Quantum chromodynamics',s:'1973'},{t:'Standard Model · Higgs',s:'2012'}]
+  }
+}
+];
+/* ============================================================
+   LAB DOCS — 实验档案（中英双语）
+   字段与模型档案同构，便于复用 .dossier / .impact 样式
+   ============================================================ */
+var LABDOCS = {};
+
+LABDOCS.zoom = {
+  year: '1955 / 1981', yearEn: '1955 / 1981',
+  zh: {
+    name: '从「想到」到「看到」',
+    sub: 'FIELD ION → SCANNING TUNNELING MICROSCOPE',
+    who: '米勒 · 宾尼希 · 罗雷尔',
+    meta: '1955 / 1981',
+    org: '宾州州立大学 · IBM 苏黎世',
+    claim: '德谟克利特说原子不可分，但那只是推理。真正「看见」一个原子，人类又等了两千三百年。',
+    core: '这台仪器不是某个模型，而是一把尺：把观察尺度从毫米一路推到 0.1 纳米。1955 年米勒用场离子显微镜第一次让单个原子在荧光屏上留下亮点；1981 年宾尼希与罗雷尔用一根原子级针尖「摸」出表面起伏，分辨率达到 0.01 纳米。原子的存在从哲学命题变成了可以被拍摄的事实。',
+    steps: [
+      '把金属样品腐蚀成极细的针尖，尖端只剩几个原子；或用一根钨针悬在样品表面上方不到 1 纳米',
+      '加高压（场离子）或加偏压（隧道），让离子从针尖飞出、或让电子借量子隧穿跳过间隙',
+      '逐行扫描，把每一位置的电流或离子流强度记录下来',
+      '把强度转成灰度：亮一点就是一排原子突起的顶端'
+    ],
+    saw: '钨针尖表面的原子排成规则晶格，像一只蛋托；硅表面的 7×7 重构在隧道显微镜下清晰可辨。原子的排列方式、缺陷、台阶，第一次成为可以直接观看的图像，而不是从化学计量反推出来的假设。',
+    quote: { text: '如果我们在极小的尺度上看东西，会看到一个完全不同的世界。', src: '费曼，1959 年《底部还有很大空间》' },
+    limit: '隧道显微镜只能看导体和半导体表面，图像是「电流的等值面」而不是光学影像；针尖形状会直接印进图像里——你以为看到的是原子，有时看到的是针尖。',
+    impactLead: '它把「原子」从理论名词变成了可以指着说「这里有一个」的东西，也顺手打开了纳米技术这扇门。',
+    impactItems: [
+      '第一次直接成像单个原子与表面重构，终结了「原子是否真实存在」的争论',
+      '1989 年 IBM 用针尖把 35 个氙原子排成「IBM」三个字母，原子操纵成为技术',
+      '扫描探针家族（STM / AFM / SNOM）成为表面科学、材料、生物的标准工具',
+      '纳米科技、量子围栏、单分子器件，全部建立在这种「能看见也能推动单个原子」的能力上'
+    ],
+    chain: [
+      { t: '场离子显微镜', s: '1955 · 米勒' },
+      { t: '扫描隧道显微镜', s: '1981 · IBM 苏黎世' },
+      { t: '原子操纵', s: '1989 · IBM 阿尔马登' },
+      { t: '碳纳米管与石墨烯', s: '1991 / 2004' }
+    ]
+  },
+  en: {
+    name: 'From inference to image',
+    sub: 'FIELD ION → SCANNING TUNNELING MICROSCOPE',
+    who: 'Müller · Binnig · Rohrer',
+    meta: '1955 / 1981',
+    org: 'Penn State · IBM Zürich',
+    claim: 'Democritus argued atoms were indivisible. It took another 2,300 years to actually see one.',
+    core: 'This instrument is not a model but a ruler: it pushes the observing scale from millimetres down to 0.1 nanometres. In 1955 Müller\'s field ion microscope first left single atoms as bright spots on a screen; in 1981 Binnig and Rohrer dragged an atomically sharp tip across a surface and felt its corrugation, reaching 0.01 nm resolution. The atom stopped being a philosophical claim and became something photographable.',
+    steps: [
+      'Etch a metal sample into a needle whose tip is only a few atoms wide — or hang a tungsten tip less than a nanometre above a surface',
+      'Apply high voltage (field ion) or a bias (tunnelling) so ions fly off the tip, or electrons tunnel across the gap',
+      'Scan line by line, recording the current or ion flux at every position',
+      'Map intensity to greyscale: a bright dot is the top of an atom'
+    ],
+    saw: 'Atoms on a tungsten tip arranged in a regular lattice, like an egg carton; the 7×7 reconstruction of silicon unmistakable under the tunnelling microscope. Atomic arrangements, defects and steps became images you could look at, rather than assumptions inferred from chemical weights.',
+    quote: { text: 'If we look at things on a very small scale, we will see a completely different world.', src: 'Richard Feynman, "There\'s Plenty of Room at the Bottom", 1959' },
+    limit: 'Tunnelling microscopy sees only conducting or semiconducting surfaces, and the image is a contour of current rather than an optical picture. The tip shape is printed into the data — sometimes what you see is the tip, not the atom.',
+    impactLead: 'It turned "atom" from a theoretical noun into something you can point at, and opened the door to nanotechnology on the way.',
+    impactItems: [
+      'First direct images of single atoms and surface reconstruction, ending the debate over whether atoms are real',
+      'In 1989 IBM spelled "IBM" with 35 xenon atoms, turning atomic manipulation into a technique',
+      'The scanning-probe family (STM / AFM / SNOM) became standard in surface science, materials and biology',
+      'Nanotechnology, quantum corrals and single-molecule devices all rest on being able to see — and push — individual atoms'
+    ],
+    chain: [
+      { t: 'Field ion microscope', s: '1955 · Müller' },
+      { t: 'Scanning tunnelling microscope', s: '1981 · IBM Zürich' },
+      { t: 'Atomic manipulation', s: '1989 · IBM Almaden' },
+      { t: 'Nanotubes & graphene', s: '1991 / 2004' }
+    ]
+  }
+};
+
+LABDOCS.ratio = {
+  year: '1803', yearEn: '1803',
+  zh: {
+    name: '倍比定律：整数从哪来',
+    sub: 'LAW OF MULTIPLE PROPORTIONS',
+    who: '约翰·道尔顿',
+    meta: '1803 · 曼彻斯特',
+    org: '曼彻斯特文学与哲学学会',
+    claim: '同两种元素能合成不止一种化合物，而多出来的那份质量，总是整数倍。',
+    core: '如果物质可以无限分割，碳和氧就该以任意比例结合。道尔顿把已知的 CO 与 CO₂ 数据摆在一起：固定 12 份碳，两种气体里的氧分别是 16 份和 32 份——恰好 1:2，不是 1:1.87。这种「只能整倍跳」的行为，只有一种解释：物质由一个个不可再分的粒子组成，化合就是这些粒子按整数个配对。',
+    steps: [
+      '在氧气流中燃烧已知质量的碳，分别收集充分燃烧与不完全燃烧的产物',
+      '称量两种产物中碳与氧的质量，算出氧碳比',
+      '固定碳为 12 份：CO 中氧为 16 份，CO₂ 中氧为 32 份',
+      '换其他元素对（氮氧、硫氧）重复，比值仍然是小整数比'
+    ],
+    saw: '同一对元素生成两种以上的化合物时，与固定质量的一种元素相化合的另一种元素，质量成简单整数比。这不是实验误差范围内的巧合，而是整片数据都落在 1:2、1:3 这样的位置上。',
+    quote: { text: '化学的分解与合成，不过是把原子分开、再把它们重新组合起来。', src: '道尔顿《化学哲学新体系》，1808' },
+    limit: '当时无法直接称量单个原子，只能测「当量」；对后来发现的高分子与非整比化合物（如方铁矿 Fe₀.₉₅O），整数比不再是铁律。',
+    impactLead: '它把化学从「物质变来变去」变成「粒子按整数记账」，是化学第一次拥有可计算的底层。',
+    impactItems: [
+      '确立原子量体系：以氢为 1，各元素的相对质量第一次可以列表',
+      '让化学式有意义——H₂O 不再是缩写，而是「两个氢原子加一个氧原子」',
+      '为门捷列夫 1869 年的周期表提供排序依据（按原子量）',
+      '把化学从定性描述推进到定量预测：反应前就能算出产物质量'
+    ],
+    chain: [
+      { t: '定比定律', s: '1799 · 普罗斯' },
+      { t: '倍比定律', s: '1803 · 道尔顿' },
+      { t: '原子量表', s: '1860 · 卡尔斯鲁厄会议' },
+      { t: '元素周期表', s: '1869 · 门捷列夫' }
+    ]
+  },
+  en: {
+    name: 'Where the integers come from',
+    sub: 'LAW OF MULTIPLE PROPORTIONS',
+    who: 'John Dalton',
+    meta: '1803 · Manchester',
+    org: 'Manchester Literary & Philosophical Society',
+    claim: 'Two elements can combine in more than one way — and the extra mass always comes in whole-number steps.',
+    core: 'If matter could be divided indefinitely, carbon and oxygen should combine in arbitrary ratios. Dalton set the known CO and CO₂ data side by side: fix 12 parts carbon, and the oxygen is 16 parts in one gas and 32 in the other — exactly 1:2, not 1:1.87. Behaviour that can only jump in whole steps has one explanation: matter is built from indivisible particles, and combination is those particles pairing up in whole numbers.',
+    steps: [
+      'Burn a known mass of carbon in oxygen, collecting the products of complete and incomplete combustion separately',
+      'Weigh carbon and oxygen in each product and compute the oxygen-to-carbon ratio',
+      'Fix carbon at 12 parts: oxygen comes out as 16 parts in CO and 32 parts in CO₂',
+      'Repeat with other element pairs (nitrogen–oxygen, sulphur–oxygen): the ratios stay small integers'
+    ],
+    saw: 'Whenever two elements form more than one compound, the masses of the second element combining with a fixed mass of the first stand in a ratio of small whole numbers. It is not a coincidence within experimental error — the entire dataset lands on 1:2, 1:3 and so on.',
+    quote: { text: 'Chemical analysis and synthesis go no farther than to the separation of particles one from another, and to their reunion.', src: 'Dalton, A New System of Chemical Philosophy, 1808' },
+    limit: 'Single atoms could not be weighed at the time, only equivalents; and for polymers or non-stoichiometric compounds (wüstite, Fe₀.₉₅O) discovered later, whole-number ratios are no longer a hard law.',
+    impactLead: 'It turned chemistry from "substances changing into each other" into "particles counted in whole numbers" — the first computable foundation the field ever had.',
+    impactItems: [
+      'Established the atomic weight system: relative masses of the elements became tabulable, with hydrogen as 1',
+      'Gave chemical formulae real meaning — H₂O became two hydrogen atoms plus one oxygen atom',
+      'Supplied the ordering principle for Mendeleev\'s periodic table in 1869 (by atomic weight)',
+      'Moved chemistry from description to prediction: product masses could be calculated before the reaction'
+    ],
+    chain: [
+      { t: 'Law of definite proportions', s: '1799 · Proust' },
+      { t: 'Law of multiple proportions', s: '1803 · Dalton' },
+      { t: 'Table of atomic weights', s: '1860 · Karlsruhe' },
+      { t: 'Periodic table', s: '1869 · Mendeleev' }
+    ]
+  }
+};
+
+LABDOCS.crt = {
+  year: '1897', yearEn: '1897',
+  zh: {
+    name: '阴极射线管：把原子拆开',
+    sub: 'CATHODE RAY TUBE · e/m MEASUREMENT',
+    who: '约瑟夫·约翰·汤姆孙',
+    meta: '1897 · 剑桥',
+    org: '卡文迪许实验室',
+    claim: '阴极射线不是光，是带电的粒子——而且它比氢原子轻一千多倍。原子里面还有零件。',
+    core: '十九世纪末，物理学家为「阴极射线是什么」吵了二十年：德国学派说是以太波，英国学派说是带电粒子。汤姆孙没有停在争论上，他用一块电场和一块磁场同时作用于射线：电场让它偏，磁场让它往反方向偏，调到互相抵消，就能读出速度；再单独测偏转量，就能算出电荷与质量之比 e/m。',
+    steps: [
+      '把金属阴极封进高度真空的玻璃管，两端加高压，射线从阴极射向阳极',
+      '射线打在管壁的荧光涂层上，留下一个可见的亮点',
+      '加电场，亮点偏移；再加垂直方向的磁场，让偏移回退到零',
+      '由抵消时的场强算出速度，再由偏转量算出 e/m；换金属、换气体重复'
+    ],
+    saw: '不管阴极是铝、铁还是铂，管内充什么气体，测出的 e/m 都是同一个数：约 1.76×10¹¹ 库仑/千克，比氢离子大约 1800 倍。粒子本身与材料无关——它不是「某种金属的碎片」，而是所有物质共有的成分。',
+    quote: { text: '这些粒子比原子小得多，它们是一切化学元素的组成材料。', src: '汤姆孙，1897 年 4 月 30 日皇家学会演讲' },
+    limit: '这一装置只能测出电荷与质量的比值，无法单独测出电荷；它给出的是「有更小的东西」，但说不清原子内部怎么排布——那个问题要等金箔散射。',
+    impactLead: '第一次证明原子有内部结构，而且是所有元素共用的同一种零件。',
+    impactItems: [
+      '发现电子——人类第一个亚原子粒子，1897 年常被视为原子物理学的起点',
+      'e/m 之比成为后来所有粒子物理测量的模板：用场偏转测荷质比',
+      '直接催生 X 射线的解释、光电效应、以及后来的电子管与半导体',
+      '让「原子不可分」这条延续两千三百年的前提正式作废'
+    ],
+    chain: [
+      { t: '法拉第电解定律', s: '1834' },
+      { t: '阴极射线管', s: '1897 · 汤姆孙' },
+      { t: '密立根油滴实验', s: '1909 · 测出 e' },
+      { t: '电子显微镜', s: '1931 · 鲁斯卡' }
+    ]
+  },
+  en: {
+    name: 'The cathode ray tube: taking the atom apart',
+    sub: 'CATHODE RAY TUBE · e/m MEASUREMENT',
+    who: 'J. J. Thomson',
+    meta: '1897 · Cambridge',
+    org: 'Cavendish Laboratory',
+    claim: 'Cathode rays are not light but charged particles — and they are over a thousand times lighter than a hydrogen atom. The atom has parts inside.',
+    core: 'For twenty years physicists argued over what cathode rays were: the German school said ether waves, the British said charged particles. Thomson stopped arguing and put an electric field and a magnetic field across the beam at once. The electric field bent it one way, the magnet the other; tune them until the deflection cancels and you have the speed. Measure the deflection alone and you get the charge-to-mass ratio, e/m.',
+    steps: [
+      'Seal a metal cathode into a highly evacuated glass tube and apply a high voltage; rays stream from cathode to anode',
+      'The rays strike a fluorescent coating on the tube wall, leaving a visible spot',
+      'Apply an electric field: the spot shifts. Add a perpendicular magnetic field until the shift returns to zero',
+      'From the balancing field strengths obtain the speed, then from the deflection obtain e/m; repeat with different metals and gases'
+    ],
+    saw: 'Whether the cathode was aluminium, iron or platinum, and whatever gas filled the tube, e/m came out the same: about 1.76×10¹¹ C/kg, roughly 1,800 times larger than for the hydrogen ion. The particle is independent of the material — not a fragment of some metal, but a constituent common to all matter.',
+    quote: { text: 'These particles are far smaller than atoms; they are the material of which all chemical elements are built.', src: 'J. J. Thomson, Royal Institution lecture, 30 April 1897' },
+    limit: 'The apparatus measures only the ratio of charge to mass; it cannot give the charge alone. It proves something smaller exists, but says nothing about how the atom is arranged — that question waited for the gold foil.',
+    impactLead: 'First proof that the atom has an interior, and that the same part is shared by every element.',
+    impactItems: [
+      'Discovery of the electron — the first subatomic particle; 1897 is often treated as the birth of atomic physics',
+      'The e/m measurement became the template for later particle physics: deflect with fields, read off the ratio',
+      'Directly enabled the interpretation of X-rays and the photoelectric effect, and later the vacuum tube and semiconductor',
+      'Officially retired the 2,300-year premise that the atom is indivisible'
+    ],
+    chain: [
+      { t: 'Faraday\'s laws of electrolysis', s: '1834' },
+      { t: 'Cathode ray tube', s: '1897 · Thomson' },
+      { t: 'Millikan oil-drop', s: '1909 · measures e' },
+      { t: 'Electron microscope', s: '1931 · Ruska' }
+    ]
+  }
+};
+
+LABDOCS.scatter = {
+  year: '1909–1911', yearEn: '1909–1911',
+  zh: {
+    name: '金箔散射：用炮弹试探一张纸',
+    sub: 'GOLD FOIL · GEIGER–MARSDEN',
+    who: '盖革 · 马斯登（卢瑟福指导）',
+    meta: '1909–1911 · 曼彻斯特',
+    org: '曼彻斯特大学物理实验室',
+    claim: '原子几乎全是空的，所有质量和正电荷挤在一个不到原子十万分之一的核里。',
+    core: '汤姆孙的模型里，正电荷像云一样均匀铺满原子，α 粒子穿过去最多偏几度。卢瑟福让盖革和马斯登去做这个「几度」的测量：用镭射出的 α 粒子轰击金箔，在暗室里对着荧光屏一个角度一个角度地数闪光。他们数到了大角度反弹——按当时的模型，这种事件的概率小到不该出现。',
+    steps: [
+      '用镭源产生 α 粒子（氦核），准直成一束，轰击厚度约 1000 个原子的金箔',
+      '在金箔周围架设可转动的硫化锌荧光屏，暗室中肉眼计数每一次闪光',
+      '逐角度统计：0°、小角度、90° 以上各有多少粒子',
+      '把计数分布与「均匀正电球」模型的预言对比'
+    ],
+    saw: '绝大多数 α 粒子几乎直穿而过，约 1/8000 偏转超过 90°，少数甚至被原路弹回。要让一个 α 粒子掉头，必须有一个比它重得多、电荷集中得多的东西挡在前面——原子中心存在一个极小极重的核，其余部分几乎是空的。',
+    quote: { text: '这就像你朝一张纸开炮，炮弹却弹回来打中了你。', src: '卢瑟福，谈金箔实验结果' },
+    limit: '经典电磁学立刻给出反驳：绕核运动的电子会持续辐射能量，在约 10⁻¹¹ 秒内坠入核，原子根本不该存在。这个矛盾必须等玻尔引入量子化轨道才能解决。',
+    impactLead: '它把原子从「一团均匀的东西」变成「一个极小的核加一片空旷」，核物理由此开始。',
+    impactItems: [
+      '提出核式模型：正电荷与几乎全部质量集中在原子中心',
+      '估算出核的尺度约 10⁻¹⁴ 米，比原子小四个数量级，原子 99.999% 是空的',
+      'α 散射成为标准探针：卢瑟福背散射至今用于分析薄膜成分与厚度',
+      '直接引出玻尔 1913 年的量子化轨道，以及后来所有核物理与加速器'
+    ],
+    chain: [
+      { t: '汤姆孙模型', s: '1904' },
+      { t: '金箔散射', s: '1909–1911 · 盖革与马斯登' },
+      { t: '玻尔轨道模型', s: '1913' },
+      { t: '质子与中子的发现', s: '1919 / 1932' }
+    ]
+  },
+  en: {
+    name: 'Gold foil: firing shells at a sheet of paper',
+    sub: 'GOLD FOIL · GEIGER–MARSDEN',
+    who: 'Geiger · Marsden (under Rutherford)',
+    meta: '1909–1911 · Manchester',
+    org: 'Manchester University Physics Laboratories',
+    claim: 'The atom is almost entirely empty; all its mass and positive charge sit in a nucleus less than a hundred-thousandth of its width.',
+    core: 'In Thomson\'s model the positive charge is spread evenly like a cloud, so an alpha particle passing through should be deflected by a few degrees at most. Rutherford had Geiger and Marsden measure exactly that: fire alpha particles from a radium source at gold foil, and count scintillations on a zinc-sulphide screen angle by angle in a darkened room. They counted large-angle rebounds — events that, on the current model, should not happen at all.',
+    steps: [
+      'Collimate alpha particles (helium nuclei) from a radium source onto gold foil about 1,000 atoms thick',
+      'Mount a rotatable zinc-sulphide screen around the foil and count each flash by eye in a dark room',
+      'Tally particles by angle: zero, small angles, and beyond 90°',
+      'Compare the angular distribution with what a uniformly charged sphere would predict'
+    ],
+    saw: 'Almost every alpha particle went straight through; about one in 8,000 was deflected by more than 90°, a few bounced straight back. To turn an alpha particle around you need something far heavier than it, with charge concentrated in one place — a tiny, massive nucleus at the centre, with emptiness around it.',
+    quote: { text: 'It was almost as incredible as if you fired a 15-inch shell at a piece of tissue paper and it came back and hit you.', src: 'Rutherford, recalling the gold-foil result' },
+    limit: 'Classical electromagnetism objected at once: an orbiting electron radiates continuously and should spiral into the nucleus within about 10⁻¹¹ s, so the atom should not exist. Resolving that required Bohr\'s quantised orbits.',
+    impactLead: 'It changed the atom from "an evenly spread thing" into "a tiny nucleus plus a lot of empty space", and nuclear physics began there.',
+    impactItems: [
+      'Proposed the nuclear model: positive charge and nearly all the mass concentrated at the centre',
+      'Estimated the nucleus at about 10⁻¹⁴ m — four orders of magnitude smaller than the atom, which is 99.999% empty',
+      'Alpha scattering became a standard probe; Rutherford backscattering still measures film composition and thickness',
+      'Directly led to Bohr\'s quantised orbits in 1913, and to all later nuclear physics and accelerators'
+    ],
+    chain: [
+      { t: 'Thomson model', s: '1904' },
+      { t: 'Gold foil scattering', s: '1909–1911 · Geiger & Marsden' },
+      { t: 'Bohr model', s: '1913' },
+      { t: 'Proton and neutron', s: '1919 / 1932' }
+    ]
+  }
+};
+/* ============================================================
+   LAB DOCS — 实验档案（续）
+   ============================================================ */
+
+LABDOCS.spectrum = {
+  year: '1885 / 1913', yearEn: '1885 / 1913',
+  zh: {
+    name: '氢光谱：光里的条形码',
+    sub: 'HYDROGEN SPECTRUM · BALMER SERIES',
+    who: '巴耳末 · 玻尔',
+    meta: '1885 / 1913',
+    org: '巴塞尔 · 哥本哈根',
+    claim: '原子只发出特定几根波长的光。能量不是连续的，它一份一份地给。',
+    core: '把氢气封进放电管通电，它会发光。用棱镜或光栅把光摊开，看到的不是一道完整的彩虹，而是几根锐利的亮线。1885 年，瑞士的中学教师巴耳末发现可见区那四根线的波长可以用一个极简公式拟合：1/λ = R(1/4 − 1/n²)，n = 3,4,5,6。没人知道这个公式为什么成立，直到玻尔把它解释成电子在两条定态轨道之间跳跃。',
+    steps: [
+      '把低气压氢气封入放电管，两端加高压，让气体电离发光',
+      '用棱镜或衍射光栅把发出的光按波长分开，投到刻度屏上',
+      '测出每条亮线的波长与强度，记录成谱图',
+      '把波长代进巴耳末公式，检查 n 取整数时是否对齐'
+    ],
+    saw: '氢的可见光谱是四根孤立的线：656 nm（红，Hα）、486 nm（青，Hβ）、434 nm（蓝，Hγ）、410 nm（紫，Hδ），间距越往短波越密。玻尔用「电子从 n=3,4,5,6 跳回 n=2」解释了这四根线，还算出了里德伯常数，误差不到千分之一。',
+    quote: { text: '只要把量子假设引入原子结构，光谱的谜团立刻散开。', src: '玻尔，1913 年《原子与分子的构造》' },
+    limit: '这套模型只对单电子体系（氢、氦离子）精确；对多电子原子的谱线强度、塞曼分裂、精细结构完全无能为力——这些要等 1925 年的量子力学。',
+    impactLead: '它第一次把「量子」从黑体辐射的数学技巧，变成原子内部真实存在的规则。',
+    impactItems: [
+      '证明原子能量是分立的，定态与跃迁成为原子物理的基本语汇',
+      '精确给出里德伯常数，把光谱学从经验拟合变成理论预测',
+      '谱线成为识别元素的指纹：天体成分、恒星温度、星际介质全靠它判读',
+      '为后来的激光（受激辐射）、原子钟、光谱分析奠定能级语言'
+    ],
+    chain: [
+      { t: '巴耳末公式', s: '1885 · 经验拟合' },
+      { t: '玻尔模型', s: '1913 · 量子化轨道' },
+      { t: '泡利不相容原理', s: '1925' },
+      { t: '激光与原子钟', s: '1960 / 1955' }
+    ]
+  },
+  en: {
+    name: 'Hydrogen spectrum: a barcode written in light',
+    sub: 'HYDROGEN SPECTRUM · BALMER SERIES',
+    who: 'Balmer · Bohr',
+    meta: '1885 / 1913',
+    org: 'Basel · Copenhagen',
+    claim: 'An atom emits only a few specific wavelengths. Energy is not continuous — it is handed out in portions.',
+    core: 'Seal hydrogen at low pressure in a discharge tube and pass a high voltage through it: the gas glows. Spread that light with a prism or grating and you do not get a full rainbow but a few sharp bright lines. In 1885 a Swiss schoolteacher, Johann Balmer, found the four visible lines fit a startlingly simple formula: 1/λ = R(1/4 − 1/n²), with n = 3,4,5,6. Nobody knew why it worked — until Bohr read it as an electron jumping between stationary orbits.',
+    steps: [
+      'Seal hydrogen at low pressure in a discharge tube and apply high voltage until the gas ionises and glows',
+      'Disperse the light with a prism or diffraction grating onto a calibrated screen',
+      'Measure the wavelength and intensity of each bright line and record the spectrum',
+      'Substitute the wavelengths into Balmer\'s formula and check the fit for integer n'
+    ],
+    saw: 'The visible spectrum of hydrogen is four isolated lines: 656 nm (red, Hα), 486 nm (cyan, Hβ), 434 nm (blue, Hγ), 410 nm (violet, Hδ), crowding closer toward shorter wavelengths. Bohr explained them as electrons falling from n = 3,4,5,6 to n = 2, and predicted the Rydberg constant to better than one part in a thousand.',
+    quote: { text: 'As soon as the quantum hypothesis is applied to atomic structure, the riddle of the spectrum dissolves.', src: 'Bohr, On the Constitution of Atoms and Molecules, 1913' },
+    limit: 'The model is exact only for one-electron systems (hydrogen, helium ion). It says nothing useful about line intensities, Zeeman splitting or fine structure in multi-electron atoms — those waited for quantum mechanics in 1925.',
+    impactLead: 'It turned "the quantum" from a mathematical trick for black-body radiation into a real rule operating inside the atom.',
+    impactItems: [
+      'Proved that atomic energies are discrete; stationary states and transitions became the vocabulary of atomic physics',
+      'Delivered an accurate Rydberg constant, turning spectroscopy from curve-fitting into prediction',
+      'Spectral lines became elemental fingerprints: stellar composition, temperature and the interstellar medium are read from them',
+      'Laid down the energy-level language behind lasers, atomic clocks and spectral analysis'
+    ],
+    chain: [
+      { t: 'Balmer formula', s: '1885 · empirical fit' },
+      { t: 'Bohr model', s: '1913 · quantised orbits' },
+      { t: 'Pauli exclusion principle', s: '1925' },
+      { t: 'Laser & atomic clock', s: '1960 / 1955' }
+    ]
+  }
+};
+
+LABDOCS.slit = {
+  year: '1961 / 1989', yearEn: '1961 / 1989',
+  zh: {
+    name: '电子双缝：一个电子同时走两条路',
+    sub: 'ELECTRON DOUBLE SLIT',
+    who: '约恩松 · 外村彰',
+    meta: '1961 / 1989',
+    org: '图宾根 · 日立中央研究所',
+    claim: '把电子一个一个地发射，它们仍然自己和自己干涉。粒子与波不是二选一。',
+    core: '双缝干涉本来是光的实验。1961 年，约恩松把电子束强度降到极低，让电子几乎是一个一个通过双缝；1989 年外村彰用电子双棱镜做出了更干净的版本，并用探测器逐个记录落点。结果不是「电子多了才出现波动」，而是单个电子也有自己的相位——它同时穿过两条缝，和自己干涉。',
+    steps: [
+      '把电子加速到已知能量，把束流强度降到极低，保证同一时刻腔内基本只有一个电子',
+      '让电子通过两条相距极窄的缝（或用电子双棱镜制造两束相干电子）',
+      '用探测器逐个记录每个电子的落点坐标，累积成分布',
+      '在缝口加探测器判断电子走了哪条缝，再重复一次'
+    ],
+    saw: '最初几百个电子落点看似随机；累积到几万个后，明暗相间的干涉条纹自己浮现出来，条纹间距与波长和缝距的关系完全符合波动公式。一旦在缝口「看」它走了哪条缝，条纹立刻消失，只剩下两团——不是仪器不够好，是测量本身抹掉了相位。',
+    quote: { text: '这里面有哲学的整块核心。事实上，它包含了量子力学的唯一秘密。', src: '费曼《物理学讲义》第三卷' },
+    limit: '宏观物体看不到这种干涉，因为与环境的一点相互作用就足以让相位退相干；「看哪条缝」不是技术限制，而是原理性的：路径信息一旦存在，条纹必然消失。',
+    impactLead: '它把「波粒二象性」从口号变成可数的实验事实，也把「测量」推到了物理的核心位置。',
+    impactItems: [
+      '单电子干涉实验证实物质波，德布罗意 1924 年的假设获得直接证据',
+      '确立 which-path（路径信息）与干涉的互斥关系，成为量子力学诠释的试金石',
+      '延迟选择、量子擦除等实验的思想与装置源头',
+      '量子计算与量子密码的基础：叠加、相位、测量坍缩都在这里第一次被看清'
+    ],
+    chain: [
+      { t: '德布罗意物质波', s: '1924' },
+      { t: '戴维孙-革末实验', s: '1927 · 电子衍射' },
+      { t: '单电子双缝', s: '1961 / 1989' },
+      { t: '量子信息与量子计算', s: '1994 至今' }
+    ]
+  },
+  en: {
+    name: 'Electron double slit: one electron, two paths',
+    sub: 'ELECTRON DOUBLE SLIT',
+    who: 'Jönsson · Tonomura',
+    meta: '1961 / 1989',
+    org: 'Tübingen · Hitachi Central Research',
+    claim: 'Fire electrons one at a time and they still interfere with themselves. Particle and wave are not alternatives.',
+    core: 'Double-slit interference began as an experiment with light. In 1961 Jönsson dropped the electron flux so low that electrons passed through the slits essentially one at a time; in 1989 Tonomura built a cleaner version with an electron biprism and recorded each landing point individually. The result was not "waves appear once you have many electrons" — a single electron carries its own phase, passes through both slits, and interferes with itself.',
+    steps: [
+      'Accelerate electrons to a known energy and reduce the flux until roughly one electron is in the apparatus at a time',
+      'Pass them through two extremely narrow slits (or use an electron biprism to produce two coherent beams)',
+      'Record each electron\'s landing position with a detector and accumulate the distribution',
+      'Add a detector at the slits to determine which slit each electron took, then repeat'
+    ],
+    saw: 'The first few hundred landing points look random; after tens of thousands, fringes emerge on their own, spaced exactly as the wave formula predicts from wavelength and slit separation. Put a detector at the slits to see which path was taken and the fringes vanish at once, leaving two clumps — not because the apparatus is crude, but because the measurement itself erased the phase.',
+    quote: { text: 'In reality, it contains only the phenomenon of interference. From this single phenomenon comes the whole mystery of quantum mechanics.', src: 'Feynman, Lectures on Physics, Vol. III' },
+    limit: 'Macroscopic objects show no such interference, because the slightest interaction with the environment decoheres them. "Watching the slit" is not a technical shortcoming but a principle: once path information exists, fringes must disappear.',
+    impactLead: 'It turned wave–particle duality from a slogan into countable experimental fact, and pushed measurement into the centre of physics.',
+    impactItems: [
+      'Single-electron interference confirmed matter waves, providing direct evidence for de Broglie\'s 1924 hypothesis',
+      'Established the exclusivity of which-path information and interference — the touchstone of quantum interpretation',
+      'The conceptual and instrumental origin of delayed-choice and quantum-eraser experiments',
+      'The foundation of quantum computing and cryptography: superposition, phase and collapse were first seen clearly here'
+    ],
+    chain: [
+      { t: 'de Broglie matter waves', s: '1924' },
+      { t: 'Davisson–Germer', s: '1927 · electron diffraction' },
+      { t: 'Single-electron double slit', s: '1961 / 1989' },
+      { t: 'Quantum information', s: '1994 – present' }
+    ]
+  }
+};
+
+LABDOCS.neutron = {
+  year: '1930–1932', yearEn: '1930–1932',
+  zh: {
+    name: '中子的发现：一种看不见的辐射',
+    sub: 'BERYLLIUM RADIATION · CHADWICK',
+    who: '博特 · 居里夫妇 · 查德威克',
+    meta: '1930–1932',
+    org: '吉森 · 巴黎 · 卡文迪许',
+    claim: '原子核里还有第二种粒子：不带电，质量却和质子几乎一样。',
+    core: '1930 年博特与贝克尔发现，用 α 粒子轰击铍会放出一种穿透力强得离谱的辐射：能穿过几厘米的铅，却不像 γ 射线那样能使空气电离。1932 年居里夫妇发现这种辐射打到石蜡上会打出高速质子，但算出的能量对不上。查德威克重复了实验，用动量守恒反推：唯一能同时解释「不带电」和「能撞出质子」的，是一个质量约等于质子的中性粒子。',
+    steps: [
+      '用钋-210 的 α 粒子轰击铍靶，产生那种神秘的「铍辐射」',
+      '让辐射依次穿过纸、铝、铅，测量穿透与衰减：纸和铝几乎挡不住，铅也只是减弱',
+      '在辐射路径上放一块石蜡（富含氢），用探测器测被打出的质子的能量',
+      '用碰撞前后的动量与能量守恒，反推入射粒子的质量'
+    ],
+    saw: '这种辐射不被电场或磁场偏转，说明不带电；它却能把石蜡里的质子撞出来，说明有质量。反推得到质量约 1.0087 u，与质子几乎相同，电荷为零。中子就这样被「算」出来，而不是被看见。',
+    quote: { text: '必须假设存在一种质量约等于质子、不带电的粒子。', src: '查德威克，1932 年 2 月致《自然》' },
+    limit: '中子不带电，无法用电场加速、也无法用磁場偏转，只能通过它与原子核的碰撞间接观测；自由中子还会在约 15 分钟后衰变，测量必须抢时间。',
+    impactLead: '它补齐了原子核的另一半，让「同位素」从一堆无法解释的原子量变成有结构的核。',
+    impactItems: [
+      '确立原子核由质子与中子组成，质量数与电荷数成为两套独立的账',
+      '解释同位素：同一种元素可以有不同中子数，化学性质相同、质量不同',
+      '中子不带电，能轻易进入核内——1938 年哈恩与斯特拉斯曼据此发现核裂变',
+      '中子散射成为探针（看氢位置、看磁结构），中子俘获用于癌症治疗'
+    ],
+    chain: [
+      { t: '质子发现', s: '1919 · 卢瑟福' },
+      { t: '铍辐射', s: '1930 · 博特与贝克尔' },
+      { t: '中子发现', s: '1932 · 查德威克' },
+      { t: '核裂变与反应堆', s: '1938 / 1942' }
+    ]
+  },
+  en: {
+    name: 'The neutron: a radiation nobody could see',
+    sub: 'BERYLLIUM RADIATION · CHADWICK',
+    who: 'Bothe · Curie–Joliot · Chadwick',
+    meta: '1930–1932',
+    org: 'Giessen · Paris · Cavendish',
+    claim: 'The nucleus holds a second particle: uncharged, yet almost as heavy as the proton.',
+    core: 'In 1930 Bothe and Becker found that alpha particles striking beryllium released a radiation with absurd penetrating power: it passed through centimetres of lead, yet did not ionise air like gamma rays. In 1932 the Curies found it could knock fast protons out of paraffin, but the energies did not add up. Chadwick repeated the experiment and used conservation of momentum to work backwards: the only thing that is both uncharged and able to eject a proton is a neutral particle about as heavy as the proton.',
+    steps: [
+      'Bombard a beryllium target with alpha particles from polonium-210 to produce the mysterious "beryllium radiation"',
+      'Pass it through paper, aluminium and lead in turn and measure transmission: paper and aluminium barely stop it, lead only weakens it',
+      'Place paraffin (rich in hydrogen) in the path and measure the energy of the ejected protons with a detector',
+      'Apply conservation of momentum and energy across the collision to infer the incoming particle\'s mass'
+    ],
+    saw: 'The radiation is undeflected by electric or magnetic fields, so it carries no charge; yet it knocks protons out of paraffin, so it carries mass. The inferred mass is about 1.0087 u — essentially the proton\'s — with zero charge. The neutron was calculated into existence rather than seen.',
+    quote: { text: 'It becomes necessary to assume the existence of a particle of mass approximately 1 and charge 0.', src: 'Chadwick, letter to Nature, February 1932' },
+    limit: 'Being uncharged, the neutron cannot be accelerated by electric fields or steered by magnetic ones; it is observed only through collisions with nuclei. A free neutron also decays in about 15 minutes, so measurements must be fast.',
+    impactLead: 'It supplied the other half of the nucleus and turned "isotope" from an unexplained weight into a structured nucleus.',
+    impactItems: [
+      'Established the nucleus as protons plus neutrons, making mass number and charge number two separate ledgers',
+      'Explained isotopes: one element can carry different neutron counts — same chemistry, different mass',
+      'Neutral particles slip into nuclei easily; Hahn and Strassmann used exactly that to discover fission in 1938',
+      'Neutron scattering became a probe (locating hydrogen, mapping magnetism); neutron capture is used in cancer therapy'
+    ],
+    chain: [
+      { t: 'Proton discovered', s: '1919 · Rutherford' },
+      { t: 'Beryllium radiation', s: '1930 · Bothe & Becker' },
+      { t: 'Neutron discovered', s: '1932 · Chadwick' },
+      { t: 'Fission & reactors', s: '1938 / 1942' }
+    ]
+  }
+};
+
+LABDOCS.dis = {
+  year: '1968–1969', yearEn: '1968–1969',
+  zh: {
+    name: '深度非弹散射：撞开质子',
+    sub: 'DEEP INELASTIC SCATTERING · SLAC',
+    who: '弗里德曼 · 肯德尔 · 泰勒',
+    meta: '1968–1969',
+    org: 'SLAC 与 MIT 合作组',
+    claim: '质子内部还有更小的点状东西。夸克不只是数学构件，它是实的。',
+    core: '1960 年代，质子被当成一个没有内部结构的软球。SLAC 的 20 GeV 直线加速器把电子加速到极高能量，正对着液氢靶轰过去，专看那些损失了大量能量、又被弹到大角度的电子。如果质子是均匀的，这种事件应当极其罕见，而且概率会随动量转移迅速下降。实测结果完全不是这样。',
+    steps: [
+      '用直线加速器把电子加速到 20 GeV，轰击液氢靶',
+      '用磁谱仪测量散射电子的能量损失与散射角，筛出「深度非弹」事件',
+      '把散射概率作为动量转移 Q² 的函数画出来',
+      '与「质子是均匀软球」的预言逐点对比'
+    ],
+    saw: '大角度、大能量损失的事件比预期多得多；更关键的是，散射概率几乎不随 Q² 变化——这叫「标度无关」。它意味着高能电子撞上的是一群近乎自由、点状的小东西，而不是一团连续的电荷。费曼把这些成分叫「部分子」，后来确认就是盖尔曼提出的夸克。',
+    quote: { text: '质子并不是一个光滑的球，它里面有点状的东西在动。', src: 'SLAC-MIT 实验总结，1969' },
+    limit: '夸克被永久囚禁在强子里，从未被单独观测到；实验只能证明「内部有点状结构、且近乎自由」，无法直接称出单个夸克的质量。',
+    impactLead: '它把夸克从纸面上的数学构件变成了实验对象，直接催生了量子色动力学。',
+    impactItems: [
+      '首次给出质子内部点状结构的直接实验证据，强子不再「基本」',
+      '「标度无关」成为部分子模型的实验基石，费曼因此重构了强子图像',
+      '推动量子色动力学（QCD）在 1973 年建立，成为标准模型的一根支柱',
+      '1990 年诺贝尔物理学奖；今天 LHC 的质子对撞，用的就是这套图像'
+    ],
+    chain: [
+      { t: '夸克模型', s: '1964 · 盖尔曼与茨威格' },
+      { t: '深度非弹散射', s: '1968 · SLAC-MIT' },
+      { t: '量子色动力学', s: '1973' },
+      { t: 'LHC 质子对撞', s: '2010 至今' }
+    ]
+  },
+  en: {
+    name: 'Deep inelastic scattering: breaking open the proton',
+    sub: 'DEEP INELASTIC SCATTERING · SLAC',
+    who: 'Friedman · Kendall · Taylor',
+    meta: '1968–1969',
+    org: 'SLAC–MIT collaboration',
+    claim: 'The proton has smaller point-like things inside. Quarks are not just a mathematical device.',
+    core: 'Through the 1960s the proton was treated as a soft sphere with no internal structure. SLAC\'s 20 GeV linear accelerator fired electrons at a liquid-hydrogen target and looked specifically at those that lost a large amount of energy and scattered to wide angles. If the proton were uniform, such events should be extremely rare and should fall off rapidly with momentum transfer. They did not.',
+    steps: [
+      'Accelerate electrons to 20 GeV and fire them at a liquid-hydrogen target',
+      'Use a magnetic spectrometer to measure each scattered electron\'s energy loss and angle, selecting deep inelastic events',
+      'Plot the scattering probability as a function of momentum transfer Q²',
+      'Compare point by point with the prediction for a uniform soft sphere'
+    ],
+    saw: 'Wide-angle, high-energy-loss events were far more common than expected; more importantly, the probability barely changed with Q² — "scaling". That means high-energy electrons were hitting a crowd of nearly free, point-like objects rather than a continuous charge distribution. Feynman called them partons; they turned out to be Gell-Mann\'s quarks.',
+    quote: { text: 'The proton is not a smooth ball; there are point-like things moving inside it.', src: 'SLAC–MIT collaboration, summary, 1969' },
+    limit: 'Quarks are permanently confined inside hadrons and have never been observed alone; the experiment can only show that point-like, nearly free structure exists, not weigh an individual quark.',
+    impactLead: 'It turned quarks from figments of notation into experimental objects and directly called quantum chromodynamics into being.',
+    impactItems: [
+      'First direct experimental evidence for point-like structure inside the proton; hadrons ceased to be "elementary"',
+      'Scaling became the experimental bedrock of the parton model, reshaping how Feynman pictured hadrons',
+      'Drove the creation of quantum chromodynamics (QCD) in 1973, a pillar of the Standard Model',
+      'Nobel Prize in 1990; every proton collision at the LHC is read through this picture'
+    ],
+    chain: [
+      { t: 'Quark model', s: '1964 · Gell-Mann & Zweig' },
+      { t: 'Deep inelastic scattering', s: '1968 · SLAC–MIT' },
+      { t: 'Quantum chromodynamics', s: '1973' },
+      { t: 'LHC proton collisions', s: '2010 – present' }
+    ]
+  }
+};
+/* ============================================================
+   ATOMOS — tiny 3D engine (canvas 2d, perspective projection)
+   ============================================================ */
+var TAU = Math.PI * 2;
+var SCENES = {};
+var LABS = {};
+
+function clamp(v, a, b){ return v < a ? a : (v > b ? b : v); }
+function lerp(a, b, t){ return a + (b - a) * t; }
+function easeInOut(t){ return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
+
+var _rgbCache = {};
+function rgb(hex){
+  if (_rgbCache[hex]) return _rgbCache[hex];
+  var o;
+  if (typeof hex === 'string' && hex.indexOf('rgb') === 0) {
+    var m = hex.match(/\d+/g) || [0, 0, 0];
+    o = [+m[0], +m[1], +m[2]];
+  } else {
+    var h = String(hex).replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    o = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  _rgbCache[hex] = o;
+  return o;
+}
+function mix(a, b, t){
+  var A = rgb(a), B = rgb(b);
+  return 'rgb(' + Math.round(lerp(A[0], B[0], t)) + ',' + Math.round(lerp(A[1], B[1], t)) + ',' + Math.round(lerp(A[2], B[2], t)) + ')';
+}
+function rgba(hex, a){
+  var c = rgb(hex);
+  return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')';
+}
+
+function rgbaStr(style, a){
+  if (style.charAt(0) === '#') return rgba(style, a);
+  return style.replace('rgb(', 'rgba(').replace(')', ',' + a + ')');
+}
+
+/* ---------- camera ---------- */
+function makeCam(yaw, pitch, dist){
+  return { yaw: yaw, pitch: pitch, dist: dist, zoom: 1, tYaw: yaw, tPitch: pitch, spin: true };
+}
+
+/* ---------- view ---------- */
+function View(ctx, w, h, cam){
+  this.ctx = ctx; this.w = w; this.h = h; this.cam = cam;
+  this.cx = w * .5; this.cy = h * .5;
+  this.focal = Math.min(w, h) * 1.14;
+  this.items = [];
+  this.cyw = Math.cos(cam.yaw); this.syw = Math.sin(cam.yaw);
+  this.cpt = Math.cos(cam.pitch); this.spt = Math.sin(cam.pitch);
+  this.far = cam.dist * 2.2;
+}
+View.prototype.P = function(x, y, z){
+  var c = this.cam;
+  var X = x * this.cyw + z * this.syw;
+  var Z = -x * this.syw + z * this.cyw;
+  var Y = y * this.cpt - Z * this.spt;
+  var Z2 = y * this.spt + Z * this.cpt;
+  var d = Z2 + c.dist;
+  if (d < .22) d = .22;
+  var s = this.focal * c.zoom / d;
+  return { x: this.cx + X * s, y: this.cy - Y * s, s: s, d: d, z: Z2 };
+};
+View.prototype.push = function(d, fn){ this.items.push({ z: d, fn: fn }); };
+View.prototype.ball = function(x, y, z, r, color, opt){
+  opt = opt || {};
+  var q = this.P(x, y, z);
+  if (q.d < .34) return;
+  var R = r * q.s;
+  if (R < .22) return;
+  if (q.x + R < -30 || q.x - R > this.w + 30 || q.y + R < -30 || q.y - R > this.h + 30) return;
+  var self = this;
+  this.items.push({ z: q.d, fn: function(){ self._ball(q, R, color, opt); } });
+};
+View.prototype._ball = function(q, R, color, opt){
+  var ctx = this.ctx;
+  ctx.save();
+  if (opt.alpha != null) ctx.globalAlpha = opt.alpha;
+  var g;
+  if (R > 2.2) {
+    g = ctx.createRadialGradient(q.x - R * .34, q.y - R * .40, R * .02, q.x, q.y, R * 1.06);
+    g.addColorStop(0, mix(color, '#ffffff', .52));
+    g.addColorStop(.26, mix(color, '#ffffff', .10));
+    g.addColorStop(.66, color);
+    g.addColorStop(1, mix(color, '#101314', .42));
+  } else {
+    g = color;
+  }
+  ctx.beginPath(); ctx.arc(q.x, q.y, R, 0, TAU);
+  ctx.fillStyle = g; ctx.fill();
+  if (opt.wire) {
+    ctx.lineWidth = Math.max(.5, R * .04);
+    ctx.strokeStyle = rgba(opt.wire, .5); ctx.stroke();
+  } else if (R > 3) {
+    ctx.lineWidth = Math.max(.5, R * .03);
+    ctx.strokeStyle = rgbaStr(mix(color, '#000000', .5), .30); ctx.stroke();
+  }
+  if (R > 7 && !opt.flat) {
+    var sg = ctx.createRadialGradient(q.x - R * .38, q.y - R * .46, 0, q.x - R * .38, q.y - R * .46, R * .40);
+    sg.addColorStop(0, rgba('#ffffff', .34));
+    sg.addColorStop(1, rgba('#ffffff', 0));
+    ctx.beginPath(); ctx.arc(q.x - R * .4, q.y - R * .48, R * .46, 0, TAU);
+    ctx.fillStyle = sg; ctx.fill();
+  }
+  ctx.restore();
+};
+View.prototype.glow = function(x, y, z, r, color, a){
+  var q = this.P(x, y, z);
+  if (q.d < .3) return;
+  var R = r * q.s;
+  if (R < 1) return;
+  var self = this;
+  this.items.push({ z: q.d + 30, fn: function(){
+    var ctx = self.ctx;
+    var g = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, R);
+    var ga = (a == null ? .5 : a) * .42;
+    g.addColorStop(0, rgba(color, ga));
+    g.addColorStop(.35, rgba(color, ga * .32));
+    g.addColorStop(1, rgba(color, 0));
+    ctx.beginPath(); ctx.arc(q.x, q.y, R, 0, TAU);
+    ctx.fillStyle = g; ctx.fill();
+  }});
+};
+View.prototype.line = function(a, b, color, w, a1){
+  var q1 = this.P(a[0], a[1], a[2]);
+  var q2 = this.P(b[0], b[1], b[2]);
+  if (q1.d < .3 || q2.d < .3) return;
+  var self = this;
+  var d = (q1.d + q2.d) * .5;
+  this.items.push({ z: d, fn: function(){
+    var ctx = self.ctx;
+    ctx.beginPath();
+    ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+    ctx.strokeStyle = rgba(color, a1 == null ? .3 : a1);
+    ctx.lineWidth = w || 1;
+    ctx.stroke();
+  }});
+};
+View.prototype.flush = function(){
+  this.items.sort(function(a, b){ return b.z - a.z; });
+  for (var i = 0; i < this.items.length; i++) this.items[i].fn();
+  this.items.length = 0;
+};
+
+/* ---------- orbit path ---------- */
+function orbitPoint(radius, tiltX, tiltZ, phase){
+  var x = Math.cos(phase) * radius;
+  var y = Math.sin(phase) * radius;
+  var z = 0;
+  var cz = Math.cos(tiltZ), sz = Math.sin(tiltZ);
+  var x1 = x * cz - y * sz;
+  var y1 = x * sz + y * cz;
+  var cx = Math.cos(tiltX), sx = Math.sin(tiltX);
+  var y2 = y1 * cx - z * sx;
+  var z2 = y1 * sx + z * cx;
+  return [x1, y2, z2];
+}
+View.prototype.orbit = function(radius, tiltX, tiltZ, color, alpha, segs, lw){
+  segs = segs || 72;
+  var pts = [];
+  for (var i = 0; i <= segs; i++) {
+    var p = orbitPoint(radius, tiltX, tiltZ, i / segs * TAU);
+    pts.push(this.P(p[0], p[1], p[2]));
+  }
+  var self = this;
+  for (var j = 0; j < segs; j++) {
+    (function(a, b){
+      var d = (a.d + b.d) * .5;
+      var fade = clamp(1.25 - (a.d - self.cam.dist) * .32, .12, 1);
+      self.items.push({ z: d, fn: function(){
+        var ctx = self.ctx;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = rgba(color, (alpha == null ? .3 : alpha) * fade);
+        ctx.lineWidth = lw || 1;
+        ctx.stroke();
+      }});
+    })(pts[j], pts[j + 1]);
+  }
+};
+
+/* ============================================================
+   renderer
+   ============================================================ */
+var R = {
+  cv: null, ctx: null, cam: makeCam(.62, -.2, 5.6),
+  mode: 'model', idx: 0, params: {}, raf: 0, t0: 0, w: 0, h: 0, dpr: 1,
+  dragging: false, lastX: 0, lastY: 0, vx: 0, vy: 0, idle: 0, visible: true,
+  reduced: false
+};
+
+R.bind = function(cv){
+  this.cv = cv;
+  this.ctx = cv.getContext('2d');
+  this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var self = this;
+  cv.addEventListener('pointerdown', function(e){
+    self.dragging = true; self.lastX = e.clientX; self.lastY = e.clientY;
+    self.vx = 0; self.vy = 0; self.idle = 0;
+    cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', function(e){
+    if (!self.dragging) return;
+    var dx = e.clientX - self.lastX, dy = e.clientY - self.lastY;
+    self.lastX = e.clientX; self.lastY = e.clientY;
+    self.cam.tYaw += dx * .0075;
+    self.cam.tPitch = clamp(self.cam.tPitch + dy * .0055, -1.15, 1.15);
+    self.vx = dx * .0075; self.vy = dy * .0055;
+    self.cam.spin = false;
+  });
+  var up = function(){ self.dragging = false; self.idle = 0; };
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+  cv.addEventListener('pointerleave', up);
+  if (!this._winBound) {
+    window.addEventListener('resize', function(){ self.resize(); });
+    this._winBound = true;
+  }
+  if (window.ResizeObserver) {
+    if (this._ro) this._ro.disconnect();
+    this._ro = new ResizeObserver(function(){ self.resize(); });
+    this._ro.observe(cv);
+    this._ro.observe(cv.parentElement);
+  }
+};
+
+R.reset = function(){
+  this.cam = makeCam(.62, -.2, 5.6);
+  this.x0 = 0;
+};
+
+R.resize = function(){
+  if (!this.cv) return;
+  var r = this.cv.getBoundingClientRect();
+  if (r.width < 2 || r.height < 2) return;
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
+  var W = Math.round(r.width * dpr), H = Math.round(r.height * dpr);
+  if (this.cv.width !== W || this.cv.height !== H) {
+    this.cv.width = W; this.cv.height = H;
+  }
+  this.w = r.width; this.h = r.height; this.dpr = dpr;
+  this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+};
+
+R.setModel = function(idx){
+  this.idx = idx;
+  this.params = {};
+  var m = MODELS[idx];
+  if (m && m.scene === 'democritus') this.cam.dist = 7.2;
+  else if (m && m.scene === 'quark') this.cam.dist = 4.6;
+  else this.cam.dist = 5.6;
+  this.cam.tYaw = .62; this.cam.yaw = .62;
+  this.cam.tPitch = -.2; this.cam.pitch = -.2;
+  this.cam.zoom = 1;
+  this.cam.spin = true;
+  this.t0 = 0;
+};
+
+R.start = function(){
+  if (this.raf) return;
+  var self = this;
+  var loop = function(ts){
+    self.raf = requestAnimationFrame(loop);
+    if (!self.t0) self.t0 = ts;
+    if (!self.visible) return;
+    self.frame((ts - self.t0) / 1000);
+  };
+  this.raf = requestAnimationFrame(loop);
+};
+R.stop = function(){
+  if (this.raf) cancelAnimationFrame(this.raf);
+  this.raf = 0;
+};
+
+R.frame = function(t){
+  if (!this.w) this.resize();
+  var ctx = this.ctx, w = this.w, h = this.h;
+  if (!w) return;
+  ctx.clearRect(0, 0, w, h);
+
+  /* camera easing + idle spin */
+  if (!this.dragging) {
+    this.idle += 1 / 60;
+    if (this.idle > 2.4) this.cam.spin = true;
+  }
+  if (this.cam.spin && !this.reduced) this.cam.tYaw += .0022;
+  this.cam.yaw = lerp(this.cam.yaw, this.cam.tYaw, .085);
+  this.cam.pitch = lerp(this.cam.pitch, this.cam.tPitch, .085);
+
+  var m = MODELS[this.idx] || MODELS[0];
+  var col = this.mode === 'lab' ? (m.color || '#0E7A57') : (m.color || '#0E7A57');
+
+  this.bg(ctx, w, h, col, t);
+
+  var v = new View(ctx, w, h, this.cam);
+  var st = this.params;
+  var fn = this.mode === 'model' ? SCENES[m.scene] : LABS[m.labType];
+  if (fn) fn(ctx, v, t, st, m, this);
+  v.flush();
+  this.hud(ctx, w, h, m, t);
+};
+
+R.bg = function(ctx, w, h, col, t){
+  var g = ctx.createRadialGradient(w * .5, h * .46, 0, w * .5, h * .46, Math.max(w, h) * .78);
+  g.addColorStop(0, rgba(col, .07));
+  g.addColorStop(.42, rgba(col, .018));
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+
+  /* faint polar rings */
+  ctx.save();
+  ctx.translate(w * .5, h * .5);
+  ctx.strokeStyle = 'rgba(23,27,29,.028)';
+  ctx.lineWidth = 1;
+  var base = Math.min(w, h) * .5;
+  for (var i = 1; i <= 3; i++) {
+    ctx.beginPath(); ctx.arc(0, 0, base * i / 3, 0, TAU); ctx.stroke();
+  }
+  for (var k = 0; k < 12; k++) {
+    var a = k / 12 * TAU;
+    var r1 = base * .96, r2 = base * (k % 3 === 0 ? .9 : .94);
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1);
+    ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2);
+    ctx.stroke();
+  }
+  ctx.restore();
+};
+
+R.hud = function(ctx, w, h, m, t){
+  ctx.save();
+  ctx.font = '500 8px ui-monospace, "SF Mono", Menlo, monospace';
+  ctx.fillStyle = 'rgba(90,101,105,.34)';
+  ctx.textBaseline = 'middle';
+  ctx.restore();
+};
+
+/* ---------- thumbnail render ---------- */
+/* scale 作用在焦距上（部分场景如晶格会自己改写 cam.dist，只有焦距是统一可控的）；
+   dx/dy 是整体平移，用来把画面内容摆正到画布中央 */
+function drawThumb(ctx, model, w, h, scale, dx, dy){
+  scale = scale || 1;
+  var g = ctx.createRadialGradient(w * .5, h * .48, 0, w * .5, h * .48, Math.max(w, h) * .8);
+  g.addColorStop(0, rgba(model.color, .07));
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.save();
+  if (dx || dy) ctx.translate(dx || 0, dy || 0);
+  var cam = makeCam(.72, -.26, model.scene === 'democritus' ? 7.2 : (model.scene === 'quark' ? 4.6 : 5.6));
+  cam.spin = false;
+  var v = new View(ctx, w, h, cam);
+  v.thumb = true;
+  v.cx = w * .5; v.cy = h * .53;
+  v.focal = Math.min(w, h) * 1.02 * scale;
+  var fn = SCENES[model.scene];
+  if (fn) fn(ctx, v, 1.6, { thumb: true }, model, R);
+  v.flush();
+  ctx.restore();
+}
+
+/* 量出画面上「有内容」的包围盒（背景辉光 alpha≤18，按 60 阈值可排除） */
+function thumbInk(ctx, W, H){
+  var d = ctx.getImageData(0, 0, W, H).data;
+  var x0 = W, x1 = -1, y0 = H, y1 = -1;
+  for (var y = 0; y < H; y++) {
+    var row = y * W * 4;
+    for (var x = 0; x < W; x++) {
+      if (d[row + x * 4 + 3] > 60) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0) return null;
+  return { l: x0, r: W - 1 - x1, t: y0, b: H - 1 - y1 };
+}
+
+function renderThumb(canvas, model, w, h){
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
+  var W = Math.round(w * dpr), H = Math.round(h * dpr);
+  canvas.width = W;
+  canvas.height = H;
+  var ctx = canvas.getContext('2d');
+  var pad = 6 * dpr;                    /* 内容四周至少留 6px，防止贴边被看成切掉 */
+
+  function paint(scale, dx, dy){
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    drawThumb(ctx, model, w, h, scale, dx, dy);
+    return thumbInk(ctx, W, H);
+  }
+
+  var box = paint(1, 0, 0);
+  if (!box) return;
+
+  /* 一、内容超出可画面就等比缩小 */
+  var availW = W - pad * 2, availH = H - pad * 2;
+  var inkW = W - box.l - box.r, inkH = H - box.t - box.b;
+  var scale = Math.min(1, availW / Math.max(1, inkW), availH / Math.max(1, inkH));
+
+  /* 二、按缩放后的实际位置平移，让内容正中 */
+  box = paint(scale, 0, 0) || box;
+  var dx = (W / 2 - (box.l + (W - 1 - box.r)) / 2) / dpr;
+  var dy = (H / 2 - (box.t + (H - 1 - box.b)) / 2) / dpr;
+  if (Math.abs(dx) > .5 || Math.abs(dy) > .5) paint(scale, dx, dy);
+}
+/* ============================================================
+   ATOMOS — 3D model scenes
+   ============================================================ */
+
+View.prototype.label = function(x, y, z, text, color, size, opt){
+  var q = this.P(x, y, z);
+  if (q.d < .35) return;
+  if (this.thumb && text.length > 5) return;
+  var self = this;
+  opt = opt || {};
+  this.items.push({ z: q.d - .02, fn: function(){
+    var ctx = self.ctx;
+    ctx.save();
+    if (opt.alpha != null) ctx.globalAlpha = opt.alpha;
+    ctx.font = (opt.weight || 500) + ' ' + (size || 10) + 'px ui-monospace, "SF Mono", Menlo, monospace';
+    ctx.textAlign = opt.align || 'center';
+    ctx.textBaseline = 'middle';
+    if (opt.plate) {
+      var wds = ctx.measureText(text).width;
+      var px = q.x - (opt.align === 'left' ? 0 : wds / 2) - 5;
+      ctx.fillStyle = 'rgba(20,24,26,.72)';
+      ctx.fillRect(px, q.y - 8, wds + 10, 16);
+      ctx.strokeStyle = 'rgba(23,27,29,.12)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(px + .5, q.y - 7.5, wds + 9, 15);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = color;
+      ctx.fillText(text, px + 5, q.y);
+    } else {
+      ctx.fillStyle = color;
+      ctx.fillText(text, q.x, q.y);
+    }
+    ctx.restore();
+  }});
+};
+
+/* wire sphere helper (latitudes + meridians) */
+function wireSphere(v, R0, color, a, segs){
+  segs = segs || 30;
+  var ctx = v.ctx;
+  ctx.save();
+  ctx.lineWidth = 1;
+  var lat, i, j, y, rr, p1, p2, q1, q2;
+  for (i = 1; i <= 4; i++) {
+    lat = -Math.PI / 2 + i * Math.PI / 5;
+    y = Math.sin(lat) * R0; rr = Math.cos(lat) * R0;
+    for (j = 0; j < segs; j++) {
+      var a1 = j / segs * TAU, a2 = (j + 1) / segs * TAU;
+      p1 = [Math.cos(a1) * rr, y, Math.sin(a1) * rr];
+      p2 = [Math.cos(a2) * rr, y, Math.sin(a2) * rr];
+      q1 = v.P(p1[0], p1[1], p1[2]); q2 = v.P(p2[0], p2[1], p2[2]);
+      if (q1.d < .35 || q2.d < .35) continue;
+      var fade = clamp(1.3 - (q1.d - v.cam.dist) * .3, .1, 1);
+      ctx.beginPath();
+      ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+      ctx.strokeStyle = rgba(color, a * fade);
+      ctx.stroke();
+    }
+  }
+  for (i = 0; i < 6; i++) {
+    var th = i / 6 * Math.PI;
+    for (j = 0; j < segs; j++) {
+      var b1 = j / segs * TAU, b2 = (j + 1) / segs * TAU;
+      p1 = [Math.cos(b1) * Math.cos(th) * R0, Math.sin(b1) * R0, Math.cos(b1) * Math.sin(th) * R0];
+      p2 = [Math.cos(b2) * Math.cos(th) * R0, Math.sin(b2) * R0, Math.cos(b2) * Math.sin(th) * R0];
+      q1 = v.P(p1[0], p1[1], p1[2]); q2 = v.P(p2[0], p2[1], p2[2]);
+      if (q1.d < .35 || q2.d < .35) continue;
+      var fd = clamp(1.3 - (q1.d - v.cam.dist) * .3, .1, 1);
+      ctx.beginPath();
+      ctx.moveTo(q1.x, q1.y); ctx.lineTo(q2.x, q2.y);
+      ctx.strokeStyle = rgba(color, a * .55 * fd);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+/* ---------- 01 Democritus : lattice ---------- */
+SCENES.democritus = function(ctx, v, t, st, m){
+  var z = st.zoom == null ? .18 : st.zoom;
+  var thumb = !!v.thumb;
+  v.cam.dist = (thumb ? 5.4 : 8.6) - z * 5.5;
+  var N = thumb ? 3 : 4, sp = 1.06, half = (N - 1) / 2;
+  var base = m.color;
+  var col = mix(base, '#c9c0a8', .55);
+  var cx = half;
+  var i, j, k, x, y, zz;
+
+  /* bonds first (behind) */
+  for (i = 0; i < N; i++) for (j = 0; j < N; j++) for (k = 0; k < N; k++) {
+    x = (i - half) * sp; y = (j - half) * sp; zz = (k - half) * sp;
+    if (i < N - 1) v.line([x, y, zz], [x + sp, y, zz], '#5D686C', 1, .30);
+    if (j < N - 1) v.line([x, y, zz], [x, y + sp, zz], '#5D686C', 1, .30);
+    if (k < N - 1) v.line([x, y, zz], [x, y, zz + sp], '#5D686C', 1, .30);
+  }
+  var rad = (thumb ? .2 : .17) + z * .1;
+  for (i = 0; i < N; i++) for (j = 0; j < N; j++) for (k = 0; k < N; k++) {
+    x = (i - half) * sp; y = (j - half) * sp; zz = (k - half) * sp;
+    var central = (i === cx && j === cx && k === cx);
+    if (central && z > .55) {
+      var f = clamp((z - .55) / .45, 0, 1);
+      v.ball(x, y, zz, rad + f * .42, base, { alpha: .1 + f * .12, wire: base });
+      v.glow(x, y, zz, .55, base, .1 * f);
+      v.ball(x, y, zz, .05 + f * .1, '#B24A20', {});
+      v.ball(x + .1, y + .06, zz, .022, '#2C6C92', {});
+      v.orbit(.34 * f + .12, .5, .3, '#2C6C92', .5, 40, 1);
+    } else {
+      v.ball(x, y, zz, rad, mix(col, '#ffffff', ((i + j + k) % 3) * .05), {});
+    }
+  }
+  if (z < .55) {
+    v.glow(0, 0, 0, 2.4, base, .1);
+  }
+};
+
+/* ---------- 02 Dalton : element spheres ---------- */
+SCENES.dalton = function(ctx, v, t, st, m){
+  v.cam.dist = 9.3;
+  var set = [
+    { x: -2.25, y: .1, r: .5, c: '#A3AEB3', s: 'H', n: '1' },
+    { x: -.78, y: .5, r: .78, c: '#454e56', s: 'C', n: '12' },
+    { x: .82, y: .05, r: .72, c: '#A8402A', s: 'O', n: '16' },
+    { x: 2.24, y: .44, r: .66, c: '#3f6a9e', s: 'N', n: '14' }
+  ];
+  for (var i = 0; i < set.length; i++) {
+    var e = set[i];
+    var bob = Math.sin(t * .8 + i * 1.3) * .06;
+    v.glow(e.x, e.y + bob, 0, e.r * 1.9, e.c, .16);
+    v.ball(e.x, e.y + bob, 0, e.r, e.c, {});
+    v.label(e.x, e.y + bob, 0, e.s, 'rgba(20,24,26,.72)', 17, { weight: 600 });
+    v.label(e.x, e.y + bob + e.r * 1.45, 0, 'A = ' + e.n, rgba('#3D4649', .85), 8);
+  }
+  v.label(0, -2.1, 0, 'SAME ELEMENT  ·  SAME MASS', rgba('#6A7579', .8), 8);
+};
+
+/* ---------- 03 Thomson : plum pudding ---------- */
+SCENES.thomson = function(ctx, v, t, st, m){
+  v.cam.dist = 7.5;
+  var R0 = 1.62;
+  v.glow(0, 0, 0, 3.4, '#B0503A', .24);
+  v.ball(0, 0, 0, R0, '#B4553A', { alpha: .30 });
+  v.ball(-R0 * .22, -R0 * .26, R0 * .1, R0 * .74, '#C97A50', { alpha: .16 });
+  wireSphere(v, R0, '#8F3D28', .26, 30);
+
+  var pos = [];
+  for (var i = 0; i < 12; i++) {
+    var phi = Math.acos(1 - 2 * (i + .5) / 12);
+    var th = Math.PI * (1 + Math.sqrt(5)) * i;
+    pos.push([Math.sin(phi) * Math.cos(th) * .86, Math.cos(phi) * .86, Math.sin(phi) * Math.sin(th) * .86]);
+  }
+  for (var k = 0; k < pos.length; k++) {
+    var p = pos[k];
+    var bob = Math.sin(t * 1.6 + k) * .02;
+    v.ball(p[0] * R0, p[1] * R0 + bob, p[2] * R0, .105, '#5fb4e0', {});
+    v.glow(p[0] * R0, p[1] * R0 + bob, p[2] * R0, .34, '#2C6C92', .34);
+  }
+  for (var q = 0; q < 9; q++) {
+    var a2 = q / 9 * TAU + .3, rr = 1.05;
+    v.label(Math.cos(a2) * rr, Math.sin(a2) * rr, .9, '+', rgba('#B24A20', .55), 11);
+  }
+  v.label(0, -R0 - .68, 0, 'POSITIVE SPHERE  +  EMBEDDED ELECTRONS', rgba('#6A7579', .8), 8);
+};
+
+/* ---------- 04 Rutherford : nucleus ---------- */
+SCENES.rutherford = function(ctx, v, t, st, m){
+  v.cam.dist = 7.3;
+  var A = 2.05;
+  v.glow(0, 0, 0, 4.2, '#B24A20', .11);
+  wireSphere(v, A, '#657074', .26, 34);
+  v.ball(0, 0, 0, .14, '#A9522A', {});
+  v.glow(0, 0, 0, .95, '#B24A20', .62);
+
+  var orbits = [
+    { r: 1.28, ti: .35, tz: .2, ph: 0.0, c: '#2C6C92' },
+    { r: 1.62, ti: -1.02, tz: .85, ph: 2.1, c: '#2C6C92' },
+    { r: 1.9, ti: .78, tz: -1.1, ph: 4.2, c: '#2C6C92' }
+  ];
+  for (var i = 0; i < orbits.length; i++) {
+    var o = orbits[i];
+    v.orbit(o.r, o.ti, o.tz, o.c, .48, 64, 1.2);
+    var p = orbitPoint(o.r, o.ti, o.tz, t * .55 + o.ph);
+    v.ball(p[0], p[1], p[2], .072, '#7fc4ea', {});
+    v.glow(p[0], p[1], p[2], .26, '#2C6C92', .4);
+  }
+  v.label(0, -.32, 0, 'NUCLEUS  <  1/10,000', rgba('#B24A20', .85), 8);
+  v.label(0, -A - .42, 0, 'ATOM 99.999% EMPTY', rgba('#6A7579', .8), 8);
+};
+
+/* ---------- 05 Bohr : quantized orbits ---------- */
+SCENES.bohr = function(ctx, v, t, st, m){
+  v.cam.dist = 7.0;
+  var lv = [.55, 1.05, 1.65, 2.3];
+  var names = ['n=1', 'n=2', 'n=3', 'n=4'];
+  var active = st.level == null ? 1 : st.level;
+  var jump = st.jump || 0;
+  v.glow(0, 0, 0, 1.1, '#B24A20', .5);
+  v.ball(0, 0, 0, .17, '#A9522A', {});
+  for (var i = 0; i < lv.length; i++) {
+    var on = i === active;
+    v.orbit(lv[i], .18 + i * .06, .42 + i * .1, on ? '#0E7A57' : '#5C686C', on ? .72 : .40, 76, on ? 1.5 : 1);
+    v.label(lv[i] * .72, .1, lv[i] * .72, names[i], rgba(on ? '#0E7A57' : '#5b686e', .85), 8);
+  }
+  var ang = t * (.85 - active * .1) + 1.2;
+  var p = orbitPoint(lv[active], .18 + active * .06, .42 + active * .1, ang);
+  v.ball(p[0], p[1], p[2], .1, '#1E9A72', {});
+  v.glow(p[0], p[1], p[2], .5, '#0E7A57', .55);
+  if (jump > 0) {
+    var f = clamp(jump, 0, 1);
+    for (var q = 0; q < 3; q++) {
+      var pp = orbitPoint(lv[active] * (1 + f * .9 + q * .22), .18, .42, ang + q * .18);
+      v.ball(pp[0], pp[1], pp[2], .05 * (1 - f * .4), '#B24A20', { alpha: .6 * (1 - f) });
+    }
+  }
+};
+
+/* ---------- 06 Quantum : probability cloud ---------- */
+var _cloudPts = null;
+function cloudPoints(){
+  if (_cloudPts) return _cloudPts;
+  var pts = [], i, u, v2, r, th, ph;
+  for (i = 0; i < 1150; i++) {
+    u = Math.random();
+    r = -Math.log(1 - u * .985) * .58;
+    if (r > 2.4) r = 2.4;
+    th = Math.random() * TAU;
+    v2 = Math.acos(2 * Math.random() - 1);
+    pts.push([r * Math.sin(v2) * Math.cos(th), r * Math.cos(v2), r * Math.sin(v2) * Math.sin(th)]);
+  }
+  _cloudPts = pts;
+  return pts;
+}
+SCENES.cloud = function(ctx, v, t, st, m){
+  v.cam.dist = 6.5;
+  var pts = cloudPoints();
+  v.glow(0, 0, 0, 2.6, '#2C6C92', .08);
+  var cosY = Math.cos(v.cam.yaw), sinY = Math.sin(v.cam.yaw);
+  var cosP = Math.cos(v.cam.pitch), sinP = Math.sin(v.cam.pitch);
+  var c = v.cam, foc = v.focal * c.zoom;
+  ctx.save();
+  for (var i = 0; i < pts.length; i++) {
+    var p = pts[i];
+    var X = p[0] * cosY + p[2] * sinY;
+    var Z = -p[0] * sinY + p[2] * cosY;
+    var Y = p[1] * cosP - Z * sinP;
+    var Z2 = p[1] * sinP + Z * cosP;
+    var d = Z2 + c.dist;
+    if (d < .4) continue;
+    var s = foc / d;
+    var sx = v.cx + X * s, sy = v.cy - Y * s;
+    if (sx < -8 || sx > v.w + 8 || sy < -8 || sy > v.h + 8) continue;
+    var dep = clamp(1.35 - (d - c.dist) * .3, .18, 1);
+    var sz = clamp(.85 * s / 62, .42, 3.0);
+    ctx.beginPath();
+    ctx.arc(sx, sy, sz, 0, TAU);
+    ctx.fillStyle = 'rgba(38,92,124,' + (.10 + dep * .26) + ')';
+    ctx.fill();
+  }
+  ctx.restore();
+  v.ball(0, 0, 0, .06, '#A9522A', {});
+  v.glow(0, 0, 0, .5, '#B24A20', .5);
+  v.label(0, -2.0, 0, '|ψ|²  ·  PROBABILITY DENSITY', rgba('#6A7579', .85), 8);
+};
+
+/* ---------- 07 Chadwick : proton + neutron cluster ---------- */
+var _nucPos = null;
+function nucleonPositions(){
+  if (_nucPos) return _nucPos;
+  var pos = [];
+  var target = 14, tries;
+  for (var i = 0; i < target; i++) {
+    var placed = false;
+    for (tries = 0; tries < 300 && !placed; tries++) {
+      var u = Math.random(), th = Math.random() * TAU, ph = Math.acos(2 * Math.random() - 1);
+      var r = Math.pow(u, .42) * .72;
+      var p = [r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)];
+      var ok = true;
+      for (var j = 0; j < pos.length; j++) {
+        var q = pos[j];
+        var dx = p[0] - q[0], dy = p[1] - q[1], dz = p[2] - q[2];
+        if (dx * dx + dy * dy + dz * dz < .105) { ok = false; break; }
+      }
+      if (ok) { pos.push(p); placed = true; }
+    }
+  }
+  _nucPos = pos;
+  return pos;
+}
+SCENES.chadwick = function(ctx, v, t, st, m){
+  v.cam.dist = 6.4;
+  var pos = nucleonPositions();
+  v.glow(0, 0, 0, 2.6, '#B24A20', .14);
+  v.orbit(2.15, .3, .2, '#5C686C', .30, 64, 1);
+  v.orbit(2.15, -1.1, .9, '#5C686C', .22, 64, 1);
+  for (var i = 0; i < pos.length; i++) {
+    var p = pos[i];
+    var isP = i % 2 === 0;
+    var bob = Math.sin(t * .9 + i) * .008;
+    v.ball(p[0], p[1] + bob, p[2], .2, isP ? '#B8462C' : '#5A6569', {});
+    if (i < 6) {
+      v.label(p[0], p[1] + .34, p[2], isP ? 'p⁺' : 'n', rgba(isP ? '#e8907a' : '#3D4649', .9), 8);
+    }
+  }
+  v.label(0, -1.42, 0, 'PROTONS + NEUTRONS = NUCLEUS', rgba('#6A7579', .85), 8);
+};
+
+/* ---------- 08 Quark : uud ---------- */
+SCENES.quark = function(ctx, v, t, st, m){
+  v.cam.dist = 5.6;
+  var R0 = 1.32;
+  v.glow(0, 0, 0, 2.7, '#2C6C92', .14);
+  wireSphere(v, R0, '#2C6C92', .16, 32);
+  var cols = ['#B24A20', '#0E7A57', '#2C6C92'];
+  var names = ['u', 'u', 'd'];
+  var pos = [];
+  var ys = [.22, .46, -.34];
+  for (var i = 0; i < 3; i++) {
+    var a = t * .55 + i * TAU / 3;
+    pos.push([Math.cos(a) * .64, ys[i], Math.sin(a) * .64]);
+  }
+  for (var j = 0; j < 3; j++) {
+    for (var k = j + 1; k < 3; k++) {
+      var A = pos[j], B = pos[k];
+      var segs = 14;
+      for (var s = 0; s < segs; s++) {
+        var f1 = s / segs, f2 = (s + 1) / segs;
+        var amp = .16;
+        var o1 = [lerp(A[0], B[0], f1), lerp(A[1], B[1], f1) + Math.sin(f1 * Math.PI * 4 + t * 3) * amp, lerp(A[2], B[2], f1)];
+        var o2 = [lerp(A[0], B[0], f2), lerp(A[1], B[1], f2) + Math.sin(f2 * Math.PI * 4 + t * 3) * amp, lerp(A[2], B[2], f2)];
+        v.line(o1, o2, '#8A6A12', 1.6, .62);
+      }
+    }
+  }
+  for (var q = 0; q < 3; q++) {
+    v.ball(pos[q][0], pos[q][1], pos[q][2], .19, cols[q], {});
+    v.glow(pos[q][0], pos[q][1], pos[q][2], .44, cols[q], .4);
+    v.label(pos[q][0], pos[q][1] + .38, pos[q][2], names[q], rgba('#14181A', .95), 11, { weight: 600 });
+  }
+  v.label(0, -R0 - .5, 0, 'PROTON = u u d', rgba('#6A7579', .85), 8);
+};
+/* ============================================================
+   ATOMOS — experiment simulations (part 1)
+   ============================================================ */
+
+function wl2rgb(wl){
+  var R0 = 0, G0 = 0, B0 = 0;
+  if (wl >= 380 && wl < 440) { R0 = -(wl - 440) / 60; B0 = 1; }
+  else if (wl < 490) { G0 = (wl - 440) / 50; B0 = 1; }
+  else if (wl < 510) { G0 = 1; B0 = -(wl - 510) / 20; }
+  else if (wl < 580) { R0 = (wl - 510) / 70; G0 = 1; }
+  else if (wl < 645) { R0 = 1; G0 = -(wl - 645) / 65; }
+  else if (wl <= 780) { R0 = 1; }
+  var f = 1;
+  if (wl > 700) f = .3 + .7 * (780 - wl) / 80;
+  if (wl < 420) f = .3 + .7 * (wl - 380) / 40;
+  return [Math.round(255 * Math.pow(R0 * f, .8)), Math.round(255 * Math.pow(G0 * f, .8)), Math.round(255 * Math.pow(B0 * f, .8))];
+}
+
+/* ---------- 01 infinite division ---------- */
+LABS.zoom = function(ctx, v, t, st, m){
+  var z = st.zoom == null ? 0 : st.zoom;
+  SCENES.democritus(ctx, v, t, { zoom: z }, m);
+  var mag = Math.pow(10, z * 9.2);
+  ctx.save();
+  ctx.font = '500 9px ui-monospace, Menlo, monospace';
+  ctx.fillStyle = 'rgba(138,106,18,.85)';
+  ctx.textAlign = 'center';
+  ctx.fillText('× ' + (mag >= 1000 ? mag.toExponential(1).replace('e+', 'e') : mag.toFixed(mag < 10 ? 1 : 0)), v.w * .5, 24);
+  ctx.fillStyle = 'rgba(106,117,121,.7)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText(z > .72 ? 'STILL DIVISIBLE  ·  NOT ATOMOS' : 'MATTER  ·  LATTICE', v.w * .5, 38);
+  ctx.restore();
+};
+
+/* ---------- 02 law of multiple proportions ---------- */
+LABS.ratio = function(ctx, v, t, st, m){
+  var n = st.o == null ? 1 : st.o;
+  v.cam.dist = 6.0;
+  var cy = .0;
+  var C = [0, 0, 0], rC = .52, rO = .47;
+  v.ball(C[0], C[1], C[2], rC, '#454e56', {});
+  v.label(0, -.02, 0, 'C', '#dfe8ec', 11);
+  var ang0 = t * .55;
+  for (var i = 0; i < n; i++) {
+    var ang = n === 1 ? 0 : (i === 0 ? Math.PI : 0);
+    var dist = n === 1 ? 1.02 : 1.12;
+    var yy = n === 2 ? (i === 0 ? -.12 : .12) : 0;
+    var x = Math.cos(ang) * dist, z = Math.sin(ang) * dist;
+    v.ball(x, yy, z, rO, '#A8402A', {});
+    v.label(x, yy - .02, z, 'O', '#f3ded6', 10);
+    v.line([0, 0, 0], [x * .74, yy * .74, z * .74], '#8a7a6d', 2, .3);
+  }
+  v.label(0, -1.55, 0, n === 1 ? 'CO   ·   12 : 16' : 'CO₂   ·   12 : 32', rgba('#8A6A12', .9), 10);
+  v.label(0, -1.82, 0, n === 1 ? 'O MASS = 16' : 'O MASS = 32  =  2 × 16', rgba('#6A7579', .85), 8);
+};
+
+/* ---------- 03 cathode ray tube ---------- */
+LABS.crt = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  var volt = st.volt == null ? 0 : st.volt;
+  var mag = st.mag == null ? 0 : st.mag;
+  var deflect = (volt * .92 - mag * 1.0) / 100 * .17 * h;
+  var cy = h * .5;
+  var x0 = w * .1, x1 = w * .36, x2 = w * .9;
+  var top = cy - h * .17, bot = cy + h * .17;
+
+  ctx.save();
+  /* tube */
+  ctx.beginPath();
+  var rr = h * .2;
+  ctx.moveTo(x0 + 6, cy - h * .24);
+  ctx.lineTo(x2 - 10, cy - h * .24);
+  ctx.quadraticCurveTo(x2, cy - h * .24, x2, cy - h * .1);
+  ctx.lineTo(x2, cy + h * .1);
+  ctx.quadraticCurveTo(x2, cy + h * .24, x2 - 10, cy + h * .24);
+  ctx.lineTo(x0 + 6, cy + h * .24);
+  ctx.quadraticCurveTo(x0 - 4, cy + h * .24, x0 - 4, cy);
+  ctx.quadraticCurveTo(x0 - 4, cy - h * .24, x0 + 6, cy - h * .24);
+  ctx.closePath();
+  var tg = ctx.createLinearGradient(0, cy - h * .24, 0, cy + h * .24);
+  tg.addColorStop(0, 'rgba(255,255,255,.92)');
+  tg.addColorStop(.5, 'rgba(255,255,255,.55)');
+  tg.addColorStop(1, 'rgba(196,190,172,.55)');
+  ctx.fillStyle = tg; ctx.fill();
+  ctx.strokeStyle = 'rgba(23,27,29,.42)'; ctx.lineWidth = 1.3; ctx.stroke();
+
+  /* cathode */
+  ctx.fillStyle = 'rgba(23,27,29,.16)';
+  ctx.fillRect(x0 - 2, cy - h * .07, 8, h * .14);
+  ctx.fillStyle = 'rgba(178,74,32,.75)';
+  ctx.fillRect(x0 - 2, cy - h * .07, 3, h * .14);
+  ctx.fillStyle = 'rgba(178,74,32,.35)';
+  ctx.font = '500 9px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('−', x0 - 13, cy + 3);
+  /* screen */
+  ctx.fillStyle = 'rgba(14,122,87,.09)';
+  ctx.fillRect(x2 - 4, cy - h * .17, 7, h * .34);
+  ctx.strokeStyle = 'rgba(14,122,87,.4)'; ctx.strokeRect(x2 - 4, cy - h * .17, 7, h * .34);
+
+  /* plates */
+  ctx.strokeStyle = 'rgba(138,106,18,.55)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x1, cy - h * .155); ctx.lineTo(x1 + w * .2, cy - h * .155); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1, cy + h * .155); ctx.lineTo(x1 + w * .2, cy + h * .155); ctx.stroke();
+  ctx.strokeStyle = 'rgba(138,106,18,.22)'; ctx.lineWidth = 1;
+  for (var g = 0; g < 6; g++) {
+    var gx = x1 + w * .2 * g / 5;
+    ctx.beginPath(); ctx.moveTo(gx, cy - h * .155); ctx.lineTo(gx, cy - h * .13); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(gx, cy + h * .155); ctx.lineTo(gx, cy + h * .13); ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(138,106,18,.5)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('DEFLECTION PLATES', x1 + w * .1, cy - h * .175);
+
+  /* beam */
+  var pts = [], i, tt, xx, yy;
+  for (i = 0; i <= 48; i++) {
+    tt = i / 48;
+    xx = lerp(x0 + 2, x2 - 3, tt);
+    if (tt < .36) yy = cy;
+    else {
+      var u = (tt - .36) / .64;
+      yy = cy + deflect * u * u;
+    }
+    pts.push([xx, yy]);
+  }
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.strokeStyle = 'rgba(14,122,87,.85)';
+  ctx.lineWidth = 1.8;
+  ctx.shadowColor = 'rgba(14,122,87,.9)'; ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  /* electrons */
+  for (i = 0; i < 7; i++) {
+    var ph = (t * .55 + i / 7) % 1;
+    var idx = Math.floor(ph * 48);
+    var p = pts[idx];
+    ctx.beginPath(); ctx.arc(p[0], p[1], 1.9, 0, TAU);
+    ctx.fillStyle = 'rgba(14,122,87,.95)'; ctx.fill();
+  }
+  /* spot */
+  var spotY = cy + deflect;
+  var sg = ctx.createRadialGradient(x2 - 1, spotY, 0, x2 - 1, spotY, 16);
+  sg.addColorStop(0, 'rgba(23,90,66,.95)');
+  sg.addColorStop(.3, 'rgba(14,122,87,.6)');
+  sg.addColorStop(1, 'rgba(14,122,87,0)');
+  ctx.beginPath(); ctx.arc(x2 - 1, spotY, 16, 0, TAU);
+  ctx.fillStyle = sg; ctx.fill();
+
+  /* balanced indicator */
+  if (Math.abs(volt * .92 - mag) < 3.2 && (volt !== 0 || mag !== 0)) {
+    ctx.fillStyle = 'rgba(14,122,87,.9)';
+    ctx.font = '600 8px ui-monospace, Menlo, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('BALANCED  ·  v = E/B', w * .5, h - 34);
+  }
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(106,117,121,.8)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('CATHODE', x0 - 8, cy + h * .3);
+  ctx.textAlign = 'right';
+  ctx.fillText('FLUORESCENT SCREEN', x2, cy + h * .3);
+  ctx.restore();
+};
+
+/* ---------- 04 gold foil scattering ---------- */
+var _scatParts = [];
+LABS.scatter = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  v.cam.dist = 7.4;
+  var model = st.model == null ? 0 : st.model;
+  if (!st.parts) {
+    st.parts = [];
+    st.total = 0; st.big = 0;
+    for (var pk = 0; pk < 16; pk++) {
+      var py = (Math.random() * 2 - 1) * .95;
+      var pz = (Math.random() * 2 - 1) * .95;
+      var pb = Math.sqrt(py * py + pz * pz) || .001;
+      var pth = 2 * Math.atan(.34 / (pb + .0006));
+      if (pth > Math.PI) pth = Math.PI;
+      st.parts.push({ y: py, z: pz, th: pth, ph: Math.atan2(pz, py), t: Math.random() * 6.4 - 1.6, big: pth > 1.45 });
+      st.total++; if (pth > 1.45) st.big++;
+    }
+  }
+  if (st.t0 == null) st.t0 = t;
+  var dt = clamp(t - st.t0, 1 / 120, .05);
+  st.t0 = t;
+  st.total = st.total || 0;
+  st.big = st.big || 0;
+  st.acc = st.acc || 0;
+
+  /* spawn */
+  st.acc += dt;
+  var rate = .1;
+  while (st.acc > rate) {
+    st.acc -= rate;
+    if (st.parts.length < 70) {
+      var yy = (Math.random() * 2 - 1) * .95;
+      var zz = (Math.random() * 2 - 1) * .95;
+      var b = Math.sqrt(yy * yy + zz * zz);
+      if (b > .999) b = .999;
+      var k = model === 0 ? .34 : .004;
+      var theta = 2 * Math.atan(k / (b + .0006));
+      if (theta > Math.PI) theta = Math.PI;
+      var phi = Math.atan2(zz, yy);
+      st.parts.push({ y: yy, z: zz, th: theta, ph: phi, t: -1.6, big: theta > 1.45 });
+      st.total++;
+      if (theta > 1.45) st.big++;
+    }
+  }
+  for (var i = st.parts.length - 1; i >= 0; i--) {
+    st.parts[i].t += dt * 6.2;
+    if (st.parts[i].t > 4.2) st.parts.splice(i, 1);
+  }
+
+  /* foil plane */
+  var S = 1.5;
+  for (var g = -1.5; g <= 1.51; g += .3) {
+    v.line([0, g * S, -S], [0, g * S, S], '#8A6A12', 1, .26);
+    v.line([0, -S, g * S], [0, S, g * S], '#8A6A12', 1, .26);
+  }
+  /* nuclei dots */
+  for (var nx = -3; nx <= 3; nx++) for (var ny = -3; ny <= 3; ny++) {
+    v.ball(0, nx * .4, ny * .4, .022, '#B24A20', { alpha: .85 });
+  }
+  /* particles */
+  for (var k2 = 0; k2 < st.parts.length; k2++) {
+    var p = st.parts[k2];
+    var x, y, z;
+    if (p.t < 0) {
+      x = p.t;
+      y = p.y; z = p.z;
+    } else {
+      var dx = Math.cos(p.th);
+      var rad = Math.sin(p.th);
+      x = dx * p.t;
+      y = p.y + rad * Math.cos(p.ph) * p.t;
+      z = p.z + rad * Math.sin(p.ph) * p.t;
+    }
+    if (x < -4.2 || Math.abs(x) > 4.4 || Math.abs(y) > 2.2 || Math.abs(z) > 2.2) continue;
+    v.ball(x, y, z, .055, p.big ? '#C98A3E' : '#1E9A72', {});
+    if (p.big) v.glow(x, y, z, .28, '#B24A20', .5);
+    /* trail */
+    var bx = clamp(x - (p.t < 0 ? .55 : Math.cos(p.th) * .55), -4.2, 4.2);
+    var by = p.t < 0 ? y : y - Math.sin(p.th) * Math.cos(p.ph) * .55;
+    var bz = p.t < 0 ? z : z - Math.sin(p.th) * Math.sin(p.ph) * .55;
+    v.line([x, y, z], [bx, by, bz], p.big ? '#B24A20' : '#0E7A57', 1, p.big ? .62 : .45);
+  }
+  /* stats overlay */
+  ctx.save();
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillStyle = 'rgba(106,117,121,.8)';
+  ctx.textAlign = 'left';
+  ctx.fillText('α SOURCE', 14, 22);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(178,74,32,.9)';
+  ctx.fillText('>90°  ' + st.big + ' / ' + st.total, v.w - 14, 22);
+  ctx.fillStyle = 'rgba(106,117,121,.55)';
+  ctx.fillText(model === 0 ? 'RUTHERFORD  ·  RATE ×400' : 'THOMSON  ·  NO BACKSCATTER', v.w - 14, 35);
+  ctx.restore();
+};
+/* ============================================================
+   ATOMOS — experiment simulations (part 2)
+   ============================================================ */
+
+/* ---------- 05 hydrogen spectrum ---------- */
+var BALMER = [
+  { n: 3, wl: 656, name: 'Hα' },
+  { n: 4, wl: 486, name: 'Hβ' },
+  { n: 5, wl: 434, name: 'Hγ' },
+  { n: 6, wl: 410, name: 'Hδ' }
+];
+LABS.spectrum = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  var from = st.from == null ? 3 : st.from;
+  if (st.lastFrom !== from) { st.lastFrom = from; st.jumpT = 0; }
+  st.jumpT = (st.jumpT == null ? 1 : st.jumpT) + 1 / 60;
+  var jt = clamp(st.jumpT, 0, 1);
+
+  /* atom area */
+  var oldCy = v.cy;
+  v.cy = h * .31;
+  v.cam.dist = 6.4;
+  var lv = [.42, .78, 1.14, 1.5];
+  var idxFrom = Math.min(from - 3, 3);
+
+  v.glow(0, 0, 0, .9, '#B24A20', .45);
+  v.ball(0, 0, 0, .11, '#C4803C', {});
+  for (var i = 0; i < 4; i++) {
+    var on = i === 1 || i === idxFrom + 1;
+    v.orbit(lv[i], .16 + i * .05, .34 + i * .08, on ? '#0E7A57' : '#5b686e', on ? .45 : .18, 64, on ? 1.3 : 1);
+    v.label(lv[i] * .74, .12, lv[i] * .74, 'n=' + (i + 1), rgba(on ? '#0E7A57' : '#5b686e', .8), 7);
+  }
+  /* electron */
+  var rNow;
+  var toR = lv[1];
+  var fromR = lv[idxFrom + 1];
+  var jumpDur = .55;
+  if (jt < jumpDur) {
+    var u = jt / jumpDur;
+    rNow = lerp(fromR, toR, easeOut(u));
+  } else {
+    rNow = toR;
+  }
+  var ang = t * .8 + 1.2;
+  var ep = orbitPoint(rNow, .21, .42, ang);
+  v.ball(ep[0], ep[1], ep[2], .085, '#1E9A72', {});
+  v.glow(ep[0], ep[1], ep[2], .42, '#0E7A57', .55);
+  /* photon burst */
+  if (jt < jumpDur + .45) {
+    var pf = clamp((jt - jumpDur * .5) / .9, 0, 1);
+    for (var q = 0; q < 4; q++) {
+      var pr = .4 + pf * 1.7 + q * .12;
+      var pp = orbitPoint(pr, -.9, 1.4, ang + q * .22);
+      v.ball(pp[0], pp[1], pp[2], .045 * (1 - pf), '#8A6A12', { alpha: .8 * (1 - pf) });
+    }
+  }
+  v.cy = oldCy;
+
+  /* spectrum */
+  var bx = w * .09, bw = w * .82, by = h * .67, bh = h * .12;
+  ctx.save();
+  var g = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+  g.addColorStop(0, 'rgba(60,40,110,.28)');
+  g.addColorStop(.35, 'rgba(40,90,120,.22)');
+  g.addColorStop(.62, 'rgba(70,110,60,.2)');
+  g.addColorStop(.85, 'rgba(150,60,40,.22)');
+  g.addColorStop(1, 'rgba(160,30,30,.24)');
+  ctx.fillStyle = g;
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = 'rgba(23,27,29,.16)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(bx + .5, by + .5, bw - 1, bh - 1);
+
+  /* continuum ticks */
+  ctx.font = '500 7.5px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'center';
+  for (var wl = 400; wl <= 700; wl += 50) {
+    var xx = bx + (wl - 380) / 340 * bw;
+    ctx.strokeStyle = 'rgba(23,27,29,.14)';
+    ctx.beginPath(); ctx.moveTo(xx, by + bh); ctx.lineTo(xx, by + bh + 5); ctx.stroke();
+    ctx.fillStyle = 'rgba(106,117,121,.7)';
+    ctx.fillText(wl, xx, by + bh + 15);
+  }
+  ctx.fillStyle = 'rgba(106,117,121,.55)';
+  ctx.fillText('nm', bx + bw + 12, by + bh + 15);
+  ctx.textAlign = 'left';
+
+  /* lines */
+  var activeWl = BALMER[idxFrom].wl;
+  for (var k = 0; k < BALMER.length; k++) {
+    var line = BALMER[k];
+    var lx = bx + (line.wl - 380) / 340 * bw;
+    var isOn = Math.abs(line.wl - activeWl) < 1;
+    var glowA = isOn ? clamp(1 - (jt - jumpDur) / 1.1, 0, 1) : .25;
+    ctx.beginPath();
+    ctx.moveTo(lx, by + 2);
+    ctx.lineTo(lx, by + bh - 2);
+    ctx.strokeStyle = 'rgba(' + wl2rgb(line.wl).join(',') + ',' + (isOn ? .35 + glowA * .65 : .32) + ')';
+    ctx.lineWidth = isOn ? 2.4 : 1.2;
+    ctx.shadowColor = isOn ? 'rgba(' + wl2rgb(line.wl).join(',') + ',.9)' : 'transparent';
+    ctx.shadowBlur = isOn ? 14 * glowA : 0;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(23,27,29,' + (isOn ? .85 : .4) + ')';
+    ctx.font = '500 7px ui-monospace, Menlo, monospace';
+    ctx.fillText(line.name + ' ' + line.wl, lx + 4, by + 12);
+  }
+  ctx.restore();
+};
+
+/* ---------- 06 double slit ---------- */
+function slitSample(observe){
+  var y, I;
+  for (var guard = 0; guard < 60; guard++) {
+    y = Math.random() * 2 - 1;
+    if (observe) {
+      var g1 = Math.exp(-Math.pow((y - .3) / .12, 2));
+      var g2 = Math.exp(-Math.pow((y + .3) / .12, 2));
+      I = g1 + g2;
+    } else {
+      I = Math.pow(Math.cos(13.5 * y), 2) * Math.exp(-Math.pow(y / .66, 2));
+    }
+    if (Math.random() < I) return y;
+  }
+  return y;
+}
+LABS.slit = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  var observe = st.observe ? 1 : 0;
+  if (!st.dots || st.obsCache !== observe) {
+    st.obsCache = observe;
+    st.dots = [];
+    for (var i = 0; i < 2400; i++) st.dots.push(slitSample(observe));
+    st.shown = 380;
+  }
+  st.shown = Math.min(st.dots.length, (st.shown || 0) + 2.2);
+
+  var x0 = w * .09, xm = w * .42, xs = w * .755, sw = Math.max(22, w * .038);
+  var cy = h * .5, hh = h * .33;
+  var gap = 30, half = 7;
+
+  ctx.save();
+  /* electron gun */
+  ctx.fillStyle = 'rgba(23,27,29,.1)';
+  ctx.fillRect(x0 - 14, cy - 13, 26, 26);
+  ctx.strokeStyle = 'rgba(23,27,29,.26)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x0 - 13.5, cy - 12.5, 25, 25);
+  ctx.fillStyle = 'rgba(90,101,105,.85)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('e⁻', x0 - 1, cy + 3);
+  ctx.fillStyle = 'rgba(106,117,121,.7)';
+  ctx.fillText('GUN', x0 - 1, cy + 26);
+
+  /* double slit barrier: three blocks */
+  var blocks = [
+    [cy - hh - 14, cy - gap - half],
+    [cy - gap + half, cy + gap - half],
+    [cy + gap + half, cy + hh + 14]
+  ];
+  for (var b = 0; b < blocks.length; b++) {
+    var y1 = blocks[b][0], y2 = blocks[b][1];
+    ctx.fillStyle = 'rgba(138,106,18,.30)';
+    ctx.fillRect(xm, y1, 7, y2 - y1);
+    ctx.strokeStyle = 'rgba(138,106,18,.75)';
+    ctx.strokeRect(xm + .5, y1 + .5, 6, y2 - y1 - 1);
+  }
+  ctx.fillStyle = 'rgba(138,106,18,.8)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('DOUBLE SLIT', xm + 3, cy - hh - 24);
+  ctx.strokeStyle = 'rgba(138,106,18,.5)';
+  ctx.beginPath();
+  ctx.moveTo(xm + 8, cy - gap); ctx.lineTo(xm + 18, cy - gap);
+  ctx.moveTo(xm + 8, cy + gap); ctx.lineTo(xm + 18, cy + gap);
+  ctx.stroke();
+
+  /* two beams fanning out of the slits */
+  for (var c = 0; c < 2; c++) {
+    var sy = c ? cy + gap : cy - gap;
+    var cg = ctx.createLinearGradient(xm, 0, xs, 0);
+    cg.addColorStop(0, 'rgba(14,122,87,.15)');
+    cg.addColorStop(.55, 'rgba(14,122,87,.055)');
+    cg.addColorStop(1, 'rgba(14,122,87,.015)');
+    ctx.beginPath();
+    ctx.moveTo(xm + 7, sy);
+    ctx.lineTo(xs, cy - hh * .96);
+    ctx.lineTo(xs, cy + hh * .96);
+    ctx.closePath();
+    ctx.fillStyle = cg;
+    ctx.fill();
+  }
+
+  /* screen */
+  var sg = ctx.createLinearGradient(xs, 0, xs + sw, 0);
+  sg.addColorStop(0, 'rgba(14,122,87,.02)');
+  sg.addColorStop(1, 'rgba(14,122,87,.1)');
+  ctx.fillStyle = sg;
+  ctx.fillRect(xs, cy - hh, sw, hh * 2);
+  ctx.strokeStyle = 'rgba(14,122,87,.5)';
+  ctx.strokeRect(xs + .5, cy - hh + .5, sw - 1, hh * 2 - 1);
+  ctx.fillStyle = 'rgba(14,122,87,.6)';
+  ctx.textAlign = 'right';
+  ctx.fillText('SCREEN', xs + sw, cy - hh - 10);
+
+  /* accumulated hits */
+  var n = st.shown;
+  for (var k = 0; k < n; k++) {
+    var y = st.dots[k];
+    var fr = Math.sin(k * 12.9898) * 43758.5453;
+    fr = fr - Math.floor(fr);
+    var px = xs + 2 + fr * (sw - 4);
+    var py = cy + y * hh;
+    ctx.fillStyle = 'rgba(14,122,87,' + (observe ? .6 : .74) + ')';
+    ctx.fillRect(px, py, 2, 2);
+  }
+
+  /* intensity profile beside the screen */
+  var ix = xs + sw + 10, iw = Math.max(34, w * .075);
+  ctx.strokeStyle = 'rgba(14,122,87,.42)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (var yy = -1; yy <= 1.0001; yy += .02) {
+    var pv = observe
+      ? Math.exp(-(yy * yy) / .14)
+      : Math.pow(Math.cos(13.5 * yy), 2) * Math.exp(-(yy / .66) * (yy / .66));
+    var px2 = ix + pv * iw;
+    if (yy <= -1) ctx.moveTo(px2, cy + yy * hh); else ctx.lineTo(px2, cy + yy * hh);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(23,27,29,.14)';
+  ctx.beginPath();
+  ctx.moveTo(ix, cy - hh); ctx.lineTo(ix, cy + hh);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(106,117,121,.7)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('I(y)', ix, cy - hh - 10);
+
+  /* travelling electrons */
+  for (var e = 0; e < 4; e++) {
+    var ph = (t * .45 + e / 4) % 1;
+    var ex, ey;
+    if (ph < .46) {
+      ex = lerp(x0, xm, ph / .46); ey = cy;
+    } else {
+      var u = (ph - .46) / .54;
+      var ty = cy + (st.dots[(Math.floor(t * 22) + e * 61) % st.dots.length] || 0) * hh;
+      var sgn = (Math.floor(t * 22) + e) % 2 ? 1 : -1;
+      ex = lerp(xm, xs, u);
+      ey = lerp(cy + sgn * gap * u * .4, ty, u * u);
+    }
+    ctx.beginPath(); ctx.arc(ex, ey, 1.6, 0, TAU);
+    ctx.fillStyle = 'rgba(14,122,87,.95)'; ctx.fill();
+  }
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(106,117,121,.85)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('DETECTED  ' + Math.round(n), 16, 22);
+  ctx.fillStyle = observe ? 'rgba(178,74,32,.95)' : 'rgba(14,122,87,.95)';
+  ctx.fillText(observe ? 'WHICH-SLIT ON  ·  FRINGES GONE' : 'WHICH-SLIT OFF  ·  INTERFERENCE', 16, 37);
+  ctx.restore();
+};
+
+/* ---------- 07 neutron / beryllium ---------- */
+LABS.neutron = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  var shield = st.shield == null ? 0 : st.shield;
+  var mats = [
+    { n: 'NONE', tr: 1, c: '#4a5560', th: 4 },
+    { n: 'PAPER', tr: .985, c: '#c9b58a', th: 7 },
+    { n: 'ALUMINIUM', tr: .93, c: '#9aa8b0', th: 10 },
+    { n: 'LEAD', tr: .74, c: '#6b737a', th: 18 },
+    { n: 'PARAFFIN', tr: .05, c: '#d9cdb0', th: 24 }
+  ];
+  var mat = mats[shield];
+  var cy = h * .47;
+  var xa = w * .1, xb = w * .255, xsh = w * .49, xw = w * .655, xd = w * .835;
+  var bh = h * .2, sh = h * .26;
+
+  ctx.save();
+  /* beam guide line */
+  ctx.setLineDash([2, 6]);
+  ctx.strokeStyle = 'rgba(23,27,29,.14)';
+  ctx.beginPath(); ctx.moveTo(xb + 16, cy); ctx.lineTo(xd, cy); ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* alpha source */
+  ctx.beginPath(); ctx.arc(xa, cy, 22, 0, TAU);
+  ctx.fillStyle = 'rgba(178,74,32,.14)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(178,74,32,.55)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = 'rgba(150,66,38,.95)';
+  ctx.font = '600 11px ui-monospace, Menlo, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Ra', xa, cy + 4);
+
+  /* beryllium */
+  ctx.fillStyle = 'rgba(58,90,108,.26)';
+  ctx.strokeStyle = 'rgba(58,110,140,.7)';
+  ctx.fillRect(xb - 14, cy - bh / 2, 28, bh);
+  ctx.strokeRect(xb - 13.5, cy - bh / 2 + .5, 27, bh - 1);
+  ctx.fillStyle = 'rgba(44,108,146,.92)';
+  ctx.font = '600 11px ui-monospace, Menlo, monospace';
+  ctx.fillText('Be', xb, cy + 4);
+
+  /* alpha particles */
+  for (var i = 0; i < 5; i++) {
+    var pa = (t * .75 + i / 5) % 1;
+    var ax = lerp(xa + 22, xb - 14, pa);
+    ctx.beginPath(); ctx.arc(ax, cy + Math.sin(pa * 9 + i) * 5, 1.8, 0, TAU);
+    ctx.fillStyle = 'rgba(150,66,38,' + (1 - pa * .35) + ')'; ctx.fill();
+  }
+
+  /* neutron beam */
+  var trans = mat.tr;
+  for (var k = 0; k < 14; k++) {
+    var pn = (t * .34 + k / 14) % 1;
+    var nx = lerp(xb + 14, xd - 4, pn);
+    var idx = k % 14;
+    var blocked = (idx / 14) > trans;
+    if (nx > xsh && blocked) continue;
+    ctx.beginPath(); ctx.arc(nx, cy - 3, 1.9, 0, TAU);
+    ctx.fillStyle = 'rgba(44,108,146,' + (nx > xsh ? .85 : .5) + ')'; ctx.fill();
+    ctx.beginPath(); ctx.arc(nx + 3, cy + 3, 1.4, 0, TAU);
+    ctx.fillStyle = 'rgba(44,108,146,' + (nx > xsh ? .4 : .22) + ')'; ctx.fill();
+  }
+
+  /* shield slab */
+  if (shield > 0) {
+    ctx.fillStyle = rgba(mat.c, .2);
+    ctx.fillRect(xsh - mat.th / 2, cy - sh / 2, mat.th, sh);
+    ctx.strokeStyle = rgba(mat.c, .6);
+    ctx.lineWidth = 1;
+    ctx.strokeRect(xsh - mat.th / 2 + .5, cy - sh / 2 + .5, mat.th - 1, sh - 1);
+  }
+
+  /* paraffin block */
+  ctx.fillStyle = 'rgba(168,152,116,.12)';
+  ctx.strokeStyle = 'rgba(168,152,116,.42)';
+  ctx.fillRect(xw, cy - sh / 2, w * .075, sh);
+  ctx.strokeRect(xw + .5, cy - sh / 2 + .5, w * .075 - 1, sh - 1);
+
+  /* protons knocked out */
+  var hits = trans * 14;
+  for (var q = 0; q < Math.round(hits); q++) {
+    var pp = (t * .55 + q / 14) % 1;
+    var px2 = lerp(xw + w * .075, xd - 2, pp);
+    var py2 = cy + (Math.sin(q * 2.3) * 34) * pp;
+    ctx.beginPath(); ctx.arc(px2, py2, 1.9, 0, TAU);
+    ctx.fillStyle = 'rgba(167,130,30,' + (1 - pp * .45) + ')'; ctx.fill();
+  }
+
+  /* detector */
+  ctx.fillStyle = 'rgba(14,122,87,.07)';
+  ctx.fillRect(xd, cy - sh / 2 - 10, 12, sh + 20);
+  ctx.strokeStyle = 'rgba(14,122,87,.45)';
+  ctx.strokeRect(xd + .5, cy - sh / 2 - 9.5, 11, sh + 19);
+
+  /* labels */
+  ctx.textAlign = 'center';
+  ctx.font = '500 8.5px ui-monospace, Menlo, monospace';
+  var ly = cy + sh / 2 + 26;
+  ctx.fillStyle = 'rgba(95,106,110,.9)';
+  ctx.fillText('α SOURCE', xa, ly);
+  ctx.fillText('BERYLLIUM', xb, ly);
+  if (shield > 0) {
+    ctx.fillStyle = rgba(mat.c, .95);
+    ctx.fillText(mat.n, xsh, ly);
+  }
+  ctx.fillStyle = 'rgba(168,152,116,.9)';
+  ctx.fillText('PARAFFIN', xw + w * .037, ly);
+  ctx.fillStyle = 'rgba(14,122,87,.9)';
+  ctx.fillText('DETECTOR', xd + 6, ly);
+
+  /* secondary labels */
+  ctx.fillStyle = 'rgba(178,74,32,.65)';
+  ctx.font = '500 7.5px ui-monospace, Menlo, monospace';
+  ctx.fillText('α', (xa + xb) / 2, cy - 14);
+  ctx.fillStyle = 'rgba(44,108,146,.65)';
+  ctx.fillText('NEUTRON  n⁰', (xb + xsh) / 2, cy - 14);
+  ctx.fillStyle = 'rgba(167,130,30,.7)';
+  ctx.fillText('PROTON  p⁺', (xw + xd) / 2, cy - sh / 2 - 16);
+
+  /* readouts */
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(106,117,121,.85)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('NEUTRON TRANSMISSION', 16, 22);
+  ctx.fillStyle = 'rgba(14,122,87,.95)';
+  ctx.font = '600 15px ui-monospace, Menlo, monospace';
+  ctx.fillText((trans * 100).toFixed(1) + '%', 16, 42);
+  ctx.fillStyle = 'rgba(106,117,121,.8)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('PROTON COUNT  ' + Math.round(hits * 41), 16, 58);
+  ctx.fillText('SIGNAL  ' + (trans > .5 ? 'STRONG' : 'COLLAPSED'), 16, 72);
+  ctx.restore();
+};
+
+/* ---------- 08 deep inelastic scattering ---------- */
+LABS.dis = function(ctx, v, t, st, m){
+  var w = v.w, h = v.h;
+  var model = st.model == null ? 0 : st.model;
+  var cx = w * .47, cy = h * .5;
+  var R0 = Math.min(w, h) * .175;
+  if (!st.parts || st.pcache !== model) {
+    st.pcache = model;
+    st.parts = [];
+    st.n = 0; st.big = 0;
+    for (var pk = 0; pk < 20; pk++) {
+      var th0 = model === 0
+        ? (Math.random() < .2 ? (1.0 + Math.random() * 1.5) : Math.random() * .28)
+        : Math.random() * .1;
+      st.parts.push({ th: th0, t: Math.random() * 1.5, side: pk % 2 ? 1 : -1, off: (pk % 5 - 2) * 4 });
+      st.n++; if (th0 > 1.0) st.big++;
+    }
+    st.acc = 0;
+  }
+  st.acc = (st.acc || 0) + 1 / 60;
+  if (st.acc > .26 && st.parts.length < 40) {
+    st.acc = 0;
+    var th = model === 0
+      ? (Math.random() < .2 ? (1.0 + Math.random() * 1.5) : Math.random() * .28)
+      : Math.random() * .1;
+    st.parts.push({ th: th, t: 0, side: Math.random() < .5 ? 1 : -1, off: (Math.random() * 5 - 2) * 4 });
+    st.n++; if (th > 1.0) st.big++;
+  }
+  for (var i = st.parts.length - 1; i >= 0; i--) {
+    st.parts[i].t += 1 / 60 * .8;
+    if (st.parts[i].t > 1.6) st.parts.splice(i, 1);
+  }
+
+  ctx.save();
+  /* vacuum guide */
+  ctx.setLineDash([2, 7]);
+  ctx.strokeStyle = 'rgba(23,27,29,.1)';
+  ctx.beginPath(); ctx.moveTo(w * .05, cy); ctx.lineTo(cx - R0, cy); ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* proton */
+  var pg = ctx.createRadialGradient(cx - R0 * .35, cy - R0 * .35, 0, cx, cy, R0);
+  pg.addColorStop(0, 'rgba(44,108,146,.16)');
+  pg.addColorStop(.7, 'rgba(44,108,146,.06)');
+  pg.addColorStop(1, 'rgba(44,108,146,.015)');
+  ctx.beginPath(); ctx.arc(cx, cy, R0, 0, TAU);
+  ctx.fillStyle = pg; ctx.fill();
+  ctx.strokeStyle = 'rgba(44,108,146,.45)';
+  ctx.setLineDash([5, 5]);
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* quarks */
+  var qc = ['#B24A20', '#0E7A57', '#2C6C92'];
+  var qpos = [];
+  for (var q = 0; q < 3; q++) {
+    var a = t * .55 + q * TAU / 3;
+    var qx = cx + Math.cos(a) * R0 * .5;
+    var qy = cy + Math.sin(a) * R0 * .5;
+    qpos.push([qx, qy]);
+    var gg = ctx.createRadialGradient(qx - 2, qy - 2, 0, qx, qy, 9);
+    gg.addColorStop(0, mix(qc[q], '#ffffff', .5));
+    gg.addColorStop(.32, qc[q]);
+    gg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath(); ctx.arc(qx, qy, 9, 0, TAU);
+    ctx.fillStyle = gg; ctx.fill();
+  }
+  /* gluon links */
+  for (var gq = 0; gq < 3; gq++) {
+    var A2 = qpos[gq], B2 = qpos[(gq + 1) % 3];
+    ctx.beginPath();
+    for (var ss = 0; ss <= 10; ss++) {
+      var f = ss / 10;
+      var xx = lerp(A2[0], B2[0], f);
+      var yy = lerp(A2[1], B2[1], f) + Math.sin(f * Math.PI * 3 + t * 2) * 4;
+      if (ss === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.strokeStyle = 'rgba(138,106,18,.45)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  /* electron tracks */
+  for (var k = 0; k < st.parts.length; k++) {
+    var p = st.parts[k];
+    var tt = p.t;
+    if (tt < .5) {
+      var u = tt / .5;
+      var sx = lerp(w * .05, cx - R0 * .55, u);
+      var sy = cy + p.off * .25 * (1 - u);
+      ctx.beginPath();
+      ctx.moveTo(w * .05, cy + p.off * .25); ctx.lineTo(sx, sy);
+      ctx.strokeStyle = 'rgba(23,27,29,.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(sx, sy, 2.2, 0, TAU);
+      ctx.fillStyle = '#2A3234'; ctx.fill();
+    } else {
+      var u2 = (tt - .5) / 1.1;
+      var dx = Math.cos(p.th);
+      var dy = Math.sin(p.th) * p.side;
+      var len = R0 * .2 + u2 * w * .31;
+      var ox = cx + dx * R0 * .18;
+      var oy = cy + dy * R0 * .18 + p.off * .3;
+      var exx = cx + dx * len;
+      var eyy = cy + dy * len + p.off * .3;
+      ctx.beginPath();
+      ctx.moveTo(ox, oy); ctx.lineTo(exx, eyy);
+      ctx.strokeStyle = 'rgba(23,27,29,' + (.5 * (1 - u2 * .8)) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(exx, eyy, 2.2, 0, TAU);
+      ctx.fillStyle = 'rgba(23,27,29,' + (1 - u2 * .8) + ')'; ctx.fill();
+      if (p.th > 1) {
+        ctx.beginPath(); ctx.arc(cx, cy, R0 * (.5 + u2 * .5), 0, TAU);
+        ctx.strokeStyle = 'rgba(178,74,32,' + (.35 * (1 - u2)) + ')';
+        ctx.stroke();
+      }
+    }
+  }
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(106,117,121,.85)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText('20 GeV e⁻  →  PROTON', 16, 22);
+  ctx.fillStyle = model === 0 ? 'rgba(178,74,32,.95)' : 'rgba(106,117,121,.9)';
+  ctx.font = '600 13px ui-monospace, Menlo, monospace';
+  ctx.fillText('LARGE-ANGLE  ' + Math.round(st.n ? st.big / st.n * 100 : 0) + '%', 16, 42);
+  ctx.fillStyle = 'rgba(106,117,121,.7)';
+  ctx.font = '500 8px ui-monospace, Menlo, monospace';
+  ctx.fillText(model === 0 ? 'TARGET: QUARKS INSIDE PROTON' : 'TARGET: SMOOTH SPHERE', 16, 58);
+  ctx.restore();
+};
+/* ============================================================
+   ATOMOS — UI
+   ============================================================ */
+(function(){
+'use strict';
+
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var LANG = 'zh';
+var cur = 0;
+var busyLang = false;
+
+/* ---------------- language ---------------- */
+function applyStatic(lang){
+  $$('[data-zh]').forEach(function(el){
+    var v = el.getAttribute('data-' + lang);
+    if (v != null) el.textContent = v;
+  });
+  $$('[data-zh-html]').forEach(function(el){
+    var v = el.getAttribute('data-' + lang + '-html');
+    if (v != null) el.innerHTML = v;
+  });
+  $$('[data-lang-btn]').forEach(function(b){
+    b.classList.toggle('is-on', b.getAttribute('data-lang-btn') === lang);
+  });
+}
+
+function applyLang(lang){
+  LANG = lang;
+  document.documentElement.dataset.lang = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  applyStatic(lang);
+  if (busyLang) return;
+  var stageEl = $('#stage');
+  if (stageEl && stageEl.classList.contains('is-open') && $('#deckScroll')) {
+    busyLang = true;
+    var keep = $('#deckScroll').scrollTop;
+    var mode = R.mode;
+    renderDeck(cur);
+    setMode(mode, true);
+    var sc = $('#deckScroll');
+    if (sc) sc.scrollTop = keep;
+    busyLang = false;
+  }
+  /* 中英文切换后卡片高度可能变化，重新量一次轨道 */
+  if (window.requestAnimationFrame) requestAnimationFrame(fitRail); else setTimeout(fitRail, 16);
+}
+
+$$('[data-lang-btn]').forEach(function(b){
+  b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang-btn')); });
+});
+
+/* ---------------- hero entrance ---------------- */
+function heroRise(){
+  var items = $$('.hero-grid > div > *, .hero-grid > aside, .tube-hero');
+  items.forEach(function(el, i){
+    el.style.setProperty('--i', i);
+    el.classList.add('rise');
+  });
+}
+
+/* ---------------- timeline ---------------- */
+function buildRail(){
+  var track = $('#railTrack');
+  $$('.node', track).forEach(function(n){ n.remove(); });
+  MODELS.forEach(function(m, i){
+    var up = i % 2 === 0;
+    var nd = document.createElement('article');
+    nd.className = 'node ' + (up ? 'up' : 'down');
+    nd.setAttribute('data-idx', i);
+
+    var dot = document.createElement('div');
+    dot.className = 'node-dot';
+    dot.style.opacity = (.55 + m.impact * .09);
+    var dotBtn = document.createElement('button');
+    dotBtn.type = 'button';
+    dotBtn.setAttribute('data-open', i);
+    dotBtn.className = 'dot-hit';
+    dotBtn.setAttribute('aria-label', m[LANG].name);
+    dot.appendChild(dotBtn);
+
+    var stem = document.createElement('div');
+    stem.className = 'node-stem';
+
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'node-card';
+    card.setAttribute('data-open', i);
+
+    var imp = '';
+    for (var s = 1; s <= 5; s++) imp += '<s class="' + (s <= m.impact ? 'on' : '') + '"></s>';
+
+    card.innerHTML =
+      '<div class="node-thumb">' +
+        '<canvas></canvas>' +
+        '<span class="node-badge">' + m.n + '</span>' +
+        '<span class="node-yr" data-zh="' + m.year + '" data-en="' + esc(m.yearEn) + '">' + (LANG === 'zh' ? m.year : m.yearEn) + '</span>' +
+      '</div>' +
+      '<div class="node-body">' +
+        '<div class="node-name" data-zh="' + m.zh.name + '" data-en="' + m.en.name + '">' + m[LANG].name + '</div>' +
+        '<span class="node-en" data-zh="' + m.zh.sub + '" data-en="' + (m.eraEn || m.en.sub) + '">' + (LANG === 'zh' ? m.zh.sub : (m.eraEn || m.en.sub)) + '</span>' +
+        '<div class="node-person"><i></i><span data-zh="' + m.zh.person + '" data-en="' + m.en.person + '">' + m[LANG].person + '</span>' +
+          '<span class="node-imp" title="impact">' + imp + '</span>' +
+        '</div>' +
+      '</div>';
+
+    nd.appendChild(dot);
+    nd.appendChild(stem);
+    nd.appendChild(card);
+    track.appendChild(nd);
+  });
+
+  $$('[data-open]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var i = parseInt(el.getAttribute('data-open'), 10);
+      if (!isNaN(i)) openModel(i);
+    });
+  });
+
+  setTimeout(function(){
+    $$('.node-thumb canvas').forEach(function(cv, i){
+      var r = cv.getBoundingClientRect();
+      if (r.width < 4) return;
+      renderThumb(cv, MODELS[i], r.width, r.height);
+    });
+  }, 80);
+}
+
+/* 轨道高度必须容得下上下两排卡片：.rail 是 overflow-y:hidden 的横向滚动容器，
+   轨道矮于「2 ×（卡片高 + 引线长）」时，两排卡片的上下边缘会被直接切掉。 */
+function fitRail(){
+  var tr = document.querySelector('.rail-track');
+  if (!tr) return;
+  var card = tr.querySelector('.node-card');
+  if (!card) return;
+  var stem = tr.querySelector('.node-stem');
+  var stemH = stem ? stem.getBoundingClientRect().height : 40;
+  var need = Math.round((card.offsetHeight + stemH) * 2 + 28);
+  var pref = Math.min(650, Math.round(window.innerHeight * .62));
+  tr.style.height = Math.max(need, pref) + 'px';
+}
+
+/* ---------------- rail interaction ---------------- */
+(function railInit(){
+  var rail = $('#rail'), bar = $('#railBar'), prev = $('#railPrev'), next = $('#railNext');
+  if (!rail) return;
+  var down = false, sx = 0, sl = 0, moved = 0;
+
+  rail.addEventListener('pointerdown', function(e){
+    if (e.target.closest('[data-open]')) return;
+    down = true; sx = e.clientX; sl = rail.scrollLeft; moved = 0;
+    rail.classList.add('is-drag');
+  });
+  window.addEventListener('pointermove', function(e){
+    if (!down) return;
+    var dx = e.clientX - sx;
+    moved = Math.abs(dx);
+    rail.scrollLeft = sl - dx;
+  });
+  window.addEventListener('pointerup', function(){
+    if (!down) return;
+    down = false;
+    rail.classList.remove('is-drag');
+  });
+  rail.addEventListener('wheel', function(e){
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      rail.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  function sync(){
+    var max = rail.scrollWidth - rail.clientWidth;
+    var p = max > 4 ? rail.scrollLeft / max : 0;
+    if (bar) {
+      bar.style.width = (14 + p * 86) + '%';
+      bar.style.transform = 'translateX(' + (p * 0) + '%)';
+    }
+    if (prev) prev.disabled = rail.scrollLeft < 8;
+    if (next) next.disabled = rail.scrollLeft > max - 8;
+  }
+  rail.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  if (prev) prev.addEventListener('click', function(){ rail.scrollBy({ left: -300, behavior: 'smooth' }); });
+  if (next) next.addEventListener('click', function(){ rail.scrollBy({ left: 300, behavior: 'smooth' }); });
+  rail.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') { rail.scrollBy({ left: 300, behavior: 'smooth' }); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { rail.scrollBy({ left: -300, behavior: 'smooth' }); e.preventDefault(); }
+  });
+  setTimeout(sync, 60);
+})();
+
+/* ---------------- topbar ---------------- */
+window.addEventListener('scroll', function(){
+  var tb = $('#topbar');
+  if (tb) tb.classList.toggle('is-solid', window.scrollY > 40);
+}, { passive: true });
+
+/* ---------------- lab controls ---------------- */
+var CONTROLS = {
+  zoom: [
+    { type: 'range', key: 'zoom', label: ['放大倍率', 'MAGNIFICATION'], min: 0, max: 1, step: .004, value: 0, unit: '', fmt: function(v){
+      var mag = Math.pow(10, v * 9.2);
+      return mag >= 1000 ? mag.toExponential(1).replace('e+', 'e') : '×' + mag.toFixed(mag < 10 ? 1 : 0);
+    } }
+  ],
+  ratio: [
+    { type: 'seg', key: 'o', label: ['氧原子', 'OXYGEN'], options: [{ v: 1, zh: 'CO', en: 'CO' }, { v: 2, zh: 'CO₂', en: 'CO₂' }] }
+  ],
+  crt: [
+    { type: 'range', key: 'volt', label: ['电场 E', 'E-FIELD'], min: -100, max: 100, step: 1, value: 0, unit: ' V', fmt: function(v){ return (v > 0 ? '+' : '') + v + ' V'; } },
+    { type: 'range', key: 'mag', label: ['磁场 B', 'B-FIELD'], min: 0, max: 100, step: 1, value: 0, unit: ' %', fmt: function(v){ return v + ' %'; } }
+  ],
+  scatter: [
+    { type: 'seg', key: 'model', label: ['靶模型', 'TARGET'], options: [{ v: 0, zh: '卢瑟福', en: 'RUTHERFORD' }, { v: 1, zh: '汤姆孙', en: 'THOMSON' }] }
+  ],
+  spectrum: [
+    { type: 'seg', key: 'from', label: ['跃迁自', 'TRANSITION'], options: [{ v: 3, zh: 'n=3', en: 'n=3' }, { v: 4, zh: 'n=4', en: 'n=4' }, { v: 5, zh: 'n=5', en: 'n=5' }, { v: 6, zh: 'n=6', en: 'n=6' }] }
+  ],
+  slit: [
+    { type: 'seg', key: 'observe', label: ['观测路径', 'OBSERVE'], options: [{ v: 0, zh: '关闭', en: 'OFF' }, { v: 1, zh: '开启', en: 'ON' }] }
+  ],
+  neutron: [
+    { type: 'seg', key: 'shield', label: ['屏蔽材料', 'SHIELD'], options: [{ v: 0, zh: '无', en: 'NONE' }, { v: 1, zh: '纸', en: 'PAPER' }, { v: 2, zh: '铝', en: 'AL' }, { v: 3, zh: '铅', en: 'PB' }, { v: 4, zh: '石蜡', en: 'WAX' }] }
+  ],
+  dis: [
+    { type: 'seg', key: 'model', label: ['靶', 'TARGET'], options: [{ v: 0, zh: '夸克', en: 'QUARK' }, { v: 1, zh: '均匀球', en: 'SPHERE' }] }
+  ]
+};
+
+function renderControls(idx){
+  var m = MODELS[idx];
+  var list = CONTROLS[m.labType] || [];
+  var bar = $('#labBar');
+  if (!bar) return;
+  bar.innerHTML = '';
+  list.forEach(function(c){
+    var wrap = document.createElement('div');
+    wrap.className = 'ctrl';
+    if (c.type === 'range') {
+      var val = R.params[c.key] != null ? R.params[c.key] : c.value;
+      R.params[c.key] = val;
+      wrap.innerHTML = '<span class="ctrl-k" data-zh="' + c.label[0] + '" data-en="' + c.label[1] + '">' + c.label[LANG === 'zh' ? 0 : 1] + '</span>';
+      var inp = document.createElement('input');
+      inp.type = 'range'; inp.min = c.min; inp.max = c.max; inp.step = c.step; inp.value = val;
+      var out = document.createElement('span');
+      out.className = 'ctrl-v';
+      out.textContent = c.fmt(val);
+      inp.addEventListener('input', function(){
+        var v = parseFloat(inp.value);
+        R.params[c.key] = v;
+        out.textContent = c.fmt(v);
+      });
+      wrap.appendChild(inp);
+      wrap.appendChild(out);
+    } else {
+      var curVal = R.params[c.key] != null ? R.params[c.key] : c.options[0].v;
+      R.params[c.key] = curVal;
+      wrap.innerHTML = '<span class="ctrl-k" data-zh="' + c.label[0] + '" data-en="' + c.label[1] + '">' + c.label[LANG === 'zh' ? 0 : 1] + '</span>';
+      var seg = document.createElement('div');
+      seg.className = 'seg';
+      c.options.forEach(function(o){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('data-zh', o.zh);
+        b.setAttribute('data-en', o.en);
+        b.textContent = o[LANG];
+        if (o.v === curVal) b.classList.add('is-on');
+        b.addEventListener('click', function(){
+          R.params[c.key] = o.v;
+          $$('button', seg).forEach(function(x){ x.classList.remove('is-on'); });
+          b.classList.add('is-on');
+          if (c.key === 'observe') { R._obs = o.v; }
+        });
+        seg.appendChild(b);
+      });
+      wrap.appendChild(seg);
+    }
+    bar.appendChild(wrap);
+  });
+  applyLang(LANG);
+}
+
+/* ---------------- deck ---------------- */
+function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+/* ---------------- 档案 / 影响 渲染（模型 vs 实验 两套） ---------------- */
+function stripYear(y){
+  return LANG === 'zh' ? y : String(y).replace(/\s*(BCE|CE)$/, '');
+}
+function yearSup(y){
+  if (LANG === 'zh') return '';
+  return String(y).indexOf('BCE') > -1 ? 'BCE' : (String(y).indexOf('CE') > -1 ? 'CE' : '');
+}
+
+function docsHTML(i, mode){
+  var m = MODELS[i], L = m[LANG];
+  var idxTxt = m.n + ' / 08';
+
+  if (mode === 'lab' && LABDOCS[m.labType]) {
+    var d = LABDOCS[m.labType], S = d[LANG];
+    var steps = S.steps.map(function(x, k){
+      return '<li><s>' + String(k + 1).padStart(2, '0') + '</s><span>' + esc(x) + '</span></li>';
+    }).join('');
+    var q1 = LANG === 'zh' ? '「' : '\u201c', q2 = LANG === 'zh' ? '」' : '\u201d';
+    return '<p class="d-year">' + stripYear(d.year) + (yearSup(d.yearEn) ? '<u>' + yearSup(d.yearEn) + '</u>' : '') + '</p>' +
+      '<h2 class="d-name" id="deckTitle">' + esc(S.name) + '</h2>' +
+      '<p class="d-en">' + esc(S.sub) + '</p>' +
+      '<div class="d-person"><b>' + esc(S.who) + '</b><span>' + esc(S.meta) + '</span><em>' + esc(S.org) + '</em></div>' +
+      '<p class="d-claim">' + esc(S.claim) + '</p>' +
+      '<p class="d-core">' + esc(S.core) + '</p>' +
+      '<div class="d-sub"><span data-zh="装置与做法" data-en="SETUP">装置与做法</span><i></i><span data-zh="四步" data-en="FOUR STEPS">四步</span></div>' +
+      '<ul class="tenets">' + steps + '</ul>' +
+      '<div class="d-sub"><span data-zh="看到了什么" data-en="WHAT WAS SEEN">看到了什么</span><i></i><span>OBSERVATION</span></div>' +
+      '<p class="d-core" style="margin-top:10px">' + esc(S.saw) + '</p>' +
+      '<div class="d-quote"><p>' + q1 + esc(S.quote.text) + q2 + '</p><cite>' + esc(S.quote.src) + '</cite></div>' +
+      '<div class="d-limit"><b data-zh="这套装置的边界" data-en="LIMIT OF THE SETUP">这套装置的边界</b><p>' + esc(S.limit) + '</p></div>' +
+      '<div class="d-sub"><span data-zh="它服务于哪个模型" data-en="WHICH MODEL IT SERVES">它服务于哪个模型</span><i></i><span>' + idxTxt + '</span></div>' +
+      '<p class="d-core" style="margin-top:10px"><b>' + esc(L.name) + '</b> — ' + esc(L.claim) + '</p>' +
+      '<button class="d-switch" type="button" data-goto="model"><span data-zh="看这个模型的完整档案" data-en="Open the full model file">看这个模型的完整档案</span><em>\u2190</em></button>';
+  }
+
+  var tenets = L.tenets.map(function(x, k){
+    return '<li><s>' + String(k + 1).padStart(2, '0') + '</s><span>' + esc(x) + '</span></li>';
+  }).join('');
+  var q1 = LANG === 'zh' ? '「' : '\u201c', q2 = LANG === 'zh' ? '」' : '\u201d';
+  return '<p class="d-year">' + stripYear(m.year) + (yearSup(m.yearEn) ? '<u>' + yearSup(m.yearEn) + '</u>' : '') + '</p>' +
+    '<h2 class="d-name" id="deckTitle">' + esc(L.name) + '</h2>' +
+    '<p class="d-en">' + esc(L.sub) + '</p>' +
+    '<div class="d-person"><b>' + esc(L.person) + '</b><span>' + esc(L.life) + '</span><em>' + esc(L.role) + '</em></div>' +
+    '<p class="d-claim">' + esc(L.claim) + '</p>' +
+    '<p class="d-core">' + esc(L.core) + '</p>' +
+    '<div class="d-sub"><span data-zh="核心主张" data-en="TENETS">核心主张</span><i></i><span>' + idxTxt + '</span></div>' +
+    '<ul class="tenets">' + tenets + '</ul>' +
+    '<div class="d-quote"><p>' + q1 + esc(L.quote.text) + q2 + '</p><cite>' + esc(L.quote.src) + '</cite></div>' +
+    '<div class="d-limit"><b data-zh="局限 / 被推翻之处" data-en="LIMIT">局限 / 被推翻之处</b><p>' + esc(L.limit) + '</p></div>' +
+    '<div class="d-sub"><span data-zh="实验" data-en="EXPERIMENT">实验</span><i></i><span>' + esc(L.labName) + '</span></div>' +
+    '<p class="d-core" style="margin-top:10px">' + esc(L.labDesc) + '</p>' +
+    '<button class="d-switch" type="button" data-goto="lab"><span data-zh="看这台装置的完整档案" data-en="Open the full experiment file">看这台装置的完整档案</span><em>→</em></button>';
+}
+
+function impactHTML(i, mode){
+  var m = MODELS[i], L = m[LANG];
+  var isLab = mode === 'lab' && LABDOCS[m.labType];
+  var S = isLab ? LABDOCS[m.labType][LANG] : L;
+  var items = S.impactItems.map(function(x, k){
+    return '<li><b>' + String(k + 1).padStart(2, '0') + '</b><span>' + esc(x) + '</span></li>';
+  }).join('');
+  var chain = S.chain.map(function(x){
+    return '<li><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></li>';
+  }).join('');
+  return '<div class="impact-head">' +
+      '<h3' + (isLab ? ' data-zh="它改变了什么" data-en="WHY IT MATTERED">它改变了什么' : ' data-zh="科学影响" data-en="SCIENTIFIC IMPACT">科学影响') + '</h3>' +
+      '<span class="tag">' + m.n + ' / 08</span>' +
+      '<span class="tag" style="border-color:rgba(178,74,32,.3);color:rgba(178,74,32,.9)">IMPACT ' + '\u25cf'.repeat(m.impact) + '</span>' +
+    '</div>' +
+    '<p class="impact-lead">' + esc(S.impactLead) + '</p>' +
+    '<div class="impact-grid">' +
+      '<ul class="impact-list">' + items + '</ul>' +
+      '<div class="impact-chain">' +
+        '<p class="chain-t"' + (isLab ? ' data-zh="这条线索上的前后" data-en="ON THIS THREAD">这条线索上的前后' : ' data-zh="下游 · 它推动了什么" data-en="DOWNSTREAM · WHAT IT LED TO">下游 · 它推动了什么') + '</p>' +
+        '<ol class="chain">' + chain + '</ol>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderDeck(i){
+  var m = MODELS[i];
+  var L = m[LANG];
+  var deck = $('#deck');
+  var idxTxt = m.n + ' / 08';
+  var yMain = LANG === 'zh' ? m.year : m.yearEn.replace(/\s*(BCE|CE)$/, '');
+  var ySup = LANG === 'zh' ? '' : (m.yearEn.indexOf('BCE') > -1 ? 'BCE' : 'CE');
+  var tenets = L.tenets.map(function(x, k){
+    return '<li><s>' + String(k + 1).padStart(2, '0') + '</s><span>' + esc(x) + '</span></li>';
+  }).join('');
+  var impacts = L.impactItems.map(function(x, k){
+    return '<li><b>' + String(k + 1).padStart(2, '0') + '</b><span>' + esc(x) + '</span></li>';
+  }).join('');
+  var chain = L.chain.map(function(x){
+    return '<li><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></li>';
+  }).join('');
+
+  deck.innerHTML =
+  '<div class="deck-top">' +
+    '<button class="deck-back" type="button" id="deckBack">' +
+      '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10 3L5 8l5 5"/></svg>' +
+      '<span data-zh="返回时间线" data-en="Back to timeline">返回时间线</span>' +
+    '</button>' +
+    '<div class="deck-crumb">' +
+      '<span class="c-idx">' + idxTxt + '</span><span class="c-sep"></span>' +
+      '<span class="c-year">' + (LANG === 'zh' ? m.year : m.yearEn) + '</span><span class="c-sep"></span>' +
+      '<span class="c-name">' + esc(L.person) + '</span>' +
+    '</div>' +
+    '<div class="deck-actions">' +
+      '<div class="lang"><button type="button" data-lang-btn="zh"' + (LANG === 'zh' ? ' class="is-on"' : '') + '>中文</button>' +
+      '<button type="button" data-lang-btn="en"' + (LANG === 'en' ? ' class="is-on"' : '') + '>EN</button></div>' +
+      '<button class="deck-x" type="button" id="deckX" aria-label="Close">' +
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13"/></svg>' +
+      '</button>' +
+    '</div>' +
+  '</div>' +
+  '<div class="deck-scroll" id="deckScroll">' +
+    '<div class="deck-body">' +
+      '<section class="viewer">' +
+        '<div class="viewer-head">' +
+          '<div class="seg" id="modeSeg">' +
+            '<button type="button" data-mode="model"' + (R.mode === 'model' ? ' class="is-on"' : '') + ' data-zh="模型 MODEL" data-en="MODEL">模型 MODEL</button>' +
+            '<button type="button" data-mode="lab"' + (R.mode === 'lab' ? ' class="is-on"' : '') + ' data-zh="实验 EXPERIMENT" data-en="EXPERIMENT">实验 EXPERIMENT</button>' +
+          '</div>' +
+          '<span class="viewer-tag"><i></i><span data-zh="实时渲染" data-en="LIVE">实时渲染</span></span>' +
+        '</div>' +
+        '<div class="canvas-wrap">' +
+          '<canvas id="view"></canvas>' +
+          '<div class="cv-hud"><span>' + esc(L.sub) + '</span><b>3D · DRAG</b></div>' +
+        '</div>' +
+        '<div class="lab-bar" id="labBar"></div>' +
+      '</section>' +
+      '<section class="dossier" id="dossier">' + docsHTML(i, R.mode) + '</section>' +
+    '</div>' +
+    '<section class="impact" id="impact">' + impactHTML(i, R.mode) + '</section>' +
+  '</div>';
+
+  /* bind */
+  $('#deckBack').addEventListener('click', closeDeck);
+  $('#deckX').addEventListener('click', closeDeck);
+  $('#deckScroll').addEventListener('scroll', function(){}, { passive: true });
+  $$('[data-lang-btn]', deck).forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang-btn')); });
+  });
+  $$('#modeSeg button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#modeSeg button').forEach(function(x){ x.classList.remove('is-on'); });
+      b.classList.add('is-on');
+      setMode(b.getAttribute('data-mode'));
+    });
+  });
+  bindGoto();
+
+  var cv = $('#view');
+  if (cv) {
+    R.bind(cv);
+    R.resize();
+    R.start();
+    setTimeout(function(){ R.resize(); }, 90);
+    setTimeout(function(){ R.resize(); }, 380);
+  }
+  renderControls(i);
+  setMode(R.mode, true);
+  if (LANG !== 'zh') applyStatic(LANG);
+}
+
+/* 档案内「模型 ⇄ 实验」互跳（内容会被整体重建，故每次重建后重新绑定） */
+function bindGoto(){
+  $$('[data-goto]').forEach(function(b){
+    if (b.__goto) return;
+    b.__goto = 1;
+    b.addEventListener('click', function(){
+      var target = b.getAttribute('data-goto');
+      $$('#modeSeg button').forEach(function(x){
+        x.classList.toggle('is-on', x.getAttribute('data-mode') === target);
+      });
+      setMode(target);
+      var sc = $('#deckScroll');
+      if (sc) sc.scrollTop = 0;
+    });
+  });
+}
+
+function setMode(mode, silent){
+  R.mode = mode;
+  var bar = $('#labBar');
+  if (bar) bar.classList.toggle('is-on', mode === 'lab');
+  if (!silent) {
+    var m = MODELS[cur];
+    var L = m[LANG];
+    R.params = R.params || {};
+    var sc = $('#deckScroll'), keep = sc ? sc.scrollTop : 0;
+    var dEl = $('#dossier'), iEl = $('#impact');
+    if (dEl) dEl.innerHTML = docsHTML(cur, mode);
+    if (iEl) iEl.innerHTML = impactHTML(cur, mode);
+    if (LANG !== 'zh') applyStatic(LANG);
+    bindGoto();
+    if (sc) sc.scrollTop = keep;
+  }
+}
+
+/* ---------------- open / close ---------------- */
+var stage = $('#stage');
+
+function openModel(i){
+  cur = i;
+  R.mode = 'model';
+  R.params = {};
+  R.setModel(i);
+  R.visible = true;
+  renderDeck(i);
+  stage.classList.add('is-open');
+  stage.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('is-locked');
+  stage.classList.remove('is-in');
+  setTimeout(function(){ stage.classList.add('is-in'); }, 24);
+  setTimeout(function(){ R.resize(); }, 120);
+}
+
+function closeDeck(){
+  stage.classList.remove('is-in');
+  setTimeout(function(){
+    stage.classList.remove('is-open');
+    stage.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-locked');
+    R.stop();
+    R.visible = false;
+  }, 400);
+}
+
+$('#scrim') && $('#scrim').addEventListener('click', closeDeck);
+
+document.addEventListener('keydown', function(e){
+  if (!stage.classList.contains('is-open')) return;
+  if (e.key === 'Escape') closeDeck();
+  if (e.key === 'ArrowRight') { openModel((cur + 1) % MODELS.length); }
+  if (e.key === 'ArrowLeft') { openModel((cur - 1 + MODELS.length) % MODELS.length); }
+});
+
+/* ---------------- boot ---------------- */
+applyLang('zh');
+buildRail();
+fitRail();
+heroRise();
+setTimeout(function(){
+  fitRail();
+  $$('.node-thumb canvas').forEach(function(cv, i){
+    var r = cv.getBoundingClientRect();
+    if (r.width > 4) renderThumb(cv, MODELS[i], r.width, r.height);
+  });
+}, 260);
+
+/* ---------------- deep link ---------------- */
+(function(){
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get('lang') === 'en') applyLang('en');
+    if (!q.has('open')) return;
+    var i = parseInt(q.get('open'), 10);
+    if (isNaN(i) || !MODELS[i]) return;
+    setTimeout(function(){
+      openModel(i);
+      if (q.get('mode') === 'lab') {
+        setTimeout(function(){
+          $$('#modeSeg button').forEach(function(x){
+            x.classList.toggle('is-on', x.getAttribute('data-mode') === 'lab');
+          });
+          setMode('lab');
+        }, 150);
+      }
+    }, 420);
+  } catch (e) {}
+})();
+
+window.addEventListener('resize', function(){
+  fitRail();
+  $$('.node-thumb canvas').forEach(function(cv, i){
+    var r = cv.getBoundingClientRect();
+    if (r.width > 4) renderThumb(cv, MODELS[i], r.width, r.height);
+  });
+});
+
+})();
+</script>
+<script id="science-topic-bridge">
+(function(){
+  var back = document.getElementById('scienceTopicBack');
+  var base = '../../../topics/chemistry/atomic-structure/index.html';
+  function syncLanguage() {
+    var lang = document.documentElement.dataset.lang;
+    back.href = base + (lang === 'en' ? '?lang=en' : '');
+  }
+  syncLanguage();
+  document.querySelectorAll('[data-lang-btn]').forEach(function(button) {
+    button.addEventListener('click', function() { setTimeout(syncLanguage, 0); });
+  });
+})();
+</script>
+</body>
+</html>

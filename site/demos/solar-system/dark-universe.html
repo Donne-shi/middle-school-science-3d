@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暗物质与暗能量 · Dark Matter &amp; Dark Energy</title>
+<meta name="description" content="可拖拽的三维演示：宇宙的成分、星系的旋转曲线、加速膨胀——用三个场景读懂看不见的 95%。">
+<meta name="theme-color" content="#05060c">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#05060c;
+  --ink:#f6f1e8;
+  --ink-2:#dcd5c9;
+  --muted:#a6a09a;
+  --dim:#75717c;
+  --dim-2:#4e4b56;
+  --line:rgba(246,241,232,.15);
+  --line-2:rgba(246,241,232,.075);
+  --ac:#eeb072;      /* 普通物质 */
+  --dm:#5fc9dd;      /* 暗物质 */
+  --de:#a08df2;      /* 暗能量 */
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",STSong,SimSun,serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --pad:clamp(20px,3.2vw,54px);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);overflow:hidden;
+  background:radial-gradient(120% 90% at 52% 44%,#0e0d1a 0%,#07070f 46%,#030409 100%);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+::selection{background:var(--ac);color:#0a0705}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:0;touch-action:none;cursor:grab}
+#gl.grabbing{cursor:grabbing}
+.vex{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(125% 92% at 52% 44%,rgba(0,0,0,0) 40%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.62) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- masthead ---------- */
+.mast{position:fixed;left:var(--pad);top:clamp(22px,4vh,44px);z-index:12;width:min(540px,42vw);pointer-events:none}
+.idx{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:13px;letter-spacing:.26em;color:var(--dim)}
+.idx b{font-weight:500;color:var(--ac);font-size:16px}
+.mast h1{margin:14px 0 0;font-family:var(--serif);font-weight:400;line-height:1.02;letter-spacing:.02em}
+.mast h1 .cn{display:block;font-size:clamp(36px,4.3vw,58px);color:var(--ink);text-shadow:0 2px 24px rgba(0,0,0,.65)}
+.mast h1 .en{display:block;margin-top:9px;font-family:var(--mono);font-size:13px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim)}
+.kicker{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:15.5px;letter-spacing:.1em;color:var(--muted)}
+.kicker i{width:24px;height:1px;background:var(--ac);opacity:.75;flex:none}
+.kicker em{font-style:normal;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:var(--dim)}
+.tag{margin:13px 0 0;font-family:var(--serif);font-size:18.5px;line-height:1.68;color:var(--ink-2);opacity:.92;
+  max-width:19em;text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.7)}
+.tag.en{margin-top:6px;font-family:var(--sans);font-size:13.5px;line-height:1.6;color:var(--muted);opacity:.86;max-width:24em}
+
+/* ---------- top right ---------- */
+.topr{position:fixed;right:var(--pad);top:clamp(20px,3.2vh,36px);z-index:16;display:flex;align-items:center;gap:14px}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;letter-spacing:.12em;color:var(--muted);
+  text-decoration:none;transition:color .25s}
+.back:hover{color:var(--ink)}
+.back svg{opacity:.7}
+.back em{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--dim)}
+
+/* ---------- panel ---------- */
+.rail{position:fixed;right:var(--pad);top:clamp(66px,9vh,94px);z-index:12;width:clamp(336px,27.5vw,404px);
+  display:flex;flex-direction:column;gap:11px;max-height:calc(100vh - 150px);overflow-y:auto;scrollbar-width:none;pointer-events:none}
+.rail::-webkit-scrollbar{display:none}
+.rail>*{pointer-events:auto}
+.panel{position:relative;width:auto;display:flex;flex-direction:column;gap:0;
+  padding:15px 16px 20px;border-radius:16px;border:1px solid rgba(246,241,232,.10);
+  background:linear-gradient(178deg,rgba(18,17,28,.72),rgba(6,6,12,.82));
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1);
+  box-shadow:0 24px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.04)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:10px;
+  background:rgba(246,241,232,.045);border:1px solid var(--line-2)}
+.tabs button{appearance:none;background:none;border:0;border-radius:8px;color:var(--dim);font:inherit;
+  padding:7px 2px 8px;cursor:pointer;transition:.22s;white-space:nowrap;display:flex;flex-direction:column;gap:2px;align-items:center}
+.tabs button b{font-weight:400;font-size:15.4px;letter-spacing:.06em}
+.tabs button i{font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;opacity:.72}
+.tabs button:hover{color:var(--ink-2)}
+.tabs button.is-on{background:rgba(238,176,114,.13);color:var(--ac);box-shadow:inset 0 0 0 1px rgba(238,176,114,.22)}
+
+.inswrap{position:relative;margin-top:14px;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line-2);background:radial-gradient(70% 70% at 50% 45%,#0b0b14,#050510)}
+#ins{display:block;width:100%;height:172px}
+.inslab{position:absolute;left:10px;top:9px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  color:rgba(246,241,232,.40);pointer-events:none}
+
+.read{margin-top:14px}
+.read b{display:block;font-family:var(--serif);font-weight:400;font-size:25px;letter-spacing:.04em;color:var(--ink);line-height:1.2}
+.read i{display:block;margin-top:5px;font-style:normal;font-family:var(--mono);font-size:12.2px;letter-spacing:.16em;color:var(--ac);opacity:.88}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px;
+  border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:11px 0}
+.stats>div{min-width:0}
+.stats span{display:block;font-size:13.4px;letter-spacing:.04em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats span.e{font-family:var(--mono);font-size:9px;letter-spacing:.1em;opacity:.72;margin-top:1px}
+.stats b{display:block;margin-top:5px;font-family:var(--mono);font-weight:400;font-size:17px;color:#fdf6ea;white-space:nowrap}
+
+.sl{display:block;margin-top:14px;position:relative}
+.sl>span{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--muted)}
+.sl .lbl{display:flex;align-items:baseline;gap:7px;min-width:0}
+.sl .lbl em{font-style:normal;font-size:14.4px;letter-spacing:.06em;white-space:nowrap}
+.sl .lbl i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim);white-space:nowrap}
+.sl>span b{font-family:var(--mono);font-weight:400;font-size:14.4px;color:var(--ac);letter-spacing:.02em}
+.sl input{-webkit-appearance:none;appearance:none;display:block;width:100%;height:18px;margin:7px 0 0;background:none;cursor:pointer}
+.sl input::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(246,241,232,.16)}
+.sl input::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;margin-top:-6px;border-radius:50%;
+  background:#fff3e2;border:0;box-shadow:0 0 12px rgba(238,176,114,.85),0 0 0 1px rgba(0,0,0,.45)}
+.sl input::-moz-range-track{height:3px;border-radius:3px;background:rgba(246,241,232,.16)}
+.sl input::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:#fff3e2;box-shadow:0 0 12px rgba(238,176,114,.85)}
+.sl.hide,.tog.hide{display:none}
+
+/* 开关 */
+.tog{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;
+  padding:9px 0 0;border-top:1px solid var(--line-2)}
+.tog .tl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tog .tl em{font-style:normal;font-size:14.4px;letter-spacing:.06em;color:var(--muted)}
+.tog .tl i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim)}
+.tog button{appearance:none;flex:none;width:48px;height:26px;border-radius:14px;border:1px solid var(--line);
+  background:rgba(246,241,232,.06);position:relative;cursor:pointer;transition:.25s;padding:0}
+.tog button b{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#8d8894;
+  transition:.25s cubic-bezier(.4,0,.2,1)}
+.tog button.on{background:rgba(95,201,221,.20);border-color:rgba(95,201,221,.45)}
+.tog button.on b{left:24px;background:var(--dm);box-shadow:0 0 12px rgba(95,201,221,.75)}
+.tog button.on.de{background:rgba(160,141,242,.20);border-color:rgba(160,141,242,.45)}
+.tog button.on.de b{background:var(--de);box-shadow:0 0 12px rgba(160,141,242,.75)}
+
+.source-credit{margin-top:12px;padding-top:9px;border-top:1px solid var(--line-2);font-size:10px;line-height:1.5;letter-spacing:.04em;color:var(--dim)}
+.source-credit a{color:var(--ac);text-decoration:none;pointer-events:auto}
+.source-credit a:hover{text-decoration:underline}
+@media(max-width:980px){.source-credit{flex:1 1 100%;margin-top:0}}
+
+/* ---------- note ---------- */
+.note{position:fixed;left:var(--pad);bottom:clamp(76px,10vh,96px);z-index:12;width:min(474px,38vw);
+  padding:16px 20px 17px;border-radius:14px;border:1px solid rgba(246,241,232,.10);
+  background:linear-gradient(180deg,rgba(11,11,18,.76),rgba(5,5,10,.88));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);pointer-events:none}
+.note h3{margin:0;font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:.02em;color:var(--ink)}
+.note .h-en{display:block;margin-top:4px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ac);opacity:.82;text-transform:uppercase}
+.note p{margin:9px 0 0;font-size:15.8px;line-height:1.62;color:var(--ink-2);opacity:.92;text-wrap:pretty}
+.note p.en{margin-top:6px;font-size:13.4px;line-height:1.52;color:var(--muted);opacity:.86;text-wrap:pretty}
+
+/* ---------- bottom bar ---------- */
+.bar{position:fixed;left:var(--pad);right:var(--pad);bottom:clamp(18px,3vh,32px);z-index:14;
+  display:flex;align-items:center;gap:16px}
+.bar button{appearance:none;background:none;border:1px solid var(--line);border-radius:22px;color:var(--ink-2);
+  font:inherit;font-size:13px;letter-spacing:.12em;padding:7px 16px;cursor:pointer;transition:.25s;flex:none;white-space:nowrap}
+.bar button:hover{border-color:var(--ac);color:var(--ink)}
+.hint{font-size:12px;letter-spacing:.06em;color:var(--dim-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .sp{margin-left:auto;display:flex;gap:8px}
+
+/* 3D 上的方位标签 */
+.marks span{position:absolute;left:-999px;top:-999px;transform:translate(-50%,-50%);pointer-events:none;
+  text-align:center;opacity:0;transition:opacity .35s;text-shadow:0 1px 12px rgba(0,0,0,.9)}
+.marks span em{display:block;font-style:normal;font-size:15px;letter-spacing:.08em;color:rgba(246,241,232,.90)}
+.marks span i{display:block;margin-top:3px;font-style:normal;font-family:var(--mono);font-size:10.6px;letter-spacing:.14em;color:rgba(246,241,232,.48)}
+.marks span b{display:block;margin-top:2px;font-family:var(--mono);font-weight:400;font-size:14px;letter-spacing:.04em}
+.marks.on span{opacity:1}
+
+@media (max-width:1240px){
+  .mast{width:min(460px,40vw)}
+  .note{width:min(420px,36vw)}
+}
+@media (max-width:980px){
+  .mast{width:min(360px,62vw);top:18px}
+  .mast h1 .cn{font-size:33px}
+  .mast h1 .en{font-size:11.5px}
+  .tag,.tag.en{display:none}
+  .kicker{font-size:13px;margin-top:12px}
+  .kicker em{display:none}
+  .note{display:none}
+  .rail{left:var(--pad);right:var(--pad);top:auto;bottom:80px;width:auto;max-height:calc(100vh - 170px)}
+  .panel{width:auto;padding:13px 14px 18px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:11px}
+  .tabs{width:100%;order:0}
+  .inswrap{margin-top:0;flex:1 1 140px;min-width:124px}
+  #ins{height:150px}
+  .read{margin-top:0;flex:1 1 120px}
+  .read b{font-size:21px}
+  .stats{display:none}
+  .sl{flex:1 1 100%;margin-top:4px}
+  .tog{flex:1 1 100%;margin-top:4px}
+  .hint{display:none}
+}
+@media (max-width:560px){
+  .mast h1 .cn{font-size:29px}
+  .idx{font-size:11.5px;letter-spacing:.18em}
+  .rail{bottom:72px}
+  #ins{height:138px}
+  .bar{bottom:13px}
+  .bar button{font-size:12px;padding:6px 13px}
+}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="vex"></div>
+<div class="grain"></div>
+
+<header class="mast">
+  <div class="idx"><b>C</b> COSMOS · DARK SECTOR</div>
+  <h1><span class="cn">暗物质与暗能量</span><span class="en">Dark Matter &amp; Dark Energy</span></h1>
+  <div class="kicker"><i></i>宇宙的 95%，我们看不见 <em>THE 95% WE CANNOT SEE</em></div>
+  <p class="tag">我们熟悉的普通物质只占宇宙质能密度的一小部分。暗物质主要通过引力效应推断；暗能量则与宇宙加速膨胀有关。</p>
+  <p class="tag en">Ordinary matter is only a small part of the universe's mass-energy density. Dark matter is inferred mainly through gravity; dark energy is associated with the accelerating expansion of the universe.</p>
+</header>
+
+<div class="topr">
+  <a class="back" href="../../topics/astronomy/universe/index.html">
+    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+      <path d="M11 4H1M1 4L4.2 1M1 4L4.2 7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+    </svg>
+    返回宇宙专题 <em>BACK TO TOPIC</em>
+  </a>
+</div>
+
+<div class="rail">
+<aside class="panel">
+  <div class="tabs" id="tabs">
+    <button data-m="0" class="is-on"><b>成分</b><i>BUDGET</i></button>
+    <button data-m="1"><b>暗物质</b><i>DARK MATTER</i></button>
+    <button data-m="2"><b>暗能量</b><i>DARK ENERGY</i></button>
+  </div>
+
+  <div class="inswrap">
+    <canvas id="ins"></canvas>
+    <span class="inslab" id="inslab">占比 / SHARE</span>
+  </div>
+
+  <div class="read"><b id="pname">宇宙的成分</b><i id="pen">COSMIC BUDGET</i></div>
+
+  <div class="stats">
+    <div><span id="k1">暗能量</span><span class="e" id="e1">DARK ENERGY</span><b id="v1">68.3%</b></div>
+    <div><span id="k2">暗物质</span><span class="e" id="e2">DARK MATTER</span><b id="v2">26.8%</b></div>
+    <div><span id="k3">普通物质</span><span class="e" id="e3">ORDINARY</span><b id="v3">4.9%</b></div>
+  </div>
+
+  <label class="sl" id="sl1">
+    <span><span class="lbl"><em id="s1z">分离</em><i id="s1e">EXPLODE</i></span><b id="b1">0%</b></span>
+    <input type="range" id="r1" min="0" max="1" step="0.005" value="0">
+  </label>
+
+  <label class="sl hide" id="sl2">
+    <span><span class="lbl"><em id="s2z">探测半径</em><i id="s2e">PROBE RADIUS</i></span><b id="b2">3.4</b></span>
+    <input type="range" id="r2" min="0.6" max="5.2" step="0.02" value="3.4">
+  </label>
+
+  <div class="tog hide" id="tog1">
+    <span class="tl"><em>暗物质晕</em><i>DARK MATTER HALO</i></span>
+    <button id="tg1" class="on" aria-pressed="true"><b></b></button>
+  </div>
+
+  <div class="tog hide" id="tog2">
+    <span class="tl"><em>暗能量</em><i>DARK ENERGY</i></span>
+    <button id="tg2" class="on de" aria-pressed="true"><b></b></button>
+  </div>
+<div class="source-credit"><span>数据参考 / DATA · </span><a href="https://www.esa.int/ESA_Multimedia/Images/2013/03/Planck_cosmic_recipe" target="_blank" rel="noopener">ESA · Planck mission (2013)</a><span> · 近似宇宙质能密度 / approximate cosmic mass-energy density</span></div>
+</aside>
+</div>
+
+<div class="note">
+  <h3 id="noteH">宇宙的账本</h3>
+  <span class="h-en" id="noteHE">THE COSMIC LEDGER</span>
+  <p id="noteZ">按 ESA/Planck 的近似估计，把宇宙的质能密度分成 100 份：暗能量约 68 份，暗物质约 27 份，普通物质不到 5 份。</p>
+  <p class="en" id="noteE">Using approximate ESA/Planck estimates, divide the universe's mass-energy density into 100 parts: about 68 dark energy, 27 dark matter, and under 5 ordinary matter.</p>
+</div>
+
+<div class="bar">
+  <button id="play">暂停 PAUSE</button>
+  <span class="hint">拖动旋转视角 · 滚轮缩放 · 拖拽滑块改变参数</span>
+  <div class="sp"><button id="reset">复位 RESET</button></div>
+</div>
+
+<div class="marks" id="marks">
+  <span><em></em><i></i><b></b></span>
+  <span><em></em><i></i><b></b></span>
+  <span><em></em><i></i><b></b></span>
+</div>
+
+<script>
+"use strict";
+(function () {
+const $ = (s) => document.querySelector(s);
+const clamp01 = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const smooth = (a, b, x) => { const t = clamp01((x - a) / (b - a || 1e-6)); return t * t * (3 - 2 * t); };
+const TAU = Math.PI * 2, DEG = Math.PI / 180;
+
+/* ================================================================ state ==== */
+const S = {
+  mode: 0,
+  explode: 0,      // M0 分离
+  probe: 3.4,      // M1 探测半径
+  halo: true,      // M1 暗物质晕
+  t: 13.8,         // M2 宇宙年龄 (Gyr)
+  de: true,        // M2 暗能量
+  playing: true,
+  clock: 0,
+  spin: 0,
+  az: 0.62, el: 0.46, dist: 11.5, fov: 44,
+  tgt: [0, 0, 0]
+};
+const CAMD = [
+  { az: 0.52, el: 0.92, dist: 8.4, fov: 42, tgt: [1.15, 0.32, 0] },
+  { az: 0.55, el: 0.72, dist: 13.4, fov: 46, tgt: [0, 0, 0] },
+  { az: 0.75, el: 0.42, dist: 19.5, fov: 46, tgt: [0, 0, 0] }
+];
+
+/* ================================================================= math ==== */
+function ident() { return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]); }
+function mul(a, b) {
+  const o = new Float32Array(16);
+  for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) {
+    o[c*4+r] = a[r] * b[c*4] + a[4+r] * b[c*4+1] + a[8+r] * b[c*4+2] + a[12+r] * b[c*4+3];
+  }
+  return o;
+}
+function trans(x, y, z) { return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1]); }
+function scaleM(x, y, z) { return new Float32Array([x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1]); }
+function rotX(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]); }
+function rotY(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]); }
+function rotZ(a) { const c = Math.cos(a), s = Math.sin(a); return new Float32Array([c,s,0,0, -s,c,0,0, 0,0,1,0, 0,0,0,1]); }
+function axisAngle(ax, ang) {
+  const l = Math.hypot(ax[0], ax[1], ax[2]) || 1;
+  const x = ax[0]/l, y = ax[1]/l, z = ax[2]/l;
+  const c = Math.cos(ang), s = Math.sin(ang), t = 1 - c;
+  return new Float32Array([
+    t*x*x+c, t*x*y+s*z, t*x*z-s*y, 0,
+    t*x*y-s*z, t*y*y+c, t*y*z+s*x, 0,
+    t*x*z+s*y, t*y*z-s*x, t*z*z+c, 0,
+    0,0,0,1
+  ]);
+}
+function lookAt(eye, tgt, up) {
+  let zx = eye[0]-tgt[0], zy = eye[1]-tgt[1], zz = eye[2]-tgt[2];
+  let zl = Math.hypot(zx, zy, zz) || 1; zx/=zl; zy/=zl; zz/=zl;
+  let xx = up[1]*zz - up[2]*zy, xy = up[2]*zx - up[0]*zz, xz = up[0]*zy - up[1]*zx;
+  let xl = Math.hypot(xx, xy, xz) || 1; xx/=xl; xy/=xl; xz/=xl;
+  const yx = zy*xz - zz*xy, yy = zz*xx - zx*xz, yz = zx*xy - zy*xx;
+  return new Float32Array([
+    xx, yx, zx, 0,
+    xy, yy, zy, 0,
+    xz, yz, zz, 0,
+    -(xx*eye[0]+xy*eye[1]+xz*eye[2]), -(yx*eye[0]+yy*eye[1]+yz*eye[2]), -(zx*eye[0]+zy*eye[1]+zz*eye[2]), 1
+  ]);
+}
+function persp(fovy, asp, n, f, shiftY) {
+  const t = 1 / Math.tan(fovy / 2), nf = 1 / (n - f);
+  return new Float32Array([ t/asp,0,0,0, 0,t,0,0, 0,shiftY || 0,(f+n)*nf,-1, 0,0,2*f*n*nf,0 ]);
+}
+function nrm3(m) {
+  const a = m[0], b = m[1], c = m[2], d = m[4], e = m[5], f = m[6], g = m[8], h = m[9], i = m[10];
+  const A = e*i - f*h, B = f*g - d*i, C = d*h - e*g;
+  const det = a*A + b*B + c*C;
+  if (Math.abs(det) < 1e-12) return new Float32Array([1,0,0, 0,1,0, 0,0,1]);
+  const id = 1/det;
+  return new Float32Array([
+    A*id, (c*h-b*i)*id, (b*f-c*e)*id,
+    B*id, (a*i-c*g)*id, (c*d-a*f)*id,
+    C*id, (b*g-a*h)*id, (a*e-b*d)*id
+  ]);
+}
+function alignY(d) {
+  const l = Math.hypot(d[0], d[1], d[2]) || 1;
+  const y = d[1]/l;
+  if (y > 0.99999) return ident();
+  if (y < -0.99999) return rotX(Math.PI);
+  return axisAngle([d[2]/l, 0, -d[0]/l], Math.acos(clamp(y, -1, 1)));
+}
+
+/* ================================================================== gl ==== */
+const canvas = $("#gl");
+const gl = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
+if (!gl) {
+  document.body.innerHTML = '<div style="color:#ddd;font:16px/1.9 sans-serif;padding:48px">This demo needs WebGL 2.<br>当前浏览器不支持 WebGL 2。</div>';
+  return;
+}
+
+const VS = `#version 300 es
+in vec3 aPos; in vec3 aNrm; in vec2 aUv;
+uniform mat4 uMVP; uniform mat4 uM; uniform mat3 uN;
+out vec3 vN; out vec3 vW; out vec2 vUv;
+void main(){
+  vN = uN * aNrm;
+  vec4 w = uM * vec4(aPos, 1.0);
+  vW = w.xyz; vUv = aUv;
+  gl_Position = uMVP * vec4(aPos, 1.0);
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+in vec3 vN; in vec3 vW; in vec2 vUv;
+uniform vec3 uColor; uniform vec3 uEmis; uniform vec3 uLdir; uniform vec3 uCam;
+uniform float uAlpha; uniform float uSpec; uniform float uRim; uniform float uTexOn;
+uniform float uEmAmt; uniform float uAmb;
+uniform sampler2D uTex;
+out vec4 outColor;
+void main(){
+  vec4 tx = vec4(1.0);
+  if(uTexOn > 0.5) tx = texture(uTex, vUv);
+  vec3 base = uColor * tx.rgb;
+  vec3 N = normalize(vN);
+  vec3 V = normalize(uCam - vW);
+  vec3 L = normalize(uLdir);
+  float d = max(dot(N, L), 0.0);
+  float fill = max(dot(N, normalize(vec3(-0.35, 0.42, 0.72))), 0.0);
+  vec3 col = base * (uAmb + d * 1.0 + fill * 0.12);
+  vec3 H = normalize(L + V);
+  col += vec3(1.0, 0.97, 0.92) * pow(max(dot(N, H), 0.0), 42.0) * uSpec;
+  col += vec3(0.50, 0.62, 1.0) * pow(1.0 - max(dot(N, V), 0.0), 3.2) * uRim;
+  col += uEmis * uEmAmt * tx.a;
+  outColor = vec4(col, uAlpha * tx.a);
+}`;
+
+const SKY_VS = `#version 300 es
+void main(){
+  vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const SKY_FS = `#version 300 es
+precision highp float;
+out vec4 outColor;
+uniform vec2 uRes; uniform vec3 uSkyA; uniform vec3 uSkyB; uniform float uStars;
+float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float layer(vec2 p, float sc, float th){
+  vec2 g = p * sc; vec2 id = floor(g); vec2 f = fract(g) - 0.5;
+  float r = h21(id);
+  if(r < th) return 0.0;
+  vec2 off = vec2(h21(id + 1.31), h21(id + 7.77)) - 0.5;
+  float d = length(f - off * 0.7);
+  return (smoothstep(0.10, 0.0, d) + smoothstep(0.38, 0.0, d) * 0.14) * (0.3 + 0.7 * h21(id + 3.17));
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec2 p = (uv - 0.5) * vec2(uRes.x / uRes.y, 1.0);
+  vec3 col = mix(uSkyA, uSkyB, smoothstep(0.0, 0.95, uv.y));
+  float s = layer(p, 9.0, 0.985) * 0.9 + layer(p + 3.7, 17.0, 0.99) * 0.6 + layer(p + 9.1, 33.0, 0.994) * 0.4;
+  col += vec3(0.86, 0.90, 1.0) * s * uStars;
+  float v = length(p * vec2(0.75, 1.0));
+  col *= 1.0 - v * v * 0.55;
+  outColor = vec4(col, 1.0);
+}`;
+
+function sh(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+function prog(vs, fs) {
+  const p = gl.createProgram();
+  gl.attachShader(p, sh(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+const P = prog(VS, FS);
+const A = {
+  pos: gl.getAttribLocation(P, "aPos"),
+  nrm: gl.getAttribLocation(P, "aNrm"),
+  uv:  gl.getAttribLocation(P, "aUv")
+};
+const U = {
+  mvp: gl.getUniformLocation(P, "uMVP"),
+  m:   gl.getUniformLocation(P, "uM"),
+  n:   gl.getUniformLocation(P, "uN"),
+  color: gl.getUniformLocation(P, "uColor"),
+  emis:  gl.getUniformLocation(P, "uEmis"),
+  ldir:  gl.getUniformLocation(P, "uLdir"),
+  cam:   gl.getUniformLocation(P, "uCam"),
+  alpha: gl.getUniformLocation(P, "uAlpha"),
+  spec:  gl.getUniformLocation(P, "uSpec"),
+  rim:   gl.getUniformLocation(P, "uRim"),
+  texOn: gl.getUniformLocation(P, "uTexOn"),
+  emAmt: gl.getUniformLocation(P, "uEmAmt"),
+  amb:   gl.getUniformLocation(P, "uAmb"),
+  tex:   gl.getUniformLocation(P, "uTex")
+};
+const SP = prog(SKY_VS, SKY_FS);
+const SU = {
+  res: gl.getUniformLocation(SP, "uRes"),
+  a: gl.getUniformLocation(SP, "uSkyA"),
+  b: gl.getUniformLocation(SP, "uSkyB"),
+  st: gl.getUniformLocation(SP, "uStars")
+};
+const skyVao = gl.createVertexArray();
+
+/* =============================================================== meshes ==== */
+function mkMesh(pos, nrm, uv, idx) {
+  const vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  const put = (arr, loc, n) => {
+    const b = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, n, gl.FLOAT, false, 0, 0);
+  };
+  put(pos, A.pos, 3); put(nrm, A.nrm, 3); put(uv, A.uv, 2);
+  const ib = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+  return { vao, n: idx.length };
+}
+
+function buildSphere(seg, ring) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let j = 0; j <= ring; j++) {
+    const v = j / ring, phi = v * Math.PI;
+    for (let i = 0; i <= seg; i++) {
+      const u = i / seg, th = u * TAU;
+      const x = Math.sin(phi) * Math.cos(th), y = Math.cos(phi), z = Math.sin(phi) * Math.sin(th);
+      pos.push(x, y, z); nrm.push(x, y, z); uv.push(u, 1 - v);
+    }
+  }
+  for (let j = 0; j < ring; j++) for (let i = 0; i < seg; i++) {
+    const a = j * (seg + 1) + i, b = a + seg + 1;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+function buildFrustum(r0, r1, seg) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  const slope = (r0 - r1) / 1;
+  const nl = Math.hypot(1, slope) || 1;
+  for (let i = 0; i <= seg; i++) {
+    const u = i / seg, th = u * TAU, c = Math.cos(th), s = Math.sin(th);
+    pos.push(c * r0, 0, s * r0); nrm.push(c / nl, slope / nl, s / nl); uv.push(u, 0);
+    pos.push(c * r1, 1, s * r1); nrm.push(c / nl, slope / nl, s / nl); uv.push(u, 1);
+  }
+  for (let i = 0; i < seg; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+function buildQuad() {
+  return mkMesh([-.5,-.5,0, .5,-.5,0, .5,.5,0, -.5,.5,0], [0,0,1,0,0,1,0,0,1,0,0,1],
+    [0,0, 1,0, 1,1, 0,1], [0,1,2, 0,2,3]);
+}
+
+function buildRing(seg) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  for (let i = 0; i <= seg; i++) {
+    const th = i / seg * TAU, c = Math.cos(th), s = Math.sin(th);
+    pos.push(c, 0, s); nrm.push(0, 1, 0); uv.push(i / seg, 0);
+    pos.push(c * 0.995, 0, s * 0.995); nrm.push(0, 1, 0); uv.push(i / seg, 1);
+  }
+  for (let i = 0; i < seg; i++) { const a = i * 2; idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+// 扇环实体（用于宇宙成分甜甜圈）：a0..a1 弧度，内径 ri、外径 ro、厚度 th
+function buildArcSlab(a0, a1, ri, ro, th, seg) {
+  const pos = [], nrm = [], uv = [], idx = [];
+  const corners = [[ri, th], [ro, th], [ro, -th], [ri, -th]];
+  const P4 = [];
+  for (let i = 0; i <= seg; i++) {
+    const a = lerp(a0, a1, i / seg), c = Math.cos(a), s = Math.sin(a);
+    P4.push(corners.map(([r, y]) => [c * r, y, s * r]));
+  }
+  const pushQuad = (p0, p1, p2, p3) => {
+    const ux = p1[0]-p0[0], uy = p1[1]-p0[1], uz = p1[2]-p0[2];
+    const vx = p2[0]-p0[0], vy = p2[1]-p0[1], vz = p2[2]-p0[2];
+    let nx = uy*vz-uz*vy, ny = uz*vx-ux*vz, nz = ux*vy-uy*vx;
+    const nl = Math.hypot(nx, ny, nz) || 1; nx/=nl; ny/=nl; nz/=nl;
+    const base = pos.length / 3;
+    [p0,p1,p2,p3].forEach(p => { pos.push(p[0],p[1],p[2]); nrm.push(nx,ny,nz); uv.push(0,0); });
+    idx.push(base, base+1, base+2, base, base+2, base+3);
+  };
+  for (let i = 0; i < seg; i++) {
+    for (let k = 0; k < 4; k++) {
+      const k2 = (k + 1) % 4;
+      pushQuad(P4[i][k], P4[i][k2], P4[i+1][k2], P4[i+1][k]);
+    }
+  }
+  pushQuad(P4[0][0], P4[0][1], P4[0][2], P4[0][3]);
+  pushQuad(P4[seg][3], P4[seg][2], P4[seg][1], P4[seg][0]);
+  return mkMesh(pos, nrm, uv, idx);
+}
+
+const sphereM = buildSphere(44, 26);
+const quadM = buildQuad();
+const ringM = buildRing(160);
+const rayM = buildFrustum(0.5, 0.5, 8);
+const domeM = buildSphere(30, 18);
+
+/* ============================================================= textures ==== */
+function tex(cv) {
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return t;
+}
+function cv2d(w, h) {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return [c, c.getContext("2d")];
+}
+function makeGlowTex() {
+  const [c, x] = cv2d(256, 256);
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(.18, "rgba(255,255,255,.80)");
+  g.addColorStop(.42, "rgba(255,255,255,.24)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  return tex(c);
+}
+const glowTex = makeGlowTex();
+
+/* ============================================================ draw list ==== */
+let OP = [], DA = [], AD = [];
+let PV = ident(), camPos = [0, 0, 0], CR = [1,0,0], CU = [0,1,0], CN = [0,0,1];
+let LDIR = [0.5, 0.8, 0.3], AMB = 0.16;
+
+function put(base, mesh, x, y, z, sx, sy, sz, col, o) {
+  o = o || {};
+  const M = mul(base, mul(trans(x, y, z), scaleM(sx, sy, sz)));
+  const it = { mesh, M, col, o };
+  if (o.add) AD.push(it); else if (o.dark) DA.push(it); else OP.push(it);
+}
+function bb(p, s, col, o) {
+  o = o || {};
+  const M = new Float32Array([
+    CR[0]*s, CR[1]*s, CR[2]*s, 0,
+    CU[0]*s, CU[1]*s, CU[2]*s, 0,
+    CN[0], CN[1], CN[2], 0,
+    p[0], p[1], p[2], 1
+  ]);
+  const it = { mesh: quadM, M, col, o };
+  (o.add ? AD : OP).push(it);
+}
+function line3(a, b, thick, emis, alpha) {
+  const d = [b[0]-a[0], b[1]-a[1], b[2]-a[2]];
+  const len = Math.hypot(d[0], d[1], d[2]) || 1e-4;
+  const M = mul(mul(trans(a[0], a[1], a[2]), alignY(d)), scaleM(thick, len, thick));
+  AD.push({ mesh: rayM, M, col: [0,0,0], o: { add: true, emis, emAmt: 1, alpha } });
+}
+
+function drawItem(it) {
+  const o = it.o;
+  gl.uniformMatrix4fv(U.mvp, false, mul(PV, it.M));
+  gl.uniformMatrix4fv(U.m, false, it.M);
+  gl.uniformMatrix3fv(U.n, false, nrm3(it.M));
+  gl.uniform3fv(U.color, it.col);
+  gl.uniform3fv(U.emis, o.emis || [0, 0, 0]);
+  gl.uniform1f(U.alpha, o.alpha === undefined ? 1 : o.alpha);
+  gl.uniform1f(U.spec, o.spec === undefined ? 0.25 : o.spec);
+  gl.uniform1f(U.rim, o.rim || 0);
+  gl.uniform1f(U.emAmt, o.emAmt === undefined ? 1 : o.emAmt);
+  if (o.tex) {
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, o.tex);
+    gl.uniform1f(U.texOn, 1);
+  } else gl.uniform1f(U.texOn, 0);
+  gl.bindVertexArray(it.mesh.vao);
+  gl.drawElements(gl.TRIANGLES, it.mesh.n, gl.UNSIGNED_SHORT, 0);
+}
+
+/* =============================================================== physics ==== */
+// 旋转曲线：只算可见物质 vs 加上暗物质晕
+const V0 = 220, RC = 1.0;
+const vVisible = (r) => V0 * (r / RC) / Math.pow(1 + (r / RC) * (r / RC), 0.75);
+const vObserved = (r) => V0 * r / Math.sqrt(r * r + RC * RC);
+const vNow = (r) => (S.halo ? vObserved(r) : vVisible(r));
+
+// 尺度因子：ΛCDM 与 纯物质宇宙，都归一化到 a(13.8)=1
+const OM = 0.315, OL = 0.685, H0 = 0.0690, T0 = 13.8;
+const _sinh = (x) => (Math.exp(x) - Math.exp(-x)) / 2;
+const _aL = (t) => Math.pow(_sinh(1.5 * Math.sqrt(OL) * H0 * Math.max(t, 1e-4)), 2 / 3);
+const AL0 = _aL(T0);
+const aLCDM = (t) => _aL(t) / AL0;
+const aMatter = (t) => Math.pow(Math.max(t, 1e-4) / T0, 2 / 3);
+const aNow = (t) => (S.de ? aLCDM(t) : aMatter(t));
+
+/* ================================================================ scenes ==== */
+const BUD = [
+  { zh: "暗能量", en: "DARK ENERGY", frac: 0.683, col: [0.63, 0.55, 0.95], emis: [0.45, 0.36, 0.92] },
+  { zh: "暗物质", en: "DARK MATTER", frac: 0.268, col: [0.37, 0.79, 0.87], emis: [0.22, 0.72, 0.85] },
+  { zh: "普通物质", en: "ORDINARY MATTER", frac: 0.049, col: [0.93, 0.69, 0.45], emis: [0.95, 0.62, 0.28] }
+];
+let SEGS = [];
+(function buildBudget() {
+  let a = 0;
+  for (const b of BUD) {
+    const a1 = a + b.frac * TAU;
+    SEGS.push({ mesh: buildArcSlab(a, a1, 0.66, 1.0, 0.085, Math.max(6, Math.round(b.frac * 190))), mid: (a + a1) / 2, b });
+    a = a1;
+  }
+})();
+
+function sceneBudget() {
+  LDIR = [0.35, 0.86, 0.38]; AMB = 0.20;
+  const tilt = rotX(-0.20);
+  const spin = rotY(S.clock * 0.16);
+  const base = mul(tilt, spin);
+
+  // 中心的光核
+  bb([0, 0, 0], 3.4, [0, 0, 0], { add: true, tex: glowTex, emis: [0.42, 0.36, 0.78], emAmt: .30, alpha: .55 });
+
+  for (const s of SEGS) {
+    const ex = Math.cos(s.mid) * S.explode * 0.34;
+    const ez = Math.sin(s.mid) * S.explode * 0.34;
+    const ey = S.explode * 0.12;
+    put(base, s.mesh, ex, ey, ez, 1, 1, 1, s.b.col,
+      { emis: s.b.emis, emAmt: 0.30, spec: 0.35, alpha: 1 });
+  }
+
+  // 外圈细环，稳定视觉
+  put(mul(base, trans(0, 0.0, 0)), ringM, 0, 0, 0, 1.06, 1, 1.06, [0, 0, 0],
+    { add: true, emis: [0.55, 0.58, 0.85], emAmt: .30, alpha: .30 });
+
+  return { marks: SEGS.map((s) => {
+    const r = 1.55 + S.explode * 0.30;
+    const v = [Math.cos(s.mid) * r, S.explode * 0.12, Math.sin(s.mid) * r];
+    const w = [base[0]*v[0] + base[4]*v[1] + base[8]*v[2],
+               base[1]*v[0] + base[5]*v[1] + base[9]*v[2],
+               base[2]*v[0] + base[6]*v[1] + base[10]*v[2]];
+    return { p: w, s: s.b };
+  }) };
+}
+
+/* ---- 星系 ---- */
+const STARS = [];
+(function buildGalaxy() {
+  // 两条对数旋臂
+  for (let i = 0; i < 340; i++) {
+    const arm = i % 2;
+    const rr = 0.95 + Math.pow(Math.random(), 0.55) * 4.15;
+    const th = arm * Math.PI + Math.log(rr / 0.95) * 2.55 + (Math.random() - 0.5) * 0.26;
+    STARS.push({
+      r: rr + (Math.random() - 0.5) * 0.13,
+      th0: th,
+      y: (Math.random() - 0.5) * 0.07,
+      sz: 0.095 + Math.random() * 0.085,
+      warm: Math.random()
+    });
+  }
+  // 盘面背景星（把旋臂之间填满）
+  for (let i = 0; i < 120; i++) {
+    const rr = 0.7 + Math.pow(Math.random(), 0.72) * 4.5;
+    STARS.push({
+      r: rr, th0: Math.random() * TAU,
+      y: (Math.random() - 0.5) * 0.10,
+      sz: 0.045 + Math.random() * 0.05,
+      warm: Math.random() * 0.6
+    });
+  }
+  // 核球
+  for (let i = 0; i < 70; i++) {
+    const rr = Math.pow(Math.random(), 1.7) * 0.78;
+    STARS.push({
+      r: rr, th0: Math.random() * TAU,
+      y: (Math.random() - 0.5) * 0.30 * (1 - rr),
+      sz: 0.075 + Math.random() * 0.075, warm: 0.9
+    });
+  }
+})();
+
+const HALO_DOTS = [];
+(function buildHalo() {
+  for (let i = 0; i < 110; i++) {
+    const u = Math.random() * 2 - 1, ph = Math.random() * TAU;
+    const rr = 0.9 + Math.pow(Math.random(), 0.55) * 5.1;
+    const s = Math.sqrt(1 - u * u);
+    HALO_DOTS.push({ p: [Math.cos(ph) * s * rr, u * rr * 0.62, Math.sin(ph) * s * rr], r: rr });
+  }
+})();
+
+function sceneDark() {
+  LDIR = [0.42, 0.72, 0.55]; AMB = 0.22;
+
+  // 暗物质晕：三层加性辉光叠出一团没有边的蓝雾（关掉即可对比）
+  if (S.halo) {
+    bb([0, 0, 0], 13.2, [0, 0, 0], { add: true, tex: glowTex, emis: [0.13, 0.32, 0.62], emAmt: .085, alpha: .62 });
+    bb([0, 0, 0], 8.6, [0, 0, 0], { add: true, tex: glowTex, emis: [0.17, 0.40, 0.76], emAmt: .100, alpha: .58 });
+    bb([0, 0, 0], 5.2, [0, 0, 0], { add: true, tex: glowTex, emis: [0.21, 0.48, 0.86], emAmt: .115, alpha: .46 });
+    for (const d of HALO_DOTS) {
+      const k = 0.40 + 0.60 * (d.r / 6.1);
+      bb(d.p, 0.13, [0, 0, 0], { add: true, tex: glowTex, emis: [0.34, 0.74, 0.98], emAmt: .34 * k, alpha: .34 * k });
+    }
+  }
+
+
+  // 星系盘：整体刚性自转，旋臂才不会被差速剪切揉平
+  const spinT = S.spin;
+  for (const st of STARS) {
+    const th = st.th0 + 0.17 * spinT;
+    const p = [Math.cos(th) * st.r, st.y, Math.sin(th) * st.r];
+    const c = st.warm > 0.72 ? [1.0, 0.86, 0.66] : [0.80, 0.88, 1.0];
+    bb(p, st.sz, [0, 0, 0], { add: true, tex: glowTex, emis: c, emAmt: 1.0, alpha: 0.95 });
+  }
+
+  // 核球辉光
+  bb([0, 0, 0], 2.5, [0, 0, 0], { add: true, tex: glowTex, emis: [1.0, 0.90, 0.70], emAmt: .42, alpha: .75 });
+
+  // 探测半径处的标记
+  const rp = S.probe;
+  put(ident(), ringM, 0, 0, 0, rp, 1, rp, [0, 0, 0], { add: true, emis: [0.93, 0.69, 0.45], emAmt: .55, alpha: .55 });
+  const vp = vNow(rp);
+  const thp = 0.6 + (vp / rp) * 0.0072 * spinT;
+  const pp = [Math.cos(thp) * rp, 0.02, Math.sin(thp) * rp];
+  bb(pp, 0.30, [0, 0, 0], { add: true, tex: glowTex, emis: [1.0, 0.78, 0.45], emAmt: 1.2, alpha: 1 });
+  bb(pp, 0.75, [0, 0, 0], { add: true, tex: glowTex, emis: [1.0, 0.70, 0.36], emAmt: .35, alpha: .55 });
+
+  return { probe: pp, marks: [] };
+}
+
+/* ---- 宇宙网 / 膨胀 ---- */
+const GAL = [];
+(function buildLattice() {
+  const n = 5;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) {
+    const jx = (Math.random() - 0.5) * 0.10;
+    GAL.push({
+      c: [(i - (n - 1) / 2) + jx, (j - (n - 1) / 2) + jx * 0.7, (k - (n - 1) / 2) + jx * 0.4],
+      s: 0.135 + Math.random() * 0.12,
+      h: Math.random()
+    });
+  }
+})();
+
+function sceneEnergy() {
+  LDIR = [0.4, 0.7, 0.6]; AMB = 0.22;
+  const a = aNow(S.t) * 1.55;
+
+  // 空间网格（立方框），随尺度因子一起被拉大
+  const half = 2.0 * a * 0.92;
+  const E = [];
+  for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) E.push([x * half, y * half, z * half]);
+  const EDGES = [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]];
+  for (const [i, j] of EDGES) line3(E[i], E[j], 0.006, [0.34, 0.40, 0.72], 0.55);
+
+  // 星系
+  for (const g of GAL) {
+    const p = [g.c[0] * a * 0.92, g.c[1] * a * 0.92, g.c[2] * a * 0.92];
+    const c = g.h > 0.82 ? [1.0, 0.80, 0.55] : g.h > 0.5 ? [0.86, 0.90, 1.0] : [0.72, 0.82, 1.0];
+    bb(p, g.s, [0, 0, 0], { add: true, tex: glowTex, emis: c, emAmt: 1.25, alpha: 1 });
+  }
+  return { marks: [] };
+}
+
+/* ============================================================== camera ==== */
+function camera() {
+  const ce = Math.cos(S.el), se = Math.sin(S.el);
+  const asp = W / H;
+  const mulD = asp < 1.05 ? 1.34 : asp < 1.35 ? 1.12 : 1;
+  const d = S.dist * mulD;
+  const portrait = asp < 1.08;
+  const tx = portrait ? 0 : S.tgt[0], ty = portrait ? 0.1 : S.tgt[1];
+  const eye = [
+    tx + d * ce * Math.sin(S.az),
+    ty + d * se,
+    S.tgt[2] + d * ce * Math.cos(S.az)
+  ];
+  return { eye, tgt: [tx, ty, S.tgt[2]], fov: S.fov };
+}
+
+/* ================================================================ inset ==== */
+const ins = $("#ins"), ictx = ins.getContext("2d");
+let insW = 300, insH = 172, DPR = Math.min(2, window.devicePixelRatio || 1);
+
+function sizeInset() {
+  const r = ins.getBoundingClientRect();
+  insW = Math.max(80, r.width); insH = Math.max(60, r.height);
+  ins.width = Math.round(insW * DPR); ins.height = Math.round(insH * DPR);
+}
+
+function drawBudgetBar(x, w, h) {
+  const padL = 14, padR = 14, barY = h * 0.44, barH = 26;
+  const bw = w - padL - padR;
+  let acc = 0;
+  for (const b of BUD) {
+    const x0 = padL + bw * acc, x1 = padL + bw * (acc + b.frac);
+    const c = "rgba(" + Math.round(b.col[0]*255) + "," + Math.round(b.col[1]*255) + "," + Math.round(b.col[2]*255) + ",.94)";
+    x.fillStyle = c;
+    const r = 3;
+    x.beginPath();
+    x.moveTo(x0 + r, barY); x.lineTo(x1 - r, barY);
+    x.quadraticCurveTo(x1, barY, x1, barY + r); x.lineTo(x1, barY + barH - r);
+    x.quadraticCurveTo(x1, barY + barH, x1 - r, barY + barH); x.lineTo(x0 + r, barY + barH);
+    x.quadraticCurveTo(x0, barY + barH, x0, barY + barH - r); x.lineTo(x0, barY + r);
+    x.quadraticCurveTo(x0, barY, x0 + r, barY); x.fill();
+    acc += b.frac;
+  }
+  // 百分比
+  acc = 0;
+  for (const b of BUD) {
+    const mid = padL + bw * (acc + b.frac / 2);
+    const pct = (b.frac * 100).toFixed(1) + "%";
+    if (b.frac > 0.12) {
+      x.textAlign = "center";
+      x.fillStyle = "rgba(8,8,14,.88)";
+      x.font = "600 12.5px ui-monospace, Menlo, monospace";
+      x.fillText(pct, mid, barY + 18);
+    } else {
+      const left = mid > w * 0.72;          // 靠右的碎片：引线朝左
+      const ly = barY - 13;
+      x.strokeStyle = "rgba(238,176,114,.55)"; x.lineWidth = 1;
+      x.beginPath();
+      x.moveTo(mid, barY - 2);
+      x.lineTo(mid + (left ? -12 : 12), ly + 2);
+      x.lineTo(mid + (left ? -48 : 48), ly + 2);
+      x.stroke();
+      x.fillStyle = "rgba(238,176,114,.98)";
+      x.font = "600 12.5px ui-monospace, Menlo, monospace";
+      x.textAlign = left ? "right" : "left";
+      x.fillText(pct, mid + (left ? -13 : 13), ly - 1);
+    }
+    acc += b.frac;
+  }
+  // 图例（两行；窗口太矮就不画，面板里已有读数）
+  if (h < 146) return;
+  let lx = padL, ly = barY + barH + 26;
+  for (const b of BUD) {
+    const c = "rgba(" + Math.round(b.col[0]*255) + "," + Math.round(b.col[1]*255) + "," + Math.round(b.col[2]*255) + ",1)";
+    x.font = "12.5px -apple-system, PingFang SC, sans-serif";
+    const wZh = x.measureText(b.zh).width;
+    x.font = "9px ui-monospace, Menlo, monospace";
+    const wEn = x.measureText(b.en).width;
+    const itemW = 8 + 6 + wZh + 6 + wEn + 16;
+    if (lx + itemW > w - padR && lx > padL) { lx = padL; ly += 20; }
+    x.fillStyle = c;
+    x.fillRect(lx, ly - 8, 8, 8);
+    x.fillStyle = "rgba(246,241,232,.84)";
+    x.font = "12.5px -apple-system, PingFang SC, sans-serif";
+    x.textAlign = "left";
+    x.fillText(b.zh, lx + 14, ly);
+    x.fillStyle = "rgba(246,241,232,.40)";
+    x.font = "9px ui-monospace, Menlo, monospace";
+    x.fillText(b.en, lx + 14 + wZh + 6, ly - 1);
+    lx += itemW;
+  }
+}
+
+function plotFrame(x, L, T, W2, H2) {
+  x.strokeStyle = "rgba(246,241,232,.10)"; x.lineWidth = 1;
+  x.beginPath();
+  x.moveTo(L, T); x.lineTo(L, T + H2); x.lineTo(L + W2, T + H2);
+  x.stroke();
+}
+
+function drawRotation(x, w, h) {
+  const L = 30, T = 33, W2 = w - L - 14, H2 = h - T - 42;
+  const rMax = 5.6, vMax = 250;
+  const px = (r) => L + (r / rMax) * W2;
+  const py = (v) => T + H2 - (v / vMax) * H2;
+
+  x.strokeStyle = "rgba(246,241,232,.07)"; x.lineWidth = 1;
+  for (const v of [100, 200]) {
+    x.beginPath(); x.moveTo(L, py(v)); x.lineTo(L + W2, py(v)); x.stroke();
+    x.fillStyle = "rgba(246,241,232,.32)";
+    x.font = "9px ui-monospace, Menlo, monospace"; x.textAlign = "right";
+    x.fillText(v, L - 5, py(v) + 3);
+  }
+  x.strokeStyle = "rgba(246,241,232,.10)";
+  x.beginPath(); x.moveTo(L, T); x.lineTo(L, T + H2); x.lineTo(L + W2, T + H2); x.stroke();
+
+  x.fillStyle = "rgba(246,241,232,.34)";
+  x.font = "9px ui-monospace, Menlo, monospace";
+  x.textAlign = "left"; x.fillText("v km/s", L - 4, T - 7);
+  if (w >= 300) { x.textAlign = "right"; x.fillText("r / kpc", L + W2, T + H2 + 15); }
+
+  // 观测（实线）——先画，关掉暗物质时让虚线压在上面
+  x.strokeStyle = S.halo ? "rgba(95,201,221,.95)" : "rgba(126,132,152,.55)";
+  x.lineWidth = 2.2;
+  x.beginPath();
+  for (let i = 0; i <= 90; i++) {
+    const r = 0.15 + (i / 90) * (rMax - 0.15);
+    const v = S.halo ? vObserved(r) : vVisible(r);
+    i ? x.lineTo(px(r), py(v)) : x.moveTo(px(r), py(v));
+  }
+  x.stroke();
+
+  // 仅可见物质（虚线）
+  x.save();
+  x.setLineDash([4, 4]);
+  x.strokeStyle = "rgba(238,176,114,.86)"; x.lineWidth = 1.8;
+  x.beginPath();
+  for (let i = 0; i <= 90; i++) {
+    const r = 0.15 + (i / 90) * (rMax - 0.15);
+    const v = vVisible(r);
+    i ? x.lineTo(px(r), py(v)) : x.moveTo(px(r), py(v));
+  }
+  x.stroke(); x.restore();
+
+  // 探测点
+  const rp = S.probe;
+  x.strokeStyle = "rgba(246,241,232,.30)"; x.lineWidth = 1;
+  x.setLineDash([2, 3]);
+  x.beginPath(); x.moveTo(px(rp), T); x.lineTo(px(rp), T + H2); x.stroke();
+  x.setLineDash([]);
+  const vv = vVisible(rp), vo = S.halo ? vObserved(rp) : vVisible(rp);
+  x.beginPath(); x.arc(px(rp), py(vo), 4.4, 0, TAU); x.fillStyle = S.halo ? "rgba(95,201,221,1)" : "rgba(150,155,175,.92)"; x.fill();
+  x.strokeStyle = "rgba(6,6,12,.9)"; x.lineWidth = 1.4; x.stroke();
+  x.beginPath(); x.arc(px(rp), py(vv), 3.2, 0, TAU); x.fillStyle = "rgba(238,176,114,.98)"; x.fill();
+
+  // 图例（窄屏竖排）
+  const stack = w < 300;
+  const ly = stack ? h - 19 : h - 8;
+  x.textAlign = "left"; x.font = "10px -apple-system, PingFang SC, sans-serif";
+  x.fillStyle = S.halo ? "rgba(95,201,221,.95)" : "rgba(150,155,175,.92)";
+  x.fillRect(L, ly - 4, 14, 2.6);
+  x.fillText(stack ? "观测 OBSERVED" : "实际观测 OBSERVED", L + 20, ly);
+  x.fillStyle = "rgba(238,176,114,.92)";
+  x.fillRect(stack ? L : L + W2 * 0.52, stack ? ly + 9 : ly - 4, 14, 2.6);
+  x.fillText(stack ? "仅可见物质 VISIBLE" : "仅可见物质 VISIBLE ONLY", (stack ? L : L + W2 * 0.52) + 20, stack ? ly + 13 : ly);
+}
+
+function drawScaleFactor(x, w, h) {
+  const L = 30, T = 33, W2 = w - L - 14, H2 = h - T - 42;
+  const tMax = 20, aMax = 1.72;
+  const px = (t) => L + (t / tMax) * W2;
+  const py = (a) => T + H2 - (a / aMax) * H2;
+
+  x.strokeStyle = "rgba(246,241,232,.07)"; x.lineWidth = 1;
+  for (const a of [0.5, 1.0, 1.5]) {
+    x.beginPath(); x.moveTo(L, py(a)); x.lineTo(L + W2, py(a)); x.stroke();
+    x.fillStyle = "rgba(246,241,232,.32)";
+    x.font = "9px ui-monospace, Menlo, monospace"; x.textAlign = "right";
+    x.fillText(a.toFixed(1), L - 5, py(a) + 3);
+  }
+  x.strokeStyle = "rgba(246,241,232,.10)";
+  x.beginPath(); x.moveTo(L, T); x.lineTo(L, T + H2); x.lineTo(L + W2, T + H2); x.stroke();
+
+  x.fillStyle = "rgba(246,241,232,.34)";
+  x.font = "9px ui-monospace, Menlo, monospace";
+  x.textAlign = "left"; x.fillText("a(t)", L - 4, T - 7);
+  if (w >= 300) { x.textAlign = "right"; x.fillText("t / Gyr", L + W2, T + H2 + 15); }
+
+  // 纯物质（虚线）
+  x.save(); x.setLineDash([4, 4]);
+  x.strokeStyle = "rgba(238,176,114,.80)"; x.lineWidth = 1.8;
+  x.beginPath();
+  for (let i = 1; i <= 90; i++) {
+    const t = (i / 90) * tMax;
+    const a = aMatter(t);
+    i > 1 ? x.lineTo(px(t), py(a)) : x.moveTo(px(t), py(a));
+  }
+  x.stroke(); x.restore();
+
+  // ΛCDM（实线）
+  x.strokeStyle = S.de ? "rgba(160,141,242,.96)" : "rgba(126,132,152,.5)";
+  x.lineWidth = 2.2;
+  x.beginPath();
+  for (let i = 1; i <= 90; i++) {
+    const t = (i / 90) * tMax;
+    const a = aLCDM(t);
+    i > 1 ? x.lineTo(px(t), py(a)) : x.moveTo(px(t), py(a));
+  }
+  x.stroke();
+
+  // 现在
+  x.strokeStyle = "rgba(246,241,232,.26)"; x.lineWidth = 1;
+  x.setLineDash([2, 3]);
+  x.beginPath(); x.moveTo(px(T0), T); x.lineTo(px(T0), T + H2); x.stroke();
+  x.setLineDash([]);
+  x.fillStyle = "rgba(246,241,232,.44)";
+  x.font = "9px ui-monospace, Menlo, monospace"; x.textAlign = "center";
+  x.fillText("现在 NOW", px(T0), w < 300 ? T + 12 : T + H2 + 15);
+
+  // 当前时刻
+  const tt = clamp(S.t, 0.4, tMax);
+  x.strokeStyle = "rgba(246,241,232,.32)"; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(px(tt), T); x.lineTo(px(tt), T + H2); x.stroke();
+  const aa = aNow(tt);
+  x.beginPath(); x.arc(px(tt), py(aa), 4.6, 0, TAU);
+  x.fillStyle = S.de ? "rgba(160,141,242,1)" : "rgba(238,176,114,1)"; x.fill();
+  x.strokeStyle = "rgba(6,6,12,.9)"; x.lineWidth = 1.4; x.stroke();
+
+  // 图例（窄屏竖排）
+  const stack2 = w < 300;
+  const ly2 = stack2 ? h - 19 : h - 8;
+  x.textAlign = "left"; x.font = "10px -apple-system, PingFang SC, sans-serif";
+  x.fillStyle = S.de ? "rgba(160,141,242,.95)" : "rgba(150,155,175,.92)";
+  x.fillRect(L, ly2 - 4, 14, 2.6);
+  x.fillText("含暗能量 ΛCDM", L + 20, ly2);
+  x.fillStyle = "rgba(238,176,114,.92)";
+  x.fillRect(stack2 ? L : L + W2 * 0.52, stack2 ? ly2 + 9 : ly2 - 4, 14, 2.6);
+  x.fillText(stack2 ? "仅物质 MATTER" : "仅物质 MATTER ONLY", (stack2 ? L : L + W2 * 0.52) + 20, stack2 ? ly2 + 13 : ly2);
+}
+
+function drawInset() {
+  const x = ictx;
+  x.setTransform(DPR, 0, 0, DPR, 0, 0);
+  x.clearRect(0, 0, insW, insH);
+  if (S.mode === 0) drawBudgetBar(x, insW, insH);
+  else if (S.mode === 1) drawRotation(x, insW, insH);
+  else drawScaleFactor(x, insW, insH);
+}
+
+/* ================================================================= HUD ==== */
+const TXT = [
+  {
+    name: "宇宙的成分", en: "COSMIC BUDGET", lab: "占比 / SHARE",
+    stats: [["暗能量", "DARK ENERGY", "68.3%"], ["暗物质", "DARK MATTER", "26.8%"], ["普通物质", "ORDINARY", "4.9%"]],
+    s1: ["分离", "EXPLODE"],
+    note: ["宇宙的账本", "THE COSMIC LEDGER",
+      "把宇宙的总质能分成 100 份：暗能量约 68 份，暗物质约 27 份，而我们熟悉的原子——恒星、气体、尘埃、你我——不到 5 份。",
+      "Divide the universe's total mass-energy into 100 parts: about 68 parts dark energy, 27 parts dark matter, and less than 5 parts ordinary atoms — stars, gas, dust and us."]
+  },
+  {
+    name: "星系转得太快", en: "GALAXIES SPIN TOO FAST", lab: "旋转曲线 / ROTATION CURVE",
+    stats: [["探测半径", "RADIUS r", "3.4"], ["轨道速度", "VELOCITY v", "211"], ["暗物质占比", "DARK FRACTION", "72%"]],
+    s2: ["探测半径", "PROBE RADIUS"],
+    note: ["星系转得太快了", "GALAXIES SPIN TOO FAST",
+      "只按看得见的恒星和气体来算，星系外缘应该越转越慢。可实测速度几乎不随半径变化——外面一定还裹着一大团看不见的质量。",
+      "Counting only the visible stars and gas, the outer disc should slow down with radius. Instead the measured speed stays almost constant — an unseen mass must be wrapped around the galaxy."]
+  },
+  {
+    name: "膨胀的历史", en: "THE EXPANSION HISTORY", lab: "尺度因子 / SCALE FACTOR",
+    stats: [["宇宙年龄", "COSMIC TIME", "13.8"], ["尺度因子", "SCALE a", "1.00"], ["状态", "STATE", "加速"]],
+    s2: ["宇宙年龄", "COSMIC TIME"],
+    note: ["膨胀在加速", "THE EXPANSION IS SPEEDING UP",
+      "1998 年，两组天文学家发现遥远的超新星比预期更暗——它们比想象中更远。宇宙的膨胀并没有在减速，而是在加速；推着它的，是真空本身携带的能量。",
+      "In 1998 two teams found distant supernovae fainter — and farther — than expected. The expansion is not slowing down; it is speeding up. The driver is the energy carried by empty space itself."]
+  }
+];
+
+function setMode(m) {
+  S.mode = m;
+  [...$("#tabs").children].forEach((b) => b.classList.toggle("is-on", +b.dataset.m === m));
+  const c = CAMD[m];
+  S.az = c.az; S.el = c.el; S.dist = c.dist; S.fov = c.fov; S.tgt = c.tgt.slice();
+  $("#sl1").classList.toggle("hide", m !== 0);
+  $("#sl2").classList.toggle("hide", m === 0);
+  $("#tog1").classList.toggle("hide", m !== 1);
+  $("#tog2").classList.toggle("hide", m !== 2);
+  $("#marks").classList.toggle("on", m === 0);
+  // 同一个滑块在两种模式里含义不同：半径 / 宇宙年龄
+  const r2 = $("#r2");
+  if (m === 1) { r2.min = 0.6; r2.max = 5.2; r2.step = 0.02; r2.value = S.probe; }
+  else { r2.min = 0.4; r2.max = 20; r2.step = 0.02; r2.value = S.t; }
+  updateHUD();
+}
+
+function updateHUD() {
+  const t = TXT[S.mode];
+  $("#pname").textContent = t.name;
+  $("#pen").textContent = t.en;
+  $("#inslab").textContent = t.lab;
+  $("#noteH").textContent = t.note[0];
+  $("#noteHE").textContent = t.note[1];
+  $("#noteZ").textContent = t.note[2];
+  $("#noteE").textContent = t.note[3];
+
+  if (S.mode === 0) {
+    $("#b1").textContent = Math.round(S.explode * 100) + "%";
+    for (let i = 0; i < 3; i++) {
+      $("#k" + (i + 1)).textContent = t.stats[i][0];
+      $("#e" + (i + 1)).textContent = t.stats[i][1];
+      $("#v" + (i + 1)).textContent = t.stats[i][2];
+    }
+  } else if (S.mode === 1) {
+    $("#s2z").textContent = t.s2[0]; $("#s2e").textContent = t.s2[1];
+    $("#b2").textContent = S.probe.toFixed(1);
+    const v = vNow(S.probe);
+    const frac = 1 - Math.pow(vVisible(S.probe) / v, 2);
+    $("#k1").textContent = t.stats[0][0]; $("#e1").textContent = t.stats[0][1]; $("#v1").textContent = S.probe.toFixed(1);
+    $("#k2").textContent = t.stats[1][0]; $("#e2").textContent = t.stats[1][1]; $("#v2").textContent = Math.round(v) + " km/s";
+    $("#k3").textContent = t.stats[2][0]; $("#e3").textContent = t.stats[2][1];
+    $("#v3").textContent = S.halo ? Math.round(frac * 100) + "%" : "0%";
+  } else {
+    $("#s2z").textContent = t.s2[0]; $("#s2e").textContent = t.s2[1];
+    $("#b2").textContent = S.t.toFixed(1) + " Gyr";
+    const a = aNow(S.t);
+    const acc = accel(S.t);
+    $("#k1").textContent = t.stats[0][0]; $("#e1").textContent = t.stats[0][1]; $("#v1").textContent = S.t.toFixed(1);
+    $("#k2").textContent = t.stats[1][0]; $("#e2").textContent = t.stats[1][1]; $("#v2").textContent = a.toFixed(2);
+    $("#k3").textContent = t.stats[2][0]; $("#e3").textContent = t.stats[2][1];
+    $("#v3").textContent = acc > 0 ? "加速 ACCEL" : "减速 DECEL";
+    $("#v3").style.color = acc > 0 ? "var(--de)" : "var(--ac)";
+  }
+}
+
+function accel(t) {
+  const d = 0.25;
+  return aNow(t + d) - 2 * aNow(t) + aNow(Math.max(t - d, 0.1));
+}
+
+/* ============================================================== resize ==== */
+let W = 1, H = 1;
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = canvas.clientWidth; H = canvas.clientHeight;
+  canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  sizeInset();
+}
+window.addEventListener("resize", resize);
+
+/* =============================================================== input ==== */
+let drag = null;
+const marksEl = [...$("#marks").children];
+const noteEl = $(".note"), mastEl = $(".mast");
+
+function project(p) {
+  const m = mul(PV, [1,0,0,0, 0,1,0,0, 0,0,1,0, p[0], p[1], p[2], 1]);
+  const w = m[15] || 1;
+  const ndc = [m[12] / w, m[13] / w, m[14] / w];
+  return { x: (ndc[0] * .5 + .5) * W, y: (1 - (ndc[1] * .5 + .5)) * H, z: ndc[2] };
+}
+
+canvas.addEventListener("pointerdown", (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  const r = canvas.getBoundingClientRect();
+  drag = { id: e.pointerId, px: e.clientX - r.left, py: e.clientY - r.top, az0: S.az, el0: S.el };
+  canvas.classList.add("grabbing");
+});
+canvas.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const r = canvas.getBoundingClientRect();
+  const px = e.clientX - r.left, py = e.clientY - r.top;
+  S.az = drag.az0 - (px - drag.px) * 0.006;
+  S.el = clamp(drag.el0 + (py - drag.py) * 0.004, -0.35, 1.35);
+});
+function endDrag() { drag = null; canvas.classList.remove("grabbing"); }
+canvas.addEventListener("pointerup", endDrag);
+canvas.addEventListener("pointercancel", endDrag);
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  S.dist = clamp(S.dist * (1 + Math.sign(e.deltaY) * 0.08), 5, 42);
+}, { passive: false });
+
+/* ================================================================= UI ==== */
+$("#tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-m]");
+  if (b) setMode(+b.dataset.m);
+});
+$("#r1").addEventListener("input", (e) => { S.explode = +e.target.value; updateHUD(); });
+$("#r2").addEventListener("input", (e) => {
+  if (S.mode === 1) { S.probe = +e.target.value; }
+  else { S.t = +e.target.value; S.playing = false; syncPlay(); }
+  updateHUD();
+});
+$("#tg1").addEventListener("click", (e) => {
+  S.halo = !S.halo;
+  e.currentTarget.classList.toggle("on", S.halo);
+  e.currentTarget.setAttribute("aria-pressed", String(S.halo));
+  updateHUD();
+});
+$("#tg2").addEventListener("click", (e) => {
+  S.de = !S.de;
+  e.currentTarget.classList.toggle("on", S.de);
+  e.currentTarget.setAttribute("aria-pressed", String(S.de));
+  updateHUD();
+});
+
+function syncPlay() {
+  $("#play").textContent = S.playing ? "暂停 PAUSE" : "播放 PLAY";
+}
+$("#play").addEventListener("click", () => { S.playing = !S.playing; syncPlay(); });
+$("#reset").addEventListener("click", () => {
+  S.explode = 0; S.probe = 3.4; S.halo = true; S.t = 13.8; S.de = true; S.spin = 0;
+  $("#r1").value = 0; $("#r2").value = S.mode === 1 ? 3.4 : 13.8;
+  $("#tg1").classList.add("on"); $("#tg2").classList.add("on");
+  const c = CAMD[S.mode]; S.az = c.az; S.el = c.el; S.dist = c.dist;
+  updateHUD();
+});
+
+/* ================================================================ loop ==== */
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  S.clock += dt;
+
+  if (S.playing) {
+    if (S.mode === 1) { S.spin += dt; }
+    else if (S.mode === 2) {
+      S.t += dt * 0.9;
+      if (S.t > 20) S.t = 0.4;
+      $("#r2").value = S.t;
+      updateHUD();
+    }
+  }
+
+  const cam = camera();
+  const V = lookAt(cam.eye, cam.tgt, [0, 1, 0]);
+  const asp = W / H;
+  const fovAdj = asp < 1.15 ? 1.38 : asp < 1.45 ? 1.12 : 1;
+  const shiftY = asp < 1.05 ? -0.22 : 0;
+  const Pm = persp(cam.fov * fovAdj * DEG, asp, 0.1, 4000, shiftY);
+  PV = mul(Pm, V);
+  camPos = cam.eye;
+  CR = [V[0], V[4], V[8]];
+  CU = [V[1], V[5], V[9]];
+  CN = [V[2], V[6], V[10]];
+
+  OP = []; DA = []; AD = [];
+
+  gl.disable(gl.DEPTH_TEST); gl.depthMask(false); gl.disable(gl.BLEND);
+  gl.useProgram(SP); gl.bindVertexArray(skyVao);
+  gl.uniform2f(SU.res, canvas.width, canvas.height);
+  gl.uniform3fv(SU.a, [0.004, 0.005, 0.013]);
+  gl.uniform3fv(SU.b, [0.014, 0.016, 0.038]);
+  gl.uniform1f(SU.st, S.mode === 2 ? 0.72 : 0.58);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  let info;
+  if (S.mode === 0) info = sceneBudget();
+  else if (S.mode === 1) info = sceneDark();
+  else info = sceneEnergy();
+
+  gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.depthMask(true);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(P);
+  gl.uniform1i(U.tex, 0);
+  gl.uniform3fv(U.ldir, LDIR);
+  gl.uniform3fv(U.cam, camPos);
+  gl.uniform1f(U.amb, AMB);
+  for (const it of OP) drawItem(it);
+
+  gl.depthMask(false);
+  for (const it of DA) drawItem(it);
+
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  for (const it of AD) drawItem(it);
+  gl.depthMask(true);
+
+  // 方位标签
+  if (S.mode === 0 && info.marks) {
+    const boxes = [noteEl, mastEl].filter(Boolean).map((e) => e.getBoundingClientRect());
+    info.marks.forEach((mk, i) => {
+      const el = marksEl[i];
+      const q = project(mk.p);
+      el.style.left = q.x + "px";
+      el.style.top = q.y + "px";
+      el.children[0].textContent = mk.s.zh;
+      el.children[1].textContent = mk.s.en;
+      el.children[2].textContent = (mk.s.frac * 100).toFixed(1) + "%";
+      el.children[2].style.color = "rgba(" + Math.round(mk.s.col[0]*255) + "," + Math.round(mk.s.col[1]*255) + "," + Math.round(mk.s.col[2]*255) + ",.95)";
+      const under = boxes.some((r) => q.x + 40 > r.left && q.x - 40 < r.right && q.y + 26 > r.top && q.y - 26 < r.bottom);
+      el.style.opacity = under ? 0 : 1;
+    });
+  }
+
+  drawInset();
+  requestAnimationFrame(frame);
+}
+
+/* ================================================================= boot ==== */
+const params = new URLSearchParams(location.search);
+resize();
+setMode(clamp(+params.get("m") || 0, 0, 2));
+if (params.has("x")) { S.explode = +params.get("x"); $("#r1").value = S.explode; }
+if (params.has("r")) { S.probe = +params.get("r"); $("#r2").value = S.probe; }
+if (params.has("t")) { S.t = +params.get("t"); $("#r2").value = S.t; S.playing = false; }
+if (params.get("halo") === "0") { S.halo = false; $("#tg1").classList.remove("on"); }
+if (params.get("de") === "0") { S.de = false; $("#tg2").classList.remove("on"); }
+if (params.get("still") === "1") { S.playing = false; }
+syncPlay();
+updateHUD();
+requestAnimationFrame(frame);
+})();
+</script>
+<style id="science-site-bridge-style">
+.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
+.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
+@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+</body>
+</html>

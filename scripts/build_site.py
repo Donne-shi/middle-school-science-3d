@@ -47,6 +47,16 @@ def motif(slug: str) -> str:
     return f"<svg {common}>{drawing}</svg>"
 
 
+def screenshot_preview(current: Path, image_path: str | None, title_zh: str, title_en: str) -> str:
+    """Render a supplied static screenshot; never embed a live lesson as a preview."""
+    if not image_path:
+        return ""
+    return (
+        f'<span class="screenshot-preview"><img src="{link(current, image_path)}" '
+        f'alt="{e(title_zh)}演示截图 / Screenshot of {e(title_en)}" loading="lazy"></span>'
+    )
+
+
 def header(current: Path, active: str | None = None) -> str:
     nav = []
     for subject in CATALOG["subjects"]:
@@ -83,9 +93,9 @@ def home() -> None:
     cards = []
     board = []
     introductions = {
-        "astronomy": ("从太阳系进入，再探索宇宙现象、恒星与星空，以及人类登月。七个独立演示已经开放。", "Begin with the Solar System, then explore cosmic phenomena, stars, the night sky, and the Moon. Seven standalone lessons are open."),
+        "astronomy": ("从太阳系进入，再探索宇宙现象、恒星与星空、月相与食，以及人类登月。十一个独立演示已经开放。", "Begin with the Solar System, then explore cosmic phenomena, stars, the night sky, Moon phases and eclipses, and the human Moon landing. Eleven standalone lessons are open."),
         "physics": ("驾驶 3D 汽车观察受力与运动，再用简单机械和电磁实验调节参数，看看规律怎样改变。", "Use a 3D car to explore forces and motion, then adjust simple machines and electricity experiments to see the rules in action."),
-        "biology": ("比较细胞形态与内部结构，并沿着线粒体和叶绿体认识呼吸作用、光合作用中的能量转化。", "Compare cell forms and structures, then follow energy through respiration and photosynthesis in mitochondria and chloroplasts."),
+        "biology": ("从细胞与人体系统观察生命结构，再沿着线粒体和叶绿体理解呼吸作用与光合作用。", "Explore life through cells and organ systems, then follow respiration and photosynthesis in mitochondria and chloroplasts."),
         "chemistry": ("从早期原子观念走向新的模型，观察证据如何改变人们对原子结构的解释。", "Trace changing models of the atom and see how new evidence reshaped explanations of its structure."),
     }
     card_axes = {
@@ -127,7 +137,8 @@ def subject_page(subject: dict) -> None:
         cards = []
         for topic in subject["topics"]:
             href = link(current, f'topics/{slug}/{topic["slug"]}/index.html')
-            cards.append(f'''<a class="topic-card" href="{href}">{tr(topic["status"], topic["status_en"], attrs='class="status-pill"')}{tr(topic["name"], topic["english"], "h3")}<span class="english">{e(topic["english"])}</span>{tr(topic["description"], topic["description_en"], "p")}<span class="card-go">{tr("查看专题", "View topic")} <span class="arrow" aria-hidden="true">→</span></span></a>''')
+            preview = screenshot_preview(current, topic.get("screenshot"), topic["name"], topic["english"])
+            cards.append(f'''<a class="topic-card" href="{href}">{preview}{tr(topic["status"], topic["status_en"], attrs='class="status-pill"')}{tr(topic["name"], topic["english"], "h3")}<span class="english">{e(topic["english"])}</span>{tr(topic["description"], topic["description_en"], "p")}<span class="card-go">{tr("查看专题", "View topic")} <span class="arrow" aria-hidden="true">→</span></span></a>''')
         content = f'''<section aria-labelledby="topic-title"><div class="section-heading"><div><span class="eyebrow">EXPLORE THE TOPICS</span>{tr("选择一个主题", "Choose a topic", "h2", 'id="topic-title"')}</div>{tr("从演示进入，再沿着问题继续观察。", "Start with a lesson and keep exploring through questions.", "p")}</div><div class="topic-list">{''.join(cards)}</div></section>'''
     else:
         content = f'''<section class="empty-state" aria-labelledby="empty-title">{tr("内容筹备中", "Coming soon", attrs='class="status-pill"')}{tr(subject["name"] + "的演示正在制作", subject["english"] + " lessons are in development", "h2", 'id="empty-title"')}{tr("这里将汇集可独立打开的主题和 3D 演示。内容完成并核对后，会逐步加入本学科目录。", "This subject will feature topics and 3D lessons that open independently. They will appear here as each lesson is completed and reviewed.", "p")}<a class="text-link" href="{link(current, 'index.html')}">{tr("返回四学科入口", "Back to all subjects")} <span class="arrow" aria-hidden="true">→</span></a></section>'''
@@ -151,6 +162,8 @@ def topic_page(subject: dict, topic: dict) -> None:
         visual_zh, visual_en = "十三个实验 · 电与磁", "13 EXPERIMENTS · ELECTRICITY & MAGNETISM"
     if slug == "biology" and topic["slug"] == "cell-energy":
         visual_zh, visual_en = "两种细胞器 · 两条能量路径", "TWO ORGANELLES · TWO ENERGY PATHWAYS"
+    if slug == "biology" and topic["slug"] == "human-systems":
+        visual_zh, visual_en = "九大系统 · 观察人体结构", "NINE SYSTEMS · EXPLORE HUMAN ANATOMY"
     astronomy_visuals = {
         "universe": ("从宇宙早期到黑洞", "EARLY UNIVERSE · BLACK HOLES"),
         "stellar-sky": ("恒星与星座", "STARS · CONSTELLATIONS"),
@@ -169,12 +182,13 @@ def topic_page(subject: dict, topic: dict) -> None:
             opening = '<article class="lesson-card lesson-card-pending">'
             closing = '</article>'
             action = tr("演示素材核对后开放", "Available after materials review")
-        cards.append(f'''{opening}<span class="eyebrow">EXPLORE / {index:02d}</span>{tr(lesson["name"], lesson["english"], "h3")}<span class="english">{e(lesson["english"])}</span>{tr(lesson["description"], lesson["description_en"], "p")}{tr(lesson["interaction"], lesson["interaction_en"], attrs='class="mode"')}<span class="card-go" style="display:flex;margin-top:28px">{action}</span>{closing}''')
+        preview = screenshot_preview(current, lesson.get("screenshot"), lesson["name"], lesson["english"])
+        cards.append(f'''{opening}{preview}<span class="eyebrow">EXPLORE / {index:02d}</span>{tr(lesson["name"], lesson["english"], "h3")}<span class="english">{e(lesson["english"])}</span>{tr(lesson["description"], lesson["description_en"], "p")}{tr(lesson["interaction"], lesson["interaction_en"], attrs='class="mode"')}<span class="card-go" style="display:flex;margin-top:28px">{action}</span>{closing}''')
     guidance_zh, guidance_en = {
         "astronomy": ("建议先看行星图鉴，再用太阳系结构理解更远的尺度。", "Start with the planet atlas, then use the Solar System structure lesson to explore greater distances."),
         "physics": ("从受力图开始，依次探索牛顿三大定律。", "Start with force diagrams, then explore Newton's three laws in order."),
         "biology": ("先选择一类标本，再旋转、剖切，并对照真实显微图像。", "Choose a specimen, rotate and cut away its model, then compare it with a microscope image."),
-        "chemistry": ("从道尔顿模型开始，观察每一次新证据如何改写原子图景。", "Start with Dalton and watch new evidence reshape each atomic model."),
+        "chemistry": ("从古希腊原子论出发，沿着关键实验观察原子模型如何改变。", "Start with ancient atomism and follow the experiments that changed atomic models."),
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
         guidance_zh, guidance_en = (
@@ -191,11 +205,16 @@ def topic_page(subject: dict, topic: dict) -> None:
             "先观察两种细胞器，再沿着呼吸与光合的步骤追踪物质和能量。",
             "Explore both organelles, then follow matter and energy through respiration and photosynthesis.",
         )
+    if slug == "biology" and topic["slug"] == "human-systems":
+        guidance_zh, guidance_en = (
+            "选择身体系统，旋转和剖切模型，再点选器官查看中英文资料。",
+            "Choose a body system, rotate or clip the model, then select organs for bilingual notes.",
+        )
     astronomy_guidance = {
-        "solar-system": ("先观察太阳系结构，再体验天王星下降；行星图鉴与地火转移的贴图待核对。", "Start with Solar System structure and the Uranus descent. Image credits for the planet atlas and Mars transfer are under review."),
-        "universe": ("沿着宇宙早期的时间线观察，再探索黑洞附近的示意场景。", "Follow the early-universe timeline, then explore a visual model near a black hole."),
+        "solar-system": ("从行星图鉴观察天体，再用太阳系结构理解尺度，并体验地火转移与天王星下降。", "Explore the planets, compare Solar System scales, then follow an Earth-to-Mars transfer and a descent through Uranus."),
+        "universe": ("沿着宇宙早期的时间线观察，再探索黑洞、暗物质与暗能量。", "Follow the early-universe timeline, then explore black holes, dark matter, and dark energy."),
         "stellar-sky": ("比较恒星的性质，再回到夜空辨认星座。", "Compare star properties, then return to the night sky to identify constellations."),
-        "moon-exploration": ("沿阿波罗 11 号的任务过程，观察登月环境。", "Follow the Apollo 11 mission and explore the lunar surface."),
+        "moon-exploration": ("先观察月相与日月食的几何关系，再沿阿波罗 11 号任务探索月面。", "Explore lunar phases and eclipse geometry, then follow Apollo 11 to the lunar surface."),
     }
     if slug == "astronomy":
         guidance_zh, guidance_en = astronomy_guidance[topic["slug"]]
@@ -222,6 +241,10 @@ def main() -> None:
     shutil.copyfile(ROOT / "web/assets/site.css", SITE / "assets/site.css")
     shutil.copyfile(ROOT / "web/assets/site.js", SITE / "assets/site.js")
     shutil.copyfile(ROOT / "web/assets/newton-mark.svg", SITE / "assets/newton-mark.svg")
+    shutil.copyfile(ROOT / "content/images/astronomy-dark-universe.png", SITE / "assets/astronomy-dark-universe.png")
+    shutil.copyfile(ROOT / "content/images/atom-history-preview.png", SITE / "assets/atom-history-preview.png")
+    shutil.copyfile(ROOT / "content/images/solar-system-atlas-preview.png", SITE / "assets/solar-system-atlas-preview.png")
+    shutil.copyfile(ROOT / "content/images/moon-phases-preview.png", SITE / "assets/moon-phases-preview.png")
     shutil.copytree(ROOT / "content/demos/nobel-2026", SITE / "demos/nobel-2026", dirs_exist_ok=True)
     home()
     for subject in CATALOG["subjects"]:

@@ -1,0 +1,3728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人体系统图鉴 · 牛顿科学探索馆</title>
+<style>
+/* ============================================================
+   人体系统图鉴 · 样式
+   暗场解剖观察台：骨白字、暖铜色强调、低饱和器官色
+   ============================================================ */
+:root{
+  --bg:#06080a;
+  --bg2:#0a0d10;
+  --ink:#ece6da;
+  --ink2:#c2bbae;
+  --dim:#8b857a;
+  --line:rgba(236,230,218,.13);
+  --line2:rgba(236,230,218,.07);
+  --ac:#d8b48b;
+  --cy:#7fc4c0;
+  --red:#c05a52;
+  --rail:250px;
+  --panel:404px;
+  --top:62px;
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,"Times New Roman",serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:14px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:var(--cy);text-decoration:none;border-bottom:1px solid rgba(127,196,192,.32)}
+a:hover{color:var(--ac);border-color:rgba(216,180,139,.5)}
+
+/* ---------- 启动 ---------- */
+.boot{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 40%,#0d1114 0%,#06080a 70%)}
+.boot.is-hidden{opacity:0;pointer-events:none;transition:opacity .6s}
+.boot-in{text-align:center;width:min(420px,84vw)}
+.boot-mark{width:64px;height:64px;margin:0 auto 22px;position:relative}
+.boot-mark::before,.boot-mark::after{content:"";position:absolute;inset:0;border:1px solid rgba(216,180,139,.5);border-radius:50%}
+.boot-mark::after{inset:12px;border-color:rgba(127,196,192,.45)}
+.boot-mark span{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--ac)}
+.boot-t{font-family:var(--serif);font-size:26px;letter-spacing:.14em}
+.boot-s{font-family:var(--mono);font-size:9px;letter-spacing:.34em;color:var(--dim);margin-top:6px}
+.boot-bar{height:1px;background:rgba(236,230,218,.14);margin:26px 0 10px;overflow:hidden}
+.boot-bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.boot-p{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--dim)}
+
+/* ---------- 主场景 ---------- */
+.app{position:fixed;inset:0;opacity:1;transition:opacity .5s}
+.app.is-hidden{opacity:0;pointer-events:none}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 42%,transparent 38%,rgba(0,0,0,.55) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.6'/></svg>")}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:fixed;left:0;right:0;top:0;height:var(--top);z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 20px 0 22px;
+  background:linear-gradient(180deg,rgba(6,8,10,.92),rgba(6,8,10,0));pointer-events:none}
+.topbar>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{width:22px;height:22px;border:1px solid rgba(216,180,139,.55);border-radius:50%;position:relative;flex:0 0 auto}
+.brand-mark::before{content:"";position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;background:rgba(216,180,139,.45)}
+.brand-mark::after{content:"";position:absolute;top:50%;left:-1px;right:-1px;height:1px;background:rgba(216,180,139,.45)}
+.brand-txt b{display:block;font-family:var(--serif);font-size:15px;letter-spacing:.1em;line-height:1.25;font-weight:400}
+.brand-txt span{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.26em;color:var(--dim);margin-top:2px}
+.top-meta{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:8px;flex:0 0 auto}
+.tbtn{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:2px;
+  font-size:11.5px;letter-spacing:.06em;color:var(--ink2);background:rgba(10,13,16,.6);transition:border-color .2s,color .2s,background .2s}
+.tbtn:hover{color:var(--ink);border-color:rgba(236,230,218,.32)}
+.tbtn[aria-pressed="true"]{color:var(--ac);border-color:rgba(216,180,139,.45);background:rgba(216,180,139,.07)}
+.only-m{display:none}
+
+/* ---------- 左索引 ---------- */
+.rail{position:fixed;left:0;top:var(--top);bottom:0;width:var(--rail);z-index:18;
+  padding:14px 0 0;overflow:auto;background:linear-gradient(90deg,rgba(6,8,10,.9),rgba(6,8,10,.55) 62%,transparent)}
+.rail::-webkit-scrollbar{display:none}
+.rail-head{display:flex;align-items:baseline;gap:8px;padding:0 20px 12px}
+.rail-head b{font-family:var(--serif);font-size:13px;letter-spacing:.18em;font-weight:400;color:var(--ink)}
+.rail-head em{font-family:var(--mono);font-size:8px;letter-spacing:.24em;color:var(--dim);font-style:normal}
+.rail-item{position:relative;display:grid;grid-template-columns:28px 1fr;gap:2px;align-items:baseline;
+  width:100%;padding:9px 18px 9px 22px;text-align:left;color:var(--ink2);transition:background .2s,color .2s}
+.rail-item::before{content:"";position:absolute;left:0;top:50%;width:2px;height:0;background:var(--ac);transform:translateY(-50%);transition:height .3s}
+.rail-item:hover{background:rgba(236,230,218,.035);color:var(--ink)}
+.rail-item.is-on{color:var(--ink);background:rgba(236,230,218,.05)}
+.rail-item.is-on::before{height:26px}
+.rail-no{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.06em}
+.rail-item.is-on .rail-no{color:var(--ac)}
+.rail-zh{display:block;font-size:13.5px;letter-spacing:.04em}
+.rail-en{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+.rail-dot{position:absolute;right:16px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;opacity:.5}
+.rail-item.is-on .rail-dot{opacity:1;box-shadow:0 0 10px currentColor}
+.rail-foot{padding:18px 22px 26px;margin-top:10px;border-top:1px solid var(--line2)}
+.rail-foot p{font-family:var(--mono);font-size:8.5px;line-height:1.9;letter-spacing:.06em;color:var(--dim);margin:0}
+
+/* ---------- 阶段标签 ---------- */
+.stage-tag{position:fixed;left:calc(var(--rail) + 18px);top:calc(var(--top) + 10px);z-index:12;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--dim);pointer-events:none}
+.stage-tag b{color:var(--ac);font-weight:400}
+
+/* ---------- 标注 ---------- */
+.labels{position:fixed;inset:0;pointer-events:none;z-index:14}
+.lbl{position:absolute;transform:translate(0,-50%);white-space:nowrap;transition:opacity .25s}
+.lbl i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ac);vertical-align:middle;margin-right:7px;box-shadow:0 0 8px rgba(216,180,139,.8)}
+.lbl{background:rgba(4,6,8,.62);padding:2px 7px 2px 5px;border-radius:2px;border:1px solid rgba(236,230,218,.08);backdrop-filter:blur(3px)}
+.lbl span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--ink);text-shadow:0 1px 4px rgba(0,0,0,.9)}
+.lbl em{font-style:normal;font-size:8.5px;color:var(--dim);margin-left:6px;letter-spacing:.06em}
+.lbl.is-on i{background:var(--cy);box-shadow:0 0 10px rgba(127,196,192,.9)}
+.lbl.is-on span{color:var(--ink)}
+.labels.is-off{opacity:0}
+
+/* ---------- 右面板 ---------- */
+.panel{position:fixed;right:0;top:var(--top);bottom:0;width:var(--panel);z-index:16;
+  background:linear-gradient(270deg,rgba(8,11,14,.96) 40%,rgba(8,11,14,.9) 78%,rgba(8,11,14,.55));
+  border-left:1px solid var(--line2);display:flex;flex-direction:column}
+.panel-grip{display:none}
+.panel-scroll{overflow:auto;padding:18px 26px 26px;scrollbar-width:thin;scrollbar-color:rgba(236,230,218,.18) transparent}
+.panel-scroll::-webkit-scrollbar{width:5px}
+.panel-scroll::-webkit-scrollbar-thumb{background:rgba(236,230,218,.18)}
+.p-idx{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--dim)}
+.p-idx b{font-size:20px;color:var(--ac);font-weight:400;letter-spacing:.02em}
+.p-idx i{font-style:normal;opacity:.5}
+.p-idx span:last-child{margin-left:auto;letter-spacing:.1em}
+.p-name{font-family:var(--serif);font-size:29px;font-weight:400;letter-spacing:.03em;margin:6px 0 2px;line-height:1.2}
+.p-la{font-family:var(--serif);font-size:12.5px;font-style:italic;color:var(--dim);letter-spacing:.02em}
+.p-lead{font-size:13px;line-height:1.85;color:var(--ink2);margin:14px 0 0;font-weight:300}
+.sec{margin-top:22px}
+.sec-h{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--dim);
+  padding-bottom:8px;border-bottom:1px solid var(--line2);margin-bottom:12px;text-transform:uppercase}
+.sec-h em{font-style:normal;color:var(--ink);letter-spacing:.14em;font-size:9.5px}
+.sec-h i{flex:1;height:1px;background:var(--line2)}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;margin-bottom:10px;overflow:hidden}
+.seg button{padding:5px 15px;font-size:11.5px;color:var(--ink2);border-right:1px solid var(--line2);transition:.2s}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button.is-on{background:rgba(216,180,139,.14);color:var(--ink)}
+.organs{display:flex;flex-wrap:wrap;gap:6px}
+.org-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--line);
+  font-size:12px;color:var(--ink2);border-radius:2px;transition:.2s;background:rgba(236,230,218,.02)}
+.org-chip i{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.org-chip:hover{color:var(--ink);border-color:rgba(236,230,218,.3)}
+.org-chip.is-on{color:var(--ink);border-color:rgba(216,180,139,.6);background:rgba(216,180,139,.1)}
+
+.detail{border:1px solid var(--line2);background:rgba(236,230,218,.02);padding:16px 16px 14px;margin-top:14px}
+.d-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.d-h b{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:.03em}
+.d-h span{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.d-size{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ac);margin-top:6px}
+.d-fn{font-size:12.5px;line-height:1.8;color:var(--ink2);margin:10px 0 0;font-weight:300}
+.d-list{margin:12px 0 0;padding:0;list-style:none}
+.d-list li{position:relative;padding-left:13px;font-size:12px;line-height:1.75;color:var(--ink2);margin-top:7px;font-weight:300}
+.d-list li::before{content:"";position:absolute;left:0;top:.62em;width:4px;height:1px;background:var(--ac)}
+
+.legend{display:grid;gap:6px;margin-top:4px}
+.legend-row{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink2);cursor:pointer;padding:3px 0}
+.legend-row:hover{color:var(--ink)}
+.legend-row i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.legend-row span{margin-left:auto;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9.5px;color:var(--dim);letter-spacing:.02em}
+
+/* ---------- 工具条 ---------- */
+.toolbar{position:fixed;left:calc(var(--rail) + 18px);bottom:18px;z-index:20;display:flex;gap:6px;
+  padding:6px;border:1px solid var(--line2);background:rgba(8,11,14,.82);border-radius:3px}
+.toolbar .tbtn{height:28px;padding:0 10px;border-color:transparent;background:none;font-size:11px}
+.toolbar .tbtn:hover{background:rgba(236,230,218,.05)}
+.toolbar .tbtn[aria-pressed="true"]{border-color:rgba(216,180,139,.35)}
+.ico{width:12px;height:12px;display:inline-block;border:1px solid currentColor;opacity:.8}
+.ico-spin{border-radius:50%;border-right-color:transparent}
+.ico-label{border:0;background:currentColor;height:1px;position:relative}
+.ico-label::after{content:"";position:absolute;left:0;top:-3px;width:1px;height:7px;background:currentColor}
+.ico-cut{border-style:dashed;border-width:1px 0 0 0;height:9px;position:relative}
+.ico-cut::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor}
+.ico-body{border-radius:40% 40% 30% 30%}
+.ico-reset{border-radius:50%;border-top-color:transparent}
+.hint{position:fixed;right:calc(var(--panel) + 20px);bottom:24px;z-index:12;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--dim);pointer-events:none}
+
+/* ---------- 弹窗 ---------- */
+.modal{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:24px;
+  background:rgba(3,5,6,.72);backdrop-filter:blur(6px);transition:opacity .25s}
+.modal.is-hidden{opacity:0;pointer-events:none}
+.modal-panel{width:min(720px,100%);max-height:84vh;overflow:auto;background:#0a0e11;border:1px solid var(--line);
+  padding:22px 26px 24px;border-radius:3px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal-h{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--line2)}
+.modal-t{font-family:var(--serif);font-size:21px;letter-spacing:.05em}
+.modal-s{font-family:var(--mono);font-size:8px;letter-spacing:.22em;color:var(--dim);margin-top:4px;text-transform:uppercase}
+.x-btn{width:26px;height:26px;border:1px solid var(--line);color:var(--dim);border-radius:2px;font-size:11px}
+.x-btn:hover{color:var(--ink);border-color:rgba(236,230,218,.3)}
+.about-body{padding-top:14px}
+.about-body p{font-size:12.5px;line-height:1.9;color:var(--ink2);margin:0 0 11px;font-weight:300}
+.about-body b{color:var(--ink);font-weight:500}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2)}
+.about-grid k{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:5px}
+.about-grid v{font-size:11.5px;color:var(--ink2);line-height:1.8;font-style:normal}
+
+.toast{position:fixed;left:50%;bottom:70px;transform:translate(-50%,12px);z-index:50;padding:8px 16px;
+  background:rgba(12,16,19,.95);border:1px solid var(--line);font-size:12px;color:var(--ink);opacity:0;pointer-events:none;transition:.3s}
+.toast.is-on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width:1240px){
+  :root{--rail:216px;--panel:360px}
+  .p-name{font-size:25px}
+  .panel-scroll{padding:16px 20px 22px}
+}
+@media (max-width:980px){
+  :root{--top:56px}
+  .only-m{display:inline-flex}
+  .top-meta{display:none}
+  /* 移动端：上半屏 3D，下半屏资料，工具栏浮在两者之间 */
+  #gl{inset:var(--top) 0 auto 0;height:calc(100% - var(--top) - 44vh)}
+  .vignette{inset:var(--top) 0 44vh 0}
+  .rail{width:268px;background:#080c10;border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .32s ease;z-index:34;box-shadow:0 0 40px 10px rgba(0,0,0,.5)}
+  .rail.is-open{transform:none}
+  .rail-item{padding:11px 18px 11px 22px}
+  .panel{left:0;right:0;top:auto;bottom:0;width:auto;height:44vh;
+    border-left:0;border-top:1px solid var(--line);background:rgba(8,11,14,.98);
+    transform:none;opacity:1;pointer-events:auto;z-index:26}
+  .panel-grip{display:none}
+  .panel-scroll{padding:14px 18px calc(18px + env(safe-area-inset-bottom))}
+  .p-name{font-size:23px}
+  .toolbar{left:8px;right:8px;bottom:calc(44vh + 10px);justify-content:space-between;padding:4px;
+    background:rgba(6,9,12,.74);border:1px solid var(--line);border-radius:3px;backdrop-filter:blur(8px)}
+  .toolbar .tbtn span{display:none}
+  .toolbar .tbtn{padding:0 14px;border:0;background:none}
+  .stage-tag{left:12px;top:calc(var(--top) + 8px)}
+  .hint{display:none}
+  .modal-panel{padding:18px}
+  .about-grid{grid-template-columns:1fr}
+}
+@media (max-width:420px){
+  .p-name{font-size:21px}
+  .brand-txt b{font-size:13.5px}
+  .topbar{padding:0 12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.001s!important;animation-duration:.001s!important}
+}
+
+/* 窄屏不显示浮动标注：面板已列出全部器官 */
+@media (max-width:720px){
+  .labels{display:none}
+}
+
+</style>
+</head>
+<body>
+<div class="boot" id="boot">
+  <div class="boot-in">
+    <div class="boot-mark"><span></span></div>
+    <div class="boot-t">人体系统图鉴</div>
+    <div class="boot-s">Human Systems Atlas</div>
+    <div class="boot-bar"><i id="bootBar"></i></div>
+    <div class="boot-p" id="bootP">正在构建解剖网格…</div>
+  </div>
+</div>
+
+<div class="app is-hidden" id="app">
+  <canvas id="gl"></canvas>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <div class="brand-txt"><b>人体系统图鉴</b><span>HUMAN SYSTEMS ATLAS</span></div>
+    </div>
+    <div class="top-meta" id="topMeta"></div>
+    <div class="top-actions">
+      <a class="tbtn" href="../../../subjects/biology/index.html" aria-label="返回生物学 Biology">↖ 生物学 / Biology</a>
+      <button class="tbtn" id="langBtn" type="button">EN</button>
+      <button class="tbtn" id="aboutBtn" type="button">说明</button>
+      <button class="tbtn only-m" id="railBtn" type="button" aria-controls="rail" aria-expanded="false">系统</button>
+    </div>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="系统索引">
+    <div class="rail-head"><b id="railHeadB">系统</b><em>Systems</em></div>
+    <div id="railList"></div>
+    <div class="rail-foot">
+      <p id="railFoot"></p>
+    </div>
+  </nav>
+
+  <div class="stage-tag" id="stageTag"></div>
+
+  <div class="labels" id="labels"></div>
+
+  <aside class="panel" id="panel" aria-label="系统资料">
+    <button class="panel-grip" id="panelGrip" type="button"><span></span>展开</button>
+    <div class="panel-scroll" id="panelScroll"></div>
+  </aside>
+
+  <div class="toolbar" role="toolbar" aria-label="视图工具">
+    <button class="tbtn" id="spinBtn" type="button" aria-pressed="true"><i class="ico ico-spin"></i><span>自转</span></button>
+    <button class="tbtn" id="labelBtn" type="button" aria-pressed="true"><i class="ico ico-label"></i><span>标注</span></button>
+    <button class="tbtn" id="cutBtn" type="button" aria-pressed="false"><i class="ico ico-cut"></i><span>剖切</span></button>
+    <button class="tbtn" id="ghostBtn" type="button" aria-pressed="true"><i class="ico ico-body"></i><span>体表</span></button>
+    <button class="tbtn" id="resetBtn" type="button"><i class="ico ico-reset"></i><span>复位</span></button>
+  </div>
+
+  <div class="hint" id="hint">拖动旋转 · 滚轮缩放 · 点击器官查看资料</div>
+
+  <div class="modal is-hidden" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modal-panel">
+      <div class="modal-h">
+        <div><div class="modal-t" id="aboutTitle">关于这份人体图鉴</div><div class="modal-s">Scope · Geometry · Language</div></div>
+        <button class="x-btn" data-close="aboutModal" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="about-body" id="aboutBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+/* ============================================================
+   SDF 几何内核 + Surface Nets 网格化
+   器官 = 若干原语的平滑并集，减去若干切割体
+   ============================================================ */
+(function (root) {
+  "use strict";
+
+  /* ---------- 向量工具 ---------- */
+  function v3(x, y, z) { return [x || 0, y || 0, z || 0]; }
+  function len(a) { return Math.hypot(a[0], a[1], a[2]); }
+
+  /* ---------- 原语构造器（数据里用短名字） ---------- */
+
+  /* 球 */
+  function S(x, y, z, r) { return { t: "s", p: [x, y, z], r: r }; }
+  /* 椭球：中心 + 三半径 */
+  function E(x, y, z, rx, ry, rz) {
+    return { t: "e", p: [x, y, z], r: [rx, ry === undefined ? rx : ry, rz === undefined ? rx : rz] };
+  }
+  /* 胶囊：两个端点 + 半径 */
+  function C(a, b, r) { return { t: "c", a: a, b: b, r: r }; }
+  /* 锥化胶囊：两端半径不同（做胃、血管、锥形结构） */
+  function K(a, b, ra, rb) { return { t: "k", a: a, b: b, ra: ra, rb: rb }; }
+  /* 圆角盒 */
+  function B(x, y, z, hx, hy, hz, r) {
+    return { t: "b", p: [x, y, z], h: [hx, hy, hz], r: r || 0.02 };
+  }
+  /* 圆环（甲状腺峡、血管环、骨骼环） */
+  function T(x, y, z, R, r, rot) {
+    return { t: "t", p: [x, y, z], R: R, r: r, rot: rot || [0, 0, 0] };
+  }
+  /* 无限平面切割：法线 + 偏移（<0 保留 dot(p,n)-d 的负侧） */
+  function P(nx, ny, nz, d) { return { t: "p", n: [nx, ny, nz], d: d }; }
+
+  /* 圆角锥（沿 y 轴，r1 底 r2 顶，h 半高）——做锥形器官 */
+  function Cone(x, y, z, r1, r2, h) { return { t: "n", p: [x, y, z], r1: r1, r2: r2, h: h }; }
+
+  /* 旋转：欧拉角（弧度），依次绕 x,y,z */
+  function rotWrap(prim, rot) {
+    if (!rot || (!rot[0] && !rot[1] && !rot[2])) return prim;
+    prim.rot = rot;
+    return prim;
+  }
+
+  /* ---------- 基础距离函数 ---------- */
+
+  function sdSphere(p, c, r) {
+    var dx = p[0] - c[0], dy = p[1] - c[1], dz = p[2] - c[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz) - r;
+  }
+
+  function sdEllipsoid(p, c, r) {
+    var x = (p[0] - c[0]) / r[0], y = (p[1] - c[1]) / r[1], z = (p[2] - c[2]) / r[2];
+    var k0 = Math.sqrt(x * x + y * y + z * z);
+    if (k0 < 1e-9) return -Math.min(r[0], Math.min(r[1], r[2]));
+    var k1 = Math.sqrt((x / r[0]) * (x / r[0]) + (y / r[1]) * (y / r[1]) + (z / r[2]) * (z / r[2]));
+    return k0 * (k0 - 1.0) / Math.max(k1, 1e-6);
+  }
+
+  function sdCapsule(p, a, b, r) {
+    var pax = p[0] - a[0], pay = p[1] - a[1], paz = p[2] - a[2];
+    var bax = b[0] - a[0], bay = b[1] - a[1], baz = b[2] - a[2];
+    var dd = bax * bax + bay * bay + baz * baz;
+    var h = dd > 1e-9 ? (pax * bax + pay * bay + paz * baz) / dd : 0;
+    h = h < 0 ? 0 : h > 1 ? 1 : h;
+    var qx = pax - bax * h, qy = pay - bay * h, qz = paz - baz * h;
+    return Math.sqrt(qx * qx + qy * qy + qz * qz) - r;
+  }
+
+  /* 锥化胶囊（iq 的 round cone 近似） */
+  function sdRoundCone(p, a, b, r1, r2) {
+    var bax = b[0] - a[0], bay = b[1] - a[1], baz = b[2] - a[2];
+    var l2 = bax * bax + bay * bay + baz * baz;
+    var rr = r1 - r2;
+    var a2 = l2 - rr * rr;
+    var il2 = 1 / Math.max(l2, 1e-9);
+
+    var pax = p[0] - a[0], pay = p[1] - a[1], paz = p[2] - a[2];
+    var y = pax * bax + pay * bay + paz * baz;
+    var z = y - l2;
+    var xx = pax * l2 - bax * y, xy = pay * l2 - bay * y, xz = paz * l2 - baz * y;
+    var x2 = xx * xx + xy * xy + xz * xz;
+    var y2 = y * y * l2;
+    var z2 = z * z * l2;
+    var k = Math.sign(rr) * rr * rr * x2;
+    if (Math.sign(z) * a2 * z2 > k) return Math.sqrt(x2 + z2) * il2 - r2;
+    if (Math.sign(y) * a2 * y2 < k) return Math.sqrt(x2 + y2) * il2 - r1;
+    return (Math.sqrt(x2 * a2 * il2) + y * rr) * il2 - r1;
+  }
+
+  function sdBox(p, c, h, r) {
+    var qx = Math.abs(p[0] - c[0]) - h[0] + r;
+    var qy = Math.abs(p[1] - c[1]) - h[1] + r;
+    var qz = Math.abs(p[2] - c[2]) - h[2] + r;
+    var mx = Math.max(qx, 0), my = Math.max(qy, 0), mz = Math.max(qz, 0);
+    return Math.sqrt(mx * mx + my * my + mz * mz) + Math.min(Math.max(qx, Math.max(qy, qz)), 0) - r;
+  }
+
+  function sdTorus(p, c, R, r, rot) {
+    var x = p[0] - c[0], y = p[1] - c[1], z = p[2] - c[2];
+    if (rot) { var q = rotInv([x, y, z], rot); x = q[0]; y = q[1]; z = q[2]; }
+    var q2 = Math.sqrt(x * x + z * z) - R;
+    return Math.sqrt(q2 * q2 + y * y) - r;
+  }
+
+  /* 圆角锥（对称，沿 y） */
+  function sdCone(p, c, r1, r2, h) {
+    var x = p[0] - c[0], y = p[1] - c[1], z = p[2] - c[2];
+    var qx = Math.sqrt(x * x + z * z);
+    var k1x = r1, k1y = h, k2x = r2, k2y = -h;
+    var cax = k2x - k1x, cay = k2y - k1y;
+    var t = (qx - k1x) * cax + (y - k1y) * cay;
+    var tt = cax * cax + cay * cay;
+    t = tt > 1e-9 ? t / tt : 0;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    var dx = qx - (k1x + cax * t), dy = y - (k1y + cay * t);
+    var d1 = Math.sqrt(dx * dx + dy * dy);
+    var sign = (qx * cay - y * cax) < 0 ? -1 : 1;
+    return d1 * sign;
+  }
+
+  function sdPlane(p, n, d) {
+    var l = Math.hypot(n[0], n[1], n[2]) || 1;
+    return (p[0] * n[0] + p[1] * n[1] + p[2] * n[2]) / l - d;
+  }
+
+  /* ---------- 旋转 ---------- */
+  function rotInv(p, rot) {
+    var cx = Math.cos(-rot[0]), sx = Math.sin(-rot[0]);
+    var cy = Math.cos(-rot[1]), sy = Math.sin(-rot[1]);
+    var cz = Math.cos(-rot[2]), sz = Math.sin(-rot[2]);
+    var x = p[0], y = p[1], z = p[2], t;
+    /* 逆序：z -> y -> x */
+    t = x * cz + y * sz; y = -x * sz + y * cz; x = t;
+    t = x * cy - z * sy; z = x * sy + z * cy; x = t;
+    t = y * cx + z * sx; z = -y * sx + z * cx; y = t;
+    return [x, y, z];
+  }
+
+  /* ---------- 平滑并 / 差 ---------- */
+  function smin(a, b, k) {
+    if (k <= 0) return Math.min(a, b);
+    var h = Math.max(k - Math.abs(a - b), 0) / k;
+    return Math.min(a, b) - h * h * k * 0.25;
+  }
+  function smax(a, b, k) {
+    if (k <= 0) return Math.max(a, b);
+    var h = Math.max(k - Math.abs(a - b), 0) / k;
+    return Math.max(a, b) + h * h * k * 0.25;
+  }
+
+  /* ---------- 单原语求值 ---------- */
+  function evalPrim(prim, p) {
+    var q = p;
+    if (prim.rot) q = rotInv(p, prim.rot);
+    switch (prim.t) {
+      case "s": return sdSphere(q, prim.p, prim.r);
+      case "e": return sdEllipsoid(q, prim.p, prim.r);
+      case "c": return sdCapsule(q, prim.a, prim.b, prim.r);
+      case "k": return sdRoundCone(q, prim.a, prim.b, prim.ra, prim.rb);
+      case "b": return sdBox(q, prim.p, prim.h, prim.r);
+      case "t": return sdTorus(q, prim.p, prim.R, prim.r, null);
+      case "n": return sdCone(q, prim.p, prim.r1, prim.r2, prim.h);
+      case "p": return sdPlane(q, prim.n, prim.d);
+      default: return 1e9;
+    }
+  }
+
+  /* ---------- 器官求值 ---------- */
+  /* organ = { add:[prim...], sub:[prim...], k: 平滑系数 } */
+  function makeField(organ) {
+    var add = organ.add || [];
+    var sub = organ.sub || [];
+    var k = organ.k === undefined ? 0.06 : organ.k;
+    return function (x, y, z) {
+      var p = [x, y, z];
+      var d = 1e9;
+      for (var i = 0; i < add.length; i++) {
+        var v = evalPrim(add[i], p);
+        d = i === 0 ? v : smin(d, v, k);
+      }
+      for (var j = 0; j < sub.length; j++) {
+        d = smax(d, -evalPrim(sub[j], p), organ.subK === undefined ? k * 0.6 : organ.subK);
+      }
+      return d;
+    };
+  }
+
+  /* ---------- 包围盒 ---------- */
+  function primBounds(prim, bb) {
+    var lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
+    function pt(x, y, z, pad) {
+      if (x - pad < lo[0]) lo[0] = x - pad;
+      if (y - pad < lo[1]) lo[1] = y - pad;
+      if (z - pad < lo[2]) lo[2] = z - pad;
+      if (x + pad > hi[0]) hi[0] = x + pad;
+      if (y + pad > hi[1]) hi[1] = y + pad;
+      if (z + pad > hi[2]) hi[2] = z + pad;
+    }
+    if (prim.t === "s") pt(prim.p[0], prim.p[1], prim.p[2], prim.r);
+    else if (prim.t === "e") pt(prim.p[0], prim.p[1], prim.p[2], Math.max(prim.r[0], Math.max(prim.r[1], prim.r[2])));
+    else if (prim.t === "c") {
+      pt(prim.a[0], prim.a[1], prim.a[2], prim.r);
+      pt(prim.b[0], prim.b[1], prim.b[2], prim.r);
+    } else if (prim.t === "k") {
+      var pr = Math.max(prim.ra, prim.rb);
+      pt(prim.a[0], prim.a[1], prim.a[2], pr);
+      pt(prim.b[0], prim.b[1], prim.b[2], pr);
+    } else if (prim.t === "b") pt(prim.p[0], prim.p[1], prim.p[2], Math.max(prim.h[0], Math.max(prim.h[1], prim.h[2])) + prim.r);
+    else if (prim.t === "t") pt(prim.p[0], prim.p[1], prim.p[2], prim.R + prim.r);
+    else if (prim.t === "n") pt(prim.p[0], prim.p[1], prim.p[2], Math.max(prim.r1, prim.r2) + prim.h);
+    else return;
+    if (lo[0] > hi[0]) return;
+    if (lo[0] < bb[0]) bb[0] = lo[0];
+    if (lo[1] < bb[1]) bb[1] = lo[1];
+    if (lo[2] < bb[2]) bb[2] = lo[2];
+    if (hi[0] > bb[3]) bb[3] = hi[0];
+    if (hi[1] > bb[4]) bb[4] = hi[1];
+    if (hi[2] > bb[5]) bb[5] = hi[2];
+  }
+
+  function organBounds(organ) {
+    var bb = [1e9, 1e9, 1e9, -1e9, -1e9, -1e9];
+    (organ.add || []).forEach(function (p) { primBounds(p, bb); });
+    if (bb[0] > bb[3]) return [-1, -1, -1, 1, 1, 1];
+    /* 平滑并集会让形体略微外扩 */
+    var k = organ.k === undefined ? 0.06 : organ.k;
+    for (var i = 0; i < 3; i++) { bb[i] -= k; bb[i + 3] += k; }
+    return bb;
+  }
+
+  /* ============================================================
+     Surface Nets
+     对每个格子求 8 角符号，若跨越表面则把各边交点取平均作为顶点；
+     每条跨表面的棱生成一个四边形。法线直接用 SDF 梯度，比面法线平滑。
+     ============================================================ */
+  function surfaceNets(field, bb, res) {
+    var nx = Math.max(2, res[0] | 0), ny = Math.max(2, res[1] | 0), nz = Math.max(2, res[2] | 0);
+    var x0 = bb[0], y0 = bb[1], z0 = bb[2];
+    var dx = (bb[3] - bb[0]) / (nx - 1), dy = (bb[4] - bb[1]) / (ny - 1), dz = (bb[5] - bb[2]) / (nz - 1);
+    var grid = new Float32Array(nx * ny * nz);
+    var i, j, k, idx = 0;
+    for (k = 0; k < nz; k++) {
+      var z = z0 + dz * k;
+      for (j = 0; j < ny; j++) {
+        var y = y0 + dy * j;
+        for (i = 0; i < nx; i++) {
+          grid[idx++] = field(x0 + dx * i, y, z);
+        }
+      }
+    }
+
+    var cx = nx - 1, cy = ny - 1, cz = nz - 1;
+    var cellVert = new Int32Array(cx * cy * cz);
+    cellVert.fill(-1);
+    var pos = [], nor = [];
+    var corner = new Float32Array(8);
+    var gx = 0, gy = nx, gz = nx * ny;
+
+    function gid(a, b, c) { return (c * ny + b) * nx + a; }
+
+    for (k = 0; k < cz; k++) {
+      for (j = 0; j < cy; j++) {
+        for (i = 0; i < cx; i++) {
+          var g0 = gid(i, j, k);
+          corner[0] = grid[g0];
+          corner[1] = grid[g0 + 1];
+          corner[2] = grid[g0 + gz];
+          corner[3] = grid[g0 + gz + 1];
+          corner[4] = grid[g0 + gy];
+          corner[5] = grid[g0 + gy + 1];
+          corner[6] = grid[g0 + gy + gz];
+          corner[7] = grid[g0 + gy + gz + 1];
+          var mask = 0;
+          for (var c = 0; c < 8; c++) if (corner[c] < 0) mask |= (1 << c);
+          if (mask === 0 || mask === 255) continue;
+
+          /* 边表：角点编号 0..7 = (i,j,k) 位组合 */
+          var sx = 0, sy = 0, sz = 0, cnt = 0;
+          for (var e = 0; e < 12; e++) {
+            var a = EDGE[e][0], b = EDGE[e][1];
+            var da = corner[a], db = corner[b];
+            if ((da < 0) === (db < 0)) continue;
+            var t = da / (da - db);
+            var pa = CORNER[a], pb = CORNER[b];
+            sx += pa[0] + (pb[0] - pa[0]) * t;
+            sy += pa[1] + (pb[1] - pa[1]) * t;
+            sz += pa[2] + (pb[2] - pa[2]) * t;
+            cnt++;
+          }
+          if (!cnt) continue;
+          sx /= cnt; sy /= cnt; sz /= cnt;
+          var wx = x0 + dx * (i + sx), wy = y0 + dy * (j + sy), wz = z0 + dz * (k + sz);
+          var vi = pos.length / 3;
+          pos.push(wx, wy, wz);
+          /* 梯度法线 */
+          var eps = Math.min(dx, Math.min(dy, dz)) * 0.45;
+          var gxx = field(wx + eps, wy, wz) - field(wx - eps, wy, wz);
+          var gyy = field(wx, wy + eps, wz) - field(wx, wy - eps, wz);
+          var gzz = field(wx, wy, wz + eps) - field(wx, wy, wz - eps);
+          var gl = Math.hypot(gxx, gyy, gzz) || 1;
+          nor.push(gxx / gl, gyy / gl, gzz / gl);
+          cellVert[(k * cy + j) * cx + i] = vi;
+        }
+      }
+    }
+
+    var idxs = [];
+    function cellAt(a, b, c) {
+      if (a < 0 || b < 0 || c < 0 || a >= cx || b >= cy || c >= cz) return -1;
+      return cellVert[(c * cy + b) * cx + a];
+    }
+    /* 沿 x 的棱：连接 (j-1..j, k-1..k) 四个格子 */
+    for (k = 0; k < cz; k++) {
+      for (j = 0; j < cy; j++) {
+        for (i = 0; i < cx; i++) {
+          var g = gid(i, j, k);
+          /* x 棱 */
+          if (i < cx && j >= 1 && k >= 1) {
+            var p0 = grid[g], p1 = grid[g + 1];
+            if ((p0 < 0) !== (p1 < 0)) {
+              var q0 = cellAt(i, j - 1, k - 1), q1 = cellAt(i, j, k - 1), q2 = cellAt(i, j, k), q3 = cellAt(i, j - 1, k);
+              if (q0 >= 0 && q1 >= 0 && q2 >= 0 && q3 >= 0) {
+                if (p0 < 0) idxs.push(q0, q1, q2, q0, q2, q3);
+                else idxs.push(q0, q2, q1, q0, q3, q2);
+              }
+            }
+          }
+          /* y 棱 */
+          if (j < cy && i >= 1 && k >= 1) {
+            var r0 = grid[g], r1 = grid[g + gy];
+            if ((r0 < 0) !== (r1 < 0)) {
+              var s0 = cellAt(i - 1, j, k - 1), s1 = cellAt(i - 1, j, k), s2 = cellAt(i, j, k), s3 = cellAt(i, j, k - 1);
+              if (s0 >= 0 && s1 >= 0 && s2 >= 0 && s3 >= 0) {
+                if (r0 < 0) idxs.push(s0, s1, s2, s0, s2, s3);
+                else idxs.push(s0, s2, s1, s0, s3, s2);
+              }
+            }
+          }
+          /* z 棱 */
+          if (k < cz && i >= 1 && j >= 1) {
+            var t0 = grid[g], t1 = grid[g + gz];
+            if ((t0 < 0) !== (t1 < 0)) {
+              var u0 = cellAt(i - 1, j - 1, k), u1 = cellAt(i, j - 1, k), u2 = cellAt(i, j, k), u3 = cellAt(i - 1, j, k);
+              if (u0 >= 0 && u1 >= 0 && u2 >= 0 && u3 >= 0) {
+                if (t0 < 0) idxs.push(u0, u1, u2, u0, u2, u3);
+                else idxs.push(u0, u2, u1, u0, u3, u2);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return {
+      position: new Float32Array(pos),
+      normal: new Float32Array(nor),
+      index: new Uint32Array(idxs),
+      count: pos.length / 3
+    };
+  }
+
+  var CORNER = [
+    [0, 0, 0], [1, 0, 0], [0, 0, 1], [1, 0, 1],
+    [0, 1, 0], [1, 1, 0], [0, 1, 1], [1, 1, 1]
+  ];
+  var EDGE = [
+    [0, 1], [2, 3], [4, 5], [6, 7],
+    [0, 2], [1, 3], [4, 6], [5, 7],
+    [0, 4], [1, 5], [2, 6], [3, 7]
+  ];
+
+  root.SDF = {
+    S: S, E: E, C: C, K: K, B: B, T: T, P: P, Cone: Cone, rot: rotWrap,
+    makeField: makeField,
+    organBounds: organBounds,
+    surfaceNets: surfaceNets
+  };
+})(window);
+
+</script>
+<script>
+/* ============================================================
+   直接网格构造：细管、球体、圆环路径
+   —— 给毛细血管这类“比网格步长还细”的结构用
+   （SDF 在 0.02 步长下无法表达 5–10 µm 的管径，这里直接生成圆柱网格）
+   ============================================================ */
+(function (root) {
+  "use strict";
+
+  function norm(v) {
+    var l = Math.hypot(v[0], v[1], v[2]) || 1;
+    return [v[0] / l, v[1] / l, v[2] / l];
+  }
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+  function cross(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+
+  function empty() { return { position: [], normal: [], index: [] }; }
+
+  function pushGeo(out, pos, nor, idx) {
+    var base = out.position.length / 3;
+    for (var i = 0; i < pos.length; i++) out.position.push(pos[i]);
+    for (var j = 0; j < nor.length; j++) out.normal.push(nor[j]);
+    for (var k = 0; k < idx.length; k++) out.index.push(idx[k] + base);
+  }
+
+  /* 平行输运：把一个截面向量沿切线旋转过去，全程不扭转 */
+  function transport(u, a, b) {
+    var axis = cross(a, b);
+    var s = Math.hypot(axis[0], axis[1], axis[2]);
+    var c = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    if (s < 1e-9) return u;
+    var kx = axis[0] / s, ky = axis[1] / s, kz = axis[2] / s;
+    var kd = kx * u[0] + ky * u[1] + kz * u[2];
+    var cx = ky * u[2] - kz * u[1], cy = kz * u[0] - kx * u[2], cz = kx * u[1] - ky * u[0];
+    return norm([
+      u[0] * c + cx * s + kx * kd * (1 - c),
+      u[1] * c + cy * s + ky * kd * (1 - c),
+      u[2] * c + cz * s + kz * kd * (1 - c)
+    ]);
+  }
+
+  /* 沿折线生成圆柱管；closed 为真时首尾相接成环 */
+  function tubeGeo(path, r, seg, closed) {
+    seg = seg || 7;
+    var n = path.length;
+    if (n < 2) return empty();
+    if (closed && n > 2) {
+      /* 去掉重复的收尾点，用取模回绕 */
+      var a0 = path[0], a1 = path[n - 1];
+      if (Math.hypot(a1[0] - a0[0], a1[1] - a0[1], a1[2] - a0[2]) < 1e-6) {
+        path = path.slice(0, n - 1);
+        n = path.length;
+      }
+    }
+
+    /* 1) 每个点上的切线 */
+    var tan = [];
+    for (var i = 0; i < n; i++) {
+      var t;
+      if (closed) t = sub(path[(i + 1) % n], path[(i - 1 + n) % n]);
+      else if (i === 0) t = sub(path[1], path[0]);
+      else if (i === n - 1) t = sub(path[n - 1], path[n - 2]);
+      else t = sub(path[i + 1], path[i - 1]);
+      tan.push(norm(t));
+    }
+
+    /* 2) 逐点平行输运截面基底 */
+    var up0 = Math.abs(tan[0][1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+    var u0 = norm(cross(tan[0], up0));
+    var rings = [{ p: path[0], u: u0, v: cross(tan[0], u0) }];
+    for (var q = 1; q < n; q++) {
+      var uu = transport(rings[q - 1].u, tan[q - 1], tan[q]);
+      rings.push({ p: path[q], u: uu, v: cross(tan[q], uu) });
+    }
+
+    /* 3) 顶点与三角面 */
+    var pos = [], nor = [], idx = [];
+    for (var a = 0; a < n; a++) {
+      var R = rings[a];
+      for (var k = 0; k < seg; k++) {
+        var th = Math.PI * 2 * k / seg;
+        var dx = R.u[0] * Math.cos(th) + R.v[0] * Math.sin(th);
+        var dy = R.u[1] * Math.cos(th) + R.v[1] * Math.sin(th);
+        var dz = R.u[2] * Math.cos(th) + R.v[2] * Math.sin(th);
+        pos.push(R.p[0] + dx * r, R.p[1] + dy * r, R.p[2] + dz * r);
+        nor.push(dx, dy, dz);
+      }
+    }
+    var last = closed ? n : n - 1;
+    for (var s = 0; s < last; s++) {
+      var n0 = s * seg, n1 = ((s + 1) % n) * seg;
+      for (var w = 0; w < seg; w++) {
+        var w1 = (w + 1) % seg;
+        idx.push(n0 + w, n1 + w, n0 + w1, n0 + w1, n1 + w, n1 + w1);
+      }
+    }
+    if (!closed) {
+      /* 两端用扇形封口 */
+      var capA = pos.length / 3;
+      pos.push(path[0][0], path[0][1], path[0][2]);
+      nor.push(-tan[0][0], -tan[0][1], -tan[0][2]);
+      for (var c = 0; c < seg; c++) idx.push(capA, (c + 1) % seg, c);
+      var capB = pos.length / 3;
+      pos.push(path[n - 1][0], path[n - 1][1], path[n - 1][2]);
+      nor.push(tan[n - 1][0], tan[n - 1][1], tan[n - 1][2]);
+      var off = (n - 1) * seg;
+      for (var d = 0; d < seg; d++) idx.push(capB, off + d, off + (d + 1) % seg);
+    }
+    return { position: pos, normal: nor, index: idx };
+  }
+
+  /* 椭球网格（星形胶质细胞足板等） */
+  function sphereGeo(c, r, su, sv) {
+    su = su || 10; sv = sv || 7;
+    var rx = r[0], ry = r[1], rz = r[2];
+    var pos = [], nor = [], idx = [];
+    for (var j = 0; j <= sv; j++) {
+      var phi = Math.PI * j / sv;
+      for (var i = 0; i <= su; i++) {
+        var th = Math.PI * 2 * i / su;
+        var nx = Math.sin(phi) * Math.cos(th), ny = Math.cos(phi), nz = Math.sin(phi) * Math.sin(th);
+        pos.push(c[0] + nx * rx, c[1] + ny * ry, c[2] + nz * rz);
+        var nn = norm([nx / rx, ny / ry, nz / rz]);
+        nor.push(nn[0], nn[1], nn[2]);
+      }
+    }
+    for (var jj = 0; jj < sv; jj++) {
+      for (var ii = 0; ii < su; ii++) {
+        var a = jj * (su + 1) + ii, b = a + su + 1;
+        idx.push(a, b, a + 1, a + 1, b, b + 1);
+      }
+    }
+    return { position: pos, normal: nor, index: idx };
+  }
+
+  /* 平面内的圆路径 */
+  function circlePath(c, R, n, axis) {
+    var out = [];
+    axis = axis || "z";
+    for (var i = 0; i < n; i++) {
+      var a = Math.PI * 2 * i / n;
+      if (axis === "z") out.push([c[0] + Math.cos(a) * R, c[1] + Math.sin(a) * R, c[2]]);
+      else if (axis === "x") out.push([c[0], c[1] + Math.cos(a) * R, c[2] + Math.sin(a) * R]);
+      else out.push([c[0] + Math.cos(a) * R, c[1], c[2] + Math.sin(a) * R]);
+    }
+    return out;
+  }
+
+  function finish(out) {
+    return {
+      position: new Float32Array(out.position),
+      normal: new Float32Array(out.normal),
+      index: new Uint32Array(out.index)
+    };
+  }
+
+  function merge(list) {
+    var out = empty();
+    list.forEach(function (g) { pushGeo(out, g.position, g.normal, g.index); });
+    return finish(out);
+  }
+
+  /* 包围盒 → [x0,y0,z0,x1,y1,z1] */
+  function bbox(geo) {
+    var p = geo.position, bb = [1e9, 1e9, 1e9, -1e9, -1e9, -1e9];
+    for (var i = 0; i < p.length; i += 3) {
+      for (var k = 0; k < 3; k++) {
+        if (p[i + k] < bb[k]) bb[k] = p[i + k];
+        if (p[i + k] > bb[k + 3]) bb[k + 3] = p[i + k];
+      }
+    }
+    return bb;
+  }
+
+  /* 便捷：一组管子 */
+  function tubes(paths, r, seg, closed) {
+    return merge(paths.map(function (p) { return tubeGeo(p, r, seg, closed); }));
+  }
+
+  root.MESH = {
+    tubeGeo: tubeGeo,
+    sphereGeo: sphereGeo,
+    circlePath: circlePath,
+    merge: merge,
+    bbox: bbox,
+    tubes: tubes,
+    addTube: function (out, path, r, seg, closed) {
+      var g = tubeGeo(path, r, seg, closed);
+      pushGeo(out, g.position, g.normal, g.index);
+      return out;
+    },
+    addSphere: function (out, c, r, su, sv) {
+      var g = sphereGeo(c, r, su, sv);
+      pushGeo(out, g.position, g.normal, g.index);
+      return out;
+    },
+    make: function () { return empty(); },
+    done: finish
+  };
+})(window);
+
+</script>
+<script>
+/* ============================================================
+   WebGL2 网格渲染器
+   - 透视相机 + 轨道控制
+   - 器官：不透明，Lambert + 边缘光 + 可选剖切
+   - 体表：半透明轮廓
+   - 拾取：CPU 上对 SDF 求根（精确到原语级）
+   ============================================================ */
+(function (root) {
+  "use strict";
+
+  /* ---------- 矩阵 ---------- */
+  function mat4() { return new Float32Array(16); }
+  function perspective(out, fovy, aspect, near, far) {
+    var f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
+    out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
+    out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
+    out[8] = 0; out[9] = 0; out[10] = (far + near) * nf; out[11] = -1;
+    out[12] = 0; out[13] = 0; out[14] = 2 * far * near * nf; out[15] = 0;
+    return out;
+  }
+  function lookAt(out, eye, center, up) {
+    var zx = eye[0] - center[0], zy = eye[1] - center[1], zz = eye[2] - center[2];
+    var zl = Math.hypot(zx, zy, zz) || 1; zx /= zl; zy /= zl; zz /= zl;
+    var xx = up[1] * zz - up[2] * zy, xy = up[2] * zx - up[0] * zz, xz = up[0] * zy - up[1] * zx;
+    var xl = Math.hypot(xx, xy, xz) || 1; xx /= xl; xy /= xl; xz /= xl;
+    var yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
+    out[0] = xx; out[1] = yx; out[2] = zx; out[3] = 0;
+    out[4] = xy; out[5] = yy; out[6] = zy; out[7] = 0;
+    out[8] = xz; out[9] = yz; out[10] = zz; out[11] = 0;
+    out[12] = -(xx * eye[0] + xy * eye[1] + xz * eye[2]);
+    out[13] = -(yx * eye[0] + yy * eye[1] + yz * eye[2]);
+    out[14] = -(zx * eye[0] + zy * eye[1] + zz * eye[2]);
+    out[15] = 1;
+    return out;
+  }
+  function mul(out, a, b) {
+    for (var i = 0; i < 4; i++) {
+      var ai0 = a[i], ai1 = a[i + 4], ai2 = a[i + 8], ai3 = a[i + 12];
+      out[i] = ai0 * b[0] + ai1 * b[1] + ai2 * b[2] + ai3 * b[3];
+      out[i + 4] = ai0 * b[4] + ai1 * b[5] + ai2 * b[6] + ai3 * b[7];
+      out[i + 8] = ai0 * b[8] + ai1 * b[9] + ai2 * b[10] + ai3 * b[11];
+      out[i + 12] = ai0 * b[12] + ai1 * b[13] + ai2 * b[14] + ai3 * b[15];
+    }
+    return out;
+  }
+
+  var VS = [
+    "#version 300 es",
+    "in vec3 aPos;",
+    "in vec3 aNor;",
+    "uniform mat4 uMVP;",
+    "uniform mat4 uModel;",
+    "uniform vec3 uOffset;",
+    "uniform vec2 uShift;",
+    "out vec3 vWorld;",
+    "out vec3 vNor;",
+    "void main(){",
+    "  vec3 p = aPos + uOffset;",
+    "  vec4 wp = uModel * vec4(p, 1.0);",
+    "  vWorld = wp.xyz;",
+    "  vNor = mat3(uModel) * aNor;",
+    "  gl_Position = uMVP * vec4(p, 1.0);",
+    "  gl_Position.x += uShift.x * gl_Position.w;",
+    "  gl_Position.y += uShift.y * gl_Position.w;",
+    "}"
+  ].join("\n");
+
+  var FS = [
+    "#version 300 es",
+    "precision highp float;",
+    "in vec3 vWorld;",
+    "in vec3 vNor;",
+    "out vec4 fragColor;",
+    "uniform vec3  uColor;",
+    "uniform float uAlpha;",
+    "uniform vec3  uEye;",
+    "uniform float uRim;",
+    "uniform float uEmis;",
+    "uniform vec4  uClip;",     // xyz 法线, w 偏移
+    "uniform float uClipOn;",
+    "uniform vec3  uInside;",
+    "uniform float uGhost;",
+    "const vec3 L1 = normalize(vec3(-0.45, 0.78, 0.44));",
+    "const vec3 L2 = normalize(vec3(0.62, -0.30, 0.50));",
+    "void main(){",
+    "  if(uClipOn > 0.5 && dot(vWorld, uClip.xyz) > uClip.w) discard;",
+    "  vec3 n = normalize(vNor);",
+    "  vec3 v = normalize(uEye - vWorld);",
+    "  if(dot(n, v) < 0.0) n = -n;",
+    "  if(uGhost > 0.5){",
+    "    float fres = pow(1.0 - abs(dot(n, v)), 4.0);",
+    "    vec3 g = uColor * (0.52 + fres * 0.95);",
+    "    float a = uAlpha * (0.030 + fres * 1.90);",
+    "    fragColor = vec4(g, a);",
+    "    return;",
+    "  }",
+    "  float d1 = max(dot(n, L1), 0.0);",
+    "  float d2 = max(dot(n, L2), 0.0);",
+    "  float wrap = max(dot(n, normalize(L1 + n * 0.55)), 0.0);",
+    "  vec3 base = uColor;",
+    "  vec3 col = base * (0.30 + 0.64 * d1 + 0.20 * d2 + 0.06 * wrap);",
+    "  col += base * vec3(0.30, 0.36, 0.46) * 0.13;",
+    "  float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);",
+    "  col += uRim * fres * vec3(1.0, 0.93, 0.82) * 0.85;",
+    "  col += uEmis * base * 0.55;",
+    "  float spec = pow(max(dot(reflect(-L1, n), v), 0.0), 42.0);",
+    "  col += vec3(0.85, 0.88, 0.92) * spec * 0.16;",
+    "  col = pow(clamp(col, 0.0, 1.0), vec3(0.94));",
+    "  fragColor = vec4(col, uAlpha);",
+    "}"
+  ].join("\n");
+
+  function Atlas(canvas) {
+    this.canvas = canvas;
+    this.gl = canvas.getContext("webgl2", { antialias: true, alpha: true, premultipliedAlpha: false });
+    this.ok = !!this.gl;
+    this.meshes = new Map();
+    this.target = [0, 0.3, 0];
+    this.dist = 8;
+    this.yaw = 0.0;
+    this.pitch = 0.12;
+    this.velX = 0; this.velY = 0;
+    this.spin = false;
+    this.selected = null;
+    this.hover = null;
+    this.clipOn = false;
+    this.clipD = 0.0;
+    this.parts = [];
+    this.clipN = [0, 0, 1];
+    this.clipD = 0.0;
+    this._dirty = true;
+    if (!this.ok) return;
+    this._init();
+  }
+
+  Atlas.prototype._init = function () {
+    var gl = this.gl;
+    var self = this;
+    function sh(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s), src);
+      return s;
+    }
+    var p = gl.createProgram();
+    gl.attachShader(p, sh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(p, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p));
+    this.prog = p;
+    this.u = {};
+    ["uMVP", "uModel", "uOffset", "uShift", "uColor", "uAlpha", "uEye", "uRim", "uEmis", "uClip", "uClipOn", "uInside", "uGhost"].forEach(function (n) {
+      self.u[n] = gl.getUniformLocation(p, n);
+    });
+    this.aPos = gl.getAttribLocation(p, "aPos");
+    this.aNor = gl.getAttribLocation(p, "aNor");
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.resize();
+    this.persp = mat4(); this.view = mat4(); this.mvp = mat4();
+    this.model = mat4();
+    this.model[0] = this.model[5] = this.model[10] = this.model[15] = 1;
+  };
+
+  Atlas.prototype.resize = function () {
+    if (!this.ok) return;
+    var gl = this.gl;
+    var w = Math.max(1, Math.floor(this.canvas.clientWidth * this.dpr));
+    var h = Math.max(1, Math.floor(this.canvas.clientHeight * this.dpr));
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w; this.canvas.height = h;
+    }
+    gl.viewport(0, 0, w, h);
+  };
+
+  /* ---------- 上传网格 ---------- */
+  Atlas.prototype.mesh = function (key, geo) {
+    if (this.meshes.has(key)) return this.meshes.get(key);
+    var gl = this.gl;
+    var vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    var vb = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+    gl.bufferData(gl.ARRAY_BUFFER, geo.position, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(this.aPos);
+    gl.vertexAttribPointer(this.aPos, 3, gl.FLOAT, false, 0, 0);
+    var nb = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nb);
+    gl.bufferData(gl.ARRAY_BUFFER, geo.normal, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(this.aNor);
+    gl.vertexAttribPointer(this.aNor, 3, gl.FLOAT, false, 0, 0);
+    var ib = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geo.index, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    var rec = { vao: vao, n: geo.index.length };
+    this.meshes.set(key, rec);
+    return rec;
+  };
+
+  /* ---------- 相机 ---------- */
+  Atlas.prototype.eye = function () {
+    var cy = Math.cos(this.pitch), sy = Math.sin(this.pitch);
+    var t = this.target;
+    return [
+      t[0] + cy * Math.sin(this.yaw) * this.dist,
+      t[1] + sy * this.dist,
+      t[2] + cy * Math.cos(this.yaw) * this.dist
+    ];
+  };
+
+  Atlas.prototype.frame = function (bb, pad) {
+    var cx = (bb[0] + bb[3]) / 2, cy = (bb[1] + bb[4]) / 2, cz = (bb[2] + bb[5]) / 2;
+    this.target = [cx, cy, cz];
+    var r = Math.max(bb[3] - bb[0], Math.max(bb[4] - bb[1], bb[5] - bb[2]));
+    this.dist = Math.max(1.2, r * (pad || 1.55));
+    this.velX = this.velY = 0;
+    this._want = null;
+  };
+
+  /* 平滑运镜：目标点与距离缓动过去 */
+  Atlas.prototype.goto = function (bb, pad, fast) {
+    var cx = (bb[0] + bb[3]) / 2, cy = (bb[1] + bb[4]) / 2, cz = (bb[2] + bb[5]) / 2;
+    var r = Math.max(bb[3] - bb[0], Math.max(bb[4] - bb[1], bb[5] - bb[2]));
+    var d = Math.max(1.2, r * (pad || 1.55));
+    if (fast) { this.target = [cx, cy, cz]; this.dist = d; this._want = null; return; }
+    this._want = { target: [cx, cy, cz], dist: d };
+  };
+
+  Atlas.prototype._ease = function () {
+    var w = this._want;
+    if (!w) return;
+    var k = 0.14;
+    for (var i = 0; i < 3; i++) this.target[i] += (w.target[i] - this.target[i]) * k;
+    this.dist += (w.dist - this.dist) * k;
+    if (Math.abs(w.dist - this.dist) < 0.006 && Math.abs(w.target[1] - this.target[1]) < 0.004) {
+      this.target = w.target.slice(); this.dist = w.dist; this._want = null;
+    }
+  };
+
+  Atlas.prototype.project = function (p) {
+    var e = this.eye();
+    var up = [0, 1, 0];
+    lookAt(this.view, e, this.target, up);
+    var vx = this.view[0] * p[0] + this.view[4] * p[1] + this.view[8] * p[2] + this.view[12];
+    var vy = this.view[1] * p[0] + this.view[5] * p[1] + this.view[9] * p[2] + this.view[13];
+    var vz = this.view[2] * p[0] + this.view[6] * p[1] + this.view[10] * p[2] + this.view[14];
+    if (vz > -0.02) return null;
+    var f = 1 / Math.tan(this.fov / 2);
+    var ndcX = (vx * f / this.aspect) / -vz;
+    var ndcY = (vy * f) / -vz;
+    var W = this.canvas.clientWidth, H = Math.max(1, this.canvas.clientHeight);
+    ndcX += this.shiftX || 0;
+    ndcY += this.shiftY || 0;
+    return { x: (ndcX * 0.5 + 0.5) * W, y: (0.5 - ndcY * 0.5) * H, depth: -vz };
+  };
+
+  /* ---------- 拾取：对每个器官的 SDF 做光线步进 ---------- */
+  Atlas.prototype.pick = function (cx, cy) {
+    var W = this.canvas.clientWidth, H = Math.max(1, this.canvas.clientHeight);
+    var e = this.eye();
+    var up = [0, 1, 0];
+    lookAt(this.view, e, this.target, up);
+    var f = 1 / Math.tan(this.fov / 2);
+    var ndcX = (cx / W) * 2 - 1;
+    var ndcY = 1 - (cy / H) * 2;
+    /* 视图空间方向 */
+    var dx = ndcX * this.aspect / f, dy = ndcY / f, dz = -1;
+    /* 转到世界 */
+    var wx = this.view[0] * dx + this.view[1] * dy + this.view[2] * dz;
+    var wy = this.view[4] * dx + this.view[5] * dy + this.view[6] * dz;
+    var wz = this.view[8] * dx + this.view[9] * dy + this.view[10] * dz;
+    var l = Math.hypot(wx, wy, wz) || 1;
+    var rd = [wx / l, wy / l, wz / l];
+
+    var best = null, bestT = 1e9;
+    for (var i = 0; i < this.parts.length; i++) {
+      var o = this.parts[i];
+      if (!o.field && !o.ghost) {
+        /* 直接网格：用包围盒近似拾取 */
+        if (!o.bb) continue;
+        var tb = rayBox(e, rd, o.bb);
+        if (tb !== null && tb < bestT) { bestT = tb; best = o; }
+        continue;
+      }
+      if (!o.field || o.ghost) continue;
+      if (this.clipOn && (o.anchor[0] * this.clipN[0] + o.anchor[1] * this.clipN[1] + o.anchor[2] * this.clipN[2]) > this.clipD + 0.3) continue;
+      var t = this._march(o.field, e, rd);
+      if (t !== null && t < bestT) { bestT = t; best = o; }
+    }
+    return best ? { part: best, t: bestT } : null;
+  };
+
+  /* 射线与轴对齐包围盒求交，返回入射距离 */
+  function rayBox(ro, rd, bb) {
+    var tmin = 0, tmax = 1e9;
+    for (var i = 0; i < 3; i++) {
+      if (Math.abs(rd[i]) < 1e-9) {
+        if (ro[i] < bb[i] || ro[i] > bb[i + 3]) return null;
+      } else {
+        var t1 = (bb[i] - ro[i]) / rd[i], t2 = (bb[i + 3] - ro[i]) / rd[i];
+        if (t1 > t2) { var tt = t1; t1 = t2; t2 = tt; }
+        if (t1 > tmin) tmin = t1;
+        if (t2 < tmax) tmax = t2;
+        if (tmin > tmax) return null;
+      }
+    }
+    return tmin;
+  }
+
+  Atlas.prototype._march = function (field, ro, rd) {
+    var t = 0, max = 40;
+    for (var i = 0; i < 128; i++) {
+      var x = ro[0] + rd[0] * t, y = ro[1] + rd[1] * t, z = ro[2] + rd[2] * t;
+      var d = field(x, y, z);
+      if (d < 0.004) return t;
+      t += Math.max(d * 0.85, 0.004);
+      if (t > max) break;
+    }
+    return null;
+  };
+
+  /* ---------- 渲染 ---------- */
+  Atlas.prototype.draw = function () {
+    if (!this.ok) return;
+    var gl = this.gl;
+    this.resize();
+    var W = this.canvas.width, H = this.canvas.height;
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.DEPTH_TEST);
+    gl.disable(gl.CULL_FACE);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    this._ease();
+
+    this.fov = 40 * Math.PI / 180;
+    this.aspect = W / H;
+    perspective(this.persp, this.fov, this.aspect, 0.1, 200);
+    var e = this.eye();
+    lookAt(this.view, e, this.target, [0, 1, 0]);
+    mul(this.mvp, this.persp, this.view);
+
+    gl.useProgram(this.prog);
+    gl.uniformMatrix4fv(this.u.uMVP, false, this.mvp);
+    gl.uniformMatrix4fv(this.u.uModel, false, this.model);
+    var _cs = getComputedStyle(document.documentElement);
+    var _rail = parseFloat(_cs.getPropertyValue("--rail")) || 0;
+    var _panel = parseFloat(_cs.getPropertyValue("--panel")) || 0;
+    if (window.innerWidth > 980) {
+      var stageC = (_rail + (window.innerWidth - _panel)) / 2;
+      this.shiftX = (stageC - window.innerWidth / 2) / (window.innerWidth / 2);
+      this.shiftY = 0.02;
+    } else { this.shiftX = 0; this.shiftY = 0; }
+    gl.uniform2f(this.u.uShift, this.shiftX, this.shiftY);
+    gl.uniform3fv(this.u.uEye, new Float32Array(e));
+    gl.uniform4fv(this.u.uClip, new Float32Array([this.clipN[0], this.clipN[1], this.clipN[2], this.clipD]));
+    gl.uniform1f(this.u.uClipOn, this.clipOn ? 1 : 0);
+
+    var self = this;
+    /* 1) 体表：半透明，先画且不写深度 */
+    gl.depthMask(false);
+    this.parts.filter(function (p) { return p.ghost; }).forEach(function (p) {
+      gl.uniform3fv(self.u.uOffset, new Float32Array(p.offset || [0, 0, 0]));
+      gl.uniform3fv(self.u.uColor, new Float32Array(p.rgb));
+      gl.uniform1f(self.u.uAlpha, 0.55);
+      gl.uniform1f(self.u.uRim, 0);
+      gl.uniform1f(self.u.uEmis, 0);
+      gl.uniform1f(self.u.uGhost, 1);
+      gl.uniform3fv(self.u.uInside, new Float32Array(p.rgb));
+      gl.bindVertexArray(p.mesh.vao);
+      gl.drawElements(gl.TRIANGLES, p.mesh.n, gl.UNSIGNED_INT, 0);
+    });
+    gl.depthMask(true);
+
+    /* 2) 器官：按深度从远到近排序，保证混合正确 */
+    var list = this.parts.filter(function (p) { return !p.ghost; });
+    list.forEach(function (p) { p._d = Math.hypot(p.anchor[0] - e[0], p.anchor[1] - e[1], p.anchor[2] - e[2]); });
+    list.sort(function (a, b) { return b._d - a._d; });
+
+    list.forEach(function (p) {
+      var sel = self.selected === p.id;
+      var hov = self.hover === p.id;
+      var dim = false;
+      gl.uniform3fv(self.u.uOffset, new Float32Array(p.offset || [0, 0, 0]));
+      gl.uniform3fv(self.u.uColor, new Float32Array(p.rgb));
+      gl.uniform1f(self.u.uAlpha, dim ? 0.34 : 1.0);
+      gl.uniform1f(self.u.uRim, sel ? 0.85 : hov ? 0.42 : 0.14);
+      gl.uniform1f(self.u.uEmis, sel ? 0.55 : hov ? 0.2 : 0.0);
+      gl.uniform1f(self.u.uGhost, 0);
+      /* 放大示意板不参与剖切：它本来就不在解剖位置上 */
+      gl.uniform1f(self.u.uClipOn, (self.clipOn && !p.noClip) ? 1 : 0);
+      gl.uniform3fv(self.u.uInside, new Float32Array(p.inside || p.rgb.map(function (c) { return c * 0.42; })));
+      if (dim) { gl.enable(gl.BLEND); gl.depthMask(false); }
+      gl.bindVertexArray(p.mesh.vao);
+      gl.drawElements(gl.TRIANGLES, p.mesh.n, gl.UNSIGNED_INT, 0);
+      if (dim) { gl.depthMask(true); }
+    });
+    gl.bindVertexArray(null);
+  };
+
+  Atlas.prototype.setParts = function (parts) {
+    this.parts = parts;
+    this.clipN = [0, 0, 1];
+    this.clipD = 0.0;
+  };
+
+  root.Atlas = Atlas;
+})(window);
+
+</script>
+<script>
+/* ============================================================
+   人体图鉴 · 数据核心
+   坐标系：y 向上（-4 足底，+4 头顶），x+ 为受试者左侧，z+ 为腹侧
+   1 单位 ≈ 21 cm（身高 8 单位 ≈ 1.70 m）
+   ============================================================ */
+(function (root) {
+  "use strict";
+  var S = root.SDF;
+
+  /* 体表轮廓：用于定位参照的半透明人体 */
+  function bodyGhost() {
+    return {
+      k: 0.1,
+      add: [
+        /* 头 */
+        S.E(0, 3.52, 0.02, 0.40, 0.47, 0.45),
+        S.E(0, 3.30, 0.10, 0.30, 0.26, 0.32),
+        /* 颈 */
+        S.C([0, 3.16, -0.02], [0, 2.72, -0.02], 0.155),
+        /* 胸廓 */
+        S.E(0, 2.10, 0.0, 0.74, 0.55, 0.40),
+        S.E(0, 1.62, 0.0, 0.66, 0.34, 0.36),
+        /* 腰腹 */
+        S.E(0, 1.00, 0.02, 0.60, 0.40, 0.34),
+        S.E(0, 0.35, 0.02, 0.64, 0.34, 0.34),
+        /* 骨盆 */
+        S.E(0, -0.22, 0.0, 0.72, 0.36, 0.36),
+        /* 肩 */
+        S.S(-0.72, 2.44, 0.0, 0.24), S.S(0.72, 2.44, 0.0, 0.24),
+        /* 上臂 */
+        S.C([-0.80, 2.40, 0.0], [-0.95, 1.62, 0.02], 0.135),
+        S.C([0.80, 2.40, 0.0], [0.95, 1.62, 0.02], 0.135),
+        /* 前臂 */
+        S.C([-0.95, 1.60, 0.02], [-1.05, 0.92, 0.06], 0.105),
+        S.C([0.95, 1.60, 0.02], [1.05, 0.92, 0.06], 0.105),
+        /* 手 */
+        S.E(-1.09, 0.72, 0.07, 0.085, 0.16, 0.05),
+        S.E(1.09, 0.72, 0.07, 0.085, 0.16, 0.05),
+        /* 大腿 */
+        S.C([-0.30, -0.42, 0.02], [-0.28, -1.92, 0.03], 0.185),
+        S.C([0.30, -0.42, 0.02], [0.28, -1.92, 0.03], 0.185),
+        /* 小腿 */
+        S.C([-0.28, -1.95, 0.03], [-0.24, -3.52, -0.02], 0.125),
+        S.C([0.28, -1.95, 0.03], [0.24, -3.52, -0.02], 0.125),
+        /* 足 */
+        S.E(-0.24, -3.78, 0.10, 0.10, 0.09, 0.24),
+        S.E(0.24, -3.78, 0.10, 0.10, 0.09, 0.24)
+      ]
+    };
+  }
+
+  /* ---------- 系统元数据 ---------- */
+  var SYSTEMS = [
+    {
+      id: "digestive", no: "01", zh: "消化系统", en: "Digestive system", la: "Systema digestorium",
+      color: "#c98a4b",
+      lead: {
+        zh: "从口腔到肛门的一条管道，加上肝、胆、胰三座附属腺体。它的任务不是“把食物磨碎”，而是把大分子拆成能穿过肠壁的小分子，并把无法消化的残渣排出。",
+        en: "A continuous tube from mouth to anus, plus three accessory glands — liver, gallbladder and pancreas. Its job is not grinding food but breaking macromolecules into units small enough to cross the intestinal wall."
+      },
+      span: [-0.75, -0.62, -0.4, 0.62, 2.85, 0.45],
+      organs: []
+    },
+    {
+      id: "respiratory", no: "02", zh: "呼吸系统", en: "Respiratory system", la: "Systema respiratorium",
+      color: "#7fb3c8",
+      lead: {
+        zh: "空气经鼻腔、咽、喉、气管与支气管抵达肺泡。真正发生气体交换的只有末端的肺泡，其余结构负责传导、过滤、加温与加湿。",
+        en: "Air travels through the nose, pharynx, larynx, trachea and bronchi to the alveoli. Only the alveoli exchange gas; the rest conduct, filter, warm and humidify."
+      },
+      span: [-0.72, 1.35, -0.45, 0.72, 3.30, 0.42],
+      organs: []
+    },
+    {
+      id: "circulatory", no: "03", zh: "循环系统", en: "Circulatory system", la: "Systema cardiovasculare",
+      color: "#c05a52",
+      lead: {
+        zh: "心脏是双泵：右心把缺氧血送往肺，左心把含氧血送往全身。动脉把血送离心脏，静脉送回；毛细血管是两者之间唯一进行交换的场所。",
+        en: "The heart is a double pump: the right side sends deoxygenated blood to the lungs, the left side sends oxygenated blood to the body. Arteries carry blood away, veins return it, and capillaries are the only place exchange happens."
+      },
+      span: [-0.7, 0.75, -0.42, 0.7, 2.45, 0.45],
+      organs: []
+    },
+    {
+      id: "skeletal", no: "04", zh: "骨骼肌肉系统", en: "Musculoskeletal system", la: "Systema musculoskeletale",
+      color: "#cbbfa4",
+      lead: {
+        zh: "206 块骨构成杠杆系统，600 余块骨骼肌跨过关节牵动它们。骨不是死的支架：它是活组织，参与造血、储钙，并在受力处不断重建。",
+        en: "206 bones form a lever system; more than 600 skeletal muscles cross joints to move them. Bone is not dead scaffolding — it is living tissue that makes blood, stores calcium and remodels under load."
+      },
+      span: [-1.2, -1.9, -0.42, 1.2, 3.75, 0.45],
+      organs: []
+    },
+    {
+      id: "urinary", no: "05", zh: "泌尿系统", en: "Urinary system", la: "Systema urinarium",
+      color: "#c9a24a",
+      lead: {
+        zh: "两枚肾每天过滤约 180 升原尿，其中 99% 被重吸收回血液，最终排出约 1.5 升尿液。这套系统同时调节血压、酸碱平衡与红细胞生成。",
+        en: "Two kidneys filter about 180 litres of fluid a day; 99% is reabsorbed, leaving roughly 1.5 litres of urine. The system also regulates blood pressure, acid–base balance and red-cell production."
+      },
+      span: [-0.62, -0.75, -0.42, 0.62, 1.25, 0.4],
+      organs: []
+    },
+    {
+      id: "endocrine", no: "06", zh: "内分泌系统", en: "Endocrine system", la: "Systema endocrinum",
+      color: "#b98bc4",
+      lead: {
+        zh: "无导管腺体把激素直接分泌进血液，作用于远处带受体的细胞。垂体是上游的“总开关”，但甲状腺、肾上腺、胰岛各自也有反馈回路。",
+        en: "Ductless glands release hormones into the blood to act on distant cells carrying receptors. The pituitary sits upstream, yet the thyroid, adrenal cortex and pancreatic islets each run their own feedback loops."
+      },
+      span: [-0.55, -0.70, -0.40, 0.55, 3.42, 0.40],
+      organs: []
+    },
+    {
+      id: "reproductive", no: "07", zh: "生殖系统", en: "Reproductive system", la: "Systema genitale",
+      color: "#c9839b",
+      lead: {
+        zh: "生殖系统是唯一在个体身上按性别分化为两套的器官系统。它产生配子、分泌性激素，并在女性体内为胚胎提供发育空间。",
+        en: "The only organ system that diverges into two sets by sex. It produces gametes, secretes sex hormones, and in females provides the space where an embryo develops."
+      },
+      span: [-0.50, -0.85, -0.35, 0.50, 0.15, 0.40],
+      organs: []
+    },
+    {
+      id: "nervous", no: "08", zh: "神经系统", en: "Nervous system", la: "Systema nervosum",
+      color: "#d9b86a",
+      lead: {
+        zh: "中枢（脑与脊髓）做整合，周围神经做传导。神经元本身不分裂，因此损伤后的修复主要依靠轴突再生与功能重组，而不是“长出新的脑细胞”。",
+        en: "The central nervous system (brain and spinal cord) integrates; peripheral nerves conduct. Neurons themselves do not divide, so recovery after injury relies on axon regrowth and reorganisation, not on growing new brain cells."
+      },
+      span: [-0.95, -1.6, -0.45, 0.95, 3.95, 0.45],
+      organs: []
+    },
+    {
+      id: "immune", no: "09", zh: "免疫系统", en: "Immune system", la: "Systema immunitatis",
+      color: "#8fb87a",
+      lead: {
+        zh: "免疫系统没有集中的“器官中心”，而是由骨髓、胸腺、脾、淋巴结与散佈全身的淋巴组织构成网络。它区分自我与非我，也负责清除衰老与异常的自身细胞。",
+        en: "The immune system has no single centre: bone marrow, thymus, spleen, lymph nodes and diffuse lymphoid tissue form a network. It distinguishes self from non-self and also clears aged or abnormal cells."
+      },
+      span: [-0.85, -0.7, -0.42, 0.85, 2.55, 0.42],
+      organs: []
+    }
+  ];
+
+  /* 便捷：按 id 取系统 */
+  function byId(id) {
+    for (var i = 0; i < SYSTEMS.length; i++) if (SYSTEMS[i].id === id) return SYSTEMS[i];
+    return null;
+  }
+
+  /* 生成一条弯曲管道的辅助：把控制点连成若干段 */
+  function tube(points, r) {
+    var out = [];
+    for (var i = 0; i < points.length - 1; i++) {
+      out.push(S.C(points[i], points[i + 1], typeof r === "number" ? r : r[i]));
+    }
+    return out;
+  }
+
+  /* 沿圆弧的管道（肋骨、输卵管、淋巴管） */
+  function arc(center, radius, from, to, r, axis, steps) {
+    steps = steps || 8;
+    var out = [], prev = null;
+    axis = axis || "z";
+    for (var i = 0; i <= steps; i++) {
+      var a = from + (to - from) * i / steps;
+      var p;
+      if (axis === "z") p = [center[0] + Math.cos(a) * radius, center[1] + Math.sin(a) * radius, center[2]];
+      else if (axis === "y") p = [center[0] + Math.cos(a) * radius, center[1] + center[2] * 0, center[2] + Math.sin(a) * radius];
+      else p = [center[0], center[1] + Math.cos(a) * radius, center[2] + Math.sin(a) * radius];
+      if (prev) out.push(S.C(prev, p, r));
+      prev = p;
+    }
+    return out;
+  }
+
+  /* 沿折线等距放球：球半径略有起伏，配合小 smin 形成“结肠袋”式的串珠 */
+  function chain(points, r, step, wobble) {
+    var segs = [], total = 0, i;
+    for (i = 0; i < points.length - 1; i++) {
+      var a = points[i], b = points[i + 1];
+      var L = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+      segs.push({ a: a, b: b, L: L }); total += L;
+    }
+    var n = Math.max(2, Math.round(total / step));
+    var out = [];
+    for (var k = 0; k <= n; k++) {
+      var t = k / n * total, acc = 0, p = null;
+      for (var j = 0; j < segs.length; j++) {
+        if (t <= acc + segs[j].L || j === segs.length - 1) {
+          var u = segs[j].L > 1e-6 ? Math.min(1, (t - acc) / segs[j].L) : 0;
+          p = [segs[j].a[0] + (segs[j].b[0] - segs[j].a[0]) * u,
+          segs[j].a[1] + (segs[j].b[1] - segs[j].a[1]) * u,
+          segs[j].a[2] + (segs[j].b[2] - segs[j].a[2]) * u];
+          break;
+        }
+        acc += segs[j].L;
+      }
+      var rr = wobble ? r * (0.88 + 0.22 * Math.abs(Math.sin(k * 1.9))) : r;
+      out.push(S.S(p[0], p[1], p[2], rr));
+    }
+    return out;
+  }
+
+  root.HUMAN = {
+    bodyGhost: bodyGhost,
+    SYSTEMS: SYSTEMS,
+    byId: byId,
+    tube: tube,
+    chain: chain,
+    arc: arc
+  };
+})(window);
+
+</script>
+<script>
+/* 消化系统 · 呼吸系统 */
+(function (root) {
+  "use strict";
+  var S = root.SDF, H = root.HUMAN;
+
+  /* ---------- 01 消化系统 ---------- */
+  var digestive = H.byId("digestive");
+
+  digestive.organs = [
+    {
+      id: "oral", zh: "口腔与咽", en: "Oral cavity & pharynx", la: "Cavitas oris · Pharynx",
+      color: "#b07a5e", res: 34,
+      add: [
+        S.E(0, 3.10, 0.20, 0.19, 0.11, 0.17),
+        S.K([0, 3.02, 0.10], [0, 2.86, 0.02], 0.11, 0.075)
+      ],
+      anchor: [0, 3.06, 0.22],
+      size: { zh: "口腔容积约 50 mL", en: "oral cavity ≈ 50 mL" },
+      fn: {
+        zh: "牙齿机械粉碎食物，唾液淀粉酶开始分解淀粉，舌把食团推向咽部。",
+        en: "Teeth crush food, salivary amylase begins starch digestion, and the tongue drives the bolus into the pharynx."
+      },
+      facts: [
+        { zh: "成人有 32 颗恒牙，其中 4 颗智齿常在 17–25 岁萌出。", en: "Adults have 32 permanent teeth; the four third molars usually erupt between 17 and 25." },
+        { zh: "吞咽时软腭上提、会厌关闭，食物才不会进入鼻腔或气管。", en: "During swallowing the soft palate lifts and the epiglottis closes, keeping food out of the nasal cavity and airway." }
+      ]
+    },
+    {
+      id: "esophagus", zh: "食管", en: "Esophagus", la: "Oesophagus",
+      color: "#a9624d", res: 30,
+      add: [
+        S.K([0, 2.72, -0.02], [0.03, 1.56, 0.0], 0.062, 0.070)
+      ],
+      anchor: [0.02, 2.15, -0.02],
+      size: { zh: "长约 25 cm", en: "about 25 cm long" },
+      fn: {
+        zh: "没有消化功能，只靠蠕动把食团在 4–8 秒内送到胃。",
+        en: "It digests nothing; peristalsis carries the bolus to the stomach in 4–8 seconds."
+      },
+      facts: [
+        { zh: "上端为食管上括约肌，下端为食管下括约肌，后者松弛即造成胃食管反流。", en: "Upper and lower esophageal sphincters guard both ends; reflux occurs when the lower one relaxes." },
+        { zh: "食管穿过膈的食管裂孔，因此胸腔与腹腔在此相通。", en: "The esophagus passes through the esophageal hiatus of the diaphragm, connecting thorax and abdomen." }
+      ]
+    },
+    {
+      id: "stomach", zh: "胃", en: "Stomach", la: "Gaster",
+      color: "#c08560", res: 50,
+      add: [
+        /* 贲门 → 胃底 → 胃体 → 幽门窦 → 幽门，J 形 */
+        S.K([0.04, 1.48, 0.0], [0.24, 1.47, 0.0], 0.080, 0.145),
+        S.K([0.24, 1.47, 0.0], [0.37, 1.31, 0.07], 0.145, 0.160),
+        S.K([0.37, 1.31, 0.07], [0.33, 1.12, 0.15], 0.160, 0.120),
+        S.K([0.33, 1.12, 0.15], [0.17, 1.00, 0.19], 0.120, 0.068),
+        S.K([0.17, 1.00, 0.19], [0.04, 0.98, 0.22], 0.068, 0.040)
+      ],
+      k: 0.085,
+      anchor: [0.31, 1.24, 0.12],
+      size: { zh: "空腹约 50 mL，餐后可扩张至 1–1.5 L", en: "50 mL empty; 1–1.5 L after a meal" },
+      fn: {
+        zh: "分泌盐酸使 pH 降至 1–2，激活胃蛋白酶原，并通过搅拌把食物变成食糜。",
+        en: "Hydrochloric acid drops the pH to 1–2, activates pepsinogen, and churning turns food into chyme."
+      },
+      facts: [
+        { zh: "胃壁有黏液–碳酸氢盐屏障，否则胃会消化自己。", en: "A mucus–bicarbonate barrier protects the stomach wall from its own acid." },
+        { zh: "幽门括约肌控制排空速度；脂肪会显著减慢排空。", en: "The pyloric sphincter meters emptying, and fat markedly slows it." }
+      ]
+    },
+    {
+      id: "liver", zh: "肝", en: "Liver", la: "Hepar",
+      color: "#713029", res: 64,
+      add: [
+        /* 右叶主体：占据右季肋区 */
+        S.E(-0.28, 1.26, 0.02, 0.34, 0.24, 0.30),
+        /* 左叶：越过中线、变薄变窄 */
+        S.E(0.09, 1.34, 0.06, 0.21, 0.13, 0.22),
+        /* 右叶下缘（锐缘）加厚一点 */
+        S.E(-0.48, 1.08, 0.04, 0.20, 0.15, 0.24)
+      ],
+      sub: [
+        /* 胆囊窝：脏面右侧的浅凹 */
+        S.S(-0.04, 1.02, 0.22, 0.11),
+        /* 镰状韧带：把肝分成左右两叶的那道沟 */
+        S.C([0.00, 1.03, 0.22], [0.02, 1.41, 0.24], 0.021),
+        /* 下腔静脉压迹（肝后） */
+        S.S(-0.20, 1.34, -0.24, 0.10),
+        /* 肝下缘：锐利的平面 */
+        S.P(0, 1, 0, 1.02)
+      ],
+      k: 0.075, subK: 0.03,
+      anchor: [-0.42, 1.32, 0.22],
+      size: { zh: "成人约 1.2–1.5 kg，最大内脏器官", en: "1.2–1.5 kg in adults; the largest internal organ" },
+      fn: {
+        zh: "分泌胆汁帮助脂肪乳化，同时是糖原储存、血浆蛋白合成与解毒的中心。",
+        en: "It secretes bile to emulsify fat and is the hub for glycogen storage, plasma-protein synthesis and detoxification."
+      },
+      facts: [
+        { zh: "肝有双重血供：肝动脉供氧，门静脉送来肠道吸收的营养。", en: "The liver has a dual supply: the hepatic artery for oxygen and the portal vein for absorbed nutrients." },
+        { zh: "肝细胞可再生，但慢性损伤后纤维化形成的肝硬化不可逆。", en: "Hepatocytes regenerate, yet fibrosis from chronic injury — cirrhosis — is irreversible." }
+      ]
+    },
+    {
+      id: "gallbladder", zh: "胆囊", en: "Gallbladder", la: "Vesica biliaris",
+      color: "#7f9440", res: 28,
+      add: [
+        S.K([-0.14, 1.03, 0.28], [-0.09, 0.93, 0.31], 0.070, 0.055),
+        S.K([-0.09, 0.93, 0.31], [-0.05, 0.85, 0.33], 0.055, 0.022)
+      ],
+      k: 0.05,
+      anchor: [-0.09, 0.93, 0.33],
+      size: { zh: "容量约 30–50 mL", en: "holds 30–50 mL" },
+      fn: {
+        zh: "储存并浓缩肝分泌的胆汁，进食脂肪后收缩，把胆汁排入十二指肠。",
+        en: "It stores and concentrates bile, then contracts after a fatty meal to release it into the duodenum."
+      },
+      facts: [
+        { zh: "胆汁不含消化酶，作用是乳化脂肪、帮助脂溶性维生素吸收。", en: "Bile contains no digestive enzymes; it emulsifies fat and aids absorption of fat-soluble vitamins." },
+        { zh: "胆囊切除后胆汁持续流入肠道，多数人可正常消化，只是高脂餐后易腹泻。", en: "After removal, bile flows continuously; most people cope, though fatty meals may cause diarrhoea." }
+      ]
+    },
+    {
+      id: "pancreas", zh: "胰", en: "Pancreas", la: "Pancreas",
+      color: "#d2b984", res: 40,
+      add: [
+        S.K([-0.05, 0.99, -0.12], [0.12, 1.05, -0.16], 0.105, 0.080),
+        S.K([0.12, 1.05, -0.16], [0.30, 1.10, -0.19], 0.080, 0.070),
+        S.K([0.30, 1.10, -0.19], [0.50, 1.16, -0.21], 0.070, 0.042)
+      ],
+      k: 0.06,
+      anchor: [0.24, 1.09, -0.20],
+      size: { zh: "长约 15 cm，重约 80–100 g", en: "about 15 cm long, 80–100 g" },
+      fn: {
+        zh: "外分泌部分泌胰蛋白酶、脂肪酶与淀粉酶；内分泌部（胰岛）分泌胰岛素与胰高血糖素。",
+        en: "The exocrine part secretes proteases, lipase and amylase; the endocrine islets release insulin and glucagon."
+      },
+      facts: [
+        { zh: "胰液是碱性最强的消化液，用来中和胃酸、保护十二指肠。", en: "Pancreatic juice is the most alkaline digestive fluid, neutralizing stomach acid in the duodenum." },
+        { zh: "胰岛只占胰腺体积的 1–2%，却承担全部的血糖调节。", en: "Islets are only 1–2% of pancreatic volume yet handle all glucose regulation." }
+      ]
+    },
+    {
+      id: "small-intestine", zh: "小肠", en: "Small intestine", la: "Intestinum tenue",
+      color: "#cc8f7e", res: 64,
+      add: (function () {
+        /* 十二指肠 C 形环 */
+        var out = H.tube([[0.02, 1.00, 0.13], [0.14, 0.93, 0.05], [0.16, 0.79, -0.03], [0.05, 0.70, -0.05], [-0.04, 0.72, 0.04]], 0.044);
+        /* 空肠与回肠：水平往复的肠圈，逐层下移 */
+        var pts = [], rows = 6;
+        for (var i = 0; i <= rows; i++) {
+          var y = 0.63 - i * 0.097 + ((i % 2) ? 0.014 : -0.011);
+          var dir = (i % 2 === 0) ? 1 : -1;
+          var z = 0.16 + ((i % 3) - 1) * 0.032;
+          var w = 0.285 + 0.045 * Math.sin(i * 1.9);
+          pts.push([-w * dir, y, z], [-0.02 * dir, y - 0.014, z + 0.02], [w * 0.78 * dir, y - 0.022, z], [w * 1.04 * dir, y + 0.012, z - 0.012]);
+        }
+        return out.concat(H.tube(pts, 0.045));
+      })(),
+      k: 0.02,
+      anchor: [0.16, 0.46, 0.20],
+      size: { zh: "长约 6–7 m；吸收面积约 200 m²", en: "6–7 m long; ~200 m² of absorptive area" },
+      fn: {
+        zh: "环状皱襞、绒毛与微绒毛把吸收面积放大约 600 倍，是绝大多数营养吸收的场所。",
+        en: "Folds, villi and microvilli amplify the surface about 600-fold; nearly all nutrient absorption happens here."
+      },
+      facts: [
+        { zh: "十二指肠接收胆汁与胰液，是化学性消化的主战场。", en: "The duodenum receives bile and pancreatic juice — the main site of chemical digestion." },
+        { zh: "回肠末端有派尔集合淋巴结，是肠道免疫的重要哨站。", en: "Peyer's patches in the terminal ileum are key immune outposts of the gut." }
+      ]
+    },
+    {
+      id: "large-intestine", zh: "大肠", en: "Large intestine", la: "Intestinum crassum",
+      color: "#9c6442", res: 62,
+      add: (function () {
+        var out = [];
+        /* 盲肠与升结肠 */
+        out = out.concat(H.chain([[-0.40, -0.02, 0.08], [-0.45, 0.26, 0.04], [-0.45, 0.58, 0.0], [-0.43, 0.86, -0.02]], 0.098, 0.126, true));
+        /* 横结肠 */
+        out = out.concat(H.chain([[-0.43, 0.86, -0.02], [-0.18, 0.92, 0.04], [0.06, 0.91, 0.05], [0.28, 0.88, 0.02], [0.43, 0.82, -0.02]], 0.092, 0.124, true));
+        /* 降结肠与乙状结肠 */
+        out = out.concat(H.chain([[0.43, 0.82, -0.02], [0.45, 0.54, -0.02], [0.43, 0.26, -0.01], [0.35, 0.04, 0.0], [0.18, -0.16, -0.02]], 0.085, 0.122, true));
+        /* 直肠与肛管 */
+        out = out.concat(H.chain([[0.18, -0.16, -0.02], [0.07, -0.32, -0.06], [0.02, -0.46, -0.08]], 0.080, 0.120, false));
+        return out;
+      })(),
+      k: 0.045,
+      anchor: [0.44, 0.58, 0.02],
+      size: { zh: "长约 1.5 m", en: "about 1.5 m long" },
+      fn: {
+        zh: "吸收水和电解质，把液态食糜变成固态粪便；结肠菌群发酵未消化的碳水化合物。",
+        en: "It absorbs water and electrolytes, turning liquid chyme into stool; colonic bacteria ferment undigested carbohydrates."
+      },
+      facts: [
+        { zh: "阑尾附着于盲肠，是淋巴组织而非“退化无用”的器官。", en: "The appendix attaches to the caecum and is lymphoid tissue, not a useless vestige." },
+        { zh: "结肠带、结肠袋与肠脂垂是大肠区别于小肠的三项外观特征。", en: "Taeniae coli, haustra and epiploic appendages distinguish the large from the small intestine." }
+      ]
+    }
+  ];
+
+  /* ---------- 02 呼吸系统 ---------- */
+  var respiratory = H.byId("respiratory");
+
+  respiratory.organs = [
+    {
+      id: "upper-airway", zh: "鼻腔与咽", en: "Nasal cavity & pharynx", la: "Cavitas nasi · Pharynx",
+      color: "#7fb3c8", res: 34,
+      add: [
+        S.E(0, 3.22, 0.20, 0.17, 0.13, 0.20),
+        S.K([0, 3.06, 0.10], [0, 2.84, 0.0], 0.105, 0.085)
+      ],
+      anchor: [0, 3.16, 0.24],
+      size: { zh: "鼻腔前后长约 5–7 cm", en: "nasal cavity about 5–7 cm deep" },
+      fn: {
+        zh: "鼻甲与黏膜把吸入空气加温到接近体温、加湿到 90% 以上，并拦下大部分颗粒。",
+        en: "Turbinates and mucosa warm inhaled air to near body temperature, humidify it above 90%, and trap most particles."
+      },
+      facts: [
+        { zh: "鼻黏膜每天分泌约 1 升黏液，由纤毛向咽部推送。", en: "Nasal mucosa produces about 1 litre of mucus daily, swept by cilia toward the pharynx." },
+        { zh: "咽是呼吸道与消化道的交叉口，吞咽时会厌关闭以保护气道。", en: "The pharynx is shared by airway and foodway; the epiglottis closes during swallowing." }
+      ]
+    },
+    {
+      id: "larynx", zh: "喉", en: "Larynx", la: "Larynx",
+      color: "#8ec0cf", res: 26,
+      add: [
+        S.B(0, 2.80, 0.10, 0.095, 0.075, 0.075, 0.045),
+        S.T(0, 2.80, 0.10, 0.075, 0.020, [Math.PI / 2, 0, 0])
+      ],
+      k: 0.03,
+      anchor: [0, 2.80, 0.20],
+      size: { zh: "成人约 4–5 cm 长", en: "4–5 cm long in adults" },
+      fn: {
+        zh: "声带振动产生声音；同时是会厌所在处，吞咽时封闭气道。",
+        en: "Vocal folds vibrate to produce sound, and the epiglottis seals the airway during swallowing."
+      },
+      facts: [
+        { zh: "男性青春期喉结变大，是甲状软骨向前突出所致。", en: "The Adam's apple is the thyroid cartilage projecting forward, enlarging at puberty in males." },
+        { zh: "声带是体内振动最快的组织之一，女声基频约 200 Hz。", en: "Vocal folds are among the fastest-vibrating tissues; female fundamental frequency is about 200 Hz." }
+      ]
+    },
+    {
+      id: "trachea", zh: "气管与支气管", en: "Trachea & bronchi", la: "Trachea · Bronchi",
+      color: "#9fc9d6", res: 38,
+      add: [
+        S.K([0, 2.70, 0.06], [0, 2.14, 0.02], 0.058, 0.054),
+        S.K([0, 2.14, 0.02], [-0.19, 1.98, 0.02], 0.046, 0.036),
+        S.K([0, 2.14, 0.02], [0.19, 1.98, 0.02], 0.046, 0.036),
+        S.K([-0.19, 1.98, 0.02], [-0.30, 1.84, 0.0], 0.031, 0.020),
+        S.K([0.19, 1.98, 0.02], [0.30, 1.84, 0.0], 0.031, 0.020)
+      ],
+      k: 0.03,
+      anchor: [0, 2.32, 0.06],
+      size: { zh: "气管长约 10–12 cm，直径 1.5–2 cm", en: "trachea 10–12 cm long, 1.5–2 cm wide" },
+      fn: {
+        zh: "C 形软骨环保持管腔开放，纤毛黏液层把颗粒向上输送，形成“黏液纤毛清除”。",
+        en: "C-shaped cartilage keeps the lumen open; the mucociliary escalator carries trapped particles upward."
+      },
+      facts: [
+        { zh: "软骨环后方缺口由平滑肌封闭，进食时食管可向后扩张。", en: "The posterior gap in each ring is closed by smooth muscle, letting the esophagus expand during swallowing." },
+        { zh: "气管在隆嵴处分为左右主支气管，右主支气管更陡直，异物更易落入右侧。", en: "The trachea divides at the carina; the steeper right main bronchus is the more common site for aspirated objects." }
+      ]
+    },
+    {
+      id: "lungs", zh: "肺", en: "Lungs", la: "Pulmones",
+      color: "#b2708a", res: 64, step: 0.014,
+      add: [
+        /* 右肺：主体 + 圆钝肺尖 + 下外侧膨隆 */
+        S.E(-0.32, 1.93, 0.00, 0.225, 0.340, 0.245),
+        S.E(-0.31, 2.30, 0.01, 0.150, 0.230, 0.185),
+        S.E(-0.35, 1.70, -0.02, 0.245, 0.180, 0.235),
+        /* 左肺：略窄，肺尖更圆 */
+        S.E(0.33, 1.93, 0.00, 0.215, 0.340, 0.235),
+        S.E(0.32, 2.30, 0.01, 0.144, 0.230, 0.180),
+        S.E(0.36, 1.70, -0.02, 0.235, 0.180, 0.225)
+      ],
+      sub: [
+        /* 斜裂（左右各一）与右肺水平裂：只切到肺门就停，叶间仍有连接 */
+        S.rot(S.B(-0.36, 2.02, -0.01, 0.260, 0.014, 0.300, 0.003), [0.55, 0, 0]),
+        S.B(-0.32, 2.17, 0.05, 0.185, 0.011, 0.235, 0.003),
+        S.rot(S.B(0.34, 2.02, -0.01, 0.240, 0.014, 0.290, 0.003), [0.55, 0, 0]),
+        /* 纵隔面：为心脏与大血管让出的平坦凹陷 */
+        S.E(0.0, 2.05, 0.02, 0.140, 0.34, 0.26),
+        /* 左肺心凹 */
+        S.S(0.16, 1.86, 0.10, 0.160),
+        /* 膈面：肺底是凹面 */
+        S.E(0, 1.38, -0.02, 0.80, 0.255, 0.52),
+        /* 肺门 */
+        S.S(-0.20, 2.10, 0.0, 0.080),
+        S.S(0.20, 2.10, 0.0, 0.080)
+      ],
+      k: 0.075, subK: 0.03,
+      anchor: [-0.44, 2.30, 0.20],
+      size: { zh: "右肺 3 叶、左肺 2 叶；约 3 亿个肺泡", en: "3 lobes right, 2 left; about 300 million alveoli" },
+      fn: {
+        zh: "肺泡壁仅一层上皮细胞，氧气与二氧化碳在此通过 0.5 μm 的薄膜扩散。",
+        en: "Alveolar walls are one cell thick; oxygen and carbon dioxide diffuse across a film about 0.5 μm thick."
+      },
+      facts: [
+        { zh: "全部肺泡展开面积约 70 m²，接近半个网球场。", en: "All alveoli unfolded cover about 70 m² — nearly half a tennis court." },
+        { zh: "左肺只有两叶，是因为心脏占据了左侧胸腔的空间。", en: "The left lung has only two lobes because the heart occupies space on that side." }
+      ]
+    },
+    {
+      id: "diaphragm", zh: "膈", en: "Diaphragm", la: "Diaphragma",
+      color: "#a89484", res: 52,
+      add: [
+        /* 两个低穹隆：右穹略高（肝在下方顶起） */
+        S.E(-0.27, 1.46, -0.01, 0.34, 0.115, 0.34),
+        S.E(0.27, 1.44, -0.01, 0.32, 0.110, 0.32)
+      ],
+      sub: [
+        /* 腹面切平，只留穹隆顶 */
+        S.P(0, 1, 0, 1.42)
+      ],
+      k: 0.06, subK: 0.02,
+      anchor: [0.42, 1.56, 0.18],
+      size: { zh: "厚度仅 3–5 mm，是最主要的呼吸肌", en: "only 3–5 mm thick; the principal muscle of breathing" },
+      fn: {
+        zh: "收缩时穹隆下降约 1.5 cm，胸腔容积增大、压力降低，空气被吸入。",
+        en: "Contraction flattens the dome by about 1.5 cm, enlarging the thorax and lowering pressure so air flows in."
+      },
+      facts: [
+        { zh: "平静呼吸时膈承担约 70% 的通气量；用力吸气时肋间肌与辅助肌加入。", en: "At rest the diaphragm drives about 70% of ventilation; accessory muscles join in forced inspiration." },
+        { zh: "膈有主动脉裂孔、食管裂孔与腔静脉孔三个通道。", en: "Three openings pass through it: aortic, esophageal and caval hiatuses." }
+      ]
+    }
+  ];
+
+  root.HUMAN = root.HUMAN || {};
+})(window);
+
+</script>
+<script>
+/* 循环系统 · 泌尿系统 */
+(function (root) {
+  "use strict";
+  var S = root.SDF, H = root.HUMAN;
+
+  /* ---------- 03 循环系统 ---------- */
+  var circ = H.byId("circulatory");
+  circ.organs = [
+    {
+      id: "heart", zh: "心脏", en: "Heart", la: "Cor",
+      color: "#a84b46", res: 56,
+      add: [
+        S.E(0.09, 1.79, 0.12, 0.25, 0.27, 0.23),
+        S.K([0.06, 1.94, 0.10], [0.22, 1.60, 0.20], 0.215, 0.085),
+        S.E(0.01, 1.80, 0.22, 0.15, 0.17, 0.11),
+        S.E(0.05, 2.00, -0.06, 0.14, 0.09, 0.11),
+        S.E(-0.12, 1.90, 0.02, 0.11, 0.11, 0.11),
+        S.K([0.03, 1.99, 0.05], [0.0, 2.14, 0.0], 0.085, 0.075)
+      ],
+      sub: [
+        /* 前室间沟：左右心室的分界 */
+        S.C([0.02, 1.94, 0.29], [0.21, 1.61, 0.27], 0.020),
+        /* 冠状沟：心房与心室的分界 */
+        S.C([-0.16, 1.94, 0.22], [0.22, 1.90, 0.20], 0.018)
+      ],
+      k: 0.075, subK: 0.035,
+      anchor: [0.20, 1.72, 0.22],
+      size: { zh: "约 12 × 8.5 × 6 cm，重 250–350 g", en: "about 12 × 8.5 × 6 cm, 250–350 g" },
+      fn: {
+        zh: "右心把缺氧血泵入肺，左心把含氧血泵向全身；四个腔室由瓣膜保证单向流动。",
+        en: "The right side pumps deoxygenated blood to the lungs, the left side pumps oxygenated blood to the body; four chambers with valves keep flow one-way."
+      },
+      facts: [
+        { zh: "左心室壁最厚（约 1 cm），因为要对抗体循环的高压。", en: "The left ventricular wall is thickest (~1 cm) because it must overcome systemic pressure." },
+        { zh: "心脏有自身的冠状动脉供血，心肌几乎不能缺氧。", en: "The heart feeds itself through the coronary arteries; myocardium tolerates almost no hypoxia." }
+      ]
+    },
+    {
+      id: "aorta", zh: "主动脉", en: "Aorta", la: "Aorta",
+      color: "#c05a52", res: 40,
+      add: (function () {
+        var pts = [[0.02, 2.10, 0.02], [0.03, 2.26, -0.01], [0.10, 2.31, -0.05], [0.15, 2.24, -0.11],
+        [0.10, 2.13, -0.16], [0.06, 1.80, -0.18], [0.05, 1.20, -0.17], [0.03, 0.55, -0.15]];
+        return H.tube(pts, [0.070, 0.066, 0.062, 0.058, 0.056, 0.054, 0.050, 0.046]);
+      })(),
+      k: 0.03,
+      anchor: [0.14, 2.22, -0.08],
+      size: { zh: "升主动脉直径约 3 cm", en: "ascending aorta ≈ 3 cm across" },
+      fn: {
+        zh: "体循环的起始干道，经主动脉弓转向后下方，沿途分出颈动脉、锁骨下动脉与内脏支。",
+        en: "The main trunk of the systemic circulation; the arch turns posteriorly and gives off carotid, subclavian and visceral branches."
+      },
+      facts: [
+        { zh: "主动脉壁含大量弹性纤维，收缩期扩张、舒张期回弹，缓冲脉搏压力。", en: "Elastic fibres let the aorta expand in systole and recoil in diastole, smoothing the pulse." },
+        { zh: "主动脉弓上有压力感受器，参与血压的即时调节。", en: "Baroreceptors in the aortic arch contribute to beat-to-beat blood-pressure control." }
+      ]
+    },
+    {
+      id: "vena-cava", zh: "腔静脉", en: "Venae cavae", la: "Vena cava superior · inferior",
+      color: "#4f6f9a", res: 40,
+      add: [
+        S.K([-0.10, 2.20, 0.04], [-0.12, 1.96, 0.02], 0.055, 0.062),
+        S.K([-0.12, 1.94, 0.0], [-0.13, 1.40, -0.08], 0.065, 0.068),
+        S.K([-0.13, 1.40, -0.08], [-0.14, 0.62, -0.12], 0.068, 0.062)
+      ],
+      k: 0.04,
+      anchor: [-0.12, 2.10, 0.04],
+      size: { zh: "上腔静脉直径约 2 cm，下腔静脉约 3 cm", en: "SVC ≈ 2 cm, IVC ≈ 3 cm" },
+      fn: {
+        zh: "把全身的缺氧血送回右心房：上腔静脉收集头颈与上肢，下腔静脉收集腹盆与下肢。",
+        en: "Returns deoxygenated blood to the right atrium: the SVC drains head, neck and arms; the IVC drains abdomen, pelvis and legs."
+      },
+      facts: [
+        { zh: "下腔静脉穿过膈的腔静脉孔，是三个膈裂孔中位置最高的一个。", en: "The IVC passes through the caval hiatus, the highest of the diaphragm's three openings." },
+        { zh: "静脉内有瓣膜，靠骨骼肌挤压与呼吸负压辅助回流。", en: "Venous valves plus muscle pumping and breathing pressure assist return." }
+      ]
+    },
+    {
+      id: "pulmonary", zh: "肺动脉与肺静脉", en: "Pulmonary vessels", la: "Truncus pulmonalis · Venae pulmonales",
+      color: "#6d86ad", res: 34,
+      add: [
+        S.K([0.04, 1.99, 0.14], [0.0, 2.16, 0.09], 0.078, 0.070),
+        S.K([0.0, 2.16, 0.09], [-0.16, 2.08, 0.03], 0.062, 0.050),
+        S.K([0.0, 2.16, 0.09], [0.16, 2.08, 0.03], 0.062, 0.050),
+        S.K([-0.16, 2.08, 0.03], [-0.34, 1.98, 0.0], 0.045, 0.032),
+        S.K([0.16, 2.08, 0.03], [0.34, 1.98, 0.0], 0.045, 0.032)
+      ],
+      k: 0.04,
+      anchor: [0.0, 2.14, 0.12],
+      size: { zh: "肺动脉干长约 5 cm", en: "pulmonary trunk ≈ 5 cm long" },
+      fn: {
+        zh: "肺动脉把缺氧血送到肺，肺静脉把含氧血送回左心房——这是全身唯一“动脉含缺氧血”的段落。",
+        en: "Pulmonary arteries carry deoxygenated blood to the lungs and pulmonary veins return oxygenated blood — the only place where arteries carry low-oxygen blood."
+      },
+      facts: [
+        { zh: "肺循环是低压系统，收缩压仅约 25 mmHg。", en: "The pulmonary circuit is low-pressure: systolic pressure is only about 25 mmHg." },
+        { zh: "肺动脉栓塞多源于下肢深静脉血栓，而不是肺部自身形成。", en: "Pulmonary emboli usually originate from deep-vein thrombi in the legs, not in the lung itself." }
+      ]
+    },
+    {
+      id: "carotid", zh: "颈动脉", en: "Carotid arteries", la: "Arteria carotis communis",
+      color: "#c8625a", res: 34,
+      add: [
+        S.K([0.06, 2.24, -0.02], [0.09, 2.62, 0.0], 0.040, 0.036),
+        S.K([0.09, 2.62, 0.0], [0.11, 2.96, 0.04], 0.036, 0.030),
+        S.K([-0.05, 2.24, -0.02], [-0.08, 2.62, 0.0], 0.040, 0.036),
+        S.K([-0.08, 2.62, 0.0], [-0.10, 2.96, 0.04], 0.036, 0.030)
+      ],
+      k: 0.03,
+      anchor: [0.10, 2.66, 0.02],
+      size: { zh: "内径约 6–8 mm", en: "lumen 6–8 mm" },
+      fn: {
+        zh: "为脑与面部供血；颈动脉窦是压力感受器，颈动脉体感受血氧。",
+        en: "Supplies brain and face; the carotid sinus senses pressure and the carotid body senses oxygen."
+      },
+      facts: [
+        { zh: "颈总动脉在甲状软骨上缘分为颈内、颈外动脉。", en: "The common carotid bifurcates at the upper border of the thyroid cartilage." },
+        { zh: "颈内动脉供应约 80% 的大脑血流，是卒中筛查的重点。", en: "The internal carotid supplies about 80% of cerebral blood flow and is a key stroke target." }
+      ]
+    }
+  ];
+
+  /* ---------- 05 泌尿系统 ---------- */
+  var uri = H.byId("urinary");
+  uri.organs = [
+    {
+      id: "kidney-r", zh: "右肾", en: "Right kidney", la: "Ren dexter",
+      color: "#a8624f", res: 44,
+      add: [
+        S.E(-0.37, 0.88, -0.24, 0.130, 0.12, 0.12),
+        S.E(-0.40, 0.74, -0.24, 0.155, 0.24, 0.135),
+        S.E(-0.43, 0.60, -0.24, 0.135, 0.13, 0.125)
+      ],
+      sub: [S.S(-0.28, 0.76, -0.24, 0.115)],
+      k: 0.06, subK: 0.05,
+      anchor: [-0.48, 0.80, -0.10],
+      size: { zh: "约 11 × 6 × 3 cm，重 120–170 g", en: "11 × 6 × 3 cm, 120–170 g" },
+      fn: {
+        zh: "每天滤过约 180 L 血浆，通过肾小管重吸收把 99% 的水与有用物质回收。",
+        en: "Filters about 180 L of plasma daily; tubular reabsorption returns 99% of water and useful solutes."
+      },
+      facts: [
+        { zh: "右肾比左肾低约 2 cm，因为上方被肝脏占据。", en: "The right kidney sits about 2 cm lower because the liver occupies the space above it." },
+        { zh: "肾门处动脉、静脉与输尿管进出，凹缘朝向脊柱。", en: "Artery, vein and ureter enter at the hilum, facing the spine." }
+      ]
+    },
+    {
+      id: "kidney-l", zh: "左肾", en: "Left kidney", la: "Ren sinister",
+      color: "#a8624f", res: 44,
+      add: [
+        S.E(0.37, 0.96, -0.24, 0.130, 0.12, 0.12),
+        S.E(0.40, 0.82, -0.24, 0.155, 0.24, 0.135),
+        S.E(0.43, 0.68, -0.24, 0.135, 0.13, 0.125)
+      ],
+      sub: [S.S(0.28, 0.84, -0.24, 0.115)],
+      k: 0.06, subK: 0.05,
+      anchor: [0.48, 0.88, -0.10],
+      size: { zh: "约 11 × 6 × 3 cm", en: "about 11 × 6 × 3 cm" },
+      fn: {
+        zh: "调节水、电解质与酸碱平衡，并分泌肾素、促红细胞生成素与活性维生素 D。",
+        en: "Regulates water, electrolytes and acid–base balance, and secretes renin, erythropoietin and active vitamin D."
+      },
+      facts: [
+        { zh: "每侧约 100 万个肾单位，滤过膜由内皮、基膜与足细胞构成。", en: "About one million nephrons per kidney; the filter is endothelium, basement membrane and podocytes." },
+        { zh: "肾也是内分泌器官，慢性肾病常伴随贫血与高血压。", en: "The kidney is endocrine too — chronic disease often brings anaemia and hypertension." }
+      ]
+    },
+    {
+      id: "ureter", zh: "输尿管", en: "Ureters", la: "Ureter",
+      color: "#c9a05f", res: 34,
+      add: [
+        S.K([-0.30, 0.70, -0.22], [-0.26, 0.30, -0.16], 0.026, 0.024),
+        S.K([-0.26, 0.30, -0.16], [-0.14, -0.10, -0.08], 0.024, 0.024),
+        S.K([-0.14, -0.10, -0.08], [-0.06, -0.34, 0.02], 0.024, 0.024),
+        S.K([0.30, 0.78, -0.22], [0.26, 0.36, -0.16], 0.026, 0.024),
+        S.K([0.26, 0.36, -0.16], [0.14, -0.06, -0.08], 0.024, 0.024),
+        S.K([0.14, -0.06, -0.08], [0.06, -0.34, 0.02], 0.024, 0.024)
+      ],
+      k: 0.02,
+      anchor: [-0.24, 0.24, -0.14],
+      size: { zh: "长约 25–30 cm，直径 3–4 mm", en: "25–30 cm long, 3–4 mm wide" },
+      fn: {
+        zh: "靠蠕动把尿液从肾盂推向膀胱，不依赖重力。",
+        en: "Peristalsis propels urine from the renal pelvis to the bladder, independent of gravity."
+      },
+      facts: [
+        { zh: "输尿管有三处生理狭窄，是结石最易嵌顿的位置。", en: "Three physiological narrowings are where stones most often lodge." },
+        { zh: "膀胱充盈时输尿管口被压闭，防止尿液反流。", en: "As the bladder fills, the ureteric orifices close to prevent reflux." }
+      ]
+    },
+    {
+      id: "bladder", zh: "膀胱", en: "Urinary bladder", la: "Vesica urinaria",
+      color: "#c98f6a", res: 42,
+      add: [
+        S.E(0, -0.44, 0.10, 0.155, 0.135, 0.135),
+        S.K([0, -0.54, 0.10], [0, -0.66, 0.10], 0.070, 0.045)
+      ],
+      k: 0.06,
+      anchor: [0.14, -0.42, 0.20],
+      size: { zh: "容量约 400–600 mL", en: "capacity 400–600 mL" },
+      fn: {
+        zh: "由移行上皮构成的储尿囊，充盈时壁变薄、褶皱展开，排空时逼尿肌收缩。",
+        en: "A urothelium-lined reservoir that thins and unfolds as it fills; detrusor contraction empties it."
+      },
+      facts: [
+        { zh: "尿意通常在 150–250 mL 时出现，但可自主抑制到 400 mL 以上。", en: "The urge appears at 150–250 mL but can be voluntarily suppressed beyond 400 mL." },
+        { zh: "男性膀胱下方紧邻前列腺，前列腺增生会压迫尿道。", en: "In men the prostate lies directly below, so enlargement obstructs the urethra." }
+      ]
+    },
+    {
+      id: "urethra", zh: "尿道", en: "Urethra", la: "Urethra",
+      color: "#b8806a", res: 26,
+      add: [
+        S.K([0, -0.62, 0.10], [0, -0.74, 0.14], 0.030, 0.026)
+      ],
+      anchor: [0, -0.70, 0.16],
+      size: { zh: "女性约 4 cm，男性约 20 cm", en: "≈4 cm in females, ≈20 cm in males" },
+      fn: {
+        zh: "排出尿液的通道，内、外两道括约肌共同控制排尿。",
+        en: "The outflow channel, guarded by internal and external sphincters."
+      },
+      facts: [
+        { zh: "女性尿道短而直，因此尿路感染发生率明显高于男性。", en: "The female urethra is short and straight, which is why urinary infections are more common." },
+        { zh: "男性尿道同时是精液排出的通道。", en: "In males the urethra also carries semen." }
+      ]
+    }
+  ];
+
+  root.HUMAN = root.HUMAN || {};
+})(window);
+
+</script>
+<script>
+/* 骨骼肌肉系统 · 内分泌系统 */
+(function (root) {
+  "use strict";
+  var S = root.SDF, H = root.HUMAN;
+
+  /* ---------- 04 骨骼肌肉系统 ---------- */
+  var sk = H.byId("skeletal");
+  sk.organs = [
+    {
+      id: "skull", zh: "颅骨", en: "Skull", la: "Cranium",
+      color: "#cfc3a6", res: 52, step: 0.024,
+      add: [
+        /* 颅盖：额顶枕部 */
+        S.E(0, 3.53, -0.02, 0.375, 0.430, 0.420),
+        /* 面颅：上颌与颧部 */
+        S.E(0, 3.19, 0.14, 0.205, 0.105, 0.145),
+        /* 颧弓 */
+        S.K([-0.30, 3.26, 0.16], [-0.34, 3.30, -0.04], 0.032, 0.028),
+        S.K([0.30, 3.26, 0.16], [0.34, 3.30, -0.04], 0.032, 0.028),
+        /* 下颌骨：髁突 → 下颌角 → 颏部 */
+        S.K([-0.30, 3.33, -0.05], [-0.29, 3.14, 0.04], 0.030, 0.034),
+        S.K([-0.29, 3.14, 0.04], [-0.13, 3.06, 0.26], 0.034, 0.036),
+        S.K([-0.13, 3.06, 0.26], [0.02, 3.05, 0.30], 0.036, 0.032),
+        S.K([0.13, 3.06, 0.26], [0.29, 3.14, 0.04], 0.036, 0.034),
+        S.K([0.29, 3.14, 0.04], [0.30, 3.33, -0.05], 0.034, 0.030)
+      ],
+      sub: [
+        /* 颅腔：留一层薄骨壁 */
+        S.E(0, 3.55, -0.02, 0.325, 0.375, 0.370),
+        /* 眶 */
+        S.S(-0.155, 3.56, 0.31, 0.100), S.S(0.155, 3.56, 0.31, 0.100),
+        /* 鼻腔 */
+        S.E(0, 3.28, 0.36, 0.048, 0.075, 0.075),
+        /* 枕骨大孔 */
+        S.S(0, 3.06, -0.06, 0.090)
+      ],
+      k: 0.045, subK: 0.022,
+      anchor: [0.34, 3.50, 0.20],
+      size: { zh: "成人颅骨由 22 块骨组成", en: "22 bones in the adult skull" },
+      fn: {
+        zh: "保护脑与感觉器官，构成面部支架；下颌骨是颅骨中唯一能自由活动的骨。",
+        en: "Protects the brain and sense organs and frames the face; the mandible is the only freely movable skull bone."
+      },
+      facts: [
+        { zh: "新生儿颅骨有囟门，约在 18 个月前后闭合。", en: "Infant skulls have fontanelles that close around 18 months." },
+        { zh: "颅骨并非一整块，骨缝在成年后逐渐骨化融合。", en: "The skull is not one piece; sutures gradually fuse in adulthood." }
+      ]
+    },
+    {
+      id: "spine", zh: "脊柱", en: "Vertebral column", la: "Columna vertebralis",
+      color: "#c9bda2", res: 56,
+      add: (function () {
+        var out = [];
+        var y, i;
+        for (i = 0; i < 24; i++) {
+          y = 3.02 - i * 0.152;
+          var z = -0.26 + Math.sin((i / 23) * Math.PI * 1.05) * 0.05;
+          var r = 0.030 + (i > 11 ? 0.008 : 0);
+          out.push(S.K([0, y, z], [0, y - 0.10, z], r, r * 1.05));
+        }
+        for (i = 0; i < 12; i++) {
+          y = 2.30 - i * 0.16;
+          out.push(S.C([0, y, -0.27], [0, y - 0.05, -0.36], 0.020));
+        }
+        out.push(S.K([0, -0.66, -0.22], [0, -0.92, -0.20], 0.075, 0.045));
+        return out;
+      })(),
+      k: 0.02,
+      anchor: [0.06, 2.10, -0.30],
+      size: { zh: "33 块椎骨：7 颈、12 胸、5 腰、5 骶、4 尾", en: "33 vertebrae: 7 cervical, 12 thoracic, 5 lumbar, 5 sacral, 4 coccygeal" },
+      fn: {
+        zh: "支撑躯干、保护脊髓，并为肋骨与肌肉提供附着点；四个生理弯曲起缓冲作用。",
+        en: "Supports the trunk, protects the spinal cord and anchors ribs and muscles; four curvatures act as shock absorbers."
+      },
+      facts: [
+        { zh: "颈椎与腰椎前凸、胸椎与骶骨后凸，侧面呈 S 形。", en: "Cervical and lumbar lordosis with thoracic and sacral kyphosis give the S-shaped profile." },
+        { zh: "椎间盘中央是髓核，突出压迫神经根即形成椎间盘突出。", en: "The nucleus pulposus at each disc's centre can herniate and compress a nerve root." }
+      ]
+    },
+    {
+      id: "ribcage", zh: "胸廓", en: "Thoracic cage", la: "Cavea thoracis",
+      color: "#c6b99d", res: 56, step: 0.030,
+      add: (function () {
+        var out = [];
+        /* 胸骨：胸骨柄 + 胸骨体 + 剑突 */
+        out.push(S.B(0, 2.26, 0.30, 0.070, 0.055, 0.016, 0.012));
+        out.push(S.B(0, 2.06, 0.305, 0.045, 0.155, 0.015, 0.012));
+        out.push(S.B(0, 1.87, 0.30, 0.028, 0.035, 0.012, 0.010));
+        /* 锁骨 */
+        out.push(S.K([-0.06, 2.36, 0.24], [-0.52, 2.40, 0.10], 0.036, 0.030));
+        out.push(S.K([0.06, 2.36, 0.24], [0.52, 2.40, 0.10], 0.036, 0.030));
+        var i;
+        for (i = 0; i < 12; i++) {
+          var y = 2.36 - i * 0.078;
+          var w = 0.58 - Math.abs(i - 5) * 0.010;
+          var zf = 0.28 - i * 0.006;
+          [-1, 1].forEach(function (sd) {
+            var pts = [
+              [sd * 0.06, y, -0.24],
+              [sd * w * 0.55, y - 0.02, -0.10],
+              [sd * w, y - 0.10, 0.02],
+              [sd * w * 0.62, y - 0.20, zf],
+              [sd * 0.10, y - 0.24, zf + 0.01]
+            ];
+            out = out.concat(H.tube(pts, 0.024));
+          });
+        }
+        return out;
+      })(),
+      k: 0.02,
+      anchor: [0.52, 2.16, 0.16],
+      size: { zh: "12 对肋骨 + 胸骨 + 胸椎", en: "12 rib pairs plus sternum and thoracic vertebrae" },
+      fn: {
+        zh: "弹性笼状结构，随呼吸上抬与下降改变胸腔容积；同时保护心、肺与大血管。",
+        en: "An elastic cage that rises and falls to change thoracic volume, while shielding heart, lungs and great vessels."
+      },
+      facts: [
+        { zh: "第 1–7 对为真肋，8–10 对为假肋，11–12 对为浮肋。", en: "Ribs 1–7 are true ribs, 8–10 false, and 11–12 floating." },
+        { zh: "肋骨骨折最常发生在第 4–8 肋的腋中线附近。", en: "Rib fractures most often occur around ribs 4–8 near the midaxillary line." }
+      ]
+    },
+    {
+      id: "pelvis", zh: "骨盆", en: "Pelvis", la: "Pelvis",
+      color: "#c3b79b", res: 54,
+      add: [
+        /* 髂骨翼：大而薄的板，上缘即髂嵴 */
+        S.rot(S.E(-0.29, -0.08, -0.04, 0.185, 0.185, 0.030), [0, 0, 0.22]),
+        S.rot(S.E(0.29, -0.08, -0.04, 0.185, 0.185, 0.030), [0, 0, -0.22]),
+        /* 髂骨体 → 髋臼 */
+        S.K([-0.24, -0.22, -0.02], [-0.32, -0.40, 0.0], 0.090, 0.075),
+        S.K([0.24, -0.22, -0.02], [0.32, -0.40, 0.0], 0.090, 0.075),
+        /* 骶骨 */
+        S.K([0, -0.06, -0.22], [0, -0.42, -0.17], 0.080, 0.045),
+        /* 耻骨上支 → 耻骨联合 */
+        S.K([-0.31, -0.45, 0.02], [-0.04, -0.56, 0.12], 0.038, 0.032),
+        S.K([0.31, -0.45, 0.02], [0.04, -0.56, 0.12], 0.038, 0.032),
+        /* 坐骨 */
+        S.K([-0.31, -0.43, -0.02], [-0.18, -0.62, -0.04], 0.038, 0.034),
+        S.K([0.31, -0.43, -0.02], [0.18, -0.62, -0.04], 0.038, 0.034)
+      ],
+      sub: [
+        /* 骨盆入口 */
+        S.rot(S.E(0, -0.30, 0.02, 0.160, 0.050, 0.130), [-0.30, 0, 0]),
+        /* 闭孔 */
+        S.E(-0.18, -0.52, 0.08, 0.064, 0.064, 0.044),
+        S.E(0.18, -0.52, 0.08, 0.064, 0.064, 0.044)
+      ],
+      k: 0.05, subK: 0.035,
+      anchor: [0.38, -0.20, 0.10],
+      size: { zh: "髋骨由髂骨、坐骨、耻骨融合而成", en: "Each hip bone fuses ilium, ischium and pubis" },
+      fn: {
+        zh: "把体重从脊柱传到下肢，同时保护盆腔器官；女性骨盆更宽、骨盆入口更圆。",
+        en: "Transfers weight from spine to legs and protects pelvic organs; the female pelvis is wider with a rounder inlet."
+      },
+      facts: [
+        { zh: "骨盆的性别差异是法医学判定性别的可靠依据之一。", en: "Pelvic sex differences are among the most reliable skeletal indicators in forensics." },
+        { zh: "髋臼与股骨头构成髋关节，是稳定性最高的球窝关节。", en: "The acetabulum and femoral head form the hip — the most stable ball-and-socket joint." }
+      ]
+    },
+    {
+      id: "arm-bones", zh: "上肢骨", en: "Upper limb bones", la: "Ossa membri superioris",
+      color: "#cbbfa4", res: 44,
+      add: [
+        S.K([-0.72, 2.40, 0.0], [-0.95, 1.62, 0.02], 0.048, 0.036),
+        S.S(-0.72, 2.44, 0.0, 0.062), S.S(-0.95, 1.62, 0.02, 0.048),
+        S.K([-0.96, 1.58, 0.02], [-1.04, 1.18, 0.05], 0.030, 0.024),
+        S.K([-1.02, 1.58, 0.05], [-1.08, 1.18, 0.07], 0.024, 0.018),
+        S.K([0.72, 2.40, 0.0], [0.95, 1.62, 0.02], 0.048, 0.036),
+        S.S(0.72, 2.44, 0.0, 0.062), S.S(0.95, 1.62, 0.02, 0.048),
+        S.K([0.96, 1.58, 0.02], [1.04, 1.18, 0.05], 0.030, 0.024),
+        S.K([1.02, 1.58, 0.05], [1.08, 1.18, 0.07], 0.024, 0.018)
+      ],
+      k: 0.03,
+      anchor: [0.86, 1.96, 0.06],
+      size: { zh: "肱骨约 30 cm，前臂由桡骨与尺骨组成", en: "humerus ≈30 cm; forearm has radius and ulna" },
+      fn: {
+        zh: "上肢骨以灵活性为主：肩关节活动范围最大，肘关节为稳定的铰链，前臂可旋前旋后。",
+        en: "Built for mobility: the shoulder has the widest range, the elbow is a stable hinge, and the forearm pronates and supinates."
+      },
+      facts: [
+        { zh: "锁骨是唯一连接上肢与躯干的骨，也是最早骨化的骨之一。", en: "The clavicle is the only bony link between arm and trunk and ossifies early." },
+        { zh: "桡骨与尺骨的交叉决定了手掌能否翻转。", en: "Crossing of radius and ulna is what lets the palm turn over." }
+      ]
+    },
+    {
+      id: "leg-bones", zh: "下肢骨", en: "Lower limb bones", la: "Ossa membri inferioris",
+      color: "#cbbfa4", res: 46,
+      add: [
+        S.K([-0.30, -0.46, 0.02], [-0.28, -1.92, 0.02], 0.060, 0.046),
+        S.S(-0.30, -0.46, 0.02, 0.075), S.S(-0.28, -1.92, 0.03, 0.062),
+        S.K([-0.28, -1.96, 0.02], [-0.25, -3.50, -0.01], 0.036, 0.026),
+        S.K([-0.24, -1.96, -0.02], [-0.21, -3.50, -0.04], 0.022, 0.016),
+        S.K([0.30, -0.46, 0.02], [0.28, -1.92, 0.02], 0.060, 0.046),
+        S.S(0.30, -0.46, 0.02, 0.075), S.S(0.28, -1.92, 0.03, 0.062),
+        S.K([0.28, -1.96, 0.02], [0.25, -3.50, -0.01], 0.036, 0.026),
+        S.K([0.24, -1.96, -0.02], [0.21, -3.50, -0.04], 0.022, 0.016)
+      ],
+      k: 0.03,
+      anchor: [0.40, -1.20, 0.04],
+      size: { zh: "股骨约 45 cm，是人体最长的骨", en: "femur ≈45 cm, the longest bone" },
+      fn: {
+        zh: "承受全部体重并完成行走与奔跑；股骨、胫骨与髌骨构成膝关节。",
+        en: "Carries body weight and drives walking and running; femur, tibia and patella form the knee."
+      },
+      facts: [
+        { zh: "股骨可承受约体重 30 倍的轴向压力。", en: "The femur can withstand axial loads around 30 times body weight." },
+        { zh: "胫骨前缘皮下无肌肉覆盖，因此容易发生开放性骨折。", en: "The tibial crest lies just under the skin, making open fractures more likely." }
+      ]
+    },
+    {
+      id: "muscles", zh: "主要肌群", en: "Major muscle groups", la: "Musculi skeletales",
+      color: "#b56b62", res: 54, step: 0.028,
+      add: [
+        S.E(-0.34, 2.24, 0.28, 0.26, 0.16, 0.09),
+        S.E(0.34, 2.24, 0.28, 0.26, 0.16, 0.09),
+        S.E(-0.72, 2.38, 0.02, 0.14, 0.15, 0.14),
+        S.E(0.72, 2.38, 0.02, 0.14, 0.15, 0.14),
+        S.B(-0.11, 1.62, 0.30, 0.075, 0.10, 0.05, 0.03),
+        S.B(0.11, 1.62, 0.30, 0.075, 0.10, 0.05, 0.03),
+        S.B(-0.11, 1.38, 0.31, 0.075, 0.10, 0.05, 0.03),
+        S.B(0.11, 1.38, 0.31, 0.075, 0.10, 0.05, 0.03),
+        S.B(-0.11, 1.14, 0.31, 0.072, 0.10, 0.05, 0.03),
+        S.B(0.11, 1.14, 0.31, 0.072, 0.10, 0.05, 0.03),
+        S.B(-0.10, 0.90, 0.30, 0.070, 0.10, 0.05, 0.03),
+        S.B(0.10, 0.90, 0.30, 0.070, 0.10, 0.05, 0.03),
+        S.K([-0.82, 2.28, 0.06], [-0.92, 1.76, 0.08], 0.075, 0.055),
+        S.K([0.82, 2.28, 0.06], [0.92, 1.76, 0.08], 0.075, 0.055),
+        S.K([-0.30, -0.42, 0.10], [-0.27, -1.70, 0.10], 0.115, 0.085),
+        S.K([0.30, -0.42, 0.10], [0.27, -1.70, 0.10], 0.115, 0.085),
+        S.K([-0.27, -2.02, -0.06], [-0.25, -2.86, -0.06], 0.085, 0.040),
+        S.K([0.27, -2.02, -0.06], [0.25, -2.86, -0.06], 0.085, 0.040)
+      ],
+      k: 0.05,
+      anchor: [0.30, -1.10, 0.14],
+      size: { zh: "约 600 块骨骼肌，占体重 35–45%", en: "≈600 skeletal muscles, 35–45% of body mass" },
+      fn: {
+        zh: "骨骼肌跨关节附着，收缩时牵动骨产生运动；同时是产热与维持姿势的主要器官。",
+        en: "Skeletal muscles cross joints and pull on bones; they also generate heat and maintain posture."
+      },
+      facts: [
+        { zh: "肌肉只能拉不能推，因此每个关节两侧通常成对配置拮抗肌。", en: "Muscles only pull, so joints usually have antagonistic pairs." },
+        { zh: "肌肉通过肌腱附着于骨，肌腱的胶原纤维抗拉强度极高。", en: "Muscles attach via tendons, whose collagen fibres resist high tensile load." }
+      ]
+    }
+  ];
+
+  /* ---------- 06 内分泌系统 ---------- */
+  var endo = H.byId("endocrine");
+  endo.organs = [
+    {
+      id: "pituitary", zh: "垂体", en: "Pituitary gland", la: "Hypophysis",
+      color: "#b98bc4", res: 24,
+      add: [
+        S.E(0, 3.10, 0.02, 0.055, 0.042, 0.050),
+        S.K([0, 3.15, 0.02], [0, 3.22, 0.02], 0.020, 0.016)
+      ],
+      k: 0.02,
+      anchor: [0.06, 3.10, 0.06],
+      size: { zh: "约 1 cm，重 0.5–1 g", en: "about 1 cm, 0.5–1 g" },
+      fn: {
+        zh: "分泌生长激素、促甲状腺激素、促肾上腺皮质激素、促性腺激素与催产素等，调控其他内分泌腺。",
+        en: "Secretes growth hormone, TSH, ACTH, gonadotropins, oxytocin and more, controlling other endocrine glands."
+      },
+      facts: [
+        { zh: "垂体分前叶与后叶：前叶合成激素，后叶只储存下丘脑运来的激素。", en: "The anterior lobe synthesises hormones; the posterior lobe only stores hormones made in the hypothalamus." },
+        { zh: "它位于蝶骨蝶鞍内，上方通过漏斗与下丘脑相连。", en: "It sits in the sella turcica, connected to the hypothalamus by the infundibulum." }
+      ]
+    },
+    {
+      id: "thyroid", zh: "甲状腺", en: "Thyroid gland", la: "Glandula thyroidea",
+      color: "#b98bc4", res: 34,
+      add: [
+        S.E(-0.10, 2.72, 0.13, 0.070, 0.085, 0.055),
+        S.E(0.10, 2.72, 0.13, 0.070, 0.085, 0.055),
+        S.K([-0.06, 2.68, 0.13], [0.06, 2.68, 0.13], 0.038, 0.038)
+      ],
+      k: 0.04,
+      anchor: [0.14, 2.70, 0.20],
+      size: { zh: "重 15–25 g，呈蝶形", en: "15–25 g, butterfly-shaped" },
+      fn: {
+        zh: "合成甲状腺素 T4 与三碘甲状腺原氨酸 T3，调节基础代谢率、产热与生长发育。",
+        en: "Produces T4 and T3, setting basal metabolic rate, heat production and growth."
+      },
+      facts: [
+        { zh: "甲状腺是唯一大量储存激素的内分泌腺，储备可维持数周。", en: "It is the only endocrine gland that stores large hormone reserves, enough for weeks." },
+        { zh: "滤泡中的胶质主要成分是甲状腺球蛋白，碘是其合成关键。", en: "Follicular colloid is mostly thyroglobulin; iodine is the key substrate." }
+      ]
+    },
+    {
+      id: "parathyroid", zh: "甲状旁腺", en: "Parathyroid glands", la: "Glandulae parathyroideae",
+      color: "#c9a0cf", res: 22,
+      add: [
+        S.S(-0.085, 2.80, 0.08, 0.026),
+        S.S(0.085, 2.80, 0.08, 0.026),
+        S.S(-0.080, 2.64, 0.08, 0.024),
+        S.S(0.080, 2.64, 0.08, 0.024)
+      ],
+      k: 0.02,
+      anchor: [-0.10, 2.66, 0.10],
+      size: { zh: "4 枚，每枚约 3–5 mm", en: "four glands, 3–5 mm each" },
+      fn: {
+        zh: "分泌甲状旁腺激素（PTH），升高血钙、降低血磷，是钙稳态的核心调节者。",
+        en: "Secretes PTH to raise blood calcium and lower phosphate — the core regulator of calcium homeostasis."
+      },
+      facts: [
+        { zh: "甲状腺手术时误伤甲状旁腺可导致低钙抽搐。", en: "Damage during thyroid surgery can cause hypocalcaemic tetany." },
+        { zh: "PTH 通过促进骨吸收、肾小管重吸收钙与活化维生素 D 三条途径升钙。", en: "PTH raises calcium via bone resorption, renal reabsorption and vitamin-D activation." }
+      ]
+    },
+    {
+      id: "adrenal", zh: "肾上腺", en: "Adrenal glands", la: "Glandulae suprarenales",
+      color: "#c98bb0", res: 30,
+      add: [
+        S.E(-0.45, 1.02, -0.20, 0.072, 0.052, 0.042),
+        S.E(0.45, 1.10, -0.20, 0.072, 0.052, 0.042)
+      ],
+      k: 0.03,
+      anchor: [-0.46, 1.06, -0.16],
+      size: { zh: "每枚约 5 × 3 × 1 cm", en: "about 5 × 3 × 1 cm each" },
+      fn: {
+        zh: "皮质分泌皮质醇、醛固酮与雄激素；髓质分泌肾上腺素，参与应激反应。",
+        en: "The cortex makes cortisol, aldosterone and androgens; the medulla releases adrenaline for the stress response."
+      },
+      facts: [
+        { zh: "肾上腺皮质与髓质来源不同：皮质来自中胚层，髓质来自神经嵴。", en: "Cortex and medulla have different origins: mesoderm versus neural crest." },
+        { zh: "醛固酮作用于肾远曲小管，保钠排钾，是血压调节的一环。", en: "Aldosterone acts on the distal tubule, retaining sodium and excreting potassium." }
+      ]
+    },
+    {
+      id: "islets", zh: "胰岛", en: "Pancreatic islets", la: "Insulae pancreaticae",
+      color: "#d9c48f", res: 40,
+      add: [
+        S.K([-0.05, 0.99, -0.12], [0.12, 1.05, -0.16], 0.062, 0.050),
+        S.K([0.12, 1.05, -0.16], [0.30, 1.10, -0.19], 0.050, 0.044),
+        S.K([0.30, 1.10, -0.19], [0.50, 1.16, -0.21], 0.044, 0.026)
+      ],
+      k: 0.06,
+      anchor: [0.24, 1.09, -0.14],
+      size: { zh: "约 100 万个胰岛，占胰腺 1–2%", en: "about one million islets, 1–2% of pancreatic volume" },
+      fn: {
+        zh: "β 细胞分泌胰岛素降低血糖，α 细胞分泌胰高血糖素升高血糖。",
+        en: "Beta cells release insulin to lower glucose; alpha cells release glucagon to raise it."
+      },
+      facts: [
+        { zh: "胰岛素是体内唯一降低血糖的激素。", en: "Insulin is the only hormone that lowers blood glucose." },
+        { zh: "1 型糖尿病是 β 细胞被自身免疫破坏，2 型则以胰岛素抵抗为主。", en: "Type 1 diabetes is autoimmune beta-cell loss; type 2 is mainly insulin resistance." }
+      ]
+    }
+  ];
+
+  root.HUMAN = root.HUMAN || {};
+})(window);
+
+</script>
+<script>
+/* 生殖系统 · 神经系统 · 免疫系统 */
+(function (root) {
+  "use strict";
+  var S = root.SDF, H = root.HUMAN;
+
+  /* ---------- 07 生殖系统（女性 / 男性两套） ---------- */
+  var rep = H.byId("reproductive");
+
+  var female = [
+    {
+      id: "uterus", zh: "子宫", en: "Uterus", la: "Uterus",
+      color: "#c9839b", res: 40,
+      add: [
+        /* 宫体（倒梨形，前倾）+ 宫颈 */
+        S.E(0, -0.21, 0.03, 0.115, 0.115, 0.072),
+        S.K([0, -0.30, 0.03], [0, -0.42, 0.035], 0.072, 0.042)
+      ],
+      k: 0.05,
+      anchor: [0.13, -0.20, 0.10],
+      size: { zh: "未孕时约 7.5 × 5 × 2.5 cm", en: "non-pregnant: about 7.5 × 5 × 2.5 cm" },
+      fn: {
+        zh: "内膜在雌激素与孕激素作用下周期增厚，为胚胎着床准备；肌层在分娩时强烈收缩。",
+        en: "The endometrium thickens cyclically under oestrogen and progesterone for implantation; the myometrium contracts in labour."
+      },
+      facts: [
+        { zh: "子宫正常为前倾前屈位，靠韧带与盆底肌维持。", en: "The uterus is normally anteverted and anteflexed, held by ligaments and the pelvic floor." },
+        { zh: "子宫颈是子宫下端的狭窄部分，也是宫颈癌筛查的取样部位。", en: "The cervix is the narrow lower part and the sampling site for cervical screening." }
+      ]
+    },
+    {
+      id: "tube", zh: "输卵管", en: "Fallopian tubes", la: "Tuba uterina",
+      color: "#d09aae", res: 30,
+      add: [
+        /* 从宫角先向上外，再转向卵巢，末端为伞 */
+        S.C([-0.10, -0.17, 0.02], [-0.17, -0.13, -0.02], 0.019),
+        S.C([-0.17, -0.13, -0.02], [-0.235, -0.17, -0.03], 0.017),
+        S.C([-0.235, -0.17, -0.03], [-0.245, -0.24, -0.02], 0.020),
+        S.C([0.10, -0.17, 0.02], [0.17, -0.13, -0.02], 0.019),
+        S.C([0.17, -0.13, -0.02], [0.235, -0.17, -0.03], 0.017),
+        S.C([0.235, -0.17, -0.03], [0.245, -0.24, -0.02], 0.020)
+      ],
+      k: 0.02,
+      anchor: [0.22, -0.14, 0.0],
+      size: { zh: "长约 10–12 cm", en: "10–12 cm long" },
+      fn: {
+        zh: "拾取排卵后的卵子，是受精通常发生的部位，并靠纤毛与蠕动把早期胚胎送入子宫。",
+        en: "Catches the ovulated egg, is the usual site of fertilisation, and moves the early embryo to the uterus by cilia and peristalsis."
+      },
+      facts: [
+        { zh: "输卵管结扎通过阻断这一段实现避孕，不影响激素分泌。", en: "Tubal ligation blocks this passage without affecting hormone production." },
+        { zh: "异位妊娠最常见于输卵管壶腹部。", en: "Ectopic pregnancy most often occurs in the ampulla." }
+      ]
+    },
+    {
+      id: "ovary", zh: "卵巢", en: "Ovaries", la: "Ovarium",
+      color: "#d9b06f", res: 26,
+      add: [
+        S.E(-0.27, -0.25, -0.01, 0.045, 0.032, 0.026),
+        S.E(0.27, -0.25, -0.01, 0.045, 0.032, 0.026)
+      ],
+      k: 0.03,
+      anchor: [-0.29, -0.25, 0.05],
+      size: { zh: "约 3 × 2 × 1 cm", en: "about 3 × 2 × 1 cm" },
+      fn: {
+        zh: "产生卵子并分泌雌激素与孕激素，是女性生殖轴的下游效应器。",
+        en: "Produces oocytes and secretes oestrogen and progesterone — the downstream effector of the female reproductive axis."
+      },
+      facts: [
+        { zh: "女性出生时约有 100–200 万个原始卵泡，青春期后每月排卵一枚。", en: "About 1–2 million primordial follicles exist at birth; usually one egg is released each month after puberty." },
+        { zh: "绝经的本质是卵泡耗竭，而非“激素用完”。", en: "Menopause reflects follicle depletion rather than simply running out of hormones." }
+      ]
+    },
+    {
+      id: "vagina", zh: "阴道", en: "Vagina", la: "Vagina",
+      color: "#b8738a", res: 30,
+      add: [
+        S.K([0, -0.44, 0.04], [0, -0.56, 0.02], 0.048, 0.042)
+      ],
+      k: 0.03,
+      anchor: [0.07, -0.50, 0.06],
+      size: { zh: "长约 8–10 cm", en: "8–10 cm long" },
+      fn: {
+        zh: "连接子宫颈与外阴的肌性管道，是月经排出、性交与分娩的通道。",
+        en: "A muscular canal from cervix to vulva — the passage for menstruation, intercourse and birth."
+      },
+      facts: [
+        { zh: "阴道内呈酸性（pH 3.8–4.5），由乳酸杆菌维持，抑制病原体。", en: "The vaginal pH is acidic (3.8–4.5), maintained by lactobacilli against pathogens." },
+        { zh: "阴道壁有丰富皱襞，分娩时可大幅扩张。", en: "Rugae allow considerable distension during childbirth." }
+      ]
+    }
+  ];
+
+  var male = [
+    {
+      id: "testis", zh: "睾丸与附睾", en: "Testes & epididymis", la: "Testis · Epididymis",
+      color: "#c9839b", res: 34,
+      add: [
+        S.E(-0.105, -0.78, 0.10, 0.055, 0.070, 0.052),
+        S.E(0.105, -0.78, 0.10, 0.055, 0.070, 0.052),
+        S.C([-0.115, -0.82, 0.05], [-0.10, -0.72, 0.05], 0.020),
+        S.C([0.115, -0.82, 0.05], [0.10, -0.72, 0.05], 0.020)
+      ],
+      k: 0.03,
+      anchor: [-0.16, -0.80, 0.12],
+      size: { zh: "每枚约 4 × 3 × 2.5 cm", en: "about 4 × 3 × 2.5 cm each" },
+      fn: {
+        zh: "睾丸产生精子并分泌睾酮；附睾是精子成熟与储存的场所。",
+        en: "Testes make sperm and testosterone; the epididymis is where sperm mature and are stored."
+      },
+      facts: [
+        { zh: "精子在低于体温 2–3 ℃ 的环境中才能正常生成，因此睾丸位于体外。", en: "Spermatogenesis needs 2–3 °C below core temperature, which is why the testes sit outside the body." },
+        { zh: "生精过程约需 70 天，因此精液质量变化滞后于近期因素。", en: "Spermatogenesis takes about 70 days, so semen quality lags recent exposures." }
+      ]
+    },
+    {
+      id: "vas", zh: "输精管", en: "Vas deferens", la: "Ductus deferens",
+      color: "#d09aae", res: 28,
+      add: [
+        S.K([-0.10, -0.70, 0.02], [-0.14, -0.58, -0.04], 0.016, 0.016),
+        S.K([-0.14, -0.58, -0.04], [-0.06, -0.48, -0.02], 0.016, 0.016),
+        S.K([0.10, -0.70, 0.02], [0.14, -0.58, -0.04], 0.016, 0.016),
+        S.K([0.14, -0.58, -0.04], [0.06, -0.48, -0.02], 0.016, 0.016)
+      ],
+      k: 0.02,
+      anchor: [0.14, -0.64, -0.02],
+      size: { zh: "长约 30–45 cm", en: "30–45 cm long" },
+      fn: {
+        zh: "把精子从附睾输送到射精管，管壁厚、肌层强，是输精管结扎的部位。",
+        en: "Carries sperm from epididymis to ejaculatory duct; its thick muscular wall is the site of vasectomy."
+      },
+      facts: [
+        { zh: "输精管结扎后精子仍会产生，只是不再进入精液。", en: "After vasectomy sperm are still produced but no longer enter the ejaculate." },
+        { zh: "精子在输精管中可存活数周。", en: "Sperm can survive for weeks in the vas deferens." }
+      ]
+    },
+    {
+      id: "prostate", zh: "前列腺", en: "Prostate", la: "Prostata",
+      color: "#b8738a", res: 32,
+      add: [
+        S.E(0, -0.62, 0.02, 0.095, 0.075, 0.080)
+      ],
+      sub: [S.C([0, -0.72, 0.02], [0, -0.50, 0.02], 0.026)],
+      k: 0.04, subK: 0.02,
+      anchor: [0.10, -0.62, 0.10],
+      size: { zh: "约 4 × 3 × 2 cm，重 20 g", en: "about 4 × 3 × 2 cm, 20 g" },
+      fn: {
+        zh: "分泌约占精液 30% 的碱性液体，中和阴道酸性；尿道从中穿过。",
+        en: "Contributes about 30% of semen volume with alkaline fluid that neutralises vaginal acidity; the urethra passes through it."
+      },
+      facts: [
+        { zh: "前列腺增生多发生在移行带，压迫尿道导致排尿困难。", en: "Benign enlargement arises in the transition zone and obstructs urine flow." },
+        { zh: "前列腺癌多起于外周带，因此直肠指检可触及。", en: "Prostate cancer usually starts in the peripheral zone, which is why it is palpable per rectum." }
+      ]
+    },
+    {
+      id: "seminal", zh: "精囊", en: "Seminal vesicles", la: "Vesicula seminalis",
+      color: "#c9839b", res: 28,
+      add: [
+        S.E(-0.10, -0.56, -0.06, 0.055, 0.035, 0.028),
+        S.E(0.10, -0.56, -0.06, 0.055, 0.035, 0.028)
+      ],
+      k: 0.03,
+      anchor: [-0.14, -0.56, -0.02],
+      size: { zh: "长约 5 cm", en: "about 5 cm long" },
+      fn: {
+        zh: "分泌含果糖的黏稠液体，为精子提供能量，占精液体积的 60–70%。",
+        en: "Secretes fructose-rich fluid that fuels sperm and makes up 60–70% of semen volume."
+      },
+      facts: [
+        { zh: "精囊液是精液体积的主要来源，而非睾丸。", en: "Most semen volume comes from the vesicles, not the testes." },
+        { zh: "果糖由精囊分泌，可作为梗阻性无精症的判断线索。", en: "Fructose absence can indicate obstructive azoospermia." }
+      ]
+    }
+  ];
+
+  rep.variants = [
+    { id: "female", zh: "女性", en: "Female", organs: female },
+    { id: "male", zh: "男性", en: "Male", organs: male }
+  ];
+  rep.organs = female;
+
+  /* ---------- 08 神经系统 ---------- */
+  var nerv = H.byId("nervous");
+
+  /* ============================================================
+     脑内毛细血管：放大示意板
+     管径 5–10 µm，比全身尺度小四个数量级，SDF 网格（步长 0.021 ≈ 4.4 mm）
+     根本表达不出来，所以这里直接生成圆柱网格，并单独做一个“取景板”：
+     圆形视野框 + 刻度 + 引线，明确告诉读者这是放大后的示意，不是等比例。
+     ============================================================ */
+  var M = root.MESH;
+
+  /* 确定性伪随机：同一份几何每次重建结果一致 */
+  function rnd(a, b, c) {
+    var v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453;
+    return v - Math.floor(v);
+  }
+
+  /* 按弧长在折线上取样 */
+  function samplePath(pts, t) {
+    var segs = [], total = 0, i;
+    for (i = 0; i < pts.length - 1; i++) {
+      var L = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1], pts[i + 1][2] - pts[i][2]);
+      segs.push(L); total += L;
+    }
+    var d = t * total, acc = 0;
+    for (var j = 0; j < segs.length; j++) {
+      if (d <= acc + segs[j] || j === segs.length - 1) {
+        var u = segs[j] > 1e-9 ? Math.min(1, Math.max(0, (d - acc) / segs[j])) : 0;
+        return [
+          pts[j][0] + (pts[j + 1][0] - pts[j][0]) * u,
+          pts[j][1] + (pts[j + 1][1] - pts[j][1]) * u,
+          pts[j][2] + (pts[j + 1][2] - pts[j][2]) * u
+        ];
+      }
+      acc += segs[j];
+    }
+    return pts[pts.length - 1];
+  }
+
+  /* 锥形管：半径从 r0 渐变到 r1 */
+  function vessel(geo, pts, r0, r1, n) {
+    n = n || 6;
+    for (var i = 0; i < n; i++) {
+      var a = samplePath(pts, i / n), b = samplePath(pts, (i + 1) / n);
+      M.addTube(geo, [a, b], r0 + (r1 - r0) * (i + 0.5) / n, 6);
+    }
+  }
+
+  /* 微微弯曲的管段：真实毛细血管不会是笔直的线段 */
+  function bow(a, b, k, zz, steps) {
+    steps = steps || 3;
+    var dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2];
+    var L = Math.hypot(dx, dy) || 1e-6;
+    var nx = -dy / L, ny = dx / L;
+    var out = [];
+    for (var i = 0; i <= steps; i++) {
+      var t = i / steps, w = Math.sin(t * Math.PI);
+      out.push([
+        a[0] + dx * t + nx * k * w,
+        a[1] + dy * t + ny * k * w,
+        a[2] + dz * t + (zz || 0) * w
+      ]);
+    }
+    return out;
+  }
+
+  /* 平滑的弓形血管（引线用） */
+  function flow(geo, from, to, bulge, r0, r1, n) {
+    var dx = to[0] - from[0], dy = to[1] - from[1];
+    var L = Math.hypot(dx, dy) || 1;
+    var nx = -dy / L, ny = dx / L;
+    var pts = [];
+    for (var i = 0; i <= 6; i++) {
+      var t = i / 6;
+      var w = Math.sin(t * Math.PI) * bulge + Math.sin(t * Math.PI * 2) * bulge * 0.22;
+      pts.push([from[0] + dx * t + nx * w, from[1] + dy * t + ny * w, from[2] + (to[2] - from[2]) * t]);
+    }
+    vessel(geo, pts, r0, r1, n);
+  }
+
+  /* 半平面裁剪（Sutherland–Hodgman）：保留离 a 比离 b 更近的一侧 */
+  function clipHalf(poly, a, b) {
+    var nx = b[0] - a[0], ny = b[1] - a[1];
+    var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+    var out = [];
+    for (var i = 0; i < poly.length; i++) {
+      var p = poly[i], q = poly[(i + 1) % poly.length];
+      var dp = (p[0] - mx) * nx + (p[1] - my) * ny;
+      var dq = (q[0] - mx) * nx + (q[1] - my) * ny;
+      if (dp <= 0) out.push(p);
+      if ((dp < 0 && dq > 0) || (dp > 0 && dq < 0)) {
+        var t = dp / (dp - dq);
+        out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+      }
+    }
+    return out;
+  }
+
+  /* 线段与圆的交：只留圆内的那一段；血管因此“切”在视野边界上，像显微照片被裁成圆形 */
+  function clipSegCircle(p0, p1, cx, cy, R) {
+    var dx = p1[0] - p0[0], dy = p1[1] - p0[1];
+    var fx = p0[0] - cx, fy = p0[1] - cy;
+    var A = dx * dx + dy * dy;
+    var C = fx * fx + fy * fy - R * R;
+    if (A < 1e-12) return C <= 0 ? [p0, p1] : null;
+    var B = 2 * (fx * dx + fy * dy);
+    var disc = B * B - 4 * A * C;
+    if (disc <= 0) return C <= 0 ? [p0, p1] : null;
+    var sq = Math.sqrt(disc);
+    var lo = Math.max(0, (-B - sq) / (2 * A));
+    var hi = Math.min(1, (-B + sq) / (2 * A));
+    if (hi - lo < 0.008) return null;
+    return [
+      [p0[0] + dx * lo, p0[1] + dy * lo, p0[2] + (p1[2] - p0[2]) * lo],
+      [p0[0] + dx * hi, p0[1] + dy * hi, p0[2] + (p1[2] - p0[2]) * hi]
+    ];
+  }
+
+  function capillaryPlate(cx, cy, z, R) {
+    var geo = M.make();
+    var a = 0.042;          /* 单个毛细血管环的尺度（示意） */
+    var rC = 0.0032;        /* 毛细血管半径（示意） */
+    var rows = Math.ceil(R * 1.2 / (a * 0.866)) + 1;
+    var cols = Math.ceil(R * 1.2 / a) + 1;
+    var sites = [], i, j;
+
+    /* 1) 抖动过的点阵：每个点长成一个“组织小格”，它们的边界就是毛细血管 */
+    for (j = -rows; j <= rows; j++) {
+      for (i = -cols; i <= cols; i++) {
+        var x = (i * a + (j % 2 ? a * 0.5 : 0) + (rnd(i, j, 1) - 0.5) * a * 0.66) * 1.16;
+        var y = (j * a * 0.866 + (rnd(i, j, 2) - 0.5) * a * 0.66) * 0.88;
+        if (Math.hypot(x, y) > R * 1.35) continue;
+        if (rnd(i, j, 6) < 0.08) continue;   /* 随机空掉几个点 → 大小不一的网眼 */
+        sites.push([cx + x, cy + y, z + (rnd(i, j, 3) - 0.5) * 0.032]);
+      }
+    }
+
+    /* 2) Voronoi：逐点用半平面把一个方框裁成它自己的小格 */
+    var m = R * 1.55;
+    var seen = Object.create(null), vseen = Object.create(null);
+    var edges = [], joints = [];
+
+    function joint(p) {
+      var k = p[0].toFixed(3) + "|" + p[1].toFixed(3);
+      if (vseen[k]) return;
+      vseen[k] = 1;
+      joints.push([p[0], p[1], z]);
+    }
+
+    for (var s = 0; s < sites.length; s++) {
+      var poly = [[cx - m, cy - m], [cx + m, cy - m], [cx + m, cy + m], [cx - m, cy + m]];
+      for (var o = 0; o < sites.length && poly.length >= 3; o++) {
+        if (o === s) continue;
+        poly = clipHalf(poly, sites[s], sites[o]);
+      }
+      if (poly.length < 3) continue;
+
+      for (var e = 0; e < poly.length; e++) {
+        var p0 = poly[e], p1 = poly[(e + 1) % poly.length];
+        var L = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+        if (L < 1e-4) continue;
+        var mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
+        if (Math.hypot(mx - cx, my - cy) > R * 1.30) continue;
+        var key = mx.toFixed(3) + "|" + my.toFixed(3);
+        if (seen[key]) continue;
+        seen[key] = 1;
+
+        var seg = clipSegCircle([p0[0], p0[1], sites[s][2]], [p1[0], p1[1], sites[s][2]], cx, cy, R * 0.985);
+        if (!seg) continue;
+        edges.push(seg);
+        if (Math.hypot(p0[0] - cx, p0[1] - cy) < R * 0.97) joint(p0);
+        if (Math.hypot(p1[0] - cx, p1[1] - cy) < R * 0.97) joint(p1);
+      }
+    }
+
+    /* 3) 每条边画成微微弯曲、粗细不一的管子；少数“优先通路”明显更粗 */
+    for (var q = 0; q < edges.length; q++) {
+      var A = edges[q][0], B = edges[q][1];
+      var thick = rnd(q, 21, 4) < 0.14;
+      var rr = rC * (thick ? 1.55 + 0.55 * rnd(q, 22, 4) : 0.72 + 0.46 * rnd(q, 23, 4));
+      M.addTube(geo, bow(A, B,
+        (rnd(q, 24, 4) - 0.5) * 0.011,
+        (rnd(q, 25, 4) - 0.5) * 0.014, 3), rr, 5);
+    }
+
+    /* 4) 分叉处略作加粗：真实的毛细血管结点也是鼓的 */
+    for (var jt = 0; jt < joints.length; jt++) {
+      M.addSphere(geo, joints[jt], [rC * 1.16, rC * 1.16, rC * 1.16], 6, 4);
+    }
+
+    /* 5) 少数盲端（生长期的毛细血管芽） */
+    for (var b = 0; b < joints.length; b += 13) {
+      var ang = rnd(b, 11, 9) * Math.PI * 2;
+      var len = a * (0.40 + 0.30 * rnd(b, 12, 9));
+      var nd = joints[b];
+      var tip = [nd[0] + Math.cos(ang) * len, nd[1] + Math.sin(ang) * len, nd[2]];
+      if (Math.hypot(tip[0] - cx, tip[1] - cy) > R * 0.95) continue;
+      M.addTube(geo, [nd, tip], rC * 0.66, 5);
+      M.addSphere(geo, tip, [rC * 0.76, rC * 0.76, rC * 0.76], 6, 4);
+    }
+
+    /* 6) 取景框与刻度 */
+    M.addTube(geo, M.circlePath([cx, cy, z], R, 96, "z"), 0.0028, 5, true);
+    for (var k = 0; k < 24; k++) {
+      var an = Math.PI * 2 * k / 24;
+      var major = k % 6 === 0;
+      var l0 = R * (major ? 1.0 : 0.986);
+      var l1 = R + (major ? 0.036 : 0.015);
+      M.addTube(geo, [
+        [cx + Math.cos(an) * l0, cy + Math.sin(an) * l0, z],
+        [cx + Math.cos(an) * l1, cy + Math.sin(an) * l1, z]
+      ], major ? 0.0025 : 0.0016, 4);
+    }
+
+    /* 7) 引线：从大脑表面牵到取景框，说明这一块取自脑组织 */
+    var ringAt = [cx - R * 0.866, cy + R * 0.50, z];
+    flow(geo, [0.34, 3.58, 0.14], ringAt, 0.020, 0.0030, 0.0024, 12);
+    M.addSphere(geo, [0.34, 3.58, 0.14], [0.011, 0.011, 0.011], 8, 6);
+    M.addSphere(geo, ringAt, [0.0085, 0.0085, 0.0085], 8, 6);
+
+    return M.done(geo);
+  }
+
+  var CAP = { cx: 1.00, cy: 3.42, z: 0.10, R: 0.28 };
+  var capMesh = null;
+
+  nerv.organs = [
+    {
+      id: "cerebrum", zh: "大脑", en: "Cerebrum", la: "Cerebrum",
+      color: "#d9b86a", res: 64, step: 0.011,
+      add: (function () {
+        var out = [];
+        /* 两半球主体（略缩小，让脑回凸出于表面） */
+        out.push(S.E(-0.17, 3.50, -0.01, 0.200, 0.262, 0.372));
+        out.push(S.E(0.17, 3.50, -0.01, 0.200, 0.262, 0.372));
+        /* 脑回：按黄金角在半球表面密排小球 */
+        var n = 26;
+        [-1, 1].forEach(function (sd) {
+          for (var i = 0; i < n; i++) {
+            var t = i * 2.399963;
+            var u = 1 - 2 * (i + 0.5) / n;
+            var s = Math.sqrt(Math.max(0, 1 - u * u));
+            out.push(S.S(
+              sd * 0.17 + Math.cos(t) * s * 0.190,
+              3.50 + u * 0.250,
+              -0.01 + Math.sin(t) * s * 0.358,
+              0.050
+            ));
+          }
+        });
+        return out;
+      })(),
+      sub: [
+        /* 纵裂：左右半球之间的深沟 */
+        S.B(0, 3.56, 0.0, 0.014, 0.255, 0.395, 0.006)
+      ],
+      k: 0.022, subK: 0.012,
+      anchor: [0.34, 3.68, 0.24],
+      size: { zh: "约 1.3 kg，占体重 2%，耗氧约 20%", en: "about 1.3 kg — 2% of body mass, 20% of oxygen use" },
+      fn: {
+        zh: "处理感觉信息、发起随意运动、负责语言、记忆、情绪与决策；左右半球由胼胝体连接。",
+        en: "Handles sensation, voluntary movement, language, memory, emotion and decision-making; the hemispheres connect through the corpus callosum."
+      },
+      facts: [
+        { zh: "皮层表面积约 2500 cm²，其中三分之二折叠在沟回内。", en: "Cortical surface is about 2500 cm², two-thirds hidden in sulci." },
+        { zh: "成年后神经元基本不再分裂，但突触连接终身可塑。", en: "Neurons largely stop dividing in adulthood, yet synapses remain plastic for life." }
+      ]
+    },
+    {
+      id: "cerebellum", zh: "小脑", en: "Cerebellum", la: "Cerebellum",
+      color: "#c9a862", res: 44,
+      add: [
+        S.E(0, 3.22, -0.30, 0.22, 0.115, 0.145)
+      ],
+      sub: (function () {
+        var out = [];
+        for (var i = 0; i < 6; i++) {
+          out.push(S.E(0, 3.16 + i * 0.032, -0.30, 0.225, 0.006, 0.150));
+        }
+        return out;
+      })(),
+      k: 0.05, subK: 0.004,
+      anchor: [0.24, 3.22, -0.30],
+      size: { zh: "约 10% 脑体积，却含 80% 的神经元", en: "10% of brain volume but 80% of its neurons" },
+      fn: {
+        zh: "协调运动的时序与精度、维持平衡，并参与运动学习。",
+        en: "Coordinates movement timing and accuracy, maintains balance and supports motor learning."
+      },
+      facts: [
+        { zh: "小脑损伤表现为共济失调，而不是肌力下降。", en: "Cerebellar damage causes ataxia rather than weakness." },
+        { zh: "它通过三对小脑脚与脑干相连。", en: "Three pairs of cerebellar peduncles connect it to the brainstem." }
+      ]
+    },
+    {
+      id: "brainstem", zh: "脑干", en: "Brainstem", la: "Truncus encephali",
+      color: "#c9a05f", res: 34,
+      add: [
+        S.K([0, 3.30, -0.16], [0, 3.10, -0.14], 0.085, 0.075),
+        S.K([0, 3.10, -0.14], [0, 2.92, -0.14], 0.075, 0.055)
+      ],
+      k: 0.05,
+      anchor: [0.08, 3.20, -0.12],
+      size: { zh: "长约 8 cm，含中脑、脑桥与延髓", en: "about 8 cm: midbrain, pons and medulla" },
+      fn: {
+        zh: "控制呼吸、心率、血压、吞咽与觉醒；也是大脑与脊髓之间的传导通路。",
+        en: "Controls breathing, heart rate, blood pressure, swallowing and wakefulness, and relays between brain and cord."
+      },
+      facts: [
+        { zh: "延髓是生命中枢所在，损伤可导致呼吸心跳骤停。", en: "The medulla houses vital centres; injury can stop breathing and circulation." },
+        { zh: "脑干内几乎所有上行与下行纤维束都要经过。", en: "Nearly all ascending and descending tracts pass through it." }
+      ]
+    },
+    {
+      id: "cord", zh: "脊髓", en: "Spinal cord", la: "Medulla spinalis",
+      color: "#d0ae66", res: 48,
+      add: [
+        S.K([0, 2.88, -0.16], [0, 1.60, -0.20], 0.052, 0.052),
+        S.K([0, 1.60, -0.20], [0, 0.90, -0.235], 0.052, 0.056),
+        S.K([0, 0.90, -0.235], [0, 0.06, -0.25], 0.056, 0.038),
+        /* 马尾：脊髓止于 L1 以下的一束细根 */
+        S.K([0, 0.04, -0.25], [-0.05, -0.22, -0.24], 0.020, 0.014),
+        S.K([0, 0.04, -0.25], [0.05, -0.24, -0.24], 0.020, 0.014),
+        S.K([0, 0.04, -0.25], [0, -0.34, -0.23], 0.018, 0.012)
+      ],
+      k: 0.035,
+      anchor: [0.10, 1.60, -0.20],
+      size: { zh: "长约 45 cm，直径约 1 cm", en: "about 45 cm long, ≈1 cm wide" },
+      fn: {
+        zh: "传导感觉与运动信号，并独立完成反射；灰质呈蝶形位于中央。",
+        en: "Conducts sensory and motor signals and runs reflexes on its own; butterfly-shaped grey matter sits centrally."
+      },
+      facts: [
+        { zh: "脊髓在成人止于第 1–2 腰椎水平，下方为马尾。", en: "In adults the cord ends at L1–L2; the cauda equina continues below." },
+        { zh: "颈膨大与腰膨大分别支配上肢与下肢。", en: "Cervical and lumbar enlargements supply the arms and legs." }
+      ]
+    },
+    {
+      id: "brachial", zh: "臂丛", en: "Brachial plexus", la: "Plexus brachialis",
+      color: "#e0c07a", res: 34,
+      add: [
+        S.K([-0.10, 2.68, -0.10], [-0.30, 2.56, -0.04], 0.018, 0.020),
+        S.K([-0.30, 2.56, -0.04], [-0.52, 2.48, 0.0], 0.020, 0.022),
+        S.K([-0.52, 2.48, 0.0], [-0.80, 2.38, 0.02], 0.022, 0.016),
+        S.K([0.10, 2.68, -0.10], [0.30, 2.56, -0.04], 0.018, 0.020),
+        S.K([0.30, 2.56, -0.04], [0.52, 2.48, 0.0], 0.020, 0.022),
+        S.K([0.52, 2.48, 0.0], [0.80, 2.38, 0.02], 0.022, 0.016)
+      ],
+      k: 0.03,
+      anchor: [-0.52, 2.48, 0.04],
+      size: { zh: "由 C5–T1 前支构成", en: "formed by C5–T1 ventral rami" },
+      fn: {
+        zh: "把颈段脊髓的纤维分配到肩、臂、前臂与手，是上肢的神经干道。",
+        en: "Distributes cervical cord fibres to shoulder, arm, forearm and hand."
+      },
+      facts: [
+        { zh: "臂丛损伤可导致“臂麻痹”，表现为上肢无力与感觉障碍。", en: "Plexus injury can cause arm palsy with weakness and sensory loss." },
+        { zh: "产伤、摩托车事故是常见的外伤原因。", en: "Birth trauma and motorcycle accidents are common causes." }
+      ]
+    },
+    {
+      id: "sciatic", zh: "坐骨神经", en: "Sciatic nerve", la: "Nervus ischiadicus",
+      color: "#e0c07a", res: 34,
+      add: [
+        S.K([0.18, -0.50, -0.10], [0.24, -0.92, -0.06], 0.038, 0.032),
+        S.K([0.24, -0.92, -0.06], [0.26, -1.60, -0.02], 0.032, 0.026),
+        S.K([0.26, -1.60, -0.02], [0.26, -2.10, 0.0], 0.026, 0.018)
+      ],
+      k: 0.03,
+      anchor: [0.28, -1.30, 0.0],
+      size: { zh: "人体最粗的神经，宽约 2 cm", en: "the body's thickest nerve, about 2 cm wide" },
+      fn: {
+        zh: "支配大腿后群、小腿与足的大部分肌肉与皮肤。",
+        en: "Supplies the hamstrings and most of the leg and foot."
+      },
+      facts: [
+        { zh: "坐骨神经痛多由腰椎间盘突出压迫神经根引起，而非神经本身发炎。", en: "Sciatica usually comes from a herniated disc compressing a root, not from nerve inflammation." },
+        { zh: "它在臀部穿过梨状肌下方，是肌注的避开区域。", en: "It passes below piriformis — the reason gluteal injections avoid that spot." }
+      ]
+    },
+    {
+      id: "capillaries", zh: "毛细血管", en: "Capillaries", la: "Vasa capillaria",
+      color: "#cd6a5e",
+      noClip: true,
+      mesh: function () {
+        if (!capMesh) capMesh = capillaryPlate(CAP.cx, CAP.cy, CAP.z, CAP.R);
+        return capMesh;
+      },
+      bb: [0.62, 3.08, 0.03, 1.38, 3.76, 0.17],
+      anchor: [1.20, 3.66, 0.10],
+      size: {
+        zh: "视野约 1 mm 见方 · 管径 5–10 µm · 放大示意，非等比例",
+        en: "field ≈1 mm across · lumen 5–10 µm · magnified, not to scale"
+      },
+      fn: {
+        zh: "毛细血管是动脉与静脉之间唯一的交换场所。脑内的毛细血管内皮细胞用紧密连接彼此封死，外面再裹一层星形胶质细胞的足板和周细胞，共同构成血脑屏障。",
+        en: "Capillaries are the only place where blood exchanges with tissue. In the brain, endothelial cells are sealed by tight junctions and wrapped by astrocyte end-feet and pericytes — together they form the blood–brain barrier."
+      },
+      facts: [
+        { zh: "每立方毫米脑组织里约有 1 米长的毛细血管；全身毛细血管首尾相接约 4 万公里，可绕赤道一周。", en: "Each cubic millimetre of brain holds about 1 m of capillary; end to end the body's capillaries would run some 40,000 km." },
+        { zh: "管壁只有一层内皮细胞，厚约 0.5 µm；氧和葡萄糖靠扩散通过，不消耗能量。", en: "The wall is one endothelial layer about 0.5 µm thick; oxygen and glucose cross by diffusion, at no energy cost." },
+        { zh: "正因为血脑屏障，约 98% 的小分子药物进不了脑组织——这是神经药物研发最大的难关。", en: "Because of that barrier, roughly 98% of small-molecule drugs never reach brain tissue — the biggest hurdle in neuropharmacology." }
+      ]
+    }
+  ];
+
+  /* ---------- 09 免疫系统 ---------- */
+  var imm = H.byId("immune");
+  imm.organs = [
+    {
+      id: "marrow", zh: "骨髓", en: "Bone marrow", la: "Medulla ossium",
+      color: "#b5675c", res: 40,
+      add: [
+        /* 股骨与肱骨的髓腔 */
+        S.K([-0.30, -0.46, 0.02], [-0.28, -1.92, 0.02], 0.028, 0.022),
+        S.K([0.30, -0.46, 0.02], [0.28, -1.92, 0.02], 0.028, 0.022),
+        S.K([-0.80, 2.38, 0.02], [-0.97, 1.64, 0.02], 0.024, 0.018),
+        S.K([0.80, 2.38, 0.02], [0.97, 1.64, 0.02], 0.024, 0.018),
+        /* 红骨髓主要在轴心骨：髂骨、胸骨 */
+        S.E(-0.30, -0.14, 0.0, 0.115, 0.085, 0.032),
+        S.E(0.30, -0.14, 0.0, 0.115, 0.085, 0.032),
+        S.E(0, 2.06, 0.29, 0.048, 0.150, 0.022)
+      ],
+      k: 0.02,
+      anchor: [-0.32, -1.20, 0.06],
+      size: { zh: "成人约 2.6 kg，占体重 4–5%", en: "about 2.6 kg in adults, 4–5% of body mass" },
+      fn: {
+        zh: "所有血细胞的家园：造血干细胞在此分化为红细胞、粒细胞、淋巴细胞与血小板。",
+        en: "Home of all blood cells: haematopoietic stem cells become red cells, granulocytes, lymphocytes and platelets."
+      },
+      facts: [
+        { zh: "B 淋巴细胞在骨髓中成熟，T 淋巴细胞则迁移到胸腺成熟。", en: "B cells mature in marrow; T cells migrate to the thymus to mature." },
+        { zh: "红骨髓负责造血，随年龄增长长骨中部分转为黄骨髓。", en: "Red marrow makes blood; with age some long-bone marrow becomes fatty yellow marrow." }
+      ]
+    },
+    {
+      id: "thymus", zh: "胸腺", en: "Thymus", la: "Thymus",
+      color: "#8fb87a", res: 34,
+      add: [
+        S.E(-0.065, 2.30, 0.16, 0.075, 0.13, 0.055),
+        S.E(0.065, 2.30, 0.16, 0.075, 0.13, 0.055)
+      ],
+      k: 0.03,
+      anchor: [0.10, 2.34, 0.20],
+      size: { zh: "青春期最大，成年后逐渐萎缩", en: "largest at puberty, then shrinks" },
+      fn: {
+        zh: "T 淋巴细胞在此经历阳性与阴性选择，学会识别“自我”而不攻击自身组织。",
+        en: "T cells undergo positive and negative selection here, learning self-tolerance."
+      },
+      facts: [
+        { zh: "胸腺是少数在成年后明显萎缩的器官，但终身仍有功能。", en: "One of the few organs that shrinks markedly after adulthood, yet it keeps working." },
+        { zh: "切除胸腺的婴儿仍能产生 T 细胞，但免疫应答明显减弱。", en: "Thymectomy in infancy still leaves T cells, but immune responses are weakened." }
+      ]
+    },
+    {
+      id: "spleen", zh: "脾", en: "Spleen", la: "Splen",
+      color: "#7f9e6a", res: 38,
+      add: [
+        S.E(0.46, 1.28, -0.10, 0.095, 0.155, 0.080)
+      ],
+      k: 0.05,
+      anchor: [0.54, 1.32, 0.0],
+      size: { zh: "约 12 × 7 × 4 cm，重 150 g", en: "12 × 7 × 4 cm, about 150 g" },
+      fn: {
+        zh: "过滤血液、清除衰老红细胞与病原体，并对血源性抗原产生免疫应答。",
+        en: "Filters blood, removes aged red cells and pathogens, and mounts immune responses to blood-borne antigens."
+      },
+      facts: [
+        { zh: "脾位于第 9–11 肋深面，破裂可导致腹腔内大出血。", en: "It lies deep to ribs 9–11; rupture can cause major internal bleeding." },
+        { zh: "脾切除后易感染荚膜细菌，需接种相应疫苗。", en: "After splenectomy, encapsulated bacteria pose a higher risk, so vaccination is needed." }
+      ]
+    },
+    {
+      id: "nodes", zh: "淋巴结", en: "Lymph nodes", la: "Nodi lymphoidei",
+      color: "#9dc487", res: 46,
+      add: [
+        S.S(-0.12, 2.80, 0.04, 0.028), S.S(0.12, 2.80, 0.04, 0.028),
+        S.S(-0.13, 2.70, 0.02, 0.024), S.S(0.13, 2.70, 0.02, 0.024),
+        S.S(-0.60, 2.22, 0.06, 0.030), S.S(-0.62, 2.12, 0.04, 0.026),
+        S.S(0.60, 2.22, 0.06, 0.030), S.S(0.62, 2.12, 0.04, 0.026),
+        S.S(-0.30, -0.52, 0.10, 0.030), S.S(0.30, -0.52, 0.10, 0.030),
+        S.S(-0.26, 1.30, -0.06, 0.022), S.S(0.26, 1.30, -0.06, 0.022)
+      ],
+      k: 0.02,
+      anchor: [-0.60, 2.22, 0.10],
+      size: { zh: "全身约 500–600 枚，直径 1–20 mm", en: "500–600 nodes, 1–20 mm each" },
+      fn: {
+        zh: "淋巴液的过滤站：树突状细胞在此呈递抗原，B 与 T 细胞在此活化、增殖。",
+        en: "Filters for lymph: dendritic cells present antigen here and B and T cells activate and expand."
+      },
+      facts: [
+        { zh: "淋巴结肿大常是局部感染的信号，质地坚硬且无痛时需警惕肿瘤。", en: "Swollen nodes often signal local infection; hard, painless nodes warrant cancer checks." },
+        { zh: "腋窝、腹股沟与颈部是最容易摸到的淋巴结群。", en: "Axillary, inguinal and cervical groups are the easiest to palpate." }
+      ]
+    },
+    {
+      id: "tonsil", zh: "扁桃体", en: "Tonsils", la: "Tonsilla palatina",
+      color: "#a7cc90", res: 26,
+      add: [
+        S.E(-0.095, 3.02, 0.14, 0.035, 0.045, 0.030),
+        S.E(0.095, 3.02, 0.14, 0.035, 0.045, 0.030),
+        S.E(0, 3.14, -0.06, 0.045, 0.030, 0.025)
+      ],
+      k: 0.02,
+      anchor: [0.12, 3.03, 0.16],
+      size: { zh: "每侧约 2.5 cm", en: "about 2.5 cm each" },
+      fn: {
+        zh: "咽部的淋巴组织环（Waldeyer 环）的一部分，是呼吸道与消化道入口的免疫哨站。",
+        en: "Part of Waldeyer's ring — immune outposts at the entrance of airway and gut."
+      },
+      facts: [
+        { zh: "儿童期扁桃体较活跃，成年后逐渐萎缩。", en: "Tonsils are most active in childhood and shrink later." },
+        { zh: "反复扁桃体炎才考虑切除，单纯肿大不是手术指征。", en: "Surgery is considered for recurrent infection, not enlargement alone." }
+      ]
+    },
+    {
+      id: "lymph-vessel", zh: "淋巴管", en: "Lymphatic vessels", la: "Vasa lymphatica",
+      color: "#8fb87a", res: 38,
+      add: [
+        S.K([0, 2.86, 0.06], [0, 2.30, 0.02], 0.012, 0.012),
+        S.K([0, 2.30, 0.02], [0, 1.90, -0.02], 0.012, 0.012),
+        S.K([0, 1.90, -0.02], [0, 1.48, -0.06], 0.012, 0.012),
+        S.K([-0.55, 2.18, 0.06], [-0.20, 2.06, 0.02], 0.010, 0.010),
+        S.K([0.55, 2.18, 0.06], [0.20, 2.06, 0.02], 0.010, 0.010),
+        S.K([-0.30, -0.50, 0.10], [-0.10, -0.20, 0.04], 0.010, 0.010),
+        S.K([0.30, -0.50, 0.10], [0.10, -0.20, 0.04], 0.010, 0.010),
+        S.K([-0.10, -0.20, 0.04], [0, 0.60, -0.10], 0.010, 0.010),
+        S.K([0.10, -0.20, 0.04], [0, 0.60, -0.10], 0.010, 0.010)
+      ],
+      k: 0.02,
+      anchor: [-0.30, 2.10, 0.06],
+      size: { zh: "每天回流约 2–4 L 组织液", en: "returns 2–4 L of tissue fluid daily" },
+      fn: {
+        zh: "收集组织间液并送回静脉，同时运输免疫细胞与抗原；肠道淋巴管还吸收脂肪。",
+        en: "Collects interstitial fluid and returns it to veins, carrying immune cells and antigen; gut lymphatics also absorb fat."
+      },
+      facts: [
+        { zh: "淋巴管内有单向瓣膜，靠肌肉挤压与呼吸运动推动。", en: "One-way valves and muscle/breathing motion drive lymph flow." },
+        { zh: "胸导管是最大的淋巴管，汇入左锁骨下静脉。", en: "The thoracic duct is the largest, draining into the left subclavian vein." }
+      ]
+    }
+  ];
+
+  root.HUMAN = root.HUMAN || {};
+})(window);
+
+</script>
+<script>
+/* ============================================================
+   人体系统图鉴 · 应用层
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var SDF = window.SDF, H = window.HUMAN;
+
+  var LANG = "zh";
+  var atlas = null;
+  var currentSys = null;
+  var selectedOrgan = null;
+  var built = Object.create(null);   /* organId -> part */
+  var bodyPart = null;
+  var variant = 0;
+
+  function organsOf(s) {
+    if (!s) return [];
+    return (s.variants && s.variants[variant]) ? s.variants[variant].organs : s.organs;
+  }
+  var entered = false;
+
+  /* ---------- 文案 ---------- */
+  var T = {
+    zh: {
+      systems: "系统", systemsEn: "Systems",
+      organs: "器官", organsEn: "Organs",
+      detail: "选中器官", detailEn: "Selected organ",
+      legend: "系统索引", legendEn: "Systems",
+      foot: "几何为教学重建\n按解剖标志点定位\n比例已归一化",
+      stage: "3D 教学模型", stageEn: "非等比例",
+      aboutTitle: "关于这份人体图鉴",
+      about: [
+        "<b>几何来源。</b>所有器官由有符号距离场（SDF）程序化定义，再用 Surface Nets 生成网格。形状依据解剖学教材的轮廓、比例与相对位置重建，不是医学影像或扫描数据，不能用于诊断、手术规划或尺寸测量。",
+        "<b>取舍。</b>每套系统单独归一化取景，因此不同系统之间不能直接比较大小；器官内部只保留教学需要的分区（肺叶、肝叶、心腔、肾门等），血管与神经仅示意主干。神经系统里的毛细血管单独做成放大示意板——管径被夸大了几个数量级，只看拓扑，不看比例。",
+        "<b>位置。</b>坐标按解剖学标志点设置：膈约平第 10 胸椎、肾位于腹膜后、左肺两叶而右肺三叶、肝大部位于右季肋区。视角默认为前方观，画面左侧即受试者右侧。",
+        "<b>语言。</b>中文与英文可随时切换；拉丁名采用 Terminologia Anatomica 的常见形式。"
+      ],
+      grid: [["结构依据", "解剖学教材与 TA 术语"], ["渲染", "WebGL2 · 实时网格"], ["交互", "旋转 / 剖切 / 拾取"]],
+      boot: "正在构建解剖网格…",
+      bootDone: "就绪",
+      reset: "复位", spin: "自转", label: "标注", cut: "剖切", ghost: "体表", aboutBtn: "说明",
+      hint: "拖动旋转 · 滚轮缩放 · 点击器官查看资料",
+      back: "返回系统",
+      pickHint: "点击任意器官查看中英文资料",
+      count: "个器官",
+      railHead: "系统",
+      tSpin: "自转", tLabel: "标注", tCut: "剖切", tGhost: "体表", tReset: "复位",
+      gripOpen: "展开", gripClose: "收起"
+    },
+    en: {
+      systems: "Systems", systemsEn: "Systems",
+      organs: "Organs", organsEn: "Organs",
+      detail: "Selected organ", detailEn: "Selected organ",
+      legend: "Index", legendEn: "Systems",
+      foot: "Procedural teaching geometry\nPositioned by anatomical landmarks\nProportions normalised",
+      stage: "3D teaching model", stageEn: "not to scale",
+      aboutTitle: "About this atlas",
+      about: [
+        "<b>Geometry.</b> Every organ is defined as a signed distance field and meshed with surface nets. Shapes follow textbook contours, proportions and relations — not medical scans. Do not use for diagnosis, surgical planning or measurement.",
+        "<b>Trade-offs.</b> Each system is framed and normalised separately, so sizes are not comparable between systems. Only teaching-relevant subdivisions are modelled (lung lobes, liver lobes, cardiac chambers, renal hilum); vessels and nerves are simplified trunks. The capillary bed in the nervous system is a separate magnified inset whose lumen is exaggerated by orders of magnitude — read its topology, not its scale.",
+        "<b>Position.</b> Coordinates follow anatomical landmarks: diaphragm at about T10, kidneys retroperitoneal, two lobes on the left and three on the right, liver mainly in the right hypochondrium. The default view is anterior, so screen-left is the subject's right.",
+        "<b>Language.</b> Chinese and English switch at any time; Latin names follow common Terminologia Anatomica forms."
+      ],
+      grid: [["Basis", "Anatomy texts & TA terms"], ["Rendering", "WebGL2 · real-time mesh"], ["Interaction", "Orbit / clip / pick"]],
+      boot: "Building anatomical meshes…",
+      bootDone: "Ready",
+      reset: "Reset", spin: "Spin", label: "Labels", cut: "Clip", ghost: "Body", aboutBtn: "About",
+      hint: "Drag to orbit · scroll to zoom · click an organ",
+      back: "Back to system",
+      pickHint: "Click any organ for bilingual notes",
+      count: "organs",
+      railHead: "Systems",
+      tSpin: "Spin", tLabel: "Labels", tCut: "Clip", tGhost: "Body", tReset: "Reset",
+      gripOpen: "Open", gripClose: "Hide"
+    }
+  };
+
+  function t(k) { return T[LANG][k]; }
+  function pick(o) { return o ? (o[LANG] || o.zh || o.en) : ""; }
+  function hexRGB(h) {
+    h = h.replace("#", "");
+    return [parseInt(h.substr(0, 2), 16) / 255, parseInt(h.substr(2, 2), 16) / 255, parseInt(h.substr(4, 2), 16) / 255];
+  }
+
+  /* ---------- 构建 ---------- */
+  function boundsOf(o) {
+    return o.bb ? o.bb.slice() : SDF.organBounds(o);
+  }
+
+  function buildPart(organ, system) {
+    var field = null, geo, bb;
+    if (organ.mesh) {
+      /* 直接网格（毛细血管这类比网格步长还细的结构） */
+      geo = organ.mesh();
+      bb = organ.bb ? organ.bb.slice() : window.MESH.bbox(geo);
+    } else {
+      field = SDF.makeField(organ);
+      bb = SDF.organBounds(organ);
+      var ext = [bb[3] - bb[0], bb[4] - bb[1], bb[5] - bb[2]];
+      var span = Math.max(ext[0], Math.max(ext[1], ext[2]));
+      var step = organ.step || 0.021;
+      var dims = ext.map(function (e) { return Math.max(6, Math.min(190, Math.round(e / step) + 1)); });
+      var cells = dims[0] * dims[1] * dims[2];
+      if (cells > 520000) {
+        var f = Math.cbrt(520000 / cells);
+        dims = dims.map(function (d) { return Math.max(6, Math.round(d * f)); });
+      }
+      geo = SDF.surfaceNets(field, bb, dims);
+    }
+    var mesh = atlas.mesh("organ:" + organ.id, geo);
+    var rgb = hexRGB(organ.color);
+    return {
+      id: organ.id, organ: organ, system: system.id, bb: bb,
+      mesh: mesh, field: field, anchor: organ.anchor || [bb[0], bb[1], bb[2]],
+      rgb: rgb, inside: rgb.map(function (c) { return c * 0.34; }),
+      ghost: false, noClip: !!organ.noClip, tris: geo.index.length / 3
+    };
+  }
+
+  function buildBody() {
+    var spec = H.bodyGhost();
+    var field = SDF.makeField(spec);
+    var bb = [-1.30, -4.05, -0.75, 1.30, 4.02, 0.75];
+    var res = [54, 164, 34];
+    var geo = SDF.surfaceNets(field, bb, res);
+    var mesh = atlas.mesh("body", geo);
+    return { id: "body", mesh: mesh, rgb: [0.78, 0.76, 0.70], ghost: true, anchor: [0, 3.5, 0], offset: [0, 0, 0] };
+  }
+
+  function ensureSystem(sys, cb) {
+    var list = organsOf(sys);
+    var missing = list.filter(function (o) { return !built[o.id]; });
+    var i = 0;
+    function step() {
+      if (i >= missing.length) { cb(); return; }
+      var o = missing[i++];
+      built[o.id] = buildPart(o, sys);
+      $("#bootBar").style.width = Math.round(100 * i / missing.length) + "%";
+      setTimeout(step, 0);
+    }
+    if (!missing.length) { cb(); return; }
+    step();
+  }
+
+  /* ---------- 场景 ---------- */
+  /* 系统取景：器官包围盒 ∪ 体表参考区，让器官落在身体轮廓里 */
+  function frameOf(sys) {
+    var bb = [1e9, 1e9, 1e9, -1e9, -1e9, -1e9];
+    organsOf(sys).forEach(function (o) {
+      var b = boundsOf(o);
+      for (var k = 0; k < 3; k++) { bb[k] = Math.min(bb[k], b[k]); bb[k + 3] = Math.max(bb[k + 3], b[k + 3]); }
+    });
+    var sp = sys.span;
+    if (sp) for (var k = 0; k < 3; k++) { bb[k] = Math.min(bb[k], sp[k]); bb[k + 3] = Math.max(bb[k + 3], sp[k + 3]); }
+    return bb;
+  }
+
+  function showSystem(id, keepOrgan) {
+    var sys = H.byId(id);
+    if (!sys) return;
+    if (currentSys && currentSys.id !== id) variant = 0;
+    currentSys = sys;
+    selectedOrgan = keepOrgan || null;
+    var list = organsOf(sys);
+    renderRail();
+
+    ensureSystem(sys, function () {
+      var parts = [bodyPart].concat(list.map(function (o) { return built[o.id]; }));
+      atlas.setParts(parts);
+      atlas.selected = selectedOrgan ? selectedOrgan.id : null;
+      atlas.focusId = sys.id;
+
+      atlas.goto(frameOf(sys), 1.52, !entered);
+      renderPanel();
+      renderLabels();
+      syncTop();
+      window.__ready = sys.id;
+    });
+  }
+
+  function selectOrgan(id) {
+    selectedOrgan = id ? organsOf(currentSys).filter(function (o) { return o.id === id; })[0] : null;
+    atlas.selected = id || null;
+    if (selectedOrgan) atlas.goto(boundsOf(selectedOrgan), 2.12);
+    else if (currentSys) atlas.goto(frameOf(currentSys), 1.52);
+    renderPanel();
+    renderLabels();
+  }
+
+  /* ---------- 左索引 ---------- */
+  function renderRail() {
+    var html = H.SYSTEMS.map(function (s) {
+      var on = currentSys && s.id === currentSys.id;
+      return '<button class="rail-item' + (on ? " is-on" : "") + '" type="button" data-id="' + s.id + '">' +
+        '<span class="rail-no">' + s.no + '</span>' +
+        '<span><span class="rail-zh">' + (LANG === "zh" ? s.zh : s.en) + '</span>' +
+        '<span class="rail-en">' + s.la + '</span></span>' +
+        '<i class="rail-dot" style="background:' + s.color + ';color:' + s.color + '"></i>' +
+        '</button>';
+    }).join("");
+    $("#railList").innerHTML = html;
+    $$(".rail-item").forEach(function (b) {
+      b.addEventListener("click", function () {
+        showSystem(b.dataset.id);
+        setRail(false);
+      });
+    });
+    $("#railFoot").innerHTML = t("foot").split("\n").join("<br>");
+    $("#railBtn").textContent = LANG === "zh" ? "系统" : "Systems";
+  }
+
+  function setRail(open) {
+    var rail = $("#rail");
+    rail.classList.toggle("is-open", open);
+    $("#railBtn").textContent = open ? (LANG === "zh" ? "收起" : "Close") : (LANG === "zh" ? "系统" : "Systems");
+    $("#railBtn").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  /* ---------- 右面板 ---------- */
+  function renderPanel() {
+    var s = currentSys;
+    if (!s) return;
+    var sel = selectedOrgan;
+    var list = organsOf(s);
+    var html = '';
+    html += '<div class="p-idx"><b>' + s.no + '</b><i>/</i><span>' + (LANG === "zh" ? "系统" : "SYSTEM") + '</span><span>' + s.la + '</span></div>';
+    html += '<h1 class="p-name">' + (LANG === "zh" ? s.zh : s.en) + '</h1>';
+    html += '<div class="p-la">' + s.la + '</div>';
+    html += '<p class="p-lead">' + pick(s.lead) + '</p>';
+
+    html += '<section class="sec"><div class="sec-h"><em>' + t("organs") + '</em>' + t("organsEn") + '<i></i><span>' + list.length + ' ' + t("count") + '</span></div>';
+    if (s.variants) {
+      html += '<div class="seg">' + s.variants.map(function (v, i) {
+        return '<button type="button" data-var="' + i + '" class="' + (i === variant ? "is-on" : "") + '">' + (LANG === "zh" ? v.zh : v.en) + '</button>';
+      }).join("") + '</div>';
+    }
+    html += '<div class="organs">';
+    list.forEach(function (o) {
+      html += '<button class="org-chip' + (sel && sel.id === o.id ? " is-on" : "") + '" type="button" data-organ="' + o.id + '">' +
+        '<i style="background:' + o.color + '"></i>' + (LANG === "zh" ? o.zh : o.en) + '</button>';
+    });
+    html += '</div>';
+
+    if (sel) {
+      html += '<div class="detail">';
+      html += '<div class="d-h"><b>' + (LANG === "zh" ? sel.zh : sel.en) + '</b><span>' + (LANG === "zh" ? sel.en : sel.zh) + '</span></div>';
+      html += '<div class="p-la" style="margin-top:3px">' + sel.la + '</div>';
+      html += '<div class="d-size">' + pick(sel.size) + '</div>';
+      html += '<p class="d-fn">' + pick(sel.fn) + '</p>';
+      html += '<ul class="d-list">';
+      (sel.facts || []).forEach(function (f) { html += '<li>' + pick(f) + '</li>'; });
+      html += '</ul></div>';
+    } else {
+      html += '<p class="p-lead" style="color:var(--dim);font-size:12px;margin-top:12px">' + t("pickHint") + '</p>';
+    }
+
+    html += '<section class="sec"><div class="sec-h"><em>' + t("legend") + '</em>Proportion<i></i></div>';
+    html += '<div class="legend">';
+    list.forEach(function (o) {
+      html += '<div class="legend-row" data-organ="' + o.id + '"><i style="background:' + o.color + '"></i>' + (LANG === "zh" ? o.zh : o.en) + '<span>' + pick(o.size) + '</span></div>';
+    });
+    html += '</div></section>';
+
+    html += '</div>';
+    $("#panelScroll").innerHTML = html;
+    $$("[data-organ]", $("#panelScroll")).forEach(function (b) {
+      b.addEventListener("click", function () { selectOrgan(b.dataset.organ); });
+    });
+    $$("[data-var]", $("#panelScroll")).forEach(function (b) {
+      b.addEventListener("click", function () {
+        variant = Number(b.dataset.var);
+        showSystem(currentSys.id);
+      });
+    });
+  }
+
+  function syncTop() {
+    if (!currentSys) return;
+    $("#topMeta").textContent = currentSys.no + " · " + currentSys.la.toUpperCase();
+    $("#stageTag").innerHTML = '<b>' + t("stage") + '</b> · ' + t("stageEn");
+  }
+
+  /* 静态文案随语言切换 */
+  function syncText() {
+    $("#railHeadB").textContent = t("railHead");
+    var map = { spinBtn: "tSpin", labelBtn: "tLabel", cutBtn: "tCut", ghostBtn: "tGhost", resetBtn: "tReset" };
+    for (var id in map) {
+      var el = $("#" + id);
+      var sp = el && el.querySelector("span");
+      if (sp) sp.textContent = t(map[id]);
+    }
+    $("#hint").textContent = t("hint");
+    $("#aboutBtn").textContent = t("aboutBtn");
+    $("#railBtn").textContent = LANG === "zh" ? "系统" : "Systems";
+    var grip = $("#panelGrip");
+    if (grip) grip.lastChild.nodeValue = $("#panel").classList.contains("is-open") ? t("gripClose") : t("gripOpen");
+    syncTop();
+  }
+
+  /* ---------- 标注 ---------- */
+  function renderLabels() {
+    var host = $("#labels");
+    if (!currentSys) return;
+    var sel = selectedOrgan;
+    var list = organsOf(currentSys);
+    var html = "";
+    list.forEach(function (o) {
+      var p = built[o.id];
+      if (!p) return;
+      html += '<div class="lbl' + (sel && sel.id === o.id ? " is-on" : "") + '" data-l="' + o.id + '"><i style="background:' + o.color + '"></i><span>' +
+        (LANG === "zh" ? o.zh : o.en) + '</span><em>' + (LANG === "zh" ? o.en : "") + '</em></div>';
+    });
+    host.innerHTML = html;
+    updateLabels();
+  }
+
+  function updateLabels() {
+    if (!currentSys || !atlas) return;
+    var host = $("#labels");
+    var W = window.innerWidth, H = window.innerHeight;
+    var cs = getComputedStyle(document.documentElement);
+    var railW = parseFloat(cs.getPropertyValue("--rail")) || 0;
+    var panelW = parseFloat(cs.getPropertyValue("--panel")) || 0;
+    var cr = $("#gl").getBoundingClientRect();
+    var minX = 12, maxX = W - 12, minY = cr.top + 54, maxY = cr.bottom - 18;
+    if (W > 980) { minX = railW + 26; maxX = W - panelW - 26; minY = 70; maxY = H - 70; }
+    if (maxY < minY + 40) return;
+
+    var placed = [];
+    $$(".lbl", host).forEach(function (el) {
+      var id = el.dataset.l;
+      var organ = organsOf(currentSys).filter(function (o) { return o.id === id; })[0];
+      if (!organ) return;
+      var pr = atlas.project(organ.anchor);
+      if (!pr) { el.style.opacity = 0; return; }
+      var cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+      var vx = pr.x - cx, vy = pr.y - cy, vl = Math.hypot(vx, vy) || 1;
+      var x = pr.x + vx / vl * 34 + (vx >= 0 ? 6 : -6), y = pr.y + vy / vl * 24;
+      /* 简单避让 */
+      for (var k = 0; k < 6; k++) {
+        var hit = placed.some(function (q) { return Math.abs(q.x - x) < 96 && Math.abs(q.y - y) < 17; });
+        if (!hit) break;
+        y += 18;
+      }
+      x = Math.max(minX, Math.min(maxX - 130, x));
+      y = Math.max(minY, Math.min(maxY, y));
+      placed.push({ x: x, y: y });
+      el.style.opacity = 1;
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+    });
+  }
+
+  /* ---------- 交互 ---------- */
+  function bind() {
+    var canvas = $("#gl");
+    var drag = null;
+
+    canvas.addEventListener("pointerdown", function (e) {
+      drag = { x: e.clientX, y: e.clientY, ox: e.clientX, oy: e.clientY, moved: 0 };
+      canvas.setPointerCapture(e.pointerId);
+      atlas.spin = false;
+      atlas._want = null;
+      syncSpin();
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      drag.x = e.clientX; drag.y = e.clientY;
+      drag.moved += Math.abs(dx) + Math.abs(dy);
+      atlas.yaw -= dx * 0.006;
+      atlas.pitch = Math.max(-1.15, Math.min(1.15, atlas.pitch + dy * 0.005));
+    });
+    canvas.addEventListener("pointerup", function (e) {
+      if (!drag) return;
+      var moved = drag.moved;
+      drag = null;
+      if (moved < 6) {
+        var r = canvas.getBoundingClientRect();
+        var hit = atlas.pick(e.clientX - r.left, e.clientY - r.top);
+        if (hit) selectOrgan(hit.part.id);
+        else selectOrgan(null);
+      }
+    });
+    canvas.addEventListener("pointercancel", function () { drag = null; });
+    canvas.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      atlas._want = null;
+      atlas.dist = Math.max(0.8, Math.min(26, atlas.dist * (1 + Math.sign(e.deltaY) * 0.085)));
+    }, { passive: false });
+    canvas.addEventListener("dblclick", function () { resetView(); });
+
+    $("#railBtn").addEventListener("click", function () {
+      setRail(!$("#rail").classList.contains("is-open"));
+    });
+    document.addEventListener("click", function (e) {
+      var rail = $("#rail");
+      if (!rail.classList.contains("is-open")) return;
+      if (rail.contains(e.target) || e.target === $("#railBtn") || $("#railBtn").contains(e.target)) return;
+      setRail(false);
+    });
+
+    $("#panelGrip").addEventListener("click", function () {
+      var p = $("#panel");
+      p.classList.toggle("is-open");
+      this.lastChild.nodeValue = p.classList.contains("is-open") ? t("gripClose") : t("gripOpen");
+    });
+
+    $("#spinBtn").addEventListener("click", function () {
+      atlas.spin = !atlas.spin;
+      syncSpin();
+    });
+    $("#labelBtn").addEventListener("click", function () {
+      var off = $("#labels").classList.toggle("is-off");
+      this.setAttribute("aria-pressed", off ? "false" : "true");
+    });
+    $("#cutBtn").addEventListener("click", function () {
+      atlas.clipOn = !atlas.clipOn;
+      atlas.clipD = 0.02;
+      atlas.clipN = [0, 0, 1];
+      this.setAttribute("aria-pressed", atlas.clipOn ? "true" : "false");
+    });
+    $("#ghostBtn").addEventListener("click", function () {
+      var on = this.getAttribute("aria-pressed") === "true";
+      this.setAttribute("aria-pressed", on ? "false" : "true");
+      bodyPart.hidden = on;
+      atlas.setParts(atlas.parts.filter(function (p) { return p.ghost ? !on : true; }));
+    });
+    $("#resetBtn").addEventListener("click", resetView);
+    $("#langBtn").addEventListener("click", function () {
+      LANG = LANG === "zh" ? "en" : "zh";
+      this.textContent = LANG === "zh" ? "EN" : "中";
+      document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en";
+      renderRail(); renderPanel(); renderLabels(); syncText();
+      buildAbout();
+    });
+    $("#aboutBtn").addEventListener("click", function () { $("#aboutModal").classList.remove("is-hidden"); });
+    $$("[data-close]").forEach(function (b) {
+      b.addEventListener("click", function () { $("#" + b.dataset.close).classList.add("is-hidden"); });
+    });
+    $("#aboutModal").addEventListener("click", function (e) {
+      if (e.target === this) this.classList.add("is-hidden");
+    });
+
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (!$("#aboutModal").classList.contains("is-hidden")) { $("#aboutModal").classList.add("is-hidden"); return; }
+        if ($("#rail").classList.contains("is-open")) { setRail(false); return; }
+        selectOrgan(null);
+      }
+      if (!entered) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        var i = H.SYSTEMS.indexOf(currentSys);
+        var n = (i + (e.key === "ArrowRight" ? 1 : -1) + H.SYSTEMS.length) % H.SYSTEMS.length;
+        showSystem(H.SYSTEMS[n].id);
+      }
+      if (e.key.toLowerCase() === "c") $("#cutBtn").click();
+      if (e.key.toLowerCase() === "l") $("#labelBtn").click();
+      if (e.key.toLowerCase() === "r") resetView();
+      if (e.code === "Space") { e.preventDefault(); $("#spinBtn").click(); }
+    });
+
+    window.addEventListener("resize", function () {
+      atlas.resize();
+      updateLabels();
+    });
+  }
+
+  function syncSpin() {
+    $("#spinBtn").setAttribute("aria-pressed", atlas.spin ? "true" : "false");
+  }
+
+  function resetView() {
+    if (!currentSys) return;
+    atlas.yaw = 0; atlas.pitch = 0.12;
+    atlas.goto(selectedOrgan ? boundsOf(selectedOrgan) : frameOf(currentSys), selectedOrgan ? 2.12 : 1.52);
+    atlas.clipOn = false;
+    $("#cutBtn").setAttribute("aria-pressed", "false");
+  }
+
+  /* ---------- 说明 ---------- */
+  function buildAbout() {
+    $("#aboutTitle").textContent = t("aboutTitle");
+    $("#aboutBody").innerHTML = t("about").map(function (p) { return "<p>" + p + "</p>"; }).join("") +
+      '<div class="about-grid">' + t("grid").map(function (g) {
+        return "<div><k>" + g[0] + "</k><v>" + g[1] + "</v></div>";
+      }).join("") + "</div>";
+  }
+
+  /* ---------- 循环 ---------- */
+  var last = 0;
+  function loop(ts) {
+    var dt = Math.min(0.05, (ts - last) / 1000 || 0.016);
+    last = ts;
+    if (atlas) {
+      if (atlas.spin) atlas.yaw += dt * 0.16;
+      atlas.draw();
+      updateLabels();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------- 启动 ---------- */
+  function boot() {
+    atlas = new window.Atlas($("#gl"));
+    if (!atlas.ok) {
+      $("#bootP").textContent = "当前浏览器不支持 WebGL2";
+      return;
+    }
+    $("#bootP").textContent = t("boot");
+    bodyPart = buildBody();
+    $("#bootBar").style.width = "35%";
+    setTimeout(function () {
+      showSystem("digestive");
+      entered = true;
+      $("#boot").classList.add("is-hidden");
+      $("#app").classList.remove("is-hidden");
+      $("#bootBar").style.width = "100%";
+      bind();
+      buildAbout();
+      syncText();
+      requestAnimationFrame(loop);
+      setTimeout(function () { $("#boot").style.display = "none"; }, 700);
+    }, 30);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+
+  window.__atlas = function () { return atlas; };
+  window.__go = function (id) { showSystem(id); };
+  window.__lang = function (l) { if (l && l !== LANG) $("#langBtn").click(); };
+  window.__state = function () { return { sys: currentSys && currentSys.id, organ: selectedOrgan && selectedOrgan.id, parts: atlas ? atlas.parts.length : 0 }; };
+})();
+
+</script>
+</body>
+</html>

@@ -6,17 +6,21 @@
 
 四个学科都有自己的 `index.html`，因此可以跳过总首页，直接打开或分享学科首页。每个演示也有独立地址。页面使用相对链接，可在子路径托管；站点入口与学科首页可直接以本地文件方式打开。3D 页面是否支持 `file://` 取决于素材读取方式，建议用本地 HTTP 服务预览。
 
-网站名称为“牛顿科学探索馆 / Newton Science Discovery Center”。总入口、学科页和专题页使用右上角按钮切换中英文；语言选择保存在浏览器，并通过 `?lang=en` 传给站内页面。牛顿车库、简单机械、细胞能量图鉴和原子图鉴都有自己的语言切换，其网站副本的返回链接会跟随当前语言。
+网站名称为“牛顿科学探索馆 / Newton Science Discovery Center”。总入口、学科页和专题页使用右上角按钮切换中英文；语言选择保存在浏览器，并通过 `?lang=en` 传给站内页面。牛顿车库、简单机械、细胞能量图鉴和原子模型2400年都有自己的语言切换，其网站副本的返回链接会跟随当前语言。
 
 ## 内容来源
 
 `content/catalog.json` 是入口页面的目录数据。`scripts/build_site.py` 将公开版本生成到 `site/`，共用 `web/assets/site.css` 与 `web/assets/site.js`。目录项设为 `"published": true` 后，公开版本生成可点击的演示链接；素材未核查的演示只显示介绍卡片。`scripts/build_site.py --local` 将可点击的预览版本生成到 Git 忽略的 `preview/`，并复制已公开演示。
 
-《牛顿车库》由提供的 `newton-motion-lab/` 文件导入 `site/demos/physics/newton-garage/`，页面独立可打开，并保留单文件离线版、预览图和原说明。网站副本增加“返回物理学”链接；原始文件不改动。现有太阳系单页通过 `scripts/import_local_demos.py` 导入 `preview/demos/solar-system/`。这是本地预览，不改动原稿，也不进入 Git。原稿的贴图来源和科学表述核查完成后，再确定公开发布方式。
+《牛顿车库》由提供的 `newton-motion-lab/` 文件导入 `site/demos/physics/newton-garage/`，页面独立可打开，并保留单文件离线版、预览图和原说明。网站副本增加“返回物理学”链接；原始文件不改动。现有太阳系单页通过 `scripts/import_local_demos.py` 导入 `preview/demos/solar-system/`，本地预览副本不改动原稿。行星图鉴贴图来源及 CC BY 4.0 署名记录见素材文档；尚未开放的单页仍按素材核查结果决定是否发布。
+
+已单独接入并公开的天文页面包括《太阳系行星图鉴》《地球到火星》《暗物质与暗能量》和《月相与食》；月相页面归入“登月探索”专题，入口卡片使用作者提供的页面截图。导入副本为页面增加返回专题链接，不修改原始 HTML。
 
 《简单机械 3D 实验室》由作者提供的 `WorkBuddy AI/simple-machines-3d/` 导入 `site/demos/physics/simple-machines/`，作为物理学第二个专题。它包含杠杆、滑轮、轮轴、斜面、螺旋、楔子六章，可以独立打开并切换中英文。网站副本仅增加返回物理学的入口；原始目录不改动。
 
-《原子图鉴》由作者提供的 `Documents/gemini/科学模型/` 导入 `site/demos/chemistry/atomic-atlas/`，保留十二个互动视图，调整了明亮主题、屏幕布局、返回入口与部分历史模型表述。其独立地址位于化学的“原子结构”专题下。原始文件不改动。
+《原子模型2400年》由作者提供的 `WorkBuddy/科学课程/原子模型2400年.html` 导入 `site/demos/chemistry/atom-history/`，以 8 种模型和 6 次范式转移串起原子理论史。`scripts/import_atom_history.py` 仅在副本中加入化学专题返回链接，原始文件保持不变。作者提供的页面截图用作原子结构专题卡片预览。
+
+旧版《原子图鉴》不再列入化学专题或公开站点，原副本保留在 Git 忽略的 `preview/demos/chemistry/atomic-atlas/` 目录中，供需要时回看。
 
 《细胞形态图鉴》由作者提供的单文件导入 `preview/demos/biology/cell-atlas/`，位于生物学的“细胞世界”专题下。该页面完整保留 26 个标本的三维交互，在本地可独立打开；导入时仅加入站内返回链接，并修正封面的分类措辞。内嵌显微照片的授权核查完成前，公开站点只展示专题和演示介绍卡片。原始文件不改动，演示正文目前为中文。
 
