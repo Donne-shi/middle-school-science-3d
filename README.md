@@ -4,14 +4,15 @@
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。
 
-目前已开放天文学 7 个独立演示，以及物理学《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》、生物学《细胞能量图鉴》和化学《原子图鉴》。天文学的《太阳系行星图鉴》《地球到火星》和生物学《细胞形态图鉴》可在本地预览；前两者的行星贴图及细胞图鉴的显微照片仍待核实来源与授权，暂不纳入公开仓库。详情见 [素材与授权记录](docs/ASSETS.md)。
+目前已开放天文学 7 个独立演示，以及物理学《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》、生物学《细胞能量图鉴》和化学《原子图鉴》。总入口另设跨学科的《2026 诺贝尔奖互动实验室》，可切换生理学或医学奖、化学奖与物理学奖并操作三维模型。天文学的《太阳系行星图鉴》《地球到火星》和生物学《细胞形态图鉴》可在本地预览；前两者的行星贴图及细胞图鉴的显微照片仍待核实来源与授权，暂不纳入公开仓库。详情见 [素材与授权记录](docs/ASSETS.md)。
 
 天文学按太阳系、宇宙现象、恒星与星空、登月探索四个专题组织。各演示可独立打开，返回天文学入口。
 
 ## 页面结构
 
 ```text
-site/index.html                                四学科总入口
+site/index.html                                四学科总入口（含诺贝尔奖跨学科专题）
+site/demos/nobel-2026/index.html               2026 诺贝尔奖互动实验室独立入口
 site/subjects/astronomy/index.html             天文学独立入口
 site/subjects/physics/index.html               物理学独立入口
 site/subjects/biology/index.html               生物学独立入口
@@ -38,7 +39,7 @@ site/demos/chemistry/atomic-atlas/index.html    原子图鉴独立入口
 preview/                                       本地演示预览，Git 忽略
 ```
 
-所有站点目录入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。单独打开学科首页时，导航仍可使用。目录页右上角可切换中文 / English；语言选择会随目录链接传递，并与《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》《细胞能量图鉴》《原子图鉴》的语言设置保持一致。天文学单页保留作者原有的语言支持，其中部分演示正文仍主要为中文。首页直接显示内容，不播放开场动画。部分三维演示需要支持 WebGL 的浏览器；《原子图鉴》使用 Canvas 绘制。建议通过本地 HTTP 服务预览。
+所有站点目录入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。诺贝尔奖互动实验室保留独立页面与三维依赖，构建时从 `content/demos/nobel-2026/` 复制到 `site/demos/nobel-2026/`；获奖信息的机构来源及模型说明见 [诺贝尔奖参考资料](content/demos/nobel-2026/REFERENCES.md)。单独打开学科首页时，导航仍可使用。目录页右上角可切换中文 / English；语言选择会随目录链接传递，并与《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》《细胞能量图鉴》《原子图鉴》的语言设置保持一致。天文学单页保留作者原有的语言支持，其中部分演示正文仍主要为中文。首页直接显示内容，不播放开场动画。部分三维演示需要支持 WebGL 的浏览器；《原子图鉴》使用 Canvas 绘制。建议通过本地 HTTP 服务预览。
 
 ## 本地预览
 
@@ -71,4 +72,4 @@ python3 -m http.server 8000 --directory preview
 
 ## 参与贡献与授权
 
-欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。三个物理演示所用 Three.js 的授权文本分别见 [牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)和[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。
+欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。诺贝尔奖互动实验室和三个物理演示所用 Three.js 的授权文本分别见 [诺贝尔实验室许可](content/demos/nobel-2026/THREE_LICENSE.txt)、 [牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)和[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。

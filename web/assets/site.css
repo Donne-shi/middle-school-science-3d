@@ -155,6 +155,15 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .home-page .subject-card p { max-width: 370px; margin-top: 21px; line-height: 1.9; }
 .subject-topics { display: block; max-width: 360px; margin-top: 17px; color: var(--accent); font: 10px/1.7 var(--mono); letter-spacing: .02em; }
 .home-page .subject-card svg { align-self: start; margin-top: 38px; }
+.nobel-feature { position: relative; display: grid; grid-template-columns: 190px 1fr; gap: clamp(28px, 6vw, 88px); align-items: center; margin: 12px 0 22px; padding: clamp(30px, 5vw, 68px); overflow: hidden; border: 1px solid #d9d1bd; border-radius: 8px; background: radial-gradient(ellipse at 14% 50%, rgba(255,255,255,.8), transparent 52%), linear-gradient(112deg, #f3ead7, #fbf8ef 58%, #e7f1ee); }
+.nobel-feature::after { position: absolute; top: -110px; right: -80px; width: 350px; height: 350px; border: 1px solid rgba(130,101,57,.16); border-radius: 50%; box-shadow: 0 0 0 30px rgba(255,255,255,.18), 0 0 0 70px rgba(130,101,57,.045); content: ''; pointer-events: none; }
+.nobel-feature-mark { display: grid; place-items: center; width: 168px; aspect-ratio: 1; border: 1px solid rgba(154,117,55,.3); border-radius: 50%; background: radial-gradient(circle, #fffdf5 0 37%, #eee2c6 38% 39%, transparent 40%); color: #89652d; font: 500 36px var(--serif); box-shadow: 0 18px 40px rgba(98,77,41,.1); }
+.nobel-feature-copy { position: relative; z-index: 1; max-width: 780px; }
+.nobel-feature-copy h2 { margin: 15px 0; font: 500 clamp(28px, 3.2vw, 43px)/1.32 var(--serif); }
+.nobel-feature-copy p { max-width: 720px; margin: 0; color: #526267; font-size: 14px; line-height: 1.9; }
+.nobel-feature-link { display: inline-flex; align-items: center; gap: 18px; margin-top: 25px; padding: 13px 18px; border-radius: 5px; background: #173e47; color: white; font-size: 13px; transition: background .2s, transform .2s; }
+.nobel-feature-link:hover { transform: translateY(-2px); background: #27616a; }
+.nobel-feature-meta { display: block; margin-top: 18px; color: #8a7651; font: 9px var(--mono); letter-spacing: .14em; }
 .home-guide { display: grid; grid-template-columns: minmax(220px, .75fr) minmax(0, 1.6fr); gap: 38px 65px; padding: 70px 0 100px; border-top: 1px solid var(--line); }
 .guide-heading h2 { max-width: 370px; margin: 16px 0; font: 500 clamp(30px, 3vw, 42px)/1.3 var(--serif); }
 .guide-heading p { max-width: 340px; color: var(--muted); font-size: 14px; line-height: 1.8; }
@@ -179,6 +188,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
   .discovery-board { margin-bottom: 60px; }
   .home-guide { grid-template-columns: 1fr; }
   .guide-note { grid-column: 1; }
+  .nobel-feature { grid-template-columns: 125px 1fr; gap: 24px; }
+  .nobel-feature-mark { width: 120px; font-size: 27px; }
 }
 @media (max-width: 680px) {
   .container { width: calc(100% - 36px); }
@@ -223,6 +234,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
   .home-page .subject-card h3 { max-width: 100%; }
   .home-page .subject-card svg { width: 78px; top: 32px; }
   .home-guide { padding: 50px 0 70px; gap: 30px; }
+  .nobel-feature { grid-template-columns: 1fr; gap: 24px; padding: 26px; }
+  .nobel-feature-mark { width: 92px; font-size: 22px; }
   .guide-steps { grid-template-columns: 1fr; gap: 28px; }
   .guide-steps li > span { margin: 14px 0; }
   .guide-note { grid-template-columns: 1fr; gap: 7px; }
