@@ -153,7 +153,7 @@ def topic_page(subject: dict, topic: dict) -> None:
     visual_zh, visual_en = {
         "astronomy": ("一颗恒星 · 八颗行星", "ONE STAR · EIGHT PLANETS"),
         "physics": ("一辆车 · 三条定律", "ONE CAR · THREE LAWS"),
-        "biology": ("二十六个标本 · 多样的生命", "26 SPECIMENS · DIVERSITY OF LIFE"),
+        "biology": ("从细胞结构到微生物", "CELLS · BACTERIA · MICROORGANISMS"),
         "chemistry": ("十二个模型 · 一条发现之路", "TWELVE VIEWS · ONE STORY OF DISCOVERY"),
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
@@ -187,7 +187,7 @@ def topic_page(subject: dict, topic: dict) -> None:
     guidance_zh, guidance_en = {
         "astronomy": ("建议先看行星图鉴，再用太阳系结构理解更远的尺度。", "Start with the planet atlas, then use the Solar System structure lesson to explore greater distances."),
         "physics": ("从受力图开始，依次探索牛顿三大定律。", "Start with force diagrams, then explore Newton's three laws in order."),
-        "biology": ("先选择一类标本，再旋转、剖切，并对照真实显微图像。", "Choose a specimen, rotate and cut away its model, then compare it with a microscope image."),
+        "biology": ("从植物细胞、动物细胞和微生物中选择一个主题，旋转模型并查看结构说明；有显微图像的页面会同时提供来源信息。", "Choose a plant cell, animal cell, or microorganism. Rotate the model and explore its structures; pages with micrographs include image credits."),
         "chemistry": ("从古希腊原子论出发，沿着关键实验观察原子模型如何改变。", "Start with ancient atomism and follow the experiments that changed atomic models."),
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
@@ -241,10 +241,23 @@ def main() -> None:
     shutil.copyfile(ROOT / "web/assets/site.css", SITE / "assets/site.css")
     shutil.copyfile(ROOT / "web/assets/site.js", SITE / "assets/site.js")
     shutil.copyfile(ROOT / "web/assets/newton-mark.svg", SITE / "assets/newton-mark.svg")
-    shutil.copyfile(ROOT / "content/images/astronomy-dark-universe.png", SITE / "assets/astronomy-dark-universe.png")
-    shutil.copyfile(ROOT / "content/images/atom-history-preview.png", SITE / "assets/atom-history-preview.png")
-    shutil.copyfile(ROOT / "content/images/solar-system-atlas-preview.png", SITE / "assets/solar-system-atlas-preview.png")
-    shutil.copyfile(ROOT / "content/images/moon-phases-preview.png", SITE / "assets/moon-phases-preview.png")
+    # Copy every catalog screenshot declared under assets/ from the source image
+    # folder. This keeps new lesson previews in sync with the catalog without
+    # needing another hard-coded copy entry for each screenshot.
+    screenshot_paths = set()
+    for subject in CATALOG["subjects"]:
+        for topic in subject["topics"]:
+            for item in (topic, *topic["lessons"]):
+                image_path = item.get("screenshot", "")
+                if image_path.startswith("assets/"):
+                    screenshot_paths.add(image_path)
+    for image_path in sorted(screenshot_paths):
+        source = ROOT / "content/images" / Path(image_path).name
+        if not source.is_file():
+            raise FileNotFoundError(f"Catalog screenshot source missing: {source}")
+        destination = SITE / image_path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, destination)
     shutil.copytree(ROOT / "content/demos/nobel-2026", SITE / "demos/nobel-2026", dirs_exist_ok=True)
     home()
     for subject in CATALOG["subjects"]:

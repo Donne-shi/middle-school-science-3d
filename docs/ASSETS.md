@@ -61,13 +61,13 @@ MIT 许可证只用于本项目可授权的原创代码和文档。第三方素�
 
 ## 已接入：月相与食
 
-作者提供的《月相与食》单文件源稿 已接入 `site/demos/solar-system/moon-phases-large.html`，本地预览副本位于 `preview/demos/solar-system/moon-phases-large.html`。演示以 WebGL2、Canvas 和 CSS 程序绘制太阳、地球、月球、月相及日月食示意，没有外部图片或模型素材；网站副本仅调整返回入口及语言切换后的返回链接，源文件保持不变。画面中的天体大小、距离和轨道倾角用于说明几何关系，不应视作统一比例模型。
+作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/moon-phases-large.html` 已接入 `site/demos/solar-system/moon-phases-large.html`，本地预览副本位于 `preview/demos/solar-system/moon-phases-large.html`。演示以 WebGL2、Canvas 和 CSS 程序绘制太阳、地球、月球、月相及日月食示意，没有外部图片或模型素材；网站副本仅调整返回入口及语言切换后的返回链接，源文件保持不变。画面中的天体大小、距离和轨道倾角用于说明几何关系，不应视作统一比例模型。
 
 专题卡片预览图 `site/assets/moon-phases-preview.png` 来自作者随需求提供的 1600×1000 页面截图，未修改。该截图展示日食场景；卡片以静态截图帮助用户预览演示内容。
 
 ## 已接入：病毒图鉴
 
-作者提供的《病毒图鉴》单文件源稿 已复制为 `site/demos/biology/virus-atlas/index.html`，原稿不修改。该单文件内嵌七张电子显微镜图像及 Canvas/WebGL 教学模型，不需额外素材文件或 3D 运行库；网站副本仅修改页面标题，并添加返回生物学入口。模型和电镜均为不同性质的内容，页面逐图显示图像说明、来源页与许可。
+作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/病毒图鉴.html` 已复制为 `site/demos/biology/virus-atlas/index.html`，原稿不修改。该单文件内嵌七张电子显微镜图像及 Canvas/WebGL 教学模型，不需额外素材文件或 3D 运行库；网站副本仅修改页面标题，并添加返回生物学入口。模型和电镜均为不同性质的内容，页面逐图显示图像说明、来源页与许可。
 
 | 图像 | 标注来源 | 使用依据 |
 | --- | --- | --- |
@@ -81,9 +81,41 @@ MIT 许可证只用于本项目可授权的原创代码和文档。第三方素�
 
 网页图像署名、许可链接及“显微镜不记录可见光颜色、数字着色为后期赋予”等说明随每张图展示。CDC 页面说明：公有领域图像再发布仍需注明 CDC，并在已知时注明摄影者；CC BY 图片须署名、链接许可并说明修改情况。完整许可不因仓库代码采用 MIT 而改变。
 
+## 课程入口截图
+
+下列入口预览图由项目作者在对应演示页面中截取并提供，截图文件原样保存；它们用于帮助访客预览页面，不作为科学数据、模型贴图或其中第三方素材授权的证明。来源文件保存在 `content/images/`，构建时按 `content/catalog.json` 自动复制至 `site/assets/`。
+
+| 学科 | 对应入口 | 文件 |
+| --- | --- | --- |
+| 天文学 | 太阳系行星图鉴、太阳系结构、落入天王星、地球到火星 | `solar-system-atlas-preview.png`、`astronomy-structure.png`、`astronomy-uranus.png`、`astronomy-earth-to-mars.png` |
+| 天文学 | 宇宙大爆炸、黑洞、暗物质与暗能量 | `astronomy-bigbang.png`、`astronomy-blackhole.png`、`astronomy-dark-universe.png` |
+| 天文学 | 恒星图鉴、星座图解、人类登月、月相与食 | `astronomy-stars.png`、`astronomy-constellations.png`、`astronomy-moonlanding.png`、`moon-phases-preview.png` |
+| 生物学 | 人体系统图鉴、细胞形态图鉴、细胞能量图鉴、病毒图鉴 | `biology-human-systems.png`、`biology-cell-atlas.png`、`biology-cell-energy.png`、`biology-virus-atlas.png` |
+| 生物学 | 植物细胞模型 | `biology-plant-cell.png` |
+| 化学 | 原子模型 2400 年 | `atom-history-preview.png` |
+
+月相与食选择了带完整控制面板的版本；原子模型选择了浅色时间线版本。另有国际空间站和元素周期表的截图，但当前目录没有对应课程入口，因此暂不展示，避免误指向其他演示。截图所呈现的细胞图鉴仅用于入口预览；细胞图鉴页面及其内嵌显微照片仍按上文许可核查要求保留在本地预览，不随公开站点发布。
+
+## 已接入：植物细胞模型
+
+作者提供的 `Documents/deepseek/plant-cell/plant-cell.html` 已复制至 `site/demos/biology/plant-cell/index.html`，并在页面右上加入返回生物学专题的链接；原文件保持不变。模型用程序化几何和着色器呈现细胞壁、细胞膜、中央液泡、细胞核、叶绿体等 11 种细胞器，可拖动旋转、缩放、点选查看说明。细胞器名称有中英文，说明正文目前为中文。原页面要求 WebGL 2，不依赖外部网络资源。其模型注释说明细胞器尺寸、数量与位置经过视觉化处理，并非严格等比。
+
+页面内嵌 Three.js r160（MIT）；许可文本随页面保存在 `site/demos/biology/plant-cell/THREE_LICENSE.txt`。入口预览图 `content/images/biology-plant-cell.png` 是作者提供的模型页面截图，原样保留；构建脚本会将它复制到 `site/assets/`。
+
 
 ## 已接入：人体系统图鉴
 
-作者提供的《人体图鉴》单文件源稿 已复制为 `site/demos/biology/human-systems/index.html`，原稿未修改。页面用程序化 SDF 几何和 WebGL2 实时生成九大人体系统模型；没有外部图片、字体、脚本或模型文件依赖。网站副本仅修改页面标题，并在工具栏增加返回生物学入口。
+作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/人体图鉴.html` 已复制为 `site/demos/biology/human-systems/index.html`，原稿未修改。页面用程序化 SDF 几何和 WebGL2 实时生成九大人体系统模型；没有外部图片、字体、脚本或模型文件依赖。网站副本仅修改页面标题，并在工具栏增加返回生物学入口。
 
 原页面提供中英文系统与器官说明，并明确模型依据解剖教材和 Terminologia Anatomica 常见术语、不是医学影像或扫描数据；系统单独归一化取景，比例不可跨系统比较，不适用于诊断、手术规划或尺寸测量。建议教学使用时保留页面中的模型边界说明。
+
+
+## 已接入：细菌图鉴
+
+页面由项目作者提供，源文件位于 `WorkBuddy/科学课程/细菌专题/`，网站副本位于 `site/demos/biology/bacteria-atlas/`。原页面及本地 Three.js、JavaScript、12 张显微图和 `photos/meta.js` 元数据按目录结构接入；仅增加返回生物学的入口。截图 `content/images/biology-bacteria-atlas.png` 为作者提供的标本页截图，作为细菌世界入口预览。
+
+源目录附有 `CREDITS.md`，为每张显微图记录作者、许可和 Wikimedia Commons 原始文件页；网页也随图片提供对应出处信息。Public domain、CC0、CC BY、CC BY-SA 与 Copyrighted free use 的条件不同，重用图像时须按 `CREDITS.md` 逐张遵守，MIT 不覆盖这些照片。3D 群体和剖面模型由页面程序生成；本地 Three.js r147 的许可保留在源码文件头。
+
+## 已接入：动物细胞模型
+
+项目作者提供的单文件 `Documents/deepseek/animal-cell/animal-cell.html` 已接入 `site/demos/biology/animal-cell/index.html`，原文件不修改。页面将 Three.js r160.1 打包在内联脚本中，无需加载外部图片或运行时资源；对应 MIT 许可文本单独保留为 `THREE_LICENSE.txt`。`content/images/biology-animal-cell.jpg` 由作者提供的动物细胞首页截图缩小并转为 JPEG，用作目录预览。演示包含 16 种细胞结构、可切换中英文及剖切功能；真实细胞大小与模型视觉比例请以页面模型说明为准。

@@ -15,5 +15,7 @@ build/
 *.log
 *.swp
 *.swo
+site/demos/solar-system/atlas.html
+site/demos/solar-system/earth-to-mars.html
 preview/
 local_assets/

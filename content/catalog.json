@@ -43,7 +43,8 @@
               "interaction": "尺度图解 · 光行时",
               "interaction_en": "Scale diagram · Light travel time",
               "href": "demos/solar-system/structure.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-structure.png"
             },
             {
               "slug": "uranus-fall",
@@ -54,7 +55,8 @@
               "interaction": "交互模拟 · 大气分层",
               "interaction_en": "Interactive simulation · Atmospheric layers",
               "href": "demos/solar-system/uranus-fall.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-uranus.png"
             },
             {
               "slug": "earth-to-mars",
@@ -65,7 +67,8 @@
               "interaction": "轨道转移 · 任务时间",
               "interaction_en": "Orbital transfer · Mission timeline",
               "href": "demos/solar-system/earth-to-mars.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-earth-to-mars.png"
             }
           ]
         },
@@ -87,7 +90,8 @@
               "interaction": "交互时间线 · 宇宙演化",
               "interaction_en": "Interactive timeline · Cosmic evolution",
               "href": "demos/solar-system/bigbang.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-bigbang.png"
             },
             {
               "slug": "blackhole",
@@ -98,7 +102,8 @@
               "interaction": "3D 演示 · 引力",
               "interaction_en": "3D visual · Gravity",
               "href": "demos/solar-system/blackhole.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-blackhole.png"
             },
             {
               "slug": "dark-universe",
@@ -132,7 +137,8 @@
               "interaction": "图鉴 · 赫罗图",
               "interaction_en": "Atlas · H-R diagram",
               "href": "demos/solar-system/stars.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-stars.png"
             },
             {
               "slug": "constellations",
@@ -143,7 +149,8 @@
               "interaction": "星空图解 · 交互观察",
               "interaction_en": "Sky map · Interactive observation",
               "href": "demos/solar-system/constellations.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-constellations.png"
             }
           ]
         },
@@ -165,7 +172,8 @@
               "interaction": "3D 场景 · 任务过程",
               "interaction_en": "3D scene · Mission sequence",
               "href": "demos/solar-system/moonlanding.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/astronomy-moonlanding.png"
             },
             {
               "slug": "moon-phases",
@@ -272,18 +280,54 @@
       "description": "从细胞、人体系统到生命活动，观察生命结构与功能。",
       "description_en": "Explore life from cells and organ systems to the processes that sustain living things.",
       "accent": "#428258",
-      "status": "细胞、人体系统与病毒专题已开放",
-      "status_en": "Cell, human systems, and virus lessons available",
+      "status": "植物细胞、动物细胞、细菌与病毒等生物学演示已逐步开放",
+      "status_en": "Biology lessons on plant and animal cells, bacteria, viruses, and more are opening progressively",
       "topics": [
         {
           "slug": "cell-world",
           "name": "细胞世界",
           "english": "The Cell World",
-          "description": "从原核细胞、真核细胞到病毒，对照三维结构与显微图像。",
-          "description_en": "Compare 3D structures and microscope images of prokaryotes, eukaryotes, and viruses.",
-          "status": "病毒图鉴已开放 · 细胞图鉴本地预览",
-          "status_en": "Virus Atlas available · Cell Atlas local preview",
+          "description": "从植物与动物细胞，到细菌和病毒，对照三维结构、形态与显微图像。",
+          "description_en": "Compare plant and animal cells, bacteria, and viruses through 3D structures, morphology, and micrographs.",
+          "status": "植物细胞、动物细胞、细菌与病毒图鉴已开放 · 细胞图鉴本地预览",
+          "status_en": "Plant cell, animal cell, bacteria, and virus lessons available · Cell Atlas local preview",
           "lessons": [
+            {
+              "slug": "plant-cell-model",
+              "name": "植物细胞模型",
+              "english": "Plant Cell Model",
+              "description": "旋转植物细胞，点选 11 种细胞器查看结构与功能。细胞器大小和位置经过视觉化处理。",
+              "description_en": "Rotate the plant cell and select 11 organelles to explore their structures and roles. Organelle sizes and positions are visualized, not to scale.",
+              "interaction": "11 种细胞器 · WebGL 2 · 3D 交互",
+              "interaction_en": "11 organelles · WebGL 2 · Interactive 3D",
+              "href": "demos/biology/plant-cell/index.html",
+              "published": true,
+              "screenshot": "assets/biology-plant-cell.png"
+            },
+            {
+              "slug": "animal-cell-model",
+              "name": "动物细胞模型",
+              "english": "Animal Cell Model",
+              "description": "旋转并剖切动物细胞，点选 16 种结构查看中英文说明；模型尺寸经过视觉化处理。",
+              "description_en": "Rotate and section an animal cell, then select 16 structures for bilingual explanations. Model dimensions are visualized.",
+              "interaction": "16 种结构 · Three.js · 中英切换",
+              "interaction_en": "16 structures · Three.js · Chinese / English",
+              "href": "demos/biology/animal-cell/index.html",
+              "published": true,
+              "screenshot": "assets/biology-animal-cell.jpg"
+            },
+            {
+              "slug": "bacteria-atlas",
+              "name": "细菌图鉴",
+              "english": "Bacteria Atlas",
+              "description": "探索 12 种细菌与六类形态，旋转程序生成的群体模型，并查看逐张署名的显微图像。",
+              "description_en": "Explore 12 bacterial specimens across six morphological groups, rotate procedural models, and compare credited micrographs.",
+              "interaction": "12 个标本 · 6 类群 · 3D · 显微图像",
+              "interaction_en": "12 specimens · 6 groups · 3D · Micrographs",
+              "href": "demos/biology/bacteria-atlas/index.html",
+              "published": true,
+              "screenshot": "assets/biology-bacteria-atlas.png"
+            },
             {
               "slug": "virus-atlas",
               "name": "病毒图鉴",
@@ -293,7 +337,8 @@
               "interaction": "7 种病毒 · 3D 模型 · 电镜对照 · 来源署名",
               "interaction_en": "7 viruses · 3D models · Micrograph comparison · Image credits",
               "href": "demos/biology/virus-atlas/index.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/biology-virus-atlas.png"
             },
             {
               "slug": "cell-atlas",
@@ -303,7 +348,8 @@
               "description_en": "Explore 26 interactive specimens alongside microscope images. The lesson text is currently in Chinese.",
               "interaction": "3D 旋转 · 剖切 · 显微对照",
               "interaction_en": "3D rotation · Cutaway · Microscope comparison",
-              "href": "demos/biology/cell-atlas/index.html"
+              "href": "demos/biology/cell-atlas/index.html",
+              "screenshot": "assets/biology-cell-atlas.png"
             }
           ]
         },
@@ -325,7 +371,8 @@
               "interaction": "3D 结构 · 分步过程 · 双语 · 两张功能图",
               "interaction_en": "3D structures · Step-by-step pathways · Bilingual · Two illustrations",
               "href": "demos/biology/cell-energy/index.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/biology-cell-energy.png"
             }
           ]
         },
@@ -347,7 +394,8 @@
               "interaction": "9 大系统 · WebGL 交互 · 中英切换",
               "interaction_en": "9 systems · WebGL interaction · Chinese / English",
               "href": "demos/biology/human-systems/index.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/biology-human-systems.png"
             }
           ]
         }

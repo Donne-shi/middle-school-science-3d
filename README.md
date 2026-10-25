@@ -4,7 +4,7 @@
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。
 
-目前已开放天文学 11 个独立演示，以及物理学《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》、生物学《细胞能量图鉴》和化学《原子模型2400年》。总入口另设跨学科的《2026 诺贝尔奖互动实验室》，可切换生理学或医学奖、化学奖与物理学奖并操作三维模型。《太阳系行星图鉴》和《地球到火星》已公开，贴图来源与 CC BY 4.0 署名记录见素材文档；生物学《细胞形态图鉴》仍仅在本地预览，内嵌显微照片待核实授权。详情见 [素材与授权记录](docs/ASSETS.md)。
+目前已开放天文学 11 个独立演示、3 个物理学互动演示，以及生物学《植物细胞模型》《动物细胞模型》《细菌图鉴》《细胞能量图鉴》《人体系统图鉴》和《病毒图鉴》。化学开放《原子模型2400年》；总入口另设跨学科的《2026 诺贝尔奖互动实验室》。《太阳系行星图鉴》和《地球到火星》已公开，贴图来源与 CC BY 4.0 署名记录见素材文档；生物学《细胞形态图鉴》仍仅在本地预览，内嵌显微照片待核实授权。详情见 [素材与授权记录](docs/ASSETS.md)。
 
 天文学按太阳系、宇宙现象、恒星与星空、登月探索四个专题组织。各演示可独立打开，返回天文学入口。
 
@@ -19,6 +19,9 @@ site/subjects/biology/index.html               生物学独立入口
 site/topics/biology/cell-energy/index.html     细胞能量专题
 site/demos/biology/cell-energy/index.html      细胞能量图鉴独立入口
 site/topics/biology/cell-world/index.html      细胞世界专题
+site/demos/biology/plant-cell/index.html       植物细胞 3D 模型独立入口
+site/demos/biology/animal-cell/index.html      动物细胞 3D 模型独立入口
+site/demos/biology/bacteria-atlas/index.html   细菌图鉴独立入口
 preview/demos/biology/cell-atlas/index.html    细胞形态图鉴本地预览
 site/subjects/chemistry/index.html             化学独立入口
 site/topics/astronomy/solar-system/index.html  太阳系专题
@@ -26,8 +29,8 @@ site/topics/astronomy/universe/index.html      宇宙现象专题
 site/topics/astronomy/stellar-sky/index.html   恒星与星空专题
 site/topics/astronomy/moon-exploration/index.html 登月探索专题
 site/demos/solar-system/*.html                 11 个已公开的天文学独立演示
-preview/demos/solar-system/atlas.html          行星图鉴本地预览副本
-preview/demos/solar-system/earth-to-mars.html  地火转移本地预览副本
+preview/demos/solar-system/atlas.html          行星图鉴本地预览
+preview/demos/solar-system/earth-to-mars.html  地火转移本地预览
 site/topics/physics/forces-and-motion/index.html 力与运动专题
 site/demos/physics/newton-garage/index.html    牛顿车库独立入口
 site/topics/physics/simple-machines/index.html 简单机械专题
@@ -39,7 +42,7 @@ site/demos/chemistry/atom-history/index.html    原子模型2400年独立入口
 preview/                                       本地演示预览，Git 忽略
 ```
 
-所有站点目录入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。诺贝尔奖互动实验室保留独立页面与三维依赖，构建时从 `content/demos/nobel-2026/` 复制到 `site/demos/nobel-2026/`；获奖信息的机构来源及模型说明见 [诺贝尔奖参考资料](content/demos/nobel-2026/REFERENCES.md)。单独打开学科首页时，导航仍可使用。目录页右上角可切换中文 / English；语言选择会随目录链接传递，并与《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》《细胞能量图鉴》《原子模型2400年》的语言设置保持一致。天文学单页保留作者原有的语言支持，其中部分演示正文仍主要为中文。首页直接显示内容，不播放开场动画。《原子模型2400年》使用 Canvas 绘制，可在支持 Canvas 的浏览器中运行。建议通过本地 HTTP 服务预览。
+所有站点目录入口采用相对链接和本地样式文件，不依赖前端框架或运行时接口。诺贝尔奖互动实验室保留独立页面与三维依赖，构建时从 `content/demos/nobel-2026/` 复制到 `site/demos/nobel-2026/`；获奖信息的机构来源及模型说明见 [诺贝尔奖参考资料](content/demos/nobel-2026/REFERENCES.md)。单独打开学科首页时，导航仍可使用。目录页右上角可切换中文 / English；语言选择会随目录链接传递，并与《牛顿车库》《简单机械 3D 实验室》《电与磁 3D 实验室》《细胞能量图鉴》《原子模型2400年》的语言设置保持一致。天文学单页保留作者原有的语言支持，其中部分演示正文仍主要为中文；植物细胞模型提供双语名称，说明正文目前为中文。首页直接显示内容，不播放开场动画。《原子模型2400年》使用 Canvas 绘制，可在支持 Canvas 的浏览器中运行。建议通过本地 HTTP 服务预览。
 
 ## 本地预览
 
@@ -72,4 +75,4 @@ python3 -m http.server 8000 --directory preview
 
 ## 参与贡献与授权
 
-欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。诺贝尔奖互动实验室和三个物理演示所用 Three.js 的授权文本分别见 [诺贝尔实验室许可](content/demos/nobel-2026/THREE_LICENSE.txt)、 [牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)和[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。
+欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。诺贝尔奖互动实验室、物理演示和植物细胞模型所用 Three.js 的授权文本分别见 [诺贝尔实验室许可](content/demos/nobel-2026/THREE_LICENSE.txt)、[牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)、[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)、[植物细胞模型许可](site/demos/biology/plant-cell/THREE_LICENSE.txt)和[动物细胞模型许可](site/demos/biology/animal-cell/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。
