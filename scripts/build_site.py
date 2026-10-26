@@ -158,6 +158,8 @@ def topic_page(subject: dict, topic: dict) -> None:
     }[slug]
     if slug == "chemistry" and topic["slug"] == "solutions-acids-bases":
         visual_zh, visual_en = "九个场景 · 从溶液到 pH", "9 SCENES · SOLUTIONS TO pH"
+    if slug == "chemistry" and topic["slug"] == "periodic-table":
+        visual_zh, visual_en = "118 种元素 · 看见周期律", "118 ELEMENTS · EXPLORE PERIODICITY"
     if slug == "physics" and topic["slug"] == "simple-machines":
         visual_zh, visual_en = "六种机械 · 力与距离", "SIX MACHINES · FORCE & DISTANCE"
     if slug == "physics" and topic["slug"] == "electricity-and-magnetism":
@@ -166,6 +168,11 @@ def topic_page(subject: dict, topic: dict) -> None:
         guidance_zh, guidance_en = (
             "从溶液开始，观察分散系与溶解度，再探索酸碱、电离、中和和 pH。",
             "Start with solutions, then explore dispersions, solubility, acids and bases, ionization, neutralization, and pH.",
+        )
+    if slug == "chemistry" and topic["slug"] == "periodic-table":
+        guidance_zh, guidance_en = (
+            "先按原子序数浏览整张表，再搜索元素、比较性质或切换 3D 视图；每个元素的照片来源可在页面内查看。",
+            "Browse by atomic number, search for an element, compare its properties, or switch to 3D. Image source links are available in the lesson.",
         )
     if slug == "biology" and topic["slug"] == "cell-energy":
         visual_zh, visual_en = "两种细胞器 · 两条能量路径", "TWO ORGANELLES · TWO ENERGY PATHWAYS"

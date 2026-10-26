@@ -124,3 +124,7 @@ MIT 许可证只用于本项目可授权的原创代码和文档。第三方素�
 ## 已接入：溶液与酸碱微观实验台
 
 作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/溶液与酸碱3D/index.html` 及其 `css/`、`js/` 本地依赖已接入 `site/demos/chemistry/solutions-acids-bases/`；原目录未修改。网页包含九个可操作场景，并提供中英文切换。Three.js r149 保留原文件头的 MIT 许可声明，目录内另附许可文本。入口截图 `content/images/chemistry-solutions-acid-base-preview.jpg` 来自作者提供的 `预览-首页.png`，缩放为 1600×1000 并转为 JPEG，用作化学专题入口预览。
+
+## 已接入：元素周期表
+
+作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/元素周期表.html` 已接入 `site/demos/chemistry/periodic-table/index.html`，原文件保持不变。页面使用内嵌 Canvas 绘制 118 种原子模型，无外部代码依赖；包含中英文切换、平面与 3D 周期表、元素搜索与性质图表。原稿含 96 张 WebP 单质图片；2026-10-26 使用 Wikimedia Commons API 核对了对应文件页的作者和许可元数据，结果包含 CC BY、CC BY-SA、GFDL、FAL、公有领域和 Attribution-only 等不同类别。页面的图片来源面板逐条列出作者、具体许可、许可链接（若 Commons 元数据提供）和文件页；图像以 WebP 形式显示。**第 94 号钚样品照片被排除：Commons 标注为 Attribution-only，许可链接缺失且页面提出单独的再使用声明；其余 95 张按各自的许可记录保留。**入口截图由作者提供，压缩为 JPEG 并用于化学专题卡片预览。Commons 元数据记录保存在 `content/chemistry-periodic-table-credits.json`，可用于后续更新复核；MIT 项目许可证不覆盖这些第三方图片。

@@ -409,8 +409,8 @@
       "description": "从原子模型的演进出发，继续探索溶液、酸碱与物质变化。",
       "description_en": "Explore atomic models, solutions, acids and bases, and how matter changes.",
       "accent": "#8058a5",
-      "status": "2 个化学专题已开放",
-      "status_en": "2 chemistry topics available",
+      "status": "3 个化学专题已开放",
+      "status_en": "3 chemistry topics available",
       "topics": [
         {
           "slug": "atomic-structure",
@@ -455,6 +455,30 @@
               "interaction_en": "9 interactive scenes · Chinese / English",
               "href": "demos/chemistry/solutions-acids-bases/index.html",
               "screenshot": "assets/chemistry-solutions-acid-base-preview.jpg",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "periodic-table",
+          "name": "元素周期表",
+          "english": "Periodic Table",
+          "description": "搜索并点开 118 种元素，查看原子模型、单质照片、常见化合物和同位素，沿着元素性质理解周期律。",
+          "description_en": "Search and explore all 118 elements through atomic models, substance photographs, compounds, isotopes, and periodic trends.",
+          "status": "118 种元素 · 平面与 3D 视图",
+          "status_en": "118 elements · 2D and 3D views",
+          "screenshot": "assets/chemistry-periodic-table.jpg",
+          "lessons": [
+            {
+              "slug": "periodic-table",
+              "name": "元素周期表",
+              "english": "Interactive Periodic Table",
+              "description": "搜索、筛选并点选元素，查看原子结构、物理性质、同位素、常见化合物与单质照片。",
+              "description_en": "Search, filter, and select elements to explore atomic structure, physical properties, isotopes, compounds, and photographs of the substances.",
+              "interaction": "118 种元素 · 2D / 3D · 中英文切换",
+              "interaction_en": "118 elements · 2D / 3D · Chinese / English",
+              "href": "demos/chemistry/periodic-table/index.html",
+              "screenshot": "assets/chemistry-periodic-table.jpg",
               "published": true
             }
           ]
