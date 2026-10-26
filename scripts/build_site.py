@@ -41,7 +41,11 @@ def aria(zh: str, en: str) -> str:
 
 
 def link(current: Path, target: str) -> str:
-    return Path(os.path.relpath(SITE / target, current.parent)).as_posix()
+    relative = Path(os.path.relpath(SITE / target, current.parent)).as_posix()
+    # pathlib drops a trailing slash, but COS uses it to resolve index.html.
+    if target.endswith("/") and relative not in (".", "") and not relative.endswith("/"):
+        relative += "/"
+    return relative
 
 
 def subject_route(slug: str) -> str:
