@@ -3,6 +3,25 @@
     {
       "date": "2026-10-26",
       "date_en": "26 OCT 2026",
+      "category": "新增演示",
+      "category_en": "NEW LESSON",
+      "discipline": "物理学",
+      "discipline_en": "PHYSICS",
+      "title": "光学实验室加入物理学专题",
+      "title_en": "Optics Lab added to Physics",
+      "summary": "新增中英双语光学实验室，包含 11 个互动章节，涵盖光的基础、反射与折射、透镜成像、干涉衍射、光电效应和波粒二象性。",
+      "summary_en": "Added a bilingual optics lab with 11 interactive chapters covering the nature of light, reflection and refraction, lens imaging, interference and diffraction, the photoelectric effect, and wave-particle duality.",
+      "links": [
+        {
+          "label": "打开光学实验室",
+          "label_en": "Open Optics Lab",
+          "href": "demos/physics/optics-lab/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "date_en": "26 OCT 2026",
       "category": "新增专题",
       "category_en": "NEW TOPIC",
       "discipline": "化学",

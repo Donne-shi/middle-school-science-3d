@@ -196,11 +196,11 @@
       "name": "物理学",
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
-      "description": "从汽车的受力与运动，走向简单机械，再探索电与磁。",
-      "description_en": "Explore forces and motion, simple machines, then electricity and magnetism.",
+      "description": "从受力与运动、简单机械、电与磁，到光的传播、反射、折射与成像。",
+      "description_en": "Explore forces and motion, simple machines, electricity and magnetism, and the propagation, reflection, refraction, and imaging of light.",
       "accent": "#ba572e",
-      "status": "3 个物理演示已开放",
-      "status_en": "3 physics lessons available",
+      "status": "4 个物理演示已开放",
+      "status_en": "4 physics lessons available",
       "topics": [
         {
           "slug": "forces-and-motion",
@@ -266,6 +266,29 @@
               "interaction": "13 个章节 · 3D 操作 · 中英双语",
               "interaction_en": "13 chapters · 3D interaction · Bilingual",
               "href": "demos/physics/electricity-lab/index.html",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "optics",
+          "name": "光学",
+          "english": "Optics",
+          "description": "从光的传播、反射与折射，到透镜成像、光的波动性与粒子性，动手探索光学现象。",
+          "description_en": "Explore light propagation, reflection and refraction, lens imaging, and the wave and particle properties of light.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "optics-lab",
+              "name": "光学实验室",
+              "english": "Optics Lab",
+              "description": "通过 11 个互动章节观察光的性质，探索反射、折射、透镜成像、干涉衍射与光电效应。",
+              "description_en": "Explore the properties of light across 11 interactive chapters, including reflection, refraction, lens imaging, interference, diffraction, and the photoelectric effect.",
+              "interaction": "11 个互动章节 · 3D 光路实验 · 中英双语",
+              "interaction_en": "11 interactive chapters · 3D ray experiments · Bilingual",
+              "href": "demos/physics/optics-lab/index.html",
+              "screenshot": "assets/physics-optics-lab.png",
               "published": true
             }
           ]
