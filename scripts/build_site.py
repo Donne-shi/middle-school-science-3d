@@ -362,6 +362,7 @@ def main() -> None:
     shutil.copyfile(ROOT / "web/assets/site.css", SITE / "assets/site.css")
     shutil.copyfile(ROOT / "web/assets/site.js", SITE / "assets/site.js")
     shutil.copyfile(ROOT / "web/assets/newton-mark.svg", SITE / "assets/newton-mark.svg")
+    shutil.copyfile(ROOT / "web/favicon.ico", SITE / "favicon.ico")
     shutil.copyfile(ROOT / "content/images/contact-wechat.jpg", SITE / "assets/contact-wechat.jpg")
     shutil.copyfile(ROOT / "content/images/contact-official-account.jpg", SITE / "assets/contact-official-account.jpg")
     # Copy every catalog screenshot declared under assets/ from the source image
