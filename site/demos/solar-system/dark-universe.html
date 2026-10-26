@@ -191,6 +191,13 @@ body{
   .bar{bottom:13px}
   .bar button{font-size:12px;padding:6px 13px}
 }
+
+.lang-switch{position:fixed;right:calc(var(--pad) + 126px);top:clamp(22px,3.4vh,38px);z-index:20;border:1px solid var(--line);border-radius:18px;background:rgba(8,7,13,.78);color:var(--muted);font:10px/1 var(--mono);letter-spacing:.12em;padding:8px 12px;cursor:pointer}
+.lang-switch:hover{border-color:var(--ac);color:var(--ink)}
+body[data-lang="zh"] .mast h1 .en{display:none}
+body[data-lang="en"] .mast h1 .cn,body[data-lang="en"] .mast .tag:not(.en),body[data-lang="en"] #noteZ{display:none}
+body[data-lang="zh"] .mast .tag.en,body[data-lang="zh"] #noteE{display:none}
+body[data-lang="en"] .kicker em,body[data-lang="en"] .tabs i,body[data-lang="en"] .read>i,body[data-lang="en"] .stats .e,body[data-lang="en"] .sl .lbl i,body[data-lang="en"] .tog .tl i,body[data-lang="en"] .back em{display:none}
 </style>
 </head>
 <body>
@@ -1374,5 +1381,16 @@ requestAnimationFrame(frame);
 </script>
 
 <script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
+<script>
+(function(){
+ const M={
+  "暗物质与暗能量":"Dark Matter & Dark Energy","宇宙的 95%，我们看不见":"The 95% We Cannot See","我们熟悉的普通物质只占宇宙质能密度的一小部分。暗物质主要通过引力效应推断；暗能量则与宇宙加速膨胀有关。":"Ordinary matter is only a small part of the universe's mass-energy density. Dark matter is inferred mainly through gravity; dark energy is associated with the accelerating expansion of the universe.","返回天文学":"Back to Astronomy","成分":"Composition","暗物质":"Dark Matter","暗能量":"Dark Energy","占比 / SHARE":"Share","宇宙的成分":"Cosmic Budget","普通物质":"Ordinary Matter","分离":"Separate","探测半径":"Probe Radius","暗物质晕":"Dark Matter Halo","宇宙的账本":"The Cosmic Ledger","把宇宙的总质能分成 100 份：暗能量约 68 份，暗物质约 27 份，而我们熟悉的原子——恒星、气体、尘埃、你我——不到 5 份。":"Divide the universe's total mass-energy into 100 parts: about 68 dark energy, 27 dark matter, and fewer than 5 familiar atoms — stars, gas, dust, and us.","按 Planck 2018 基准 ΛCDM 模型的近似结果，把宇宙的质能密度分成 100 份：暗能量约 68.5 份，暗物质约 26.6 份，普通物质约 4.9 份。":"In the approximate Planck 2018 base-ΛCDM budget, divide the universe's mass-energy density into 100 parts: about 68.5 dark energy, 26.6 dark matter, and 4.9 ordinary matter.","暂停":"Pause","播放":"Play","拖动旋转视角 · 滚轮缩放 · 拖拽滑块改变参数":"Drag to rotate · scroll to zoom · move sliders to change parameters","复位":"Reset","星系转得太快":"Galaxies Spin Too Fast","星系转得太快了":"Galaxies Spin Too Fast","膨胀的历史":"Expansion History","膨胀在加速":"Expansion Is Accelerating","只按看得见的恒星和气体来算，星系外缘应该越转越慢。可实测速度几乎不随半径变化——外面一定还裹着一大团看不见的质量。":"If only visible stars and gas mattered, a galaxy's outer regions should rotate more slowly. Instead, measured speeds stay nearly constant with radius — suggesting a large halo of unseen mass.","1998 年，两组天文学家发现遥远的超新星比预期更暗——它们比想象中更远。宇宙的膨胀并没有在减速，而是在加速；推着它的，是真空本身携带的能量。":"In 1998, two teams found distant supernovae fainter — and farther away — than expected. The universe's expansion is accelerating, driven by energy associated with empty space.","旋转曲线 / ROTATION CURVE":"Rotation Curve","尺度因子 / SCALE FACTOR":"Scale Factor","加速 ACCEL":"Accelerating","减速 DECEL":"Decelerating","宇宙年龄":"Cosmic Age","轨道速度":"Orbital Speed","暗物质占比":"Dark Matter Fraction","尺度因子":"Scale Factor","状态":"State","加速":"Accelerating","减速":"Decelerating","时间":"Time","暗物质晕":"Dark Matter Halo"
+ };
+ const originals=new WeakMap();const button=document.createElement('button');button.type='button';button.className='lang-switch';button.id='lang-switch';button.setAttribute('aria-label','Switch language');document.body.appendChild(button);let lang='zh';
+ function apply(root=document.body){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const parent=n.parentElement;if(!parent||parent.closest('script,style,svg,canvas,#lang-switch'))continue;if(!originals.has(n))originals.set(n,n.nodeValue);const raw=originals.get(n),trimmed=raw.trim(),value=lang==='en'?(M[trimmed]||trimmed):trimmed;if(value!==trimmed){const lead=raw.match(/^\s*/)?.[0]||'',tail=raw.match(/\s*$/)?.[0]||'';n.nodeValue=lead+value+tail}else if(lang==='zh'&&n.nodeValue!==raw)n.nodeValue=raw}}
+ function setLang(next){lang=next==='en'?'en':'zh';document.documentElement.lang=lang==='en'?'en':'zh-CN';document.body.dataset.lang=lang;try{localStorage.setItem('atlas-lang',lang)}catch(e){}const q=new URL(location.href);if(lang==='en')q.searchParams.set('lang','en');else q.searchParams.delete('lang');history.replaceState(null,'',q);button.textContent=lang==='en'?'中文':'EN';apply()}
+ button.addEventListener('click',()=>setLang(lang==='zh'?'en':'zh'));const observer=new MutationObserver(records=>{if(lang!=='en')return;for(const r of records){if(r.type==='characterData')apply(r.target.parentElement||document.body);else for(const node of r.addedNodes)if(node.nodeType===1)apply(node)}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});const initial=new URLSearchParams(location.search).get('lang')||(()=>{try{return localStorage.getItem('atlas-lang')}catch(e){return null}})()||'zh';setLang(initial)
+})();
+</script>
 </body>
 </html>
