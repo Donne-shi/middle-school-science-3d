@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>光学实验室 Optics Lab · 牛顿科学探索馆</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700&display=swap">
 <style>
 /* Layout: matches the 牛顿科学探索馆 site. Light paper page, chapter rail on the left, the dark 3D stage as the hero, lab notes underneath. Single light theme by design. */
 :root{
@@ -21,9 +18,9 @@
   --accent:#ba572e;    /* the site's physics accent */
   --teal:#197a91;
   --warn:#b23a2a;
-  --serif:"Noto Serif SC","Songti SC","STSong",serif;
-  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  --mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --serif:"Songti SC","STSong",serif;
+  --sans:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
   /* the 3D stage stays dark */
   --stage:#0a0f18; --stage-ui:rgba(18,27,41,.86); --stage-line:#2a3a52; --stage-ink:#eef3fa; --stage-dim:#a4b2c6;
   --sodium:#f6b23c; --cool:#86ccff;
@@ -254,8 +251,8 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
   </main>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
 <script>
 (function(){
 'use strict';
@@ -2200,7 +2197,7 @@ void main(){ float x=vP.x, z=vP.y; float val; float inten;
     function drawChart(){
       const { g, W, H } = prepCanvas(chart); const pad = 18; const c = wlCSS(st.wl);
       g.strokeStyle = 'rgba(42,92,108,.28)'; g.lineWidth = 1; g.beginPath(); g.moveTo(pad, H - pad); g.lineTo(W - 6, H - pad); g.stroke();
-      g.fillStyle = '#617d86'; g.font = '10px DM Mono, monospace'; g.textAlign = 'center';
+      g.fillStyle = '#617d86'; g.font = '10px SFMono-Regular, Menlo, monospace'; g.textAlign = 'center';
       [-20, -10, 0, 10, 20].forEach(X => { const x = pad + (X + Wmm) / (2 * Wmm) * (W - pad - 6); g.fillText(String(X), x, H - 5); g.fillRect(x, H - pad, 1, 3); });
       g.textAlign = 'left'; g.fillText('mm', W - 26, H - pad - 4);
       g.beginPath(); for (let i = 0; i <= 400; i++) { const X = -Wmm + 2 * Wmm * i / 400; const x = pad + i / 400 * (W - pad - 6); const y = H - pad - Ix(X) * (H - pad - 10); i ? g.lineTo(x, y) : g.moveTo(x, y); }
@@ -2324,7 +2321,7 @@ defMod({
     function drawChart(){
       const { g, W, H } = prepCanvas(chart); const p = phys(); const pad = 26; const U0 = -4, U1 = 3; const xOf = U => pad + (U - U0) / (U1 - U0) * (W - pad - 8); const Imax = Math.max(1, st.I); const yOf = I => H - 18 - I / 100 * (H - 34);
       g.strokeStyle = 'rgba(42,92,108,.28)'; g.lineWidth = 1; g.beginPath(); g.moveTo(pad, H - 18); g.lineTo(W - 8, H - 18); g.moveTo(xOf(0), 8); g.lineTo(xOf(0), H - 18); g.stroke();
-      g.fillStyle = '#617d86'; g.font = '10px DM Mono, monospace'; g.textAlign = 'center'; [-4, -2, 0, 2].forEach(U => g.fillText(String(U), xOf(U), H - 5)); g.textAlign = 'left'; g.fillText('U/V', W - 30, H - 22); g.fillText('I', xOf(0) + 4, 14);
+      g.fillStyle = '#617d86'; g.font = '10px SFMono-Regular, Menlo, monospace'; g.textAlign = 'center'; [-4, -2, 0, 2].forEach(U => g.fillText(String(U), xOf(U), H - 5)); g.textAlign = 'left'; g.fillText('U/V', W - 30, H - 22); g.fillText('I', xOf(0) + 4, 14);
       const frac = U => p.K <= 0 ? 0 : (U >= 0 ? 1 : clamp((p.K + U) / p.K, 0, 1));
       g.strokeStyle = '#197a91'; g.lineWidth = 1.8; g.beginPath(); for (let i = 0; i <= 200; i++) { const U = U0 + (U1 - U0) * i / 200; const y = yOf(st.I * frac(U)); i ? g.lineTo(xOf(U), y) : g.moveTo(xOf(U), y); } g.stroke();
       if (p.K > 0 && -p.K > U0) { g.fillStyle = '#ba572e'; g.beginPath(); g.arc(xOf(-p.K), yOf(0), 3, 0, Math.PI * 2); g.fill(); g.fillText('−Uc', xOf(-p.K) - 12, yOf(0) - 8); }
