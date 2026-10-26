@@ -763,9 +763,19 @@ function placeAnno(){
     tcn.setAttribute("x", bx + 7); tcn.setAttribute("y", by + 3); tcn.setAttribute("text-anchor", anchor);
     ten.setAttribute("x", bx + 7); ten.setAttribute("y", by + 16); ten.setAttribute("text-anchor", anchor);
     g.style.opacity = (on && vis) ? 1 : 0;
+    return { bx, by, bounds: g.getBBox() };
   };
-  label($("#anL1"), Rs, -0.62, 54, -40, "start", S.lens);
-  label($("#anL2"), Rh, -1.571, 0, -26, "middle", true);
+  const shadowLabel = label($("#anL1"), Rs, -0.62, 54, -40, "start", S.lens);
+  let horizonLabel = label($("#anL2"), Rh, -1.571, 0, -26, "middle", true);
+  const a = shadowLabel.bounds, b = horizonLabel.bounds;
+  const labelsOverlap = a.x < b.x + b.width + 8 && a.x + a.width + 8 > b.x
+    && a.y < b.y + b.height + 8 && a.y + a.height + 8 > b.y;
+  if (labelsOverlap) {
+    const horizonAnchorY = cy + Rh * Math.sin(-1.571);
+    let nextY = shadowLabel.by + 38;
+    if (nextY > H - 74) nextY = shadowLabel.by - 38;
+    horizonLabel = label($("#anL2"), Rh, -1.571, 0, nextY - horizonAnchorY, "middle", true);
+  }
 }
 
 /* ================================================================ loop ==== */
