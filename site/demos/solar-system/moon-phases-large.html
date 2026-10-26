@@ -1402,6 +1402,14 @@ if (Q.get("lang") === "en") setLang("en");
 if (Q.has("still")) { S.playing = false; syncPlay(); }
 updateHUD();
 
+window.addEventListener("keydown", (e) => {
+  if (e.target.closest("input, textarea, select, button, a, [contenteditable=true]")) return;
+  if (e.code === "Space") { e.preventDefault(); $("#play").click(); return; }
+  if (e.key.toLowerCase() === "r") { $("#reset").click(); return; }
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    e.preventDefault(); setMode((S.mode + (e.key === "ArrowRight" ? 1 : 2)) % 3);
+  }
+});
 requestAnimationFrame(frame);
 
 // 返回天文学月球专题。

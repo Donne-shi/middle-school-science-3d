@@ -784,7 +784,7 @@ let prev = performance.now();
 function draw(now){
   const dt = Math.min(0.05, Math.max(0.001, (now - prev) / 1000));
   prev = now;
-  S.t += dt;
+  if (!S.paused) S.t += dt;
 
   if (!dragging){
     if (Math.abs(S.vaz) > 1e-5 || Math.abs(S.vel) > 1e-5){
@@ -877,6 +877,15 @@ else {
   b.classList.toggle("is-on", !!S[k]);
 });
 anno.classList.toggle("is-on", !!S.anno);
+window.addEventListener("keydown", (e) => {
+  if (e.target.closest("input, textarea, select, button, a, [contenteditable=true]")) return;
+  if (e.code === "Space") { e.preventDefault(); S.paused = !S.paused; return; }
+  if (e.key.toLowerCase() === "r") { S.paused = false; S.t = 0; applyView("edge"); return; }
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    e.preventDefault(); const views = Object.keys(VIEWS); const i = Math.max(0, views.indexOf(S.view || "edge"));
+    applyView(views[(i + (e.key === "ArrowRight" ? 1 : views.length - 1)) % views.length]);
+  }
+});
 requestAnimationFrame(draw);
 })();
 </script>
