@@ -658,6 +658,8 @@ void main(){
   // subtle vignette so the frame holds together
   col *= 1.0 - 0.35 * smoothstep(0.55, 1.5, r);
 
+  // Roll bright plasma into a visible gradient instead of clipping to white.
+  col = vec3(1.0) - exp(-col * 1.15);
   outColor = vec4(col, 1.0);
 }`;
 
