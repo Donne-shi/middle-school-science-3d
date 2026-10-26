@@ -156,10 +156,17 @@ def topic_page(subject: dict, topic: dict) -> None:
         "biology": ("从细胞结构到微生物", "CELLS · BACTERIA · MICROORGANISMS"),
         "chemistry": ("十二个模型 · 一条发现之路", "TWELVE VIEWS · ONE STORY OF DISCOVERY"),
     }[slug]
+    if slug == "chemistry" and topic["slug"] == "solutions-acids-bases":
+        visual_zh, visual_en = "九个场景 · 从溶液到 pH", "9 SCENES · SOLUTIONS TO pH"
     if slug == "physics" and topic["slug"] == "simple-machines":
         visual_zh, visual_en = "六种机械 · 力与距离", "SIX MACHINES · FORCE & DISTANCE"
     if slug == "physics" and topic["slug"] == "electricity-and-magnetism":
         visual_zh, visual_en = "十三个实验 · 电与磁", "13 EXPERIMENTS · ELECTRICITY & MAGNETISM"
+    if slug == "chemistry" and topic["slug"] == "solutions-acids-bases":
+        guidance_zh, guidance_en = (
+            "从溶液开始，观察分散系与溶解度，再探索酸碱、电离、中和和 pH。",
+            "Start with solutions, then explore dispersions, solubility, acids and bases, ionization, neutralization, and pH.",
+        )
     if slug == "biology" and topic["slug"] == "cell-energy":
         visual_zh, visual_en = "两种细胞器 · 两条能量路径", "TWO ORGANELLES · TWO ENERGY PATHWAYS"
     if slug == "biology" and topic["slug"] == "human-systems":

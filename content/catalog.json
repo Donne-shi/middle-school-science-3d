@@ -406,11 +406,11 @@
       "name": "化学",
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
-      "description": "从原子模型的演进出发，探索物质结构与变化。",
-      "description_en": "Trace how atomic models evolved and explore the structure of matter.",
+      "description": "从原子模型的演进出发，继续探索溶液、酸碱与物质变化。",
+      "description_en": "Explore atomic models, solutions, acids and bases, and how matter changes.",
       "accent": "#8058a5",
-      "status": "原子结构专题已开放",
-      "status_en": "Atomic Structure topic available",
+      "status": "2 个化学专题已开放",
+      "status_en": "2 chemistry topics available",
       "topics": [
         {
           "slug": "atomic-structure",
@@ -431,6 +431,30 @@
               "interaction_en": "8 models · 6 paradigm shifts · Chinese / English",
               "href": "demos/chemistry/atom-history/index.html",
               "screenshot": "assets/atom-history-preview.png",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "solutions-acids-bases",
+          "name": "溶液与酸碱",
+          "english": "Solutions, Acids & Bases",
+          "description": "通过溶液、分散系、溶解度、电离与中和等交互场景，观察微观粒子的变化。",
+          "description_en": "Explore interactive scenes on solutions, dispersions, solubility, ionization, and neutralization.",
+          "status": "9 个交互场景已开放",
+          "status_en": "9 interactive scenes available",
+          "screenshot": "assets/chemistry-solutions-acid-base-preview.jpg",
+          "lessons": [
+            {
+              "slug": "solutions-acids-bases-lab",
+              "name": "溶液与酸碱微观实验台",
+              "english": "Solutions, Acids & Bases Lab",
+              "description": "切换九个微观实验场景，探索溶解、丁达尔效应、溶解度曲线、电离、中和、pH 与方程式配平。",
+              "description_en": "Explore nine microscopic lab scenes on dissolving, the Tyndall effect, solubility, ionization, neutralization, pH, and equation balancing.",
+              "interaction": "9 个可操作场景 · 中英文切换",
+              "interaction_en": "9 interactive scenes · Chinese / English",
+              "href": "demos/chemistry/solutions-acids-bases/index.html",
+              "screenshot": "assets/chemistry-solutions-acid-base-preview.jpg",
               "published": true
             }
           ]

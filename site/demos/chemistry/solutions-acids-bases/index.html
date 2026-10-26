@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>溶液与酸碱 · 微观实验台</title>
+<meta name="description" content="中学化学「溶液与酸碱」专题：溶液、分散系与丁达尔效应、溶解度曲线、电离、中和滴定、方程式配平，全部可操作的三维演示。">
+<link rel="stylesheet" href="css/main.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5F2EA'/%3E%3Cpath d='M12 6h8v8.4l4.6 10.2A2 2 0 0 1 22.8 28H9.2a2 2 0 0 1-1.8-3.4L12 14.4z' fill='%230E7A57'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="app">
+
+  <!-- ==================== 左栏 ==================== -->
+  <aside class="side">
+    <div class="brand">
+      <p class="brand-mark">CHEMISTRY<em>/</em>III</p>
+      <h1 class="brand-title" data-i18n>溶液与酸碱</h1>
+      <p class="brand-sub" data-i18n>微观实验台 · 9 个可操作场景</p>
+    </div>
+
+    <nav class="menu" id="menu" aria-label="专题目录">
+      <button type="button" class="menu-item is-on" data-view="overview">
+        <span class="mi-no">00</span><span class="mi-name" data-i18n>概览</span>
+      </button>
+      <button type="button" class="menu-item" data-view="solution">
+        <span class="mi-no">01</span><span class="mi-name" data-i18n>溶液</span>
+      </button>
+      <button type="button" class="menu-item" data-view="disperse">
+        <span class="mi-no">02</span><span class="mi-name" data-i18n>分散系与丁达尔</span>
+      </button>
+      <button type="button" class="menu-item" data-view="solubility">
+        <span class="mi-no">03</span><span class="mi-name" data-i18n>溶解度曲线</span>
+      </button>
+      <button type="button" class="menu-item" data-view="acidbase">
+        <span class="mi-no">04</span><span class="mi-name" data-i18n>酸碱盐与电离</span>
+      </button>
+      <button type="button" class="menu-item" data-view="neutralize">
+        <span class="mi-no">05</span><span class="mi-name" data-i18n>中和滴定</span>
+      </button>
+      <button type="button" class="menu-item" data-view="balance">
+        <span class="mi-no">06</span><span class="mi-name" data-i18n>方程式配平</span>
+      </button>
+      <button type="button" class="menu-item" data-view="ph">
+        <span class="mi-no">07</span><span class="mi-name" data-i18n>pH 与指示剂</span>
+      </button>
+      <button type="button" class="menu-item" data-view="quiz">
+        <span class="mi-no">08</span><span class="mi-name" data-i18n>自测</span>
+      </button>
+    </nav>
+
+    <div class="side-foot">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="zh" aria-pressed="true">中</button>
+        <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+      </div>
+      <p class="side-note" data-i18n>数据取自中学化学常用表，用于教学演示。</p>
+    </div>
+  </aside>
+
+  <!-- ==================== 右栏 ==================== -->
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb">
+        <span class="crumb-no" id="crumb-no">00</span>
+        <span class="crumb-name" id="crumb-name">概览</span>
+      </div>
+      <div class="topbar-right">
+        <a class="science-back" href="../../../subjects/chemistry/index.html" data-i18n>← 返回化学专题</a>
+        <span class="topbar-hint" data-i18n>← 左侧目录切换主题</span>
+        <div class="lang-switch lang-switch--mini" role="group" aria-label="Language">
+          <button type="button" data-lang-btn="zh" aria-pressed="true">中</button>
+          <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="scroll" id="scroll">
+
+      <!-- ---------- 00 概览 ---------- -->
+      <section class="view is-on" data-view="overview">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="kicker">OVERVIEW · 00</p>
+            <h1 class="hero-title" data-i18n-html>一杯水里<br>藏着两种世界</h1>
+            <p class="hero-lead" data-i18n>把食盐撒进水里，晶体消失了，水依然清澈——这是溶液。把泥土搅进水里，浑浊久久不散，静置后沉到底下——这是悬浊液。同样是「混在一起」，粒子的大小决定了它们的名字、外观，以及一束光穿过时的样子。</p>
+            <div class="hero-facts">
+              <div class="fact"><b>3</b><span data-i18n>类分散系</span></div>
+              <div class="fact"><b>7</b><span data-i18n>种分子模型</span></div>
+              <div class="fact"><b>2</b><span data-i18n>步电离</span></div>
+            </div>
+          </div>
+          <div class="hero-stage">
+            <div class="viewport viewport--hero">
+              <canvas id="hero-canvas"></canvas>
+              <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 氯化钠溶液</span></div>
+              <div class="vp-legend" id="hero-legend"></div>
+              <div class="vp-tip">DRAG TO TILT</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry-grid">
+          <button type="button" class="entry" data-goto="solution">
+            <p class="entry-no">01</p>
+            <h3 data-i18n>溶液</h3>
+            <p data-i18n>溶质、溶剂与饱和——亲手往水里加盐，看晶体什么时候不再消失。</p>
+            <span class="entry-arrow">→</span>
+          </button>
+          <button type="button" class="entry" data-goto="disperse">
+            <p class="entry-no">02</p>
+            <h3 data-i18n>分散系与丁达尔</h3>
+            <p data-i18n>三个烧杯并排，一束光打过去，只有两个亮起来。</p>
+            <span class="entry-arrow">→</span>
+          </button>
+          <button type="button" class="entry" data-goto="balance">
+            <p class="entry-no">06</p>
+            <h3 data-i18n>方程式配平</h3>
+            <p data-i18n>调系数，看两边的原子一颗一颗对上。</p>
+            <span class="entry-arrow">→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ---------- 01 溶液 ---------- -->
+      <section class="view" data-view="solution" hidden>
+        <div class="view-head">
+          <p class="kicker">01 · SOLUTION</p>
+          <h1 data-i18n>溶液：均一、稳定的混合物</h1>
+          <p class="lead" data-i18n>一种或几种物质分散到另一种物质里，形成均一的、稳定的混合物，叫做溶液。</p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <p class="card-label">SOLUTE</p>
+            <h3 data-i18n>溶质</h3>
+            <p data-i18n>被溶解的物质。可以是固体（食盐）、液体（酒精），也可以是气体（二氧化碳）。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">SOLVENT</p>
+            <h3 data-i18n>溶剂</h3>
+            <p data-i18n>能溶解其他物质的物质。水是最常用的溶剂，汽油、酒精也常作溶剂。</p>
+          </article>
+          <article class="card card--accent">
+            <p class="card-label">MIXTURE</p>
+            <h3 data-i18n>三个特征</h3>
+            <p data-i18n>均一（各处浓度相同）、稳定（静置不分层）、混合物（至少两种物质）。</p>
+          </article>
+        </div>
+
+        <div class="lab">
+          <div class="lab-stage">
+            <div class="viewport">
+              <canvas id="dissolve-canvas"></canvas>
+              <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 溶解实验台</span></div>
+              <div class="vp-legend" id="dissolve-legend">
+                <span class="lg"><i id="legend-crystal"></i><b data-i18n>未溶解晶体</b></span>
+                <span class="lg"><i id="legend-a-dot"></i><b id="legend-a-text">K⁺</b></span>
+                <span class="lg"><i id="legend-b-dot"></i><b id="legend-b-text">NO₃⁻</b></span>
+                <span class="lg"><i id="legend-water"></i><b data-i18n>水分子</b></span>
+              </div>
+              <div class="vp-tip">DRAG TO TILT</div>
+            </div>
+            <div class="lab-caption">
+              <p class="lab-state" id="dissolve-state">不饱和溶液</p>
+              <p class="lab-note" id="dissolve-note">温度不变时，多余的硝酸钾不再溶解，沉在杯底——此时溶液已经饱和。</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <p class="panel-label">CONTROL</p>
+            <div class="tabs" id="sol-tabs">
+              <button type="button" data-sub="KNO3" aria-selected="true">KNO₃<small data-i18n>硝酸钾</small></button>
+              <button type="button" data-sub="NaCl" aria-selected="false">NaCl<small data-i18n>氯化钠</small></button>
+              <button type="button" data-sub="CaOH2" aria-selected="false">Ca(OH)₂<small data-i18n>氢氧化钙</small></button>
+            </div>
+
+            <label class="range-row">
+              <span class="range-name" data-i18n>温度</span>
+              <input type="range" id="temp-range" min="0" max="100" step="1" value="45">
+              <output id="temp-out">45 °C</output>
+            </label>
+
+            <div class="readouts">
+              <div class="readout"><span class="readout-k" data-i18n>该温度溶解度</span><b class="readout-v" id="ro-sol">—</b></div>
+              <div class="readout"><span class="readout-k" data-i18n>已加入</span><b class="readout-v" id="ro-added">0 g</b></div>
+              <div class="readout"><span class="readout-k" data-i18n>已溶解</span><b class="readout-v" id="ro-dissolved">0 g</b></div>
+              <div class="readout"><span class="readout-k" data-i18n>未溶解</span><b class="readout-v" id="ro-left">0 g</b></div>
+              <div class="readout"><span class="readout-k" data-i18n>质量分数</span><b class="readout-v" id="ro-frac">0 %</b></div>
+            </div>
+
+            <div class="btn-row">
+              <button type="button" class="btn btn--primary" id="btn-add" data-i18n>加 10 g 溶质</button>
+              <button type="button" class="btn" id="btn-stir" data-i18n>搅拌</button>
+              <button type="button" class="btn btn--ghost" id="btn-reset" data-i18n>重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          <p class="note-title" data-i18n>两处最容易错</p>
+          <p data-i18n>溶液不一定无色——硫酸铜溶液是蓝色的；但溶液一定是透明的，因为溶质以分子或离子形式分散，粒子直径小于 1 nm，不会阻挡光线。</p>
+        </div>
+
+        <h2 class="sub-head" data-i18n>常见的溶液</h2>
+        <div class="chips">
+          <span class="chip"><b data-i18n>生理盐水</b><small>NaCl / H₂O</small></span>
+          <span class="chip"><b data-i18n>碘酒</b><small>I₂ / 酒精</small></span>
+          <span class="chip"><b data-i18n>糖水</b><small>C₁₂H₂₂O₁₁ / H₂O</small></span>
+          <span class="chip"><b data-i18n>盐酸</b><small>HCl / H₂O</small></span>
+          <span class="chip"><b data-i18n>澄清石灰水</b><small>Ca(OH)₂ / H₂O</small></span>
+          <span class="chip"><b data-i18n>硫酸铜溶液</b><small>CuSO₄ / H₂O</small></span>
+        </div>
+      </section>
+
+      <!-- ---------- 02 分散系 ---------- -->
+      <section class="view" data-view="disperse" hidden>
+        <div class="view-head">
+          <p class="kicker">02 · DISPERSION</p>
+          <h1 data-i18n>溶液、悬浊液、乳浊液</h1>
+          <p class="lead" data-i18n>把一种物质分散到另一种物质里，按分散质粒子的大小可以分为三类。它们的差别不只在名称，还在静置之后，以及一束光穿过时的样子。</p>
+        </div>
+
+        <div class="disperse-stage">
+          <div class="viewport viewport--wide">
+            <canvas id="disperse-canvas"></canvas>
+            <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 激光穿过三种分散系</span></div>
+            <div class="vp-legend">
+              <span class="lg"><i id="lg-ion2"></i><b data-i18n>离子（小于 1 nm）</b></span>
+              <span class="lg"><i id="lg-dust"></i><b data-i18n>固体小颗粒（大于 100 nm）</b></span>
+              <span class="lg"><i id="lg-oil"></i><b data-i18n>小液滴（大于 100 nm）</b></span>
+              <div class="lg-sep"></div>
+              <span class="lg"><i id="lg-beam"></i><b data-i18n>散射光路</b></span>
+            </div>
+            <div class="vp-tip">BEAM / SETTLE</div>
+          </div>
+          <div class="disperse-ctrl">
+            <div class="btn-row">
+              <button type="button" class="btn btn--primary" id="btn-beam" data-i18n>打开激光</button>
+              <button type="button" class="btn" id="btn-settle" data-i18n>静置 10 分钟</button>
+              <button type="button" class="btn btn--ghost" id="btn-disp-reset" data-i18n>重置</button>
+            </div>
+            <ul class="disperse-read" id="disperse-read"></ul>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-i18n>类型</th>
+                <th data-i18n>分散质粒子直径</th>
+                <th data-i18n>外观</th>
+                <th data-i18n>静置后</th>
+                <th data-i18n>激光照射</th>
+                <th data-i18n>实例</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b data-i18n>溶液</b></td>
+                <td class="mono">&lt; 1 nm</td>
+                <td data-i18n>均一、透明</td>
+                <td data-i18n>不变化</td>
+                <td><b class="tag tag--ok" data-i18n>无光路</b></td>
+                <td data-i18n>食盐水、盐酸、糖水</td>
+              </tr>
+              <tr>
+                <td><b data-i18n>悬浊液</b></td>
+                <td class="mono">&gt; 100 nm</td>
+                <td data-i18n>浑浊、不均一</td>
+                <td data-i18n>固体下沉</td>
+                <td><b class="tag tag--on" data-i18n>明显光路</b></td>
+                <td data-i18n>泥水、石灰浆、血液</td>
+              </tr>
+              <tr>
+                <td><b data-i18n>乳浊液</b></td>
+                <td class="mono">&gt; 100 nm</td>
+                <td data-i18n>浑浊、不均一</td>
+                <td data-i18n>液体分层</td>
+                <td><b class="tag tag--on" data-i18n>明显光路</b></td>
+                <td data-i18n>油水混合物、牛奶</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <p class="card-label">TYNDALL EFFECT</p>
+            <h3 data-i18n>丁达尔效应</h3>
+            <p data-i18n>光束通过分散系时，若粒子直径与可见光波长（400–760 nm）相当，光被散射到侧面，于是从侧面能看到一条明亮的光路。溶液中的粒子太小，散射极弱，光线径直穿过，看不到光路。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">WHY IT MATTERS</p>
+            <h3 data-i18n>为什么这条光路有用</h3>
+            <p data-i18n>它是区分溶液与胶体、悬浊液最直观的手段：能看见光路的不一定是溶液。空气中的雾、电影院的光柱、森林里的晨光，都是同一回事。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 03 溶解度 ---------- -->
+      <section class="view" data-view="solubility" hidden>
+        <div class="view-head">
+          <p class="kicker">03 · SOLUBILITY</p>
+          <h1 data-i18n>溶解度曲线</h1>
+          <p class="lead" data-i18n>一定温度下，100 g 水里最多能溶解的溶质质量，就是这种物质在该温度下的溶解度。把每个温度下的最大值连成线，就是溶解度曲线。</p>
+        </div>
+
+        <div class="grid-2">
+          <article class="card card--accent">
+            <p class="card-label">SATURATED</p>
+            <h3 data-i18n>饱和溶液</h3>
+            <p data-i18n>在一定温度下，向一定量的溶剂里加入某种溶质，当溶质不能再溶解时，所得溶液叫饱和溶液。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">UNSATURATED</p>
+            <h3 data-i18n>不饱和溶液</h3>
+            <p data-i18n>还能继续溶解同种溶质的溶液。两者之间只差还有没有溶质能进去，与浓稀无关。</p>
+          </article>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="card-label">INTERACTIVE CURVE</p>
+              <h3 data-i18n>动手拖动，看曲线怎么回答</h3>
+            </div>
+            <div class="seg" id="chart-mode">
+              <button type="button" data-mode="compare" aria-selected="true" data-i18n>四物质对比</button>
+              <button type="button" data-mode="state" aria-selected="false" data-i18n>状态判定</button>
+            </div>
+          </div>
+          <p class="chart-tip" id="chart-tip">移动指针读取任意温度下的溶解度（触屏可直接拖动）</p>
+          <div class="chart-body">
+            <canvas id="solubility-canvas" tabindex="0"></canvas>
+            <aside class="chart-aside" id="chart-readout"></aside>
+          </div>
+          <div class="chart-foot">
+            <div class="chart-verdict" id="chart-verdict">—</div>
+            <label class="range-row range-row--slim" id="chart-sub-row" hidden>
+              <span class="range-name" data-i18n>物质</span>
+              <select id="chart-sub">
+                <option value="KNO3">KNO₃</option>
+                <option value="NaCl">NaCl</option>
+                <option value="NH4Cl">NH₄Cl</option>
+                <option value="CaOH2">Ca(OH)₂</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 04 酸碱盐 ---------- -->
+      <section class="view" data-view="acidbase" hidden>
+        <div class="view-head">
+          <p class="kicker">04 · ACID / BASE / SALT</p>
+          <h1 data-i18n>酸、碱、盐与它们的电离</h1>
+          <p class="lead" data-i18n>酸、碱、盐的水溶液能导电，是因为它们在水里电离出了自由移动的离子。区别在于电离出什么离子，以及电离得彻不彻底。</p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card card--accent">
+            <p class="card-label">ACID</p>
+            <h3 data-i18n>酸</h3>
+            <p data-i18n>电离时产生的阳离子全部是 H⁺ 的化合物。如 HCl、H₂SO₄、HNO₃。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">BASE</p>
+            <h3 data-i18n>碱</h3>
+            <p data-i18n>电离时产生的阴离子全部是 OH⁻ 的化合物。如 NaOH、Ca(OH)₂、KOH。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">SALT</p>
+            <h3 data-i18n>盐</h3>
+            <p data-i18n>由金属离子（或 NH₄⁺）与酸根离子组成的化合物。如 NaCl、Na₂CO₃。</p>
+          </article>
+        </div>
+
+        <div class="mol-body">
+          <div class="mol-tabs" id="mol-tabs" role="tablist">
+            <button type="button" data-mol="HCl" aria-selected="true">HCl<small data-i18n>盐酸</small></button>
+            <button type="button" data-mol="H2SO4" aria-selected="false">H₂SO₄<small data-i18n>硫酸</small></button>
+            <button type="button" data-mol="CH3COOH" aria-selected="false">CH₃COOH<small data-i18n>醋酸</small></button>
+            <button type="button" data-mol="NaOH" aria-selected="false">NaOH<small data-i18n>氢氧化钠</small></button>
+            <button type="button" data-mol="CaOH2" aria-selected="false">Ca(OH)₂<small data-i18n>氢氧化钙</small></button>
+            <button type="button" data-mol="NaCl" aria-selected="false">NaCl<small data-i18n>氯化钠</small></button>
+            <button type="button" data-mol="Na2CO3" aria-selected="false">Na₂CO₃<small data-i18n>碳酸钠</small></button>
+          </div>
+
+          <div class="mol-stage">
+            <div class="viewport viewport--mol">
+              <canvas id="mol-canvas"></canvas>
+              <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 分子与离子</span></div>
+              <div class="vp-tip">DRAG TO ROTATE</div>
+            </div>
+          </div>
+
+          <aside class="mol-card" id="mol-card">
+            <p class="card-label" id="mol-type">强电解质</p>
+            <h3 id="mol-name">氯化氢</h3>
+            <p class="mol-formula" id="mol-formula">HCl</p>
+            <p class="mol-note" id="mol-note"></p>
+            <div class="mol-eq" id="mol-ion-eq"></div>
+            <button type="button" class="btn btn--primary btn--wide" id="mol-ionize" data-i18n>电离演示</button>
+            <p class="mol-hint" id="mol-hint"></p>
+          </aside>
+        </div>
+
+        <div class="grid-2">
+          <article class="card card--warn">
+            <p class="card-label">STRONG vs WEAK</p>
+            <h3 data-i18n>完全电离与部分电离</h3>
+            <p data-i18n>盐酸、硫酸、氢氧化钠这类强电解质在水中完全电离，溶液里几乎没有它们的中性分子；醋酸是弱电解质，只有很少一部分分子电离，大部分仍以分子形式存在，且电离是可逆的。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">TWO STEPS</p>
+            <h3 data-i18n>硫酸为什么要分两步</h3>
+            <p data-i18n>第一步 H₂SO₄ → H⁺ + HSO₄⁻ 进行得完全；第二步 HSO₄⁻ ⇌ H⁺ + SO₄²⁻ 只能部分进行。所以硫酸溶液中大量存在的是 H⁺、SO₄²⁻ 和少量 HSO₄⁻。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 05 中和 ---------- -->
+      <section class="view" data-view="neutralize" hidden id="titration">
+        <div class="view-head">
+          <p class="kicker">05 · NEUTRALIZATION</p>
+          <h1 data-i18n>中和反应：H⁺ 遇上 OH⁻</h1>
+          <p class="lead" data-i18n>把氢氧化钠溶液滴进盐酸，烧杯里看不出剧烈变化，温度却微微升高，pH 悄悄攀升。真正的故事发生在离子层面。</p>
+        </div>
+
+        <div class="essence">
+          <p class="mono">ESSENCE / <span data-i18n>实质</span></p>
+          <p class="essence-eq">H<sup>+</sup> + OH<sup>−</sup> <span>=</span> H<sub>2</sub>O</p>
+          <p class="essence-note" data-i18n>酸中的 H⁺ 与碱中的 OH⁻ 结合成难电离的水，是中和反应的共同本质。其余离子留在溶液里，成为旁观者。</p>
+        </div>
+
+        <div class="tit">
+          <div class="tit-stage">
+            <div class="viewport viewport--tit">
+              <canvas id="neut-canvas"></canvas>
+              <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 酸碱中和滴定</span></div>
+              <div class="vp-legend">
+                <span class="lg"><i id="lg-h"></i><b>H⁺</b></span>
+                <span class="lg"><i id="lg-cl"></i><b>Cl⁻</b></span>
+                <span class="lg"><i id="lg-oh"></i><b>OH⁻</b></span>
+                <span class="lg"><i id="lg-na"></i><b>Na⁺</b></span>
+                <span class="lg"><i id="lg-water2"></i><b data-i18n>水分子</b></span>
+              </div>
+              <div class="vp-tip">DRAG TO TILT</div>
+            </div>
+          </div>
+
+          <div class="tit-panel">
+            <div class="ph-head">
+              <div class="ph-number"><span id="ph-value">1.00</span><small>pH</small></div>
+              <div class="ph-nature" id="ph-nature">强酸性</div>
+            </div>
+            <div class="ph-chart-wrap"><canvas id="ph-curve"></canvas></div>
+            <label class="range-row">
+              <span class="range-name">V(NaOH)</span>
+              <input type="range" id="naoh-range" min="0" max="100" step="0.5" value="0">
+              <output id="naoh-out">0.0 mL</output>
+            </label>
+            <div class="readouts readouts--tight">
+              <div class="readout"><span class="readout-k" data-i18n>溶液总体积</span><b class="readout-v" id="neut-volume">0.0 mL</b></div>
+              <div class="readout"><span class="readout-k" data-i18n>等当点</span><b class="readout-v">50.0 mL</b></div>
+            </div>
+            <div class="ctrl-line">
+              <button type="button" class="btn btn--primary" id="btn-titrate" data-i18n>自动滴加</button>
+              <button type="button" class="btn btn--ghost" id="btn-neut-reset" data-i18n>重置</button>
+            </div>
+            <label class="range-row">
+              <span class="range-name" data-i18n>指示剂</span>
+              <select id="indicator-select">
+                <option value="none" data-i18n>不加指示剂</option>
+                <option value="phen" data-i18n>酚酞</option>
+                <option value="litmus" data-i18n>紫色石蕊</option>
+              </select>
+            </label>
+            <p class="tit-eq-note" id="tit-eq-note">酚酞在 pH 8.2–10 之间变色，滴入 NaOH 后溶液由无色变为浅红色。</p>
+          </div>
+        </div>
+
+        <h2 class="sub-head" data-i18n>六个必须会写的方程式</h2>
+        <div class="eq-grid">
+          <p class="eq">HCl + NaOH <span class="eq-a">=</span> NaCl + H₂O</p>
+          <p class="eq">H₂SO₄ + 2NaOH <span class="eq-a">=</span> Na₂SO₄ + 2H₂O</p>
+          <p class="eq">2HCl + Ca(OH)₂ <span class="eq-a">=</span> CaCl₂ + 2H₂O</p>
+          <p class="eq">2HCl + Na₂CO₃ <span class="eq-a">=</span> 2NaCl + H₂O + CO₂↑</p>
+          <p class="eq">Ca(OH)₂ + CO₂ <span class="eq-a">=</span> CaCO₃↓ + H₂O</p>
+          <p class="eq">Mg(OH)₂ + 2HCl <span class="eq-a">=</span> MgCl₂ + 2H₂O</p>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <p class="card-label">APPLICATION</p>
+            <h3 data-i18n>生活里的中和</h3>
+            <p data-i18n>用熟石灰改良酸性土壤；用含氢氧化铝的药物中和过多胃酸；被蚊虫叮咬后涂肥皂水（碱性）减轻蚁酸带来的刺痛。</p>
+          </article>
+          <article class="card card--warn">
+            <p class="card-label">CAUTION</p>
+            <h3 data-i18n>滴定操作的三个要点</h3>
+            <p data-i18n>滴管口不能伸入液面以下；边滴边搅拌，让局部过量的碱迅速扩散；接近等当点时改为逐滴加入，因为 pH 在等当点附近会发生突跃。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 06 配平 ---------- -->
+      <section class="view" data-view="balance" hidden>
+        <div class="view-head">
+          <p class="kicker">06 · BALANCING</p>
+          <h1 data-i18n>配平：让两边的原子对得上</h1>
+          <p class="lead" data-i18n>化学反应前后，原子的种类和数目都不变。配平就是在化学式前面填上适当的系数，使等号两边每种元素的原子个数相等。</p>
+        </div>
+
+        <div class="balance-wrap">
+          <div class="balance-stage">
+            <div class="viewport viewport--balance">
+              <canvas id="balance-canvas"></canvas>
+              <div class="vp-label"><i class="live-dot"></i><span data-i18n>3D · 原子守恒</span></div>
+              <div class="vp-tip">DRAG TO TILT</div>
+            </div>
+            <div class="balance-legend" id="balance-legend"></div>
+          </div>
+
+          <div class="balance-panel">
+            <p class="panel-label">EQUATION</p>
+            <div class="eq-builder" id="balance-eq"></div>
+
+            <div class="atom-table" id="balance-atoms"></div>
+
+            <div class="balance-verdict" id="balance-check">—</div>
+
+            <div class="btn-row">
+              <button type="button" class="btn btn--ghost" id="btn-bal-hint" data-i18n>给点提示</button>
+              <button type="button" class="btn btn--ghost" id="btn-bal-reset" data-i18n>还原系数</button>
+            </div>
+
+            <p class="balance-tip" id="balance-tip" hidden></p>
+
+            <p class="panel-label panel-label--gap" data-i18n>换一道题</p>
+            <div class="pool" id="balance-pool"></div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <p class="card-label">STEP 1</p>
+            <h3 data-i18n>先配最复杂的</h3>
+            <p data-i18n>从原子种类最多的化学式（通常是含碳、含氧的那个）入手，把它的系数先定为 1，再依次推出其他系数。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">STEP 2</p>
+            <h3 data-i18n>用最小公倍数</h3>
+            <p data-i18n>某种元素在两边原子个数不同，取两边数目的最小公倍数，反推各化学式的系数。</p>
+          </article>
+          <article class="card">
+            <p class="card-label">STEP 3</p>
+            <h3 data-i18n>最后清点氧原子</h3>
+            <p data-i18n>氧几乎出现在每个化学式里，留到最后核对最省事。系数必须是最简整数比，不能有分数。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 07 pH ---------- -->
+      <section class="view" data-view="ph" hidden>
+        <div class="view-head">
+          <p class="kicker">07 · pH &amp; INDICATORS</p>
+          <h1 data-i18n>pH：酸碱性的一把尺</h1>
+          <p class="lead" data-i18n>pH 从 0 到 14，7 为中性，小于 7 显酸性，大于 7 显碱性。它衡量的是溶液中 H⁺ 的浓度，而不是酸或碱的强弱。</p>
+        </div>
+
+        <div class="ph-lab" id="ph-lab">
+          <div class="ph-stage">
+            <div class="ph-beaker">
+              <div class="ph-liquid" id="ph-liquid"></div>
+              <div class="ph-beaker-rim"></div>
+            </div>
+            <div class="ph-scale">
+              <div class="ph-marker" id="ph-marker"><b id="ph-marker-label">7.0</b></div>
+            </div>
+          </div>
+
+          <div class="ph-panel">
+            <label class="range-row">
+              <span class="range-name">pH</span>
+              <input type="range" id="ph-range" min="0" max="14" step="0.1" value="7">
+              <output id="ph-out">7.0</output>
+            </label>
+
+            <div class="indicators">
+              <div class="ind">
+                <p class="ind-k"><i class="ind-swatch" id="read-litmus-dot"></i><span data-i18n>紫色石蕊</span></p>
+                <b class="ind-v" id="read-litmus">紫色</b>
+                <p class="ind-note" id="read-litmus-note">中性，石蕊保持本色</p>
+              </div>
+              <div class="ind">
+                <p class="ind-k"><i class="ind-swatch" id="read-phen-dot"></i><span data-i18n>酚酞</span></p>
+                <b class="ind-v" id="read-phen">无色</b>
+                <p class="ind-note" id="read-phen-note">pH 小于 8.2 时不显色</p>
+              </div>
+              <div class="ind">
+                <p class="ind-k"><i class="ind-swatch" id="read-nature-dot"></i><span data-i18n>溶液显</span></p>
+                <b class="ind-v" id="read-nature">中性</b>
+                <p class="ind-note" id="read-nature-note">[H⁺] = [OH⁻]</p>
+              </div>
+            </div>
+
+            <p class="panel-label panel-label--gap" data-i18n>常见溶液</p>
+            <div class="chips chips--btn" id="ph-samples"></div>
+          </div>
+        </div>
+
+        <h2 class="sub-head" data-i18n>酸碱盐的典型代表</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th data-i18n>名称</th><th data-i18n>化学式</th><th data-i18n>特征</th><th data-i18n>用途与注意</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b data-i18n>盐酸</b></td><td class="mono">HCl</td><td data-i18n>无色有刺激性气味，浓盐酸易挥发</td><td data-i18n>除锈、制药物；有强腐蚀性</td></tr>
+              <tr><td><b data-i18n>硫酸</b></td><td class="mono">H₂SO₄</td><td data-i18n>无色黏稠液体，浓硫酸有吸水性和脱水性</td><td data-i18n>稀释时必须把酸倒入水中</td></tr>
+              <tr><td><b data-i18n>氢氧化钠</b></td><td class="mono">NaOH</td><td data-i18n>白色固体，易潮解，俗称烧碱、火碱</td><td data-i18n>制皂、造纸；对皮肤有强腐蚀性</td></tr>
+              <tr><td><b data-i18n>氢氧化钙</b></td><td class="mono">Ca(OH)₂</td><td data-i18n>微溶于水，俗称熟石灰、消石灰</td><td data-i18n>改良酸性土壤、配波尔多液</td></tr>
+              <tr><td><b data-i18n>碳酸钠</b></td><td class="mono">Na₂CO₃</td><td data-i18n>白色粉末，俗称纯碱、苏打</td><td data-i18n>水溶液显碱性，但它是盐不是碱</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- 08 自测 ---------- -->
+      <section class="view" data-view="quiz" hidden>
+        <div class="view-head">
+          <p class="kicker">08 · SELF CHECK</p>
+          <h1 data-i18n>六道题，验一验</h1>
+          <p class="lead" data-i18n>每题只有一次机会，答完会给出解析。答错不要紧，回到对应章节再看一遍。</p>
+        </div>
+        <div class="quiz-list" id="quiz-list"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<noscript><p style="padding:24px;font-family:sans-serif">此页面需要启用 JavaScript 才能显示三维演示。</p></noscript>
+
+<script src="js/lib/three.min.js"></script>
+<script src="js/lang-en.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/core.js"></script>
+<script src="js/v-overview.js"></script>
+<script src="js/v-solution.js"></script>
+<script src="js/v-disperse.js"></script>
+<script src="js/v-solubility.js"></script>
+<script src="js/v-acidbase.js"></script>
+<script src="js/v-neutralize.js"></script>
+<script src="js/v-balance.js"></script>
+<script src="js/v-ph.js"></script>
+<script src="js/v-quiz.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

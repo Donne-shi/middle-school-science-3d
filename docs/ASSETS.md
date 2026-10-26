@@ -119,3 +119,8 @@ MIT 许可证只用于本项目可授权的原创代码和文档。第三方素�
 ## 已接入：动物细胞模型
 
 项目作者提供的单文件 `Documents/deepseek/animal-cell/animal-cell.html` 已接入 `site/demos/biology/animal-cell/index.html`，原文件不修改。页面将 Three.js r160.1 打包在内联脚本中，无需加载外部图片或运行时资源；对应 MIT 许可文本单独保留为 `THREE_LICENSE.txt`。`content/images/biology-animal-cell.jpg` 由作者提供的动物细胞首页截图缩小并转为 JPEG，用作目录预览。演示包含 16 种细胞结构、可切换中英文及剖切功能；真实细胞大小与模型视觉比例请以页面模型说明为准。
+
+
+## 已接入：溶液与酸碱微观实验台
+
+作者提供的 `/Users/duohanshi/WorkBuddy/科学课程/溶液与酸碱3D/index.html` 及其 `css/`、`js/` 本地依赖已接入 `site/demos/chemistry/solutions-acids-bases/`；原目录未修改。网页包含九个可操作场景，并提供中英文切换。Three.js r149 保留原文件头的 MIT 许可声明，目录内另附许可文本。入口截图 `content/images/chemistry-solutions-acid-base-preview.jpg` 来自作者提供的 `预览-首页.png`，缩放为 1600×1000 并转为 JPEG，用作化学专题入口预览。
