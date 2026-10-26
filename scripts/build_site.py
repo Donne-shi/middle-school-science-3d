@@ -87,6 +87,8 @@ def motif(slug: str) -> str:
         drawing = '<path d="M25 38H175M100 38V62M48 65C57 132 89 160 100 162C111 160 143 132 152 65" stroke="#b76443" opacity=".72"/><path d="M100 43L143 143" stroke="#b76443" stroke-width="2"/><circle cx="143" cy="143" r="17" fill="#e4b278" stroke="#b76443"/><circle cx="100" cy="43" r="4" fill="#b76443"/>'
     elif slug == "biology":
         drawing = '<path d="M100 20C150 19 184 56 181 105C178 153 144 181 100 180C57 180 20 149 19 101C18 58 52 21 100 20Z" stroke="#54826b" stroke-width="2"/><path d="M66 56C80 46 102 47 118 62C141 62 153 81 148 103C157 128 139 151 115 148C98 159 72 153 64 135C46 121 48 89 66 56Z" stroke="#54826b" opacity=".55"/><circle cx="103" cy="101" r="29" fill="#dfebd9" stroke="#54826b"/><circle cx="109" cy="97" r="9" fill="#54826b"/><circle cx="57" cy="119" r="7" fill="#85a77d" opacity=".8"/><circle cx="144" cy="74" r="6" fill="#85a77d" opacity=".8"/>'
+    elif slug == "geology":
+        drawing = '<path d="M24 126c28-18 52-15 76-4 22 10 46 8 76-7v49H24z" fill="#c99970" stroke="#8d684d" stroke-width="2"/><path d="M24 140c30-9 48-3 71 5 27 9 49 3 81-9v28H24z" fill="#dfbf94" stroke="#a98461" stroke-width="2"/><path d="M24 155c32-6 49 1 74 7 25 6 49 1 78-7v9H24z" fill="#9b735a"/><path d="M75 116 96 53l18 63-18 11z" fill="#e8f0e8" stroke="#647f7e" stroke-width="2"/><path d="m96 53 4 66 14-6z" fill="#a8c9c0" stroke="#647f7e" stroke-width="2"/><path d="m75 116 21 3-18-63z" fill="#d2e1d7"/><circle cx="143" cy="95" r="9" fill="#b77f57"/><circle cx="143" cy="95" r="3" fill="#f1dfbd"/><path d="M42 119v-18m0 0-6 8m6-8 6 8" stroke="#8f674b" stroke-width="2"/>'
     else:
         drawing = '<path d="M41 113L94 69L147 96M94 69L112 145M147 96L112 145" stroke="#76658d" stroke-width="3" opacity=".8"/><circle cx="41" cy="113" r="18" fill="#eee7f2" stroke="#76658d" stroke-width="2"/><circle cx="94" cy="69" r="22" fill="#c0b2cf" stroke="#76658d"/><circle cx="147" cy="96" r="17" fill="#eee7f2" stroke="#76658d" stroke-width="2"/><circle cx="112" cy="145" r="14" fill="#c0b2cf" stroke="#76658d"/>'
     return f"<svg {common}>{drawing}</svg>"
@@ -112,6 +114,8 @@ def home_illustration(slug: str) -> str:
         <g stroke="#d9efad" stroke-width="2"><path d="M196 92l25-5m-17 12 18-7m-17 85 27 4m-24 4 20 3m-109-14 23-9m-19 15 19-7"/></g>
         <g fill="#d98c67" stroke="#a86650" stroke-width="2"><ellipse cx="91" cy="111" rx="19" ry="10" transform="rotate(35 91 111)"/><ellipse cx="185" cy="196" rx="18" ry="9" transform="rotate(-20 185 196)"/></g><path d="M80 106c9 7 15 12 21 17m75 68 19-8" stroke="#f7d9b2" stroke-width="2"/>
         <g fill="#c69b5d"><circle cx="76" cy="145" r="4"/><circle cx="179" cy="75" r="4"/><circle cx="247" cy="133" r="4"/><circle cx="133" cy="196" r="4"/></g>'''
+    elif slug == "geology":
+        art = '''<path d="M18 177c39-23 77-16 116-2 54 20 102 14 168-15v77H18z" fill="#b27b57" stroke="#875e48" stroke-width="2"/><path d="M18 194c41-15 76-8 113 4 57 18 107 9 171-15v28c-61 22-111 31-171 12-38-12-71-17-113-4z" fill="#dfbf93" stroke="#a7825e" stroke-width="2"/><path d="M18 219c42-12 76-7 113 5 58 19 108 10 171-11v24H18z" fill="#8c6955"/><path d="M93 170 126 63l30 106-31 17z" fill="#f1f4e8" stroke="#687f7a" stroke-width="3"/><path d="m126 63 8 118 22-12z" fill="#9fc5ba" stroke="#687f7a" stroke-width="2"/><path d="m93 170 33 11-30-104z" fill="#d6e4d9"/><path d="M213 135c14-13 29-13 42 0-10 15-28 19-42 0z" fill="#c78b64" stroke="#8d634c" stroke-width="2"/><path d="M41 155l14-21 14 21m-14-21v29" stroke="#8b6851" stroke-width="2"/><g fill="#667e7b"><circle cx="73" cy="91" r="3"/><circle cx="199" cy="77" r="3"/><circle cx="259" cy="108" r="3"/></g>'''
     else:
         art = '''<path d="M160 34c54 0 98 44 98 98s-44 98-98 98-98-44-98-98 44-98 98-98z" fill="#ece8f1" stroke="#817092" stroke-width="2"/><ellipse cx="160" cy="132" rx="112" ry="47" transform="rotate(-26 160 132)" stroke="#8a769b" stroke-width="2" opacity=".7"/><ellipse cx="160" cy="132" rx="101" ry="39" transform="rotate(36 160 132)" stroke="#aa8d6b" stroke-width="2" opacity=".66"/>
         <path d="M85 104l62-36 66 35-54 78z" stroke="#718a91" stroke-width="4"/><path d="M85 104l74 77 54-78m-66-35 12 113" stroke="#9a829b" stroke-width="2" opacity=".8"/>
@@ -195,12 +199,14 @@ def home() -> None:
         "physics": ("驾驶 3D 汽车观察受力与运动，再用简单机械和电磁实验调节参数，看看规律怎样改变。", "Use a 3D car to explore forces and motion, then adjust simple machines and electricity experiments to see the rules in action."),
         "biology": ("从细胞与人体系统观察生命结构，再沿着线粒体和叶绿体理解呼吸作用与光合作用。", "Explore life through cells and organ systems, then follow respiration and photosynthesis in mitochondria and chloroplasts."),
         "chemistry": ("从早期原子观念走向新的模型，观察证据如何改变人们对原子结构的解释。", "Trace changing models of the atom and see how new evidence reshaped explanations of its structure."),
+        "geology": ("观察矿物晶体、岩石纹理与地层，认识地球材料如何组成、分类并循环。", "Explore mineral crystals, rock textures, and strata to understand how Earth materials are formed, classified, and recycled."),
     }
     card_axes = {
         "astronomy": ("轨道与尺度", "ORBIT & SCALE"),
         "physics": ("力与能量", "FORCE & ENERGY"),
         "biology": ("生命的结构", "LIVING STRUCTURES"),
         "chemistry": ("物质的内部", "INSIDE MATTER"),
+        "geology": ("地球材料", "EARTH MATERIALS"),
     }
     for subject in CATALOG["subjects"]:
         slug = subject["slug"]
@@ -216,11 +222,11 @@ def home() -> None:
     body = f'''<div class="container"><section class="home-hero" aria-labelledby="home-title"><div class="home-hero-copy">
   <span class="eyebrow eyebrow-line">NEWTON SCIENCE DISCOVERY CENTER</span>
   <h1 class="serif" id="home-title">{tr("把科学，", "Bring science")}<br>{tr("放到眼前。", "into view.", "em")}</h1>
-  {tr("那些难以亲眼看到的过程，可以先在这里动手观察：行星怎样排布，力怎样改变运动，细胞怎样工作，原子模型又怎样随证据更新。", "Begin with what is hard to see in person: the arrangement of planets, how forces change motion, how cells work, and how evidence changes models of the atom.", "p", 'class="hero-lead"')}
+  {tr("那些难以亲眼看到的过程，可以先在这里动手观察：行星怎样排布，力怎样改变运动，细胞怎样工作，原子模型怎样随证据更新，矿物与岩层又记录了怎样的地球变化。", "Begin with what is hard to see in person: planetary motion, changing forces, living cells, evidence behind atomic models, and the stories minerals and rock layers tell about Earth.", "p", 'class="hero-lead"')}
   {tr("选择一个学科，就能直接看到已开放的演示。你可以旋转模型、调节参数、对照中英文说明；新内容会逐步补充。", "Choose a subject to see its available lessons right away. Rotate models, adjust parameters, and compare Chinese and English explanations; new lessons will be added over time.", "p", 'class="hero-detail"')}
   <div class="hero-actions"><a class="primary-link" href="#fields-title">{tr("选择学科", "Choose a subject")} <span aria-hidden="true">↗</span></a></div>
-  </div><div class="discovery-board" role="img" {aria("四个学科的科学观察图板", "A science observation board for four subjects")}><span class="board-kicker">OBSERVE / EXPERIMENT / UNDERSTAND</span><div class="board-grid">{''.join(board)}</div><img class="board-seal" src="{link(current, 'assets/newton-mark.svg')}" width="76" height="76" alt=""></div></section>
-  <section class="home-fields" aria-labelledby="fields-title"><div class="section-heading"><div><span class="eyebrow">FOUR SUBJECTS</span>{tr("选择一个学科，开始探索", "Choose a subject to explore", "h2", 'id="fields-title"')}</div>{tr("四个入口都能单独打开。进入学科后，可直接选择已开放的演示。", "Each subject has its own address. Open one to choose from its available lessons.", "p")}</div><div class="subject-grid">{''.join(cards)}</div></section>
+  </div><div class="discovery-board" role="img" {aria("五个学科的科学观察图板", "A science observation board for five subjects")}><span class="board-kicker">OBSERVE / EXPERIMENT / UNDERSTAND</span><div class="board-grid">{''.join(board)}</div><img class="board-seal" src="{link(current, 'assets/newton-mark.svg')}" width="76" height="76" alt=""></div></section>
+  <section class="home-fields" aria-labelledby="fields-title"><div class="section-heading"><div><span class="eyebrow">FIVE SUBJECTS</span>{tr("选择一个学科，开始探索", "Choose a subject to explore", "h2", 'id="fields-title"')}</div>{tr("五个入口都能单独打开。进入学科后，可直接选择已开放的演示。", "Each subject has its own address. Open one to choose from its available lessons.", "p")}</div><div class="subject-grid">{''.join(cards)}</div></section>
   <section class="nobel-feature" aria-labelledby="nobel-title">{nobel_art()}<div class="nobel-feature-copy"><span class="eyebrow">CROSS-DISCIPLINARY / 2026</span>{tr("2026 诺贝尔奖：三项发现，三种观察世界的方式", "2026 Nobel Prizes: three discoveries, three ways to see the world", "h2", 'id="nobel-title"')}{tr("从光控制神经元，到手性分子的自我放大，再到南极冰中的宇宙中微子。切换医学、化学与物理学奖，操作互动模型，循着获奖发现理解背后的科学问题。", "From light-controlled neurons to self-amplifying molecular chirality and cosmic neutrinos detected in Antarctic ice. Switch between the medicine, chemistry, and physics prizes, explore interactive models, and follow the questions behind the discoveries.", "p")}<a href="{link(current, lesson_route('nobel-2026'))}" class="nobel-feature-link">{tr("进入诺贝尔互动实验室", "Explore the Nobel interactive lab")} <span aria-hidden="true">↗</span></a><span class="nobel-feature-meta">PHYSIOLOGY OR MEDICINE · CHEMISTRY · PHYSICS</span></div></section>
   <aside class="home-disclosure" aria-label="图像与资料说明">{tr("本馆部分演示图像由 AI 生成或辅助制作，主要用于教学可视化；局部形态和比例可能不精确。相关科学概念与关键数据已进行资料核对，具体简化范围和引用来源请查看各演示页面。", "Some lesson visuals are AI-generated or AI-assisted teaching aids; details and proportions may not be exact. Related scientific concepts and key data have been checked against sources. See each lesson for its simplifications and references.", "p")}</aside></div>'''
     page(current, "首页", "Home", body, home_page=True)
@@ -254,6 +260,7 @@ def topic_page(subject: dict, topic: dict) -> None:
         "physics": ("一辆车 · 三条定律", "ONE CAR · THREE LAWS"),
         "biology": ("从细胞结构到微生物", "CELLS · BACTERIA · MICROORGANISMS"),
         "chemistry": ("十二个模型 · 一条发现之路", "TWELVE VIEWS · ONE STORY OF DISCOVERY"),
+        "geology": ("矿物晶体 · 岩石循环", "MINERALS · THE ROCK CYCLE"),
     }[slug]
     if slug == "chemistry" and topic["slug"] == "solutions-acids-bases":
         visual_zh, visual_en = "九个场景 · 从溶液到 pH", "9 SCENES · SOLUTIONS TO pH"
@@ -302,6 +309,7 @@ def topic_page(subject: dict, topic: dict) -> None:
         "physics": ("从受力图开始，依次探索牛顿三大定律。", "Start with force diagrams, then explore Newton's three laws in order."),
         "biology": ("从植物细胞、动物细胞和微生物中选择一个主题，旋转模型并查看结构说明；有显微图像的页面会同时提供来源信息。", "Choose a plant cell, animal cell, or microorganism. Rotate the model and explore its structures; pages with micrographs include image credits."),
         "chemistry": ("从古希腊原子论出发，沿着关键实验观察原子模型如何改变。", "Start with ancient atomism and follow the experiments that changed atomic models."),
+        "geology": ("从矿物的晶体与性质开始，再观察火成岩、沉积岩和变质岩如何形成并循环。", "Begin with mineral crystals and properties, then explore how igneous, sedimentary, and metamorphic rocks form and cycle."),
     }[slug]
     if slug == "physics" and topic["slug"] == "simple-machines":
         guidance_zh, guidance_en = (
@@ -337,6 +345,7 @@ def topic_page(subject: dict, topic: dict) -> None:
         "physics": ("三维模型、力箭头和场景为教学示意；数值及简化条件见各演示说明。", "The 3D models, force arrows, and scenes are teaching illustrations; see each lesson for values and assumptions."),
         "biology": ("三维形态经过教学简化，不按统一比例；示意图片与显微照片的性质和来源见各演示说明。", "The 3D models are simplified and not shown at a common scale; see each lesson for image type and provenance."),
         "chemistry": ("历史模型体现提出时的认识，轨道图像为教学示意；比例不代表真实原子。", "Historical models reflect ideas of their time; orbital views are teaching illustrations, not literal scale models."),
+        "geology": ("矿物与岩石标本照片及来源见演示说明；岩石循环图示用于解释地质过程。", "Specimen photographs and credits are listed in the lesson; the rock-cycle diagram illustrates geological processes."),
     }[slug]
     note = '<div class="context-bar">' + tr("适合课堂展示与自主探索", "For classroom and independent exploration") + tr(note_zh, note_en) + '</div>'
     page(current, topic["name"], topic["english"], f'<div class="container">{crumb}{intro}{note}{section}</div>', slug, subject["accent"])
@@ -416,7 +425,13 @@ def main() -> None:
                         raise FileNotFoundError(f"Short URL target missing: {SITE / target}")
                     route_alias("labs/" + lesson["slug"] + "/index.html", target, lesson["name"], lesson["description"], lesson.get("screenshot"))
     route_alias("labs/nobel-2026/index.html", "demos/nobel-2026/index.html", "诺贝尔奖互动实验室", "通过互动演示了解诺贝尔物理学、化学和生理学或医学奖的科学发现与研究背景。")
-    print(f"Built four-subject entry and subject topics in {SITE.name}/")
+    geology_topic = "topics/geology/minerals-rocks/index.html"
+    route_alias("chemistry/minerals-rocks/index.html", geology_topic, "矿物与岩石", "观察矿物晶体与岩石纹理，比较矿物性质，认识岩石分类与循环。", "assets/chemistry-minerals-rocks.jpg")
+    route_alias("topics/chemistry/minerals-rocks/index.html", geology_topic, "矿物与岩石", "观察矿物晶体与岩石纹理，比较矿物性质，认识岩石分类与循环。", "assets/chemistry-minerals-rocks.jpg")
+    legacy_demo = SITE / "demos/chemistry/minerals-rocks/index.html"
+    legacy_demo.parent.mkdir(parents=True, exist_ok=True)
+    legacy_demo.write_text('''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><link rel="canonical" href="https://sci.mrbigtree.cn/demos/geology/minerals-rocks/index.html"><meta http-equiv="refresh" content="0;url=../../geology/minerals-rocks/index.html"><title>矿物与岩石 · 地质学</title></head><body><a href="../../geology/minerals-rocks/index.html">矿物与岩石已归入地质学，继续打开演示</a><script>location.replace('../../geology/minerals-rocks/index.html'+location.search)</script></body></html>''', encoding="utf-8")
+    print(f"Built five-subject entry and subject topics in {SITE.name}/")
 
 
 if __name__ == "__main__":

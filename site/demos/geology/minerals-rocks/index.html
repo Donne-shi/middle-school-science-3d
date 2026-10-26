@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EFEAE0">
+<title>岩石与矿物 · Rocks &amp; Minerals — 三维标本室</title>
+<meta name="description" content="地质学专题：岩石与矿物的三维标本室。16 种矿物、12 种岩石、7 大晶系，可旋转晶体模型、观察纹理中的矿物组成、理解岩石循环与鉴定方法，支持中英双语。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23EFEAE0'/%3E%3Cpath d='M32 8 L50 24 L42 54 L22 54 L14 24 Z' fill='none' stroke='%23171A18' stroke-width='2.4'/%3E%3Cpath d='M32 8 L32 54 M14 24 L50 24 M22 54 L38 24' fill='none' stroke='%238E3A2B' stroke-width='1.2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============================ 左侧标签栏 ============================ -->
+  <aside class="rail">
+    <div class="rail-head">
+      <a class="back-link" href="../../../subjects/geology/index.html" data-en="← Geology">← 地质学</a>
+      <a class="brand" href="#overview">
+        <span class="dot"></span>
+        <b><span class="zh-only">岩石与矿物</span><span class="en-only">Rocks &amp; Minerals</span></b>
+        <small><span class="zh-only">地质学专题 · 三维标本室</span><span class="en-only">A field atlas · specimen room</span></small>
+      </a>
+    </div>
+
+    <nav class="tabs" id="tabs" role="tablist" aria-label="章节 Section">
+      <button class="tab" id="tab-overview" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview">
+        <span class="n">00</span>
+        <span class="lbl"><span class="t" data-en="Overview">总览</span><span class="e" data-en="总览">Overview</span></span>
+      </button>
+      <button class="tab" id="tab-definition" data-tab="definition" role="tab" aria-selected="false" aria-controls="definition">
+        <span class="n">01</span>
+        <span class="lbl"><span class="t" data-en="Definition">定义</span><span class="e" data-en="定义">Definition</span></span>
+      </button>
+      <button class="tab" id="tab-minerals" data-tab="minerals" role="tab" aria-selected="false" aria-controls="minerals">
+        <span class="n">02</span>
+        <span class="lbl"><span class="t" data-en="Minerals">矿物</span><span class="e" data-en="矿物">Minerals</span></span>
+      </button>
+      <button class="tab" id="tab-classes" data-tab="classes" role="tab" aria-selected="false" aria-controls="classes">
+        <span class="n">03</span>
+        <span class="lbl"><span class="t" data-en="Classes">分类</span><span class="e" data-en="分类">Classes</span></span>
+      </button>
+      <button class="tab" id="tab-rocks" data-tab="rocks" role="tab" aria-selected="false" aria-controls="rocks">
+        <span class="n">04</span>
+        <span class="lbl"><span class="t" data-en="Rocks">岩石</span><span class="e" data-en="岩石">Rocks</span></span>
+      </button>
+      <button class="tab" id="tab-cycle" data-tab="cycle" role="tab" aria-selected="false" aria-controls="cycle">
+        <span class="n">05</span>
+        <span class="lbl"><span class="t" data-en="Cycle">循环</span><span class="e" data-en="循环">Cycle</span></span>
+      </button>
+      <button class="tab" id="tab-identify" data-tab="identify" role="tab" aria-selected="false" aria-controls="identify">
+        <span class="n">06</span>
+        <span class="lbl"><span class="t" data-en="Identify">鉴定</span><span class="e" data-en="鉴定">Identify</span></span>
+      </button>
+      <button class="tab" id="tab-credits" data-tab="credits" role="tab" aria-selected="false" aria-controls="credits">
+        <span class="n">07</span>
+        <span class="lbl"><span class="t" data-en="Sources">来源</span><span class="e" data-en="来源">Sources</span></span>
+      </button>
+    </nav>
+
+    <div class="rail-foot">
+      <div class="rail-stats">
+        <span><b>16</b><i data-en="Minerals">矿物</i></span>
+        <span><b>12</b><i data-en="Rocks">岩石</i></span>
+        <span><b>28</b><i data-en="Photos">照片</i></span>
+      </div>
+      <div class="lang" role="group" aria-label="语言 Language">
+        <button type="button" data-lang-btn="zh" aria-pressed="true">中</button>
+        <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+      </div>
+      <div class="rail-note">Rocks &amp; Minerals — A Field Atlas · 2026</div>
+    </div>
+  </aside>
+
+  <!-- ============================ 右侧内容区 ============================ -->
+  <main class="panels" id="panels">
+
+    <!-- 00 总览 -->
+    <section class="panel active" id="overview" data-panel="overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+      <div class="panel-inner">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow" data-en="Geology · Specimen Room">地质学 · 标本室</div>
+            <h1><span class="zh-only">岩石与<em>矿物</em></span><span class="en-only">Rocks &amp; <em>Minerals</em></span></h1>
+            <div class="latin">Rocks &amp; Minerals — a field atlas</div>
+            <p class="lede" data-en="From a crystal grown deep in the mantle to a grain of quartz on a river bed: rocks are collections of minerals, and minerals are matter in order. Turn the specimens, read the texture, compare hardness — and learn how this planet keeps its books.">从地幔深处长出的一颗晶体，到河床上的一粒石英砂。岩石是矿物的集合，矿物是元素的秩序。转动标本、细看纹理、比较硬度，读懂脚下这颗行星的记账方式。</p>
+            <div class="hero-stats">
+              <div><span class="n">16</span><span class="l" data-en="Minerals">矿物</span></div>
+              <div><span class="n">12</span><span class="l" data-en="Rocks">岩石</span></div>
+              <div><span class="n">7</span><span class="l" data-en="Crystal systems">晶系</span></div>
+              <div><span class="n">10</span><span class="l" data-en="Mohs steps">摩氏硬度</span></div>
+            </div>
+            <div class="hero-actions">
+              <a class="btn" href="#minerals"><span data-en="Enter the cabinet">进入标本室</span><span class="ar">→</span></a>
+              <a class="btn ghost" href="#cycle" data-en="The rock cycle">岩石循环</a>
+            </div>
+            <div class="hero-hint"><span data-en="Eight chapters in the index">八个章节 · 见目录</span></div>
+          </div>
+          <div class="stage-wrap">
+            <div class="stage passive dark" id="hero-stage">
+              <svg class="dial" aria-hidden="true"></svg>
+              <canvas id="hero-canvas" aria-label="旋转的石英晶簇三维模型"></canvas>
+            </div>
+            <div class="stage-label">
+              <div class="nm" data-en="Quartz">石英 Quartz</div>
+              <div class="no">No. M-01 · SiO₂</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 定义 -->
+    <section class="panel" id="definition" data-panel="definition" role="tabpanel" aria-labelledby="tab-definition" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">01</div>
+          <div class="sec-title">
+            <h2 data-en="What exactly is a mineral?">什么才算一块矿物？</h2>
+            <p data-en="A mineral is a naturally occurring, inorganic solid with a definite chemical composition and an ordered crystal structure. A rock is an aggregate of one or more minerals — and sometimes of glass or organic matter.">矿物是天然产出、无机、化学成分确定且具有有序晶体结构的固体。岩石则是一种或多种矿物（有时还包括玻璃或有机质）的集合体。</p>
+          </div>
+          <div class="sec-en">Definition</div>
+        </div>
+
+        <div class="def-grid">
+          <ol class="criteria reveal">
+            <li>
+              <div class="k">01</div>
+              <div>
+                <h3>天然产出</h3>
+                <div class="en-sub" data-en="Naturally occurring">Naturally occurring</div>
+                <p data-en="Formed by geological processes — not synthesised in a laboratory or secreted by an organism.">由地质作用形成，而不是实验室合成或生物体分泌的产物。</p>
+              </div>
+            </li>
+            <li>
+              <div class="k">02</div>
+              <div>
+                <h3>无机物</h3>
+                <div class="en-sub" data-en="Inorganic">Inorganic</div>
+                <p data-en="Almost all minerals lack carbon–hydrogen frameworks. A handful of organic minerals, such as whewellite, are recognised exceptions.">绝大多数矿物不含碳—氢骨架。草酸钙石等少数“有机矿物”是学界承认的例外。</p>
+              </div>
+            </li>
+            <li>
+              <div class="k">03</div>
+              <div>
+                <h3>有序结构</h3>
+                <div class="en-sub" data-en="Ordered structure">Ordered structure</div>
+                <p data-en="Atoms repeat on a periodic lattice. Volcanic glass has no long-range order, so it is a mineraloid rather than a mineral.">原子按周期性的晶格重复排列。火山玻璃没有长程有序，因此只能算“似矿物”。</p>
+              </div>
+            </li>
+            <li>
+              <div class="k">04</div>
+              <div>
+                <h3>成分确定</h3>
+                <div class="en-sub" data-en="Definite composition">Definite composition</div>
+                <p data-en="The composition can be written as a formula, allowing limited substitution such as Mg²⁺ for Fe²⁺ in olivine.">成分可用化学式表达，同时允许有限的类质同象替代，例如橄榄石中 Mg²⁺ 与 Fe²⁺ 的互换。</p>
+              </div>
+            </li>
+          </ol>
+
+          <figure class="lattice-card reveal">
+            <svg viewBox="0 0 420 260" role="img" aria-label="晶体有序晶格与玻璃无序结构的对比">
+              <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path d="M10 0 L0 0 0 10" fill="none" stroke="rgba(23,26,24,.07)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="420" height="260" fill="url(#grid)"/>
+              <g stroke="#171A18" stroke-width="1.1" fill="none" opacity=".55">
+                <path d="M40 90 L75 70 L110 90 L110 130 L75 150 L40 130 Z"/>
+                <path d="M110 90 L145 70 L180 90 L180 130 L145 150 L110 130"/>
+                <path d="M75 150 L110 170 L145 150"/>
+                <path d="M75 70 L75 110 M110 90 L110 130 M145 70 L145 110 M40 130 L40 90"/>
+              </g>
+              <g fill="#8E3A2B">
+                <circle cx="75" cy="70" r="3.2"/><circle cx="110" cy="90" r="3.2"/><circle cx="145" cy="70" r="3.2"/>
+                <circle cx="40" cy="90" r="3.2"/><circle cx="75" cy="110" r="3.2"/><circle cx="110" cy="130" r="3.2"/>
+                <circle cx="145" cy="110" r="3.2"/><circle cx="180" cy="90" r="3.2"/><circle cx="40" cy="130" r="3.2"/>
+                <circle cx="75" cy="150" r="3.2"/><circle cx="110" cy="170" r="3.2"/><circle cx="145" cy="150" r="3.2"/>
+              </g>
+              <text x="40" y="205" font-family="Songti SC, serif" font-size="15" fill="#171A18">晶体 · 有序</text>
+              <text x="40" y="223" font-family="ui-monospace, monospace" font-size="8.5" letter-spacing="1.4" fill="#83887F">CRYSTAL · ORDERED</text>
+
+              <line x1="210" y1="46" x2="210" y2="214" stroke="rgba(23,26,24,.14)" stroke-dasharray="3 4"/>
+
+              <g fill="#4B504A" opacity=".85">
+                <circle cx="248" cy="78" r="3"/><circle cx="272" cy="96" r="3"/><circle cx="300" cy="72" r="3"/>
+                <circle cx="330" cy="94" r="3"/><circle cx="358" cy="76" r="3"/><circle cx="384" cy="100" r="3"/>
+                <circle cx="252" cy="118" r="3"/><circle cx="286" cy="132" r="3"/><circle cx="318" cy="112" r="3"/>
+                <circle cx="348" cy="136" r="3"/><circle cx="378" cy="120" r="3"/><circle cx="262" cy="158" r="3"/>
+                <circle cx="296" cy="170" r="3"/><circle cx="330" cy="152" r="3"/><circle cx="362" cy="174" r="3"/>
+                <circle cx="392" cy="150" r="3"/><circle cx="240" cy="140" r="3"/><circle cx="310" cy="90" r="3"/>
+              </g>
+              <g stroke="rgba(75,80,74,.3)" stroke-width=".9" fill="none">
+                <path d="M248 78 L272 96 L300 72 M318 112 L348 136 L378 120 M262 158 L296 170 L330 152"/>
+              </g>
+              <text x="240" y="205" font-family="Songti SC, serif" font-size="15" fill="#171A18">玻璃 · 无序</text>
+              <text x="240" y="223" font-family="ui-monospace, monospace" font-size="8.5" letter-spacing="1.4" fill="#83887F">GLASS · AMORPHOUS</text>
+            </svg>
+            <figcaption data-en="Both are solids, but only the left one diffracts X-rays into sharp peaks. Order at the atomic scale is what makes a mineral a mineral.">两者都是固体，但只有左侧的结构能在 X 射线衍射中给出尖锐的峰。原子尺度的秩序，正是矿物之所以为矿物的原因。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 矿物 -->
+    <section class="panel" id="minerals" data-panel="minerals" role="tabpanel" aria-labelledby="tab-minerals" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">02</div>
+          <div class="sec-title">
+            <h2 data-en="Sixteen specimens, seven crystal systems">十六件标本，七种晶系</h2>
+            <p data-en="Drag to rotate each crystal model. The catalogue on the left is grouped by mineral class; the sheet on the right gives formula, hardness, cleavage and uses.">拖动可以旋转每一件晶体模型。左侧目录按矿物类别排列，右侧标本卡给出化学式、硬度、解理与用途。</p>
+          </div>
+          <div class="sec-en">The cabinet</div>
+        </div>
+
+        <div class="workspace">
+          <aside class="cabinet reveal">
+            <h3><span data-en="Catalogue">标本目录</span><span>16</span></h3>
+            <div class="mlist" id="mlist" role="tablist" aria-label="矿物目录"></div>
+          </aside>
+
+          <div class="viewer-stage reveal">
+            <div class="stage dark" id="min-stage">
+              <svg class="dial" aria-hidden="true"></svg>
+              <canvas id="min-canvas" aria-label="可交互的矿物晶体三维模型"></canvas>
+              <div class="stage-tools">
+                <button type="button" id="btn-spin" aria-pressed="true" title="自动旋转 Auto-rotate">↻</button>
+                <button type="button" id="btn-wire" aria-pressed="false" title="线框 Wireframe">◇</button>
+                <button type="button" id="btn-reset" title="复位 Reset">⌖</button>
+              </div>
+            </div>
+            <div class="stage-label">
+              <div class="nm" id="stage-nm">石英 Quartz</div>
+              <div class="no" id="stage-no">No. M-01 · SiO₂</div>
+            </div>
+          </div>
+
+          <div class="mineral-panel reveal" id="mpanel"></div>
+        </div>
+
+        <div class="filmstrip">
+          <div class="panel-h"><span data-en="Contact sheet">标本总览</span><span data-en="Click to load">点击载入</span></div>
+          <div class="filmstrip-scroll" id="filmstrip"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 分类 -->
+    <section class="panel" id="classes" data-panel="classes" role="tabpanel" aria-labelledby="tab-classes" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">03</div>
+          <div class="sec-title">
+            <h2 data-en="Classified by their anion">按阴离子团分类</h2>
+            <p data-en="Mineral classification follows chemistry and structure. Silicates make up about 90% of the crust by volume; the other classes are few in number but supply most of the world's metal ores.">矿物的分类以化学成分与结构为依据。硅酸盐约占大陆地壳体积的 90%，其余类别数量虽少，却贡献了绝大多数金属矿石。</p>
+          </div>
+          <div class="sec-en">Classification</div>
+        </div>
+        <div class="classes" id="classes-grid"></div>
+      </div>
+    </section>
+
+    <!-- 04 岩石 -->
+    <section class="panel" id="rocks" data-panel="rocks" role="tabpanel" aria-labelledby="tab-rocks" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">04</div>
+          <div class="sec-title">
+            <h2 data-en="Three families, one cycle">三大类，一条循环</h2>
+            <p data-en="Rocks are classified by origin. Switch between families and read the minerals hidden in each texture — every photograph can be inspected with the loupe.">岩石按成因分为岩浆岩、沉积岩与变质岩。切换分类，读出纹理中的矿物组成——每一张照片都可以用放大镜细看。</p>
+          </div>
+          <div class="sec-en">Rocks</div>
+        </div>
+
+        <div class="tabs-rock" id="rtabs" role="tablist"></div>
+
+        <div class="rock-grid">
+          <figure class="rock-figure reveal" id="rock-figure"></figure>
+          <div class="rock-data reveal" id="rock-data"></div>
+        </div>
+
+        <div class="tray">
+          <div class="panel-h"><span data-en="Specimen tray">标本盘</span><span data-en="Loupe on hover">悬停放大</span></div>
+          <div class="tray-scroll" id="rock-tray"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 循环 -->
+    <section class="panel" id="cycle" data-panel="cycle" role="tabpanel" aria-labelledby="tab-cycle" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">05</div>
+          <div class="sec-title">
+            <h2 data-en="A loop with no beginning">没有起点的一条环</h2>
+            <p data-en="The rock cycle has no true start. What never changes is the energy: Earth's internal heat drives melting and metamorphism, while sunlight and gravity drive weathering, transport and deposition.">岩石循环没有真正的起点。不变的只有能量：地球内热驱动熔融与变质，太阳能与重力驱动风化、搬运与沉积。</p>
+          </div>
+          <div class="sec-en">The cycle</div>
+        </div>
+
+        <div class="cycle-grid">
+          <figure class="cycle-figure reveal">
+            <svg id="cycle-svg" viewBox="0 0 460 460" role="img" aria-label="岩石循环示意图"></svg>
+          </figure>
+          <div class="reveal">
+            <div class="proc-list" id="proc-list"></div>
+            <div class="cycle-detail" id="cycle-detail"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 鉴定 -->
+    <section class="panel" id="identify" data-panel="identify" role="tabpanel" aria-labelledby="tab-identify" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">06</div>
+          <div class="sec-title">
+            <h2 data-en="Six tools, one decision">六件工具，一个判断</h2>
+            <p data-en="Field identification rarely needs an instrument. Hardness, streak, cleavage, lustre, acid reaction and magnetism narrow most common minerals down to a handful of candidates.">野外鉴定很少依赖精密仪器。硬度、条痕、解理、光泽、酸反应与磁性，足以把大多数常见矿物缩小到几个候选。</p>
+          </div>
+          <div class="sec-en">Identification</div>
+        </div>
+
+        <div class="id-grid">
+          <div class="reveal">
+            <div class="mohs-head">
+              <span class="t" data-en="Mohs hardness scale">摩氏硬度计</span>
+              <span class="t" data-en="Click a step">点击刻度</span>
+            </div>
+            <div class="mohs" id="mohs" role="tablist" aria-label="摩氏硬度"></div>
+            <div class="mohs-labels" id="mohs-labels"></div>
+            <div class="mohs-detail" id="mohs-detail"></div>
+          </div>
+          <div class="tests reveal" id="tests"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 来源 -->
+    <section class="panel" id="credits" data-panel="credits" role="tabpanel" aria-labelledby="tab-credits" tabindex="0">
+      <div class="panel-inner">
+        <div class="sec-head reveal">
+          <div class="sec-no">07</div>
+          <div class="sec-title">
+            <h2 data-en="Image credits &amp; references">图片来源与参考文献</h2>
+            <p data-en="All specimen photographs come from Wikimedia Commons and are in the public domain or released under CC licences. Authors and licence terms are listed for every file.">全部标本照片来自维基共享资源，属于公有领域或 CC 授权。每一张照片的作者与许可条款都逐条列出。</p>
+          </div>
+          <div class="sec-en">Sources</div>
+        </div>
+        <div class="credits" id="credits-list"></div>
+        <p class="credits-note" data-en="Note: several studio photographs were cropped and had their plain blue backing replaced with a neutral paper tone for visual consistency; the specimens themselves were not retouched. Such adapted images remain under their original licence (CC BY / CC BY-SA). Hardness and density values are typical ranges compiled from Mindat and standard mineralogy references; individual specimens vary.">说明：部分棚拍照片做过裁切，并把纯蓝背景替换为中性的纸色，以求版面统一；标本本体未作修饰。此类改编图片沿用原许可（CC BY / CC BY-SA）。硬度与相对密度为 Mindat 及标准矿物学教材给出的常见范围，单件标本会有所浮动。</p>
+        <div class="refs" id="refs"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/three.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/credits.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -452,11 +452,11 @@
       "name": "化学",
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
-      "description": "从原子结构与元素周期表，继续观察溶液、酸碱和矿物材料。",
-      "description_en": "Explore atomic structure, the periodic table, solutions, acids and bases, and mineral materials.",
+      "description": "从原子结构与元素周期表，继续观察溶液、酸碱和物质变化。",
+      "description_en": "Explore atomic structure, the periodic table, solutions, acids and bases, and how matter changes.",
       "accent": "#8058a5",
-      "status": "4 个化学专题已开放",
-      "status_en": "4 chemistry topics available",
+      "status": "3 个化学专题已开放",
+      "status_en": "3 chemistry topics available",
       "topics": [
         {
           "slug": "atomic-structure",
@@ -528,7 +528,20 @@
               "published": true
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "slug": "geology",
+      "name": "地质学",
+      "english": "Geology",
+      "eyebrow": "观察地球材料，读懂地表变化",
+      "description": "从矿物晶体与岩石纹理出发，认识地球材料的组成、分类与循环。",
+      "description_en": "Explore Earth materials through mineral crystals, rock textures, classification, and the rock cycle.",
+      "accent": "#9a6245",
+      "status": "1 个地质专题已开放",
+      "status_en": "1 geology topic available",
+      "topics": [
         {
           "slug": "minerals-rocks",
           "name": "矿物与岩石",
@@ -546,7 +559,7 @@
               "description_en": "Explore 16 minerals and 12 rock specimens, compare hardness, crystal systems, composition, textures, and the rock cycle, with image credits.",
               "interaction": "28 个标本 · 3D 观察 · 来源署名",
               "interaction_en": "28 specimens · 3D inspection · Image credits",
-              "href": "demos/chemistry/minerals-rocks/index.html",
+              "href": "demos/geology/minerals-rocks/index.html",
               "screenshot": "assets/chemistry-minerals-rocks.jpg",
               "published": true
             }

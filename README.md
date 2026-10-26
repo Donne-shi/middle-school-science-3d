@@ -1,6 +1,6 @@
 # 牛顿科学探索馆 · Newton Science Discovery Center
 
-面向中学科学课堂与自主探索的静态多页面网站，设有物理学、天文学、生物学、化学四个学科入口。每个学科首页和每个演示都有独立地址；内容随课程制作逐步加入。
+面向中学科学课堂与自主探索的静态多页面网站，设有物理学、天文学、生物学、化学、地质学五个学科入口。每个学科首页和每个演示都有独立地址；内容随课程制作逐步加入。
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。
 
@@ -11,7 +11,7 @@
 ## 页面结构
 
 ```text
-site/index.html                                四学科总入口（含诺贝尔奖跨学科专题）
+site/index.html                                五学科总入口（含诺贝尔奖跨学科专题）
 site/demos/nobel-2026/index.html               2026 诺贝尔奖互动实验室独立入口
 site/subjects/astronomy/index.html             天文学独立入口
 site/subjects/physics/index.html               物理学独立入口

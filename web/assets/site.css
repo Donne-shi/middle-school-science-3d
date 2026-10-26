@@ -124,6 +124,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .topic-visual span { color: var(--quiet); font: 9px var(--mono); letter-spacing: .1em; transform: translateY(85px); }
 .topic-visual-physics { background: radial-gradient(circle at 50% 50%, #ba572e 0 7px, transparent 8px), linear-gradient(90deg, transparent 49.7%, rgba(186,87,46,.34) 50%, transparent 50.3%), linear-gradient(transparent 49.7%, rgba(186,87,46,.34) 50%, transparent 50.3%), radial-gradient(circle, transparent 0 32%, rgba(186,87,46,.28) 32.3% 33%, transparent 33.2% 55%, rgba(186,87,46,.16) 55.2% 56%, transparent 56.2%); }
 .topic-visual-chemistry { background: radial-gradient(circle at 50% 50%, #8058a5 0 8px, transparent 9px), radial-gradient(ellipse 76px 31px at 50% 50%, transparent 96%, rgba(128,88,165,.45) 98% 100%, transparent 102%), radial-gradient(ellipse 31px 76px at 50% 50%, transparent 96%, rgba(25,122,145,.4) 98% 100%, transparent 102%), #f3f7f8; }
+.topic-visual-geology { background: linear-gradient(168deg, transparent 0 42%, rgba(154,98,69,.45) 42.3% 43%, transparent 43.3%), linear-gradient(188deg, transparent 0 54%, rgba(169,130,94,.42) 54.3% 55%, transparent 55.3%), radial-gradient(ellipse 27px 68px at 50% 40%, transparent 94%, rgba(100,127,122,.65) 97% 100%, transparent 103%), linear-gradient(#f3f5ed,#e5eee8); }
 .topic-visual-biology { background: radial-gradient(circle at 52% 48%, #589971 0 18px, #b5dac2 19px 23px, transparent 24px), radial-gradient(circle at 27% 34%, #c9a874 0 7px, transparent 8px), radial-gradient(circle at 74% 65%, #b88bc4 0 9px, transparent 10px), radial-gradient(circle at 50% 50%, transparent 0 47%, rgba(66,130,88,.38) 47.5% 49%, transparent 49.5%), #f0f8f2; }
 .context-bar { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; border-block: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 .site-footer { border-top: 1px solid var(--line); }
@@ -164,10 +165,12 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
 .board-panel .home-art-image { position: absolute; inset: 11% auto 22% 18%; width: 64%; height: 66%; opacity: .9; }
 .board-panel::before { display: none; }
 .board-panel-label { bottom: 15px; left: 17px; padding: 0; border-radius: 0; background: transparent; }
-.board-physics .board-panel-label, .board-chemistry .board-panel-label { right: auto; left: 17px; }
+.board-physics .board-panel-label, .board-chemistry .board-panel-label, .board-geology .board-panel-label { right: auto; left: 17px; }
 .board-panel svg { width: 72%; max-height: 152px; opacity: .95; transform: translateY(-10px); }
 .board-physics svg { transform: translateY(-6px) rotate(6deg); }
 .board-chemistry svg { transform: translateY(-10px) rotate(-7deg); }
+.board-geology { grid-column: 1 / -1; min-height: 138px; }
+.board-geology svg { width: 52%; max-height: 130px; transform: translateY(-2px); }
 .board-seal { position: absolute; z-index: 2; top: 53%; left: 50%; width: 54px; height: 54px; border: 3px solid #f6fafb; border-radius: 15px; box-shadow: 0 5px 18px rgba(18,59,74,.11); transform: translate(-50%, -50%); }
 .home-fields .section-heading { padding-top: 70px; }
 .home-page .subject-card { min-height: 352px; padding-bottom: 75px; border-top: 4px solid var(--accent); border-radius: 6px; background: linear-gradient(125deg, #fff 48%, color-mix(in srgb, var(--accent), white 94%)); }
@@ -278,7 +281,9 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-
   .board-panel { min-height: 145px; }
   .board-panel-label { bottom: 13px; left: 13px; font-size: 8px; }
   .board-physics .board-panel-label, .board-chemistry .board-panel-label { right: 13px; left: auto; }
-  .board-panel-label, .board-physics .board-panel-label, .board-chemistry .board-panel-label { left: 12px; right: auto; }
+  .board-panel-label, .board-physics .board-panel-label, .board-chemistry .board-panel-label, .board-geology .board-panel-label { left: 12px; right: auto; }
+  .board-geology { min-height: 115px; }
+  .board-geology svg { width: 58%; max-height: 100px; }
   .board-panel svg { width: 78%; }
   .board-seal { width: 58px; height: 58px; }
   .home-page .subject-card { min-height: 340px; padding: 26px 26px 80px; }
