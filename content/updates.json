@@ -5,6 +5,30 @@
       "date_en": "26 OCT 2026",
       "category": "新增演示",
       "category_en": "NEW LESSON",
+      "discipline": "物理学 · 化学",
+      "discipline_en": "PHYSICS · CHEMISTRY",
+      "title": "新增地球运动与矿物岩石互动专题",
+      "title_en": "Added Earth science and minerals lessons",
+      "summary": "物理学新增《地球的运动与大气》，可模拟地球自转、公转、昼夜、四季与大气分层；化学新增《矿物与岩石图鉴》，可观察 16 种矿物、12 种岩石及其性质、分类与循环。",
+      "summary_en": "Physics now includes Earth’s Motion & Atmosphere, with interactive models of rotation, revolution, day and night, seasons, and atmospheric layers. Chemistry adds a Minerals & Rocks Atlas featuring 16 minerals, 12 rocks, their properties, classes, and cycle.",
+      "links": [
+        {
+          "label": "打开地球的运动与大气",
+          "label_en": "Open Earth’s Motion & Atmosphere",
+          "href": "demos/physics/earth-atmosphere/index.html"
+        },
+        {
+          "label": "打开矿物与岩石图鉴",
+          "label_en": "Open Minerals & Rocks Atlas",
+          "href": "demos/chemistry/minerals-rocks/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "date_en": "26 OCT 2026",
+      "category": "新增演示",
+      "category_en": "NEW LESSON",
       "discipline": "物理学",
       "discipline_en": "PHYSICS",
       "title": "光学实验室加入物理学专题",

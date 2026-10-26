@@ -196,11 +196,11 @@
       "name": "物理学",
       "english": "Physics",
       "eyebrow": "观察运动，理解规律",
-      "description": "从受力与运动、简单机械、电与磁，到光的传播、反射、折射与成像。",
-      "description_en": "Explore forces and motion, simple machines, electricity and magnetism, and the propagation, reflection, refraction, and imaging of light.",
+      "description": "从受力与运动、简单机械、电与磁，到光学实验、地球运动与大气结构。",
+      "description_en": "Explore forces and motion, simple machines, electricity and magnetism, optics, Earth’s motion, and the atmosphere.",
       "accent": "#ba572e",
-      "status": "4 个物理演示已开放",
-      "status_en": "4 physics lessons available",
+      "status": "5 个物理演示已开放",
+      "status_en": "5 physics lessons available",
       "topics": [
         {
           "slug": "forces-and-motion",
@@ -289,6 +289,29 @@
               "interaction_en": "11 interactive chapters · 3D ray experiments · Bilingual",
               "href": "demos/physics/optics-lab/index.html",
               "screenshot": "assets/physics-optics-lab.png",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "earth-atmosphere",
+          "name": "地球与大气",
+          "english": "Earth & Atmosphere",
+          "description": "模拟地球自转、公转、昼夜与四季，并探索大气垂直分层。",
+          "description_en": "Simulate Earth’s rotation, revolution, day and night, seasons, and the vertical layers of the atmosphere.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "earth-atmosphere",
+              "name": "地球的运动与大气",
+              "english": "Earth’s Motion & Atmosphere",
+              "description": "切换地球运动视角，观察昼夜、四季、太阳高度与大气层；可播放模拟并查看测量图表。",
+              "description_en": "Explore day and night, seasons, solar altitude, and atmospheric layers through interactive Earth models, simulations, and charts.",
+              "interaction": "地球模拟 · 大气探测 · 中英双语",
+              "interaction_en": "Earth simulation · Atmospheric probe · Bilingual",
+              "href": "demos/physics/earth-atmosphere/index.html",
+              "screenshot": "assets/physics-earth-atmosphere.jpg",
               "published": true
             }
           ]
@@ -429,11 +452,11 @@
       "name": "化学",
       "english": "Chemistry",
       "eyebrow": "看见物质如何变化",
-      "description": "从原子模型的演进出发，继续探索溶液、酸碱与物质变化。",
-      "description_en": "Explore atomic models, solutions, acids and bases, and how matter changes.",
+      "description": "从原子结构与元素周期表，继续观察溶液、酸碱和矿物材料。",
+      "description_en": "Explore atomic structure, the periodic table, solutions, acids and bases, and mineral materials.",
       "accent": "#8058a5",
-      "status": "3 个化学专题已开放",
-      "status_en": "3 chemistry topics available",
+      "status": "4 个化学专题已开放",
+      "status_en": "4 chemistry topics available",
       "topics": [
         {
           "slug": "atomic-structure",
@@ -502,6 +525,29 @@
               "interaction_en": "118 elements · 2D / 3D · Chinese / English",
               "href": "demos/chemistry/periodic-table/index.html",
               "screenshot": "assets/chemistry-periodic-table.jpg",
+              "published": true
+            }
+          ]
+        },
+        {
+          "slug": "minerals-rocks",
+          "name": "矿物与岩石",
+          "english": "Minerals & Rocks",
+          "description": "观察矿物晶体与岩石纹理，比较矿物性质，认识岩石分类与循环。",
+          "description_en": "Inspect mineral crystals and rock textures, compare mineral properties, and explore rock classes and the rock cycle.",
+          "status": "1 个演示已开放",
+          "status_en": "1 lesson available",
+          "lessons": [
+            {
+              "slug": "minerals-rocks",
+              "name": "矿物与岩石图鉴",
+              "english": "Minerals & Rocks Atlas",
+              "description": "浏览 16 种矿物与 12 种岩石标本，查看硬度、晶系、组成、纹理、分类和岩石循环，并核对图像来源。",
+              "description_en": "Explore 16 minerals and 12 rock specimens, compare hardness, crystal systems, composition, textures, and the rock cycle, with image credits.",
+              "interaction": "28 个标本 · 3D 观察 · 来源署名",
+              "interaction_en": "28 specimens · 3D inspection · Image credits",
+              "href": "demos/chemistry/minerals-rocks/index.html",
+              "screenshot": "assets/chemistry-minerals-rocks.jpg",
               "published": true
             }
           ]
