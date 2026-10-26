@@ -60,13 +60,18 @@ def lesson_route(slug: str) -> str:
     return f"labs/{slug}/"
 
 
-def route_alias(route: str, target: str, title: str) -> None:
+def route_alias(route: str, target: str, title: str, description: str, image: str | None = None) -> None:
     """Create a short, extension-free URL that hosts the canonical page full-screen."""
     current = SITE / route
     current.parent.mkdir(parents=True, exist_ok=True)
     relative_target = Path(os.path.relpath(SITE / target, current.parent)).as_posix()
+    canonical = "https://sci.mrbigtree.cn/" + target.lstrip("/")
+    social_image = ""
+    if image:
+        social_image = f'<meta property="og:image" content="https://sci.mrbigtree.cn/{e(image.lstrip("/"))}">'
     document = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>{e(title)} · 牛顿科学探索馆</title>
+<meta name="description" content="{e(description)}"><meta property="og:title" content="{e(title)} · 牛顿科学探索馆"><meta property="og:description" content="{e(description)}">{social_image}<link rel="canonical" href="{e(canonical)}">
 <style>html,body{{width:100%;height:100%;margin:0;overflow:hidden;background:#05090b}}iframe{{position:fixed;inset:0;width:100%;height:100%;border:0}}</style></head>
 <body><iframe id="destination" title="{e(title)}" allow="fullscreen; autoplay; clipboard-write" allowfullscreen></iframe>
 <script>const target={json.dumps(relative_target, ensure_ascii=False)};const query=new URLSearchParams(location.search);const lang=query.get('lang');document.getElementById('destination').src=target+(lang?'?lang='+encodeURIComponent(lang):'');</script></body></html>
@@ -398,17 +403,19 @@ def main() -> None:
                         shutil.copytree(source.parent, SITE / lesson["href"].rsplit("/", 1)[0], dirs_exist_ok=True)
     for subject in CATALOG["subjects"]:
         subject_slug = subject["slug"]
-        route_alias(subject_slug + "/index.html", "subjects/" + subject_slug + "/index.html", subject["name"])
+        subject_image = next((lesson.get("screenshot") for topic in subject["topics"] for lesson in topic["lessons"] if lesson.get("published") and lesson.get("screenshot")), None)
+        route_alias(subject_slug + "/index.html", "subjects/" + subject_slug + "/index.html", subject["name"], subject["description"], subject_image)
         for topic in subject["topics"]:
             topic_slug = topic["slug"]
-            route_alias(subject_slug + "/" + topic_slug + "/index.html", "topics/" + subject_slug + "/" + topic_slug + "/index.html", topic["name"])
+            topic_image = topic.get("screenshot") or next((lesson.get("screenshot") for lesson in topic["lessons"] if lesson.get("published") and lesson.get("screenshot")), None)
+            route_alias(subject_slug + "/" + topic_slug + "/index.html", "topics/" + subject_slug + "/" + topic_slug + "/index.html", topic["name"], topic["description"], topic_image)
             for lesson in topic["lessons"]:
                 if lesson.get("published", False):
                     target = lesson["href"]
                     if not (SITE / target).exists():
                         raise FileNotFoundError(f"Short URL target missing: {SITE / target}")
-                    route_alias("labs/" + lesson["slug"] + "/index.html", target, lesson["name"])
-    route_alias("labs/nobel-2026/index.html", "demos/nobel-2026/index.html", "诺贝尔奖互动实验室")
+                    route_alias("labs/" + lesson["slug"] + "/index.html", target, lesson["name"], lesson["description"], lesson.get("screenshot"))
+    route_alias("labs/nobel-2026/index.html", "demos/nobel-2026/index.html", "诺贝尔奖互动实验室", "通过互动演示了解诺贝尔物理学、化学和生理学或医学奖的科学发现与研究背景。")
     print(f"Built four-subject entry and subject topics in {SITE.name}/")
 
 
