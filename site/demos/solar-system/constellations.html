@@ -1104,9 +1104,14 @@ function renderPanel() {
     + (lang === "en" ? SEASON[c.tag] : c.tag);
   const a = $("#pAlt");
   if (alt > 0) {
-    let sa = 0;
-    for (const s of c.s) sa += altaz(s[0], s[1])[1];
-    const d = Math.round((sa / c.s.length) / 45) % 8;
+    let sx = 0, sy = 0;
+    for (const s of c.s) {
+      const az = altaz(s[0], s[1])[1] * RAD;
+      sx += Math.sin(az);
+      sy += Math.cos(az);
+    }
+    const meanAz = (Math.atan2(sx, sy) / RAD + 360) % 360;
+    const d = Math.round(meanAz / 45) % 8;
     a.textContent = (lang === "en" ? DIRS_EN[d] + " " : DIRS[d] + "方 ") + Math.round(alt) + "°";
   } else {
     a.textContent = T("地平线下", "Below horizon");
