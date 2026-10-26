@@ -231,8 +231,8 @@ body{
   <div class="read"><b id="pname">宇宙的成分</b><i id="pen">COSMIC BUDGET</i></div>
 
   <div class="stats">
-    <div><span id="k1">暗能量</span><span class="e" id="e1">DARK ENERGY</span><b id="v1">68.3%</b></div>
-    <div><span id="k2">暗物质</span><span class="e" id="e2">DARK MATTER</span><b id="v2">26.8%</b></div>
+     <div><span id="k1">暗能量</span><span class="e" id="e1">DARK ENERGY</span><b id="v1">68.5%</b></div>
+     <div><span id="k2">暗物质</span><span class="e" id="e2">DARK MATTER</span><b id="v2">26.6%</b></div>
     <div><span id="k3">普通物质</span><span class="e" id="e3">ORDINARY</span><b id="v3">4.9%</b></div>
   </div>
 
@@ -255,15 +255,15 @@ body{
     <span class="tl"><em>暗能量</em><i>DARK ENERGY</i></span>
     <button id="tg2" class="on de" aria-pressed="true"><b></b></button>
   </div>
-<div class="source-credit"><span>数据参考 / DATA · </span><a href="https://www.esa.int/ESA_Multimedia/Images/2013/03/Planck_cosmic_recipe" target="_blank" rel="noopener">ESA · Planck mission (2013)</a><span> · 近似宇宙质能密度 / approximate cosmic mass-energy density</span></div>
+ <div class="source-credit"><span>数据参考 / DATA · </span><a href="https://doi.org/10.1051/0004-6361/201833910" target="_blank" rel="noopener">Planck Collaboration · 2018 results (2020)</a><span> · 基于基准 ΛCDM 模型的近似宇宙质能密度 / approximate cosmic mass-energy budget in base ΛCDM</span></div>
 </aside>
 </div>
 
 <div class="note">
   <h3 id="noteH">宇宙的账本</h3>
   <span class="h-en" id="noteHE">THE COSMIC LEDGER</span>
-  <p id="noteZ">按 ESA/Planck 的近似估计，把宇宙的质能密度分成 100 份：暗能量约 68 份，暗物质约 27 份，普通物质不到 5 份。</p>
-  <p class="en" id="noteE">Using approximate ESA/Planck estimates, divide the universe's mass-energy density into 100 parts: about 68 dark energy, 27 dark matter, and under 5 ordinary matter.</p>
+   <p id="noteZ">按 Planck 2018 基准 ΛCDM 模型的近似结果，把宇宙的质能密度分成 100 份：暗能量约 68.5 份，暗物质约 26.6 份，普通物质约 4.9 份。</p>
+   <p class="en" id="noteE">In the approximate Planck 2018 base-ΛCDM budget, divide the universe's mass-energy density into 100 parts: about 68.5 dark energy, 26.6 dark matter, and 4.9 ordinary matter.</p>
 </div>
 
 <div class="bar">
@@ -1103,11 +1103,11 @@ function drawInset() {
 const TXT = [
   {
     name: "宇宙的成分", en: "COSMIC BUDGET", lab: "占比 / SHARE",
-    stats: [["暗能量", "DARK ENERGY", "68.3%"], ["暗物质", "DARK MATTER", "26.8%"], ["普通物质", "ORDINARY", "4.9%"]],
+     stats: [["暗能量", "DARK ENERGY", "68.5%"], ["暗物质", "DARK MATTER", "26.6%"], ["普通物质", "ORDINARY", "4.9%"]],
     s1: ["分离", "EXPLODE"],
     note: ["宇宙的账本", "THE COSMIC LEDGER",
       "把宇宙的总质能分成 100 份：暗能量约 68 份，暗物质约 27 份，而我们熟悉的原子——恒星、气体、尘埃、你我——不到 5 份。",
-      "Divide the universe's total mass-energy into 100 parts: about 68 parts dark energy, 27 parts dark matter, and less than 5 parts ordinary atoms — stars, gas, dust and us."]
+       "In the approximate Planck 2018 base-ΛCDM budget, divide the universe's mass-energy into 100 parts: about 68.5 dark energy, 26.6 dark matter, and 4.9 ordinary atoms — stars, gas, dust and us."]
   },
   {
     name: "星系转得太快", en: "GALAXIES SPIN TOO FAST", lab: "旋转曲线 / ROTATION CURVE",
