@@ -115,15 +115,32 @@ def adapt(name: str, text: str) -> str:
     elif name in {"moonlanding.html", "earth-to-mars.html"}:
         text = text.replace('id="back" href="#"', 'id="back" href="../../subjects/astronomy/index.html"', 1)
 
+    return_labels = {
+        "bigbang.html": ('<span data-en="Atlas">返回图鉴</span>', '<span data-en="Astronomy">天文学</span>'),
+        "blackhole.html": ('<span data-en="Atlas">返回图鉴</span>', '<span data-en="Astronomy">天文学</span>'),
+        "constellations.html": ('<span data-en="Atlas">返回图鉴</span>', '<span data-en="Astronomy">天文学</span>'),
+        "structure.html": ('<span data-en="Atlas">返回图鉴</span>', '<span data-en="Astronomy">天文学</span>'),
+        "uranus-fall.html": ('<span data-en="Atlas">返回图鉴</span>', '<span data-en="Astronomy">天文学</span>'),
+        "earth-to-mars.html": ('<span>返回图鉴</span>', '<span>天文学</span>'),
+        "moonlanding.html": ('<span>返回图鉴</span>', '<span>天文学</span>'),
+        "恒星图鉴.html": ('aria-label="返回太阳系图鉴" data-en="← Atlas">← 图鉴</a>', 'aria-label="返回天文学" data-en="← Astronomy">← 天文学</a>'),
+    }
+    if name in return_labels:
+        old_label, new_label = return_labels[name]
+        if old_label in text:
+            text = replace_once(text, old_label, new_label, f"{name} return label")
+
     position = "left:270px;top:20px" if name == "index.html" else "right:154px;top:26px"
     mobile_position = "left:18px;top:74px" if name == "index.html" else "right:18px;top:76px"
-    bridge = f'''<style id="science-site-bridge-style">
+    visual_bridge = ""
+    if 'id="back"' not in text and 'id="hubBack"' not in text:
+        visual_bridge = f'''<style id="science-site-bridge-style">
 .science-site-bridge {{position:fixed;z-index:10000;{position};padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}}
 .science-site-bridge:hover,.science-site-bridge:focus-visible {{border-color:#8ed8e3;color:#fff}}
 @media(max-width:700px){{.science-site-bridge{{{mobile_position};font-size:11px}}}}
-</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
-<script>for(const id of ['back','hubBack']){{const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}}</script>'''
-    return replace_once(text, "</body>", bridge + "\n</body>", "course bridge")
+</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>'''
+    navigation_bridge = '''<script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>'''
+    return replace_once(text, "</body>", visual_bridge + navigation_bridge + "\n</body>", "course bridge")
 
 
 def main() -> None:

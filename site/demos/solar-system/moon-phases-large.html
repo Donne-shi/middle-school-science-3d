@@ -205,11 +205,11 @@ body{
 
 <div class="topr">
   <button class="lang" id="lang">EN</button>
-  <a class="back" href="../../topics/astronomy/moon-exploration/index.html" id="back">
+  <a class="back" href="../../subjects/astronomy/index.html" id="back">
     <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
       <path d="M11 4H1M1 4L4.2 1M1 4L4.2 7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
     </svg>
-    <span data-k="back">返回图鉴</span>
+    <span data-k="back">返回天文学</span>
   </a>
 </div>
 
@@ -910,7 +910,7 @@ const TXT = {
     h1: "月相与食", h1en: "PHASES & ECLIPSES",
     kick: "月球 · 29.53 天 · 5.1° 倾角",
     tag: "月球自己不发光。它绕地球转过一圈，被照亮的那半朝着我们的角度不断变化——圆缺、日食、月食，都出自这一个几何关系。",
-    back: "返回图鉴", t0: "月相", t1: "日食", t2: "月食",
+    back: "返回天文学", t0: "月相", t1: "日食", t2: "月食",
     fromEarth: "从地球看", sLit: "照亮", sAge: "月龄", sTilt: "倾角",
     sPhase: "月相", sMoon: "月球位置", sTilt2: "轨道倾角",
     pause: "暂停", play: "播放", reset: "复位",
@@ -926,7 +926,7 @@ const TXT = {
     h1: "Phases & Eclipses", h1en: "MOON · PHASE & ECLIPSE",
     kick: "THE MOON · 29.53 DAYS · 5.1° TILT",
     tag: "The Moon makes no light of its own. Sunlight always lights exactly half of it — and as it orbits us, we see that half from a changing angle. Crescent, eclipse, blood moon: one geometry.",
-    back: "Back", t0: "Phases", t1: "Solar", t2: "Lunar",
+    back: "Astronomy", t0: "Phases", t1: "Solar", t2: "Lunar",
     fromEarth: "SEEN FROM EARTH", sLit: "LIT", sAge: "MOON AGE", sTilt: "TILT",
     sPhase: "Phase", sMoon: "Moon position", sTilt2: "Orbit tilt",
     pause: "Pause", play: "Play", reset: "Reset",
@@ -1406,18 +1406,14 @@ requestAnimationFrame(frame);
 
 // 返回天文学月球专题。
 const back = $("#back");
-back.href = "../../topics/astronomy/moon-exploration/index.html";
-const syncTopicLanguage = () => { back.href = "../../topics/astronomy/moon-exploration/index.html" + (document.documentElement.lang === "en" ? "?lang=en" : ""); };
+back.href = "../../subjects/astronomy/index.html";
+const syncTopicLanguage = () => { back.href = "../../subjects/astronomy/index.html" + (document.documentElement.lang === "en" ? "?lang=en" : ""); };
 syncTopicLanguage();
 $("#lang").addEventListener("click", () => setTimeout(syncTopicLanguage, 0));
 
 })();
 </script>
-<style id="science-site-bridge-style">
-.science-site-bridge {position:fixed;z-index:10000;right:154px;top:26px;padding:9px 13px;border:1px solid rgba(180,220,225,.45);border-radius:99px;background:rgba(5,13,19,.87);color:#e5f3f3;font:12px/1.2 -apple-system,BlinkMacSystemFont,"Noto Sans SC",sans-serif;letter-spacing:.04em;text-decoration:none;backdrop-filter:blur(12px)}
-.science-site-bridge:hover,.science-site-bridge:focus-visible {border-color:#8ed8e3;color:#fff}
-@media(max-width:700px){.science-site-bridge{right:18px;top:76px;font-size:11px}}
-</style><a class="science-site-bridge" href="../../subjects/astronomy/index.html" aria-label="返回天文学">← 天文学</a>
+
 <script>for(const id of ['back','hubBack']){const el=document.getElementById(id);if(el)el.href='../../subjects/astronomy/index.html';}</script>
 </body>
 </html>
