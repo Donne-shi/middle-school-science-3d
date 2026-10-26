@@ -649,7 +649,7 @@ function proj(ra, dec) {
   const th = clamp(90 - alt, 0, 90) * RAD;
   const r = R * Math.tan(th / 2);
   const A = az * RAD;
-  return [cx + Math.sin(A) * r, cy - Math.cos(A) * r, alt, r];
+  return [cx - Math.sin(A) * r, cy - Math.cos(A) * r, alt, r];
 }
 
 function conAlt(c) {
@@ -900,8 +900,8 @@ function paintRim() {
     const r0 = R + 2, r1 = R + (minor ? 4 : 7);
     ctx.strokeStyle = minor ? "rgba(232,187,135,.13)" : "rgba(232,187,135,.32)";
     ctx.beginPath();
-    ctx.moveTo(cx + Math.sin(rad) * r0, cy - Math.cos(rad) * r0);
-    ctx.lineTo(cx + Math.sin(rad) * r1, cy - Math.cos(rad) * r1);
+    ctx.moveTo(cx - Math.sin(rad) * r0, cy - Math.cos(rad) * r0);
+    ctx.lineTo(cx - Math.sin(rad) * r1, cy - Math.cos(rad) * r1);
     ctx.stroke();
   }
   /* on a phone there is no room outside the rim, so the four cardinals move
@@ -909,7 +909,7 @@ function paintRim() {
   const step = big ? 45 : 90, rr = big ? R + 18 : R - 14;
   for (let a = 0; a < 360; a += step) {
     const rad = a * RAD, card = a % 90 === 0;
-    const x = cx + Math.sin(rad) * rr, y = cy - Math.cos(rad) * rr;
+    const x = cx - Math.sin(rad) * rr, y = cy - Math.cos(rad) * rr;
     ctx.fillStyle = card ? "rgba(240,226,204,.74)" : "rgba(159,184,216,.30)";
     ctx.font = `400 ${card ? Math.max(9, 10 * k) : Math.max(7, 7.8 * k)}px ${MONO}`;
     ctx.fillText((lang === "en" ? DIRS_EN : DIRS)[a / 45], x, y);
