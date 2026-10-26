@@ -81,6 +81,8 @@ html[data-lang="zh"] .en-only { display: none !important; }
   background: linear-gradient(180deg, rgba(247, 243, 234, .72), rgba(239, 234, 224, .28));
 }
 .rail-head { flex: none; padding-bottom: 18px; border-bottom: 1px solid var(--rule-2); }
+.back-link { display: inline-block; margin-bottom: 14px; color: var(--ink-3); font: 10px/1.4 var(--mono); letter-spacing: .08em; text-decoration: none; transition: color .2s; }
+.back-link:hover, .back-link:focus-visible { color: var(--hematite); }
 .brand { display: grid; gap: 7px; }
 .brand b {
   display: flex; align-items: center; gap: 8px;
