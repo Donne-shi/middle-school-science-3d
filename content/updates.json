@@ -1,0 +1,80 @@
+{
+  "entries": [
+    {
+      "date": "2026-10-26",
+      "date_en": "26 OCT 2026",
+      "category": "新增专题",
+      "category_en": "NEW TOPIC",
+      "discipline": "化学",
+      "discipline_en": "CHEMISTRY",
+      "title": "元素周期表互动演示上线",
+      "title_en": "Interactive Periodic Table launched",
+      "summary": "接入 118 种元素的双语周期表，可搜索元素、查看原子模型与性质，并切换平面和 3D 视图。图片来源面板列出作者、许可与来源链接。",
+      "summary_en": "Explore all 118 elements in Chinese or English. Search the table, inspect atomic models and properties, and switch between 2D and 3D views. The image credits panel lists authors, licenses, and source links.",
+      "links": [
+        {
+          "label": "打开元素周期表",
+          "label_en": "Open the periodic table",
+          "href": "demos/chemistry/periodic-table/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "date_en": "26 OCT 2026",
+      "category": "新增演示",
+      "category_en": "NEW LESSON",
+      "discipline": "化学",
+      "discipline_en": "CHEMISTRY",
+      "title": "溶液与酸碱微观实验台上线",
+      "title_en": "Solutions, Acids & Bases lab launched",
+      "summary": "新增九个可操作场景，涵盖溶液、分散系、溶解度、电离、中和、pH 与方程式配平。",
+      "summary_en": "Nine interactive scenes explore solutions, dispersions, solubility, ionization, neutralization, pH, and equation balancing.",
+      "links": [
+        {
+          "label": "打开溶液与酸碱实验台",
+          "label_en": "Open the lab",
+          "href": "demos/chemistry/solutions-acids-bases/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "date_en": "25 OCT 2026",
+      "category": "内容扩展",
+      "category_en": "CONTENT UPDATE",
+      "discipline": "生物学",
+      "discipline_en": "BIOLOGY",
+      "title": "细胞与细菌专题继续扩展",
+      "title_en": "Cell and bacteria topics expanded",
+      "summary": "补充植物细胞、动物细胞和细菌图鉴入口与演示截图，细胞图鉴、病毒图鉴等内容也可从生物学专题页继续探索。",
+      "summary_en": "Added entry cards and lesson previews for plant cells, animal cells, and the bacteria atlas. Continue exploring the cell and virus atlases from the Biology topic page.",
+      "links": [
+        {
+          "label": "浏览生物学专题",
+          "label_en": "Explore Biology",
+          "href": "subjects/biology/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "date_en": "24 OCT 2026",
+      "category": "跨学科专题",
+      "category_en": "CROSS-DISCIPLINARY",
+      "discipline": "诺贝尔奖互动解释",
+      "discipline_en": "NOBEL PRIZE INTERACTIVE EXPLAINER",
+      "title": "新增 2026 诺贝尔奖互动解释",
+      "title_en": "Added the 2026 Nobel Prize interactive explainer",
+      "summary": "用交互模型串联物理学、化学与生理学或医学主题，帮助学生沿着获奖发现提出问题、观察现象。",
+      "summary_en": "Interactive models connect topics in physics, chemistry, and physiology or medicine, helping students ask questions and observe the ideas behind the discoveries.",
+      "links": [
+        {
+          "label": "打开诺贝尔互动实验室",
+          "label_en": "Open the Nobel interactive lab",
+          "href": "demos/nobel-2026/index.html"
+        }
+      ]
+    }
+  ]
+}

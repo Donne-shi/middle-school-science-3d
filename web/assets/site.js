@@ -7,7 +7,8 @@
 
   function savedLanguage() {
     const query = new URLSearchParams(window.location.search).get('lang');
-    if (query === 'zh' || query === 'en') return query;
+    if (query === 'zh' || query === 'zh-CN') return 'zh';
+    if (query === 'en') return query;
     try {
       const saved = window.localStorage.getItem(key);
       if (saved === 'zh' || saved === 'en') return saved;
@@ -18,17 +19,15 @@
   function updateLinks(lang) {
     document.querySelectorAll('a[href]').forEach((anchor) => {
       const base = anchor.dataset.baseHref || anchor.getAttribute('href');
-      if (!base || !/\.html(?:[?#]|$)/.test(base)) return;
+      if (!base) return;
       anchor.dataset.baseHref = base;
-      const hashIndex = base.indexOf('#');
-      const hash = hashIndex < 0 ? '' : base.slice(hashIndex);
-      const withoutHash = hashIndex < 0 ? base : base.slice(0, hashIndex);
-      const queryIndex = withoutHash.indexOf('?');
-      const path = queryIndex < 0 ? withoutHash : withoutHash.slice(0, queryIndex);
-      const params = new URLSearchParams(queryIndex < 0 ? '' : withoutHash.slice(queryIndex + 1));
+      let url;
+      try { url = new URL(base, window.location.href); } catch (_) { return; }
+      if (url.origin !== window.location.origin) return;
+      const params = url.searchParams;
       if (lang === 'en') params.set('lang', 'en');
       else params.delete('lang');
-      anchor.setAttribute('href', path + (params.size ? '?' + params.toString() : '') + hash);
+      anchor.setAttribute('href', url.pathname + (params.size ? '?' + params.toString() : '') + url.hash);
     });
   }
 
