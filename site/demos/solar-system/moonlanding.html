@@ -1668,18 +1668,8 @@ requestAnimationFrame(frame);
   const button=document.createElement('button'); button.type='button'; button.className='lang-switch'; button.id='lang-switch'; button.setAttribute('aria-label','Switch language');
   document.body.appendChild(button);
   let lang='zh';
-  function apply(root=document.body){
-    const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n;
-    while(n=w.nextNode()){
-      const parent=n.parentElement;
-      if(!parent||parent.closest('script,style,svg,canvas,#lang-switch'))continue;
-      if(!originals.has(n))originals.set(n,n.nodeValue);
-      const raw=originals.get(n), trimmed=raw.trim();
-      const value=lang==='en'?(M[trimmed]||trimmed):trimmed;
-      if(value!==trimmed){const lead=raw.match(/^\s*/)?.[0]||'',tail=raw.match(/\s*$/)?.[0]||'';n.nodeValue=lead+value+tail;}
-      else if(lang==='zh'&&n.nodeValue!==raw)n.nodeValue=raw;
-    }
-  }
+  function translateNode(n){const parent=n.parentElement;if(!parent||parent.closest('script,style,svg,canvas,#lang-switch'))return;if(!originals.has(n))originals.set(n,n.nodeValue);const raw=originals.get(n),trimmed=raw.trim(),value=lang==='en'?(M[trimmed]||trimmed):trimmed;if(value!==trimmed){const lead=raw.match(/^\s*/)?.[0]||'',tail=raw.match(/\s*$/)?.[0]||'';n.nodeValue=lead+value+tail}else if(lang==='zh'&&n.nodeValue!==raw)n.nodeValue=raw}
+  function apply(root=document.body){if(root.nodeType===3){translateNode(root);return}const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())translateNode(n)}
   function setLang(next){
     lang=next==='en'?'en':'zh'; document.documentElement.lang=lang==='en'?'en':'zh-CN'; document.body.dataset.lang=lang;
     try{localStorage.setItem('atlas-lang',lang);}catch(e){}
@@ -1687,7 +1677,7 @@ requestAnimationFrame(frame);
     button.textContent=lang==='en'?'中文':'EN'; apply();
   }
   button.addEventListener('click',()=>setLang(lang==='zh'?'en':'zh'));
-  const observer=new MutationObserver(records=>{if(lang!=='en')return;for(const r of records){if(r.type==='characterData')apply(r.target.parentElement||document.body);else for(const node of r.addedNodes)if(node.nodeType===1)apply(node);}});
+  const observer=new MutationObserver(records=>{if(lang!=='en')return;for(const r of records){if(r.type==='characterData')apply(r.target.parentElement||document.body);else for(const node of r.addedNodes)if(node.nodeType===1||node.nodeType===3)apply(node);}});
   observer.observe(document.body,{subtree:true,childList:true,characterData:true});
   const initial=new URLSearchParams(location.search).get('lang')||(()=>{try{return localStorage.getItem('atlas-lang')}catch(e){return null}})()||'zh'; setLang(initial);
 })();
