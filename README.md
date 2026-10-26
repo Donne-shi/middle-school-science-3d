@@ -1,5 +1,41 @@
 # 牛顿科学探索馆 · Newton Science Discovery Center
 
+<div align="center">
+
+<img src="docs/images/repository-cover.svg" alt="牛顿科学探索馆：中学科学互动学习项目" width="100%">
+
+[![在线体验](https://img.shields.io/badge/在线体验-sci.mrbigtree.cn-0b7781?style=for-the-badge)](https://sci.mrbigtree.cn/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-687f5e?style=flat-square)](LICENSE)
+[![中英双语](https://img.shields.io/badge/语言-中文%20%2F%20English-9a6fb0?style=flat-square)](https://sci.mrbigtree.cn/)
+
+**把科学，放到眼前。**  
+让中学生通过互动演示观察科学过程：改变条件、比较结果，再回到原理。
+
+[打开在线科学馆](https://sci.mrbigtree.cn/) · [浏览仓库](https://github.com/Donne-shi/middle-school-science-3d) · [提交问题或建议](https://github.com/Donne-shi/middle-school-science-3d/issues/new/choose)
+
+</div>
+
+## 四个学科，一个探索入口
+
+| 学科 | 可以探索 | 入口 |
+|:--|:--|:--:|
+| **天文学** | 太阳系、宇宙现象、恒星与星空、登月任务 | [开始探索](https://sci.mrbigtree.cn/subjects/astronomy/index.html) |
+| **物理学** | 牛顿汽车、简单机械、电与磁 | [开始探索](https://sci.mrbigtree.cn/subjects/physics/index.html) |
+| **生物学** | 细胞结构、线粒体、叶绿体与能量转化 | [开始探索](https://sci.mrbigtree.cn/subjects/biology/index.html) |
+| **化学** | 原子模型演进、电子云与轨道 | [开始探索](https://sci.mrbigtree.cn/subjects/chemistry/index.html) |
+
+### 现在就试试
+
+- [牛顿车库：用 3D 汽车认识力与运动](https://sci.mrbigtree.cn/demos/physics/newton-garage/index.html)
+- [简单机械：观察力、距离与功](https://sci.mrbigtree.cn/demos/physics/simple-machines/index.html)
+- [电与磁：交互式电磁实验](https://sci.mrbigtree.cn/demos/physics/electricity-lab/index.html)
+- [细胞能量图鉴：探索呼吸作用与光合作用](https://sci.mrbigtree.cn/demos/biology/cell-energy/index.html)
+- [原子图鉴：沿着证据追踪原子模型](https://sci.mrbigtree.cn/demos/chemistry/atomic-atlas/index.html)
+
+> **项目持续制作中。** 部分专题会标注“本地预览”或“素材核对中”。待贴图和图像的来源、许可确认后再加入。详见[素材与授权记录](docs/ASSETS.md)。
+
+---
+
 面向中学科学课堂与自主探索的静态多页面网站，设有物理学、天文学、生物学、化学四个学科入口。每个学科首页和每个演示都有独立地址；内容随课程制作逐步加入。
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。

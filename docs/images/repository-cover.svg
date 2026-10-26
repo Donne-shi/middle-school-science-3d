@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
+<title id="title">牛顿科学探索馆 · Newton Science Discovery Center</title>
+<desc id="desc">A bright illustrated science learning space with astronomy, physics, biology and chemistry stations.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fbfa"/><stop offset="1" stop-color="#f9f5ec"/></linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c5360"/><stop offset="1" stop-color="#0b7781"/></linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1c3940" flood-opacity=".12"/></filter>
+</defs>
+<rect width="1200" height="480" rx="30" fill="url(#bg)"/>
+<circle cx="1070" cy="28" r="145" fill="#e3f1ee"/>
+<circle cx="150" cy="464" r="120" fill="#f0e9db"/>
+<path d="M0 88H1200" stroke="#dce8e5"/>
+<rect x="54" y="30" width="48" height="48" rx="15" fill="url(#teal)"/>
+<text x="78" y="64" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#fff">N.</text>
+<text x="118" y="51" font-family="Arial,'Noto Sans SC',sans-serif" font-size="21" font-weight="700" fill="#17333b">牛顿科学探索馆</text>
+<text x="118" y="72" font-family="Arial,sans-serif" font-size="10" letter-spacing="2.3" fill="#5e7c80">NEWTON SCIENCE DISCOVERY CENTER</text>
+<rect x="980" y="39" width="164" height="34" rx="17" fill="#fff" stroke="#d9e5e1"/>
+<text x="1062" y="61" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" letter-spacing="1.5" fill="#42656b">OBSERVE · EXPERIMENT · UNDERSTAND</text>
+<text x="58" y="168" font-family="Arial,'Noto Sans SC',sans-serif" font-size="16" font-weight="700" letter-spacing="3" fill="#14717a">SCIENCE, MADE VISIBLE</text>
+<text x="54" y="232" font-family="Arial,'Noto Sans SC',sans-serif" font-size="47" font-weight="700" fill="#17333b">把科学，放到眼前。</text>
+<text x="58" y="270" font-family="Arial,sans-serif" font-size="18" fill="#527078">Explore physics, astronomy, biology and chemistry</text>
+<text x="58" y="298" font-family="Arial,sans-serif" font-size="18" fill="#527078">through interactive lessons and visual models.</text>
+<rect x="58" y="332" width="164" height="45" rx="13" fill="url(#teal)"/>
+<text x="140" y="361" text-anchor="middle" font-family="Arial,'Noto Sans SC',sans-serif" font-size="15" font-weight="700" fill="#fff">打开在线科学馆 ↗</text>
+<text x="242" y="360" font-family="Arial,sans-serif" font-size="12" fill="#648087">Bilingual · Classroom-ready · Open source</text>
+<g filter="url(#shadow)">
+<rect x="650" y="126" width="226" height="136" rx="23" fill="#fff" stroke="#dfebe7"/>
+<rect x="895" y="126" width="226" height="136" rx="23" fill="#fff" stroke="#dfebe7"/>
+<rect x="650" y="281" width="226" height="136" rx="23" fill="#fff" stroke="#dfebe7"/>
+<rect x="895" y="281" width="226" height="136" rx="23" fill="#fff" stroke="#dfebe7"/>
+</g>
+<g>
+<circle cx="763" cy="184" r="29" fill="#e9f6f4"/><circle cx="763" cy="184" r="7" fill="#4bb9ba"/><ellipse cx="763" cy="184" rx="48" ry="20" fill="none" stroke="#6dc9c6" stroke-width="2" transform="rotate(-28 763 184)"/><circle cx="803" cy="164" r="4" fill="#0c7781"/>
+<text x="675" y="241" font-family="Arial,'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#267983">天文学 · ASTRONOMY</text>
+<path d="M957 212h92" stroke="#e7a66a" stroke-width="5" stroke-linecap="round"/><path d="M1004 166l-12 45h26z" fill="#f2c28e"/><circle cx="1005" cy="160" r="12" fill="#e9a261"/><path d="M948 178h112" stroke="#d5a27b" stroke-width="2"/><circle cx="964" cy="177" r="5" fill="#de8c58"/>
+<text x="920" y="241" font-family="Arial,'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#a66a3d">物理学 · PHYSICS</text>
+<circle cx="763" cy="337" r="33" fill="#eaf5e8" stroke="#78b478" stroke-width="3"/><circle cx="763" cy="337" r="13" fill="#347d67"/><circle cx="748" cy="327" r="4" fill="#c5e8a3"/><circle cx="780" cy="350" r="5" fill="#b2d88d"/><circle cx="786" cy="319" r="3" fill="#b2d88d"/>
+<text x="675" y="397" font-family="Arial,'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#538451">生物学 · BIOLOGY</text>
+<g fill="#c7a1dc" stroke="#9170b3" stroke-width="2"><circle cx="968" cy="332" r="13"/><circle cx="1033" cy="320" r="13"/><circle cx="1066" cy="361" r="13"/><circle cx="1002" cy="370" r="13"/></g><g stroke="#a58bc4" stroke-width="3"><path d="M981 330l39-8M1041 330l17 21M1054 363l-39 6M992 360l-17-17"/></g>
+<text x="920" y="397" font-family="Arial,'Noto Sans SC',sans-serif" font-size="12" font-weight="700" fill="#8061a1">化学 · CHEMISTRY</text>
+</g>
+<text x="1142" y="454" text-anchor="end" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="#83999a">LEARN BY SEEING · VERSION IN PROGRESS</text>
+</svg>
