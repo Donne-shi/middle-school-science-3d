@@ -406,7 +406,8 @@
               "interaction": "3D 显微镜 · 对光与调焦 · 中英文切换",
               "interaction_en": "3D microscope · Illumination and focusing · Chinese / English",
               "href": "demos/biology/microscope/index.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/biology-microscope-lab.png"
             }
           ]
         },
@@ -474,7 +475,8 @@
               "interaction": "3D 传播模拟 · 疫情曲线 · 中英文切换",
               "interaction_en": "3D transmission simulation · Epidemic curves · Chinese / English",
               "href": "demos/biology/epidemic/index.html",
-              "published": true
+              "published": true,
+              "screenshot": "assets/biology-epidemic-lab.png"
             }
           ]
         }
