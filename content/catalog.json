@@ -396,6 +396,17 @@
               "interaction_en": "3D rotation · Cutaway · Microscope comparison",
               "href": "demos/biology/cell-atlas/index.html",
               "screenshot": "assets/biology-cell-atlas.png"
+            },
+            {
+              "slug": "microscope-lab",
+              "name": "显微镜虚拟操作",
+              "english": "Virtual Microscope Lab",
+              "description": "练习显微镜对光、调焦、转换高倍镜与判断物像移动方向，熟悉观察细胞和微生物的基本步骤。",
+              "description_en": "Practice illuminating and focusing a microscope, switching to higher magnification, and predicting image movement while learning basic steps for observing cells and microorganisms.",
+              "interaction": "3D 显微镜 · 对光与调焦 · 中英文切换",
+              "interaction_en": "3D microscope · Illumination and focusing · Chinese / English",
+              "href": "demos/biology/microscope/index.html",
+              "published": true
             }
           ]
         },
@@ -442,6 +453,28 @@
               "href": "demos/biology/human-systems/index.html",
               "published": true,
               "screenshot": "assets/biology-human-systems.png"
+            }
+          ]
+        },
+        {
+          "slug": "health-and-infection",
+          "name": "健康与传染病",
+          "english": "Health & Infectious Disease",
+          "description": "通过交互模拟观察传染病传播、接种率与群体免疫之间的关系。",
+          "description_en": "Use an interactive simulation to explore how infectious disease spread, vaccination, and population immunity relate.",
+          "status": "1 个交互模拟已开放",
+          "status_en": "1 interactive simulation available",
+          "lessons": [
+            {
+              "slug": "epidemic-lab",
+              "name": "传染病与疫苗模拟",
+              "english": "Epidemic & Vaccination Simulator",
+              "description": "调节传播与接种参数，观察病例曲线和传播过程如何变化；模型用于理解基本概念，不代表具体疫情预测。",
+              "description_en": "Adjust transmission and vaccination settings to explore changes in case curves and spread. This educational model illustrates basic concepts and is not a forecast for any specific outbreak.",
+              "interaction": "3D 传播模拟 · 疫情曲线 · 中英文切换",
+              "interaction_en": "3D transmission simulation · Epidemic curves · Chinese / English",
+              "href": "demos/biology/epidemic/index.html",
+              "published": true
             }
           ]
         }
