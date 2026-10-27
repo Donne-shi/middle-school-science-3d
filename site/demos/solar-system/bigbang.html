@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>宇宙大爆炸 · The Big Bang</title>
-<meta name="description" content="从 10⁻⁴³ 秒到今天：138 亿年的膨胀史。奇点、暴胀、粒子汤、原初核合成、复合、黑暗时代、第一批恒星与星系，温度、尺度因子与宇宙成分随时间实时变化。">
+<meta name="description" content="宇宙大爆炸是一种关于宇宙早期状态与膨胀历史的宇宙学模型。本演示以交互时间线展示模型所描述的宇宙阶段及其观测背景。">
 <meta name="theme-color" content="#06050a">
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -56,6 +56,11 @@ body{
 .kicker i{width:22px;height:1px;background:var(--ac);opacity:.7;flex:none}
 .tag{margin:11px 0 0;font-family:var(--serif);font-size:18px;line-height:1.75;color:var(--ink-2);opacity:.92;
   max-width:23em;text-shadow:0 1px 14px rgba(0,0,0,.65)}
+.model-note{margin-top:14px;padding:10px 13px;border:1px solid rgba(238,176,114,.24);border-left:2px solid var(--ac);
+  border-radius:3px;background:rgba(11,9,14,.62);max-width:500px;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.model-note strong{display:block;margin-bottom:4px;font-family:var(--mono);font-weight:500;font-size:9px;
+  letter-spacing:.2em;color:var(--ac)}
+.model-note p{margin:0;color:var(--ink-2);font-size:11.5px;line-height:1.7;letter-spacing:.015em}
 
 .chips{list-style:none;display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;column-gap:14px;margin:26px 0 0;padding:0;
   border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
@@ -181,6 +186,7 @@ body.lang-en .mast h1 .en{font-family:var(--serif);font-size:15px;letter-spacing
 body.lang-en .kicker{font-size:12px;letter-spacing:.05em;flex-wrap:wrap}
 body.lang-en .tag{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:16.5px;line-height:1.7;max-width:26em;
   text-wrap:balance}
+body.lang-en .model-note p{font-size:11px;line-height:1.65}
 body.lang-en .chips li>span{font-size:10px;letter-spacing:.07em}
 body.lang-en .eras b{font-size:12.5px;letter-spacing:.04em}
 /* the secondary line is Chinese here, so it loses the mono tracking it wears
@@ -219,6 +225,8 @@ body.lang-en .stages span i{font-family:var(--serif);font-size:9.5px;letter-spac
   .mast{width:auto;right:var(--pad)}
   .mast h1 .cn{font-size:clamp(30px,7vw,40px)}
   .tag{font-size:16px;max-width:34ch}
+  .model-note{max-width:min(100%,620px);margin-top:10px;padding:8px 10px}
+  .model-note p{font-size:10.5px;line-height:1.55}
   .chips{max-width:min(100%,466px)}
   .chips li>span{color:rgba(247,240,228,.6)}
   .panel{display:none}
@@ -243,6 +251,9 @@ body.lang-en .stages span i{font-family:var(--serif);font-size:9.5px;letter-spac
   .stages{justify-content:flex-start;gap:3px}
   .stages span{font-size:8.5px;letter-spacing:.02em}
   .tag{font-size:15px}
+  .model-note{margin-top:8px;padding:7px 9px}
+  .model-note strong{font-size:8px;margin-bottom:3px}
+  .model-note p{font-size:10px;line-height:1.5}
 }
 @media (prefers-reduced-motion:reduce){
   .note,.end{transition:none}
@@ -275,6 +286,10 @@ body.lang-en .stages span i{font-family:var(--serif);font-size:9.5px;letter-spac
   <h1><span class="cn" data-en="The Big Bang">宇宙大爆炸</span><span class="en" data-en="宇宙大爆炸">The Big Bang</span></h1>
   <div class="kicker"><i></i><span data-en="A singularity · 13.8 billion years · 93 billion light-years across">奇点 · 138 亿年 · 可观测直径 930 亿光年</span></div>
   <p class="tag" data-en="Not an explosion inside space, but the expansion of space itself.">不是空间里的一次爆炸，而是空间本身的膨胀。</p>
+  <aside class="model-note" role="note" aria-label="宇宙学模型说明 / Cosmological model note">
+    <strong data-en="COSMOLOGICAL MODEL · SCIENTIFIC VIEW">宇宙学模型 · 科学观点</strong>
+    <p data-en="The Big Bang is a cosmological model of the universe’s early state and subsequent expansion. It is among the most widely accepted, evidence-supported scientific accounts of cosmic origins. It is not a direct observation of the universe’s beginning or an absolutely proven, unchangeable fact; the model remains open to testing and revision as evidence develops.">宇宙大爆炸是一种描述宇宙早期状态及其后续膨胀的宇宙学模型，也是目前较受认可、获得较多观测与理论支持的宇宙起源科学观点之一。它不是人类直接观察到的宇宙起源过程，也不是已被绝对证明、不可修正的事实；模型仍需接受观测证据检验，并可随证据更新。</p>
+  </aside>
 
   <ul class="chips">
     <li><b><i id="cAge">10<sup>−43</sup></i><u>s</u></b><span data-en="Age of universe">宇宙年龄</span></li>
