@@ -195,7 +195,7 @@ def home() -> None:
     cards = []
     board = []
     introductions = {
-        "astronomy": ("从太阳系进入，再探索宇宙现象、恒星与星空、月相与食，以及人类登月。十一个独立演示已经开放。", "Begin with the Solar System, then explore cosmic phenomena, stars, the night sky, Moon phases and eclipses, and the human Moon landing. Eleven standalone lessons are open."),
+        "astronomy": ("从太阳系探索行星、太阳风与空间天气，再走向恒星和宇宙。十二个独立演示已经开放。", "Explore planets, solar wind, and space weather before moving on to stars and the wider universe. Twelve standalone lessons are open."),
         "physics": ("驾驶 3D 汽车观察受力与运动，再用简单机械和电磁实验调节参数，看看规律怎样改变。", "Use a 3D car to explore forces and motion, then adjust simple machines and electricity experiments to see the rules in action."),
         "biology": ("从细胞与人体系统观察生命结构，再沿着线粒体和叶绿体理解呼吸作用与光合作用。", "Explore life through cells and organ systems, then follow respiration and photosynthesis in mitochondria and chloroplasts."),
         "chemistry": ("从早期原子观念走向新的模型，观察证据如何改变人们对原子结构的解释。", "Trace changing models of the atom and see how new evidence reshaped explanations of its structure."),
@@ -285,6 +285,7 @@ def topic_page(subject: dict, topic: dict) -> None:
     if slug == "biology" and topic["slug"] == "human-systems":
         visual_zh, visual_en = "九大系统 · 观察人体结构", "NINE SYSTEMS · EXPLORE HUMAN ANATOMY"
     astronomy_visuals = {
+        "space-weather": ("太阳风 · 地球磁层 · 极光", "SOLAR WIND · MAGNETOSPHERE · AURORA"),
         "universe": ("从宇宙早期到黑洞", "EARLY UNIVERSE · BLACK HOLES"),
         "stellar-sky": ("恒星与星座", "STARS · CONSTELLATIONS"),
         "moon-exploration": ("从地球走向月球", "EARTH · MOON"),
@@ -333,6 +334,7 @@ def topic_page(subject: dict, topic: dict) -> None:
         )
     astronomy_guidance = {
         "solar-system": ("从行星图鉴观察天体，再用太阳系结构理解尺度，并体验地火转移与天王星下降。", "Explore the planets, compare Solar System scales, then follow an Earth-to-Mars transfer and a descent through Uranus."),
+        "space-weather": ("先观察极光带，再跟踪带电粒子的运动，最后比较能量与发光层。", "Explore the auroral oval, follow charged-particle motion, then compare energy and emission layers."),
         "universe": ("沿着宇宙早期的时间线观察，再探索黑洞、暗物质与暗能量。", "Follow the early-universe timeline, then explore black holes, dark matter, and dark energy."),
         "stellar-sky": ("比较恒星的性质，再回到夜空辨认星座。", "Compare star properties, then return to the night sky to identify constellations."),
         "moon-exploration": ("先观察月相与日月食的几何关系，再沿阿波罗 11 号任务探索月面。", "Explore lunar phases and eclipse geometry, then follow Apollo 11 to the lunar surface."),

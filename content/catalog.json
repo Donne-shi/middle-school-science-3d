@@ -7,11 +7,11 @@
       "name": "天文学",
       "english": "Astronomy",
       "eyebrow": "从地球出发，重新认识宇宙",
-      "description": "从太阳系走向恒星与宇宙，打开独立演示，观察天体、尺度与探索任务。",
-      "description_en": "Explore the Solar System, stars, and the wider universe through standalone visual lessons.",
+      "description": "从太阳系探索行星、太阳风与空间天气，再走向恒星和宇宙。",
+      "description_en": "Explore planets, solar wind, and space weather before moving on to stars and the wider universe.",
       "accent": "#197a91",
-      "status": "11 个天文学演示已开放",
-      "status_en": "11 astronomy lessons available",
+      "status": "12 个天文学演示已开放",
+      "status_en": "12 astronomy lessons available",
       "topics": [
         {
           "slug": "solar-system",
@@ -69,6 +69,29 @@
               "href": "demos/solar-system/earth-to-mars.html",
               "published": true,
               "screenshot": "assets/astronomy-earth-to-mars.png"
+            }
+          ]
+        },
+        {
+          "slug": "space-weather",
+          "name": "太阳与空间天气",
+          "english": "The Sun & Space Weather",
+          "description": "调节太阳风、地磁活动与粒子能量，观察地球磁层和极光如何响应。",
+          "description_en": "Adjust solar wind, geomagnetic activity, and particle energy to explore Earth’s magnetosphere and aurora.",
+          "status": "1 个互动实验已开放",
+          "status_en": "1 interactive lesson available",
+          "lessons": [
+            {
+              "slug": "aurora-lab",
+              "name": "极光实验室",
+              "english": "Aurora Lab",
+              "description": "观察极光带的位置、带电粒子在地磁场中的运动，以及不同能量粒子如何激发高层大气发光。模型对地磁场和电子运动作了教学简化。",
+              "description_en": "Explore auroral oval location, charged-particle motion in Earth’s magnetic field, and how energetic particles excite light in the upper atmosphere. The geomagnetic field and electron motion are simplified for teaching.",
+              "interaction": "3D 地磁场 · 粒子运动 · 极光发光层",
+              "interaction_en": "3D geomagnetic field · Particle motion · Aurora emission layers",
+              "href": "demos/solar-system/aurora.html",
+              "published": true,
+              "screenshot": "assets/astronomy-aurora.png"
             }
           ]
         },

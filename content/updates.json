@@ -1,6 +1,25 @@
 {
   "entries": [
     {
+      "date": "2026-10-29",
+      "date_en": "29 OCT 2026",
+      "category": "新增演示",
+      "category_en": "NEW LESSON",
+      "discipline": "天文学",
+      "discipline_en": "ASTRONOMY",
+      "title": "新增极光实验室，探索太阳风与地球磁层",
+      "title_en": "Aurora Lab explores solar wind and Earth’s magnetosphere",
+      "summary": "天文学新增双语 3D 极光实验，可调节地磁活动和粒子能量，观察极光带、带电粒子运动与大气发光层，并提供实验步骤、图表和数据面板。",
+      "summary_en": "Added a bilingual 3D aurora lab. Adjust geomagnetic activity and particle energy to explore auroral ovals, charged-particle motion, and atmospheric emission, with procedures, charts, and data panels.",
+      "links": [
+        {
+          "label": "打开极光实验室",
+          "label_en": "Open Aurora Lab",
+          "href": "demos/solar-system/aurora.html"
+        }
+      ]
+    },
+    {
       "date": "2026-10-27",
       "date_en": "27 OCT 2026",
       "category": "学科扩展",

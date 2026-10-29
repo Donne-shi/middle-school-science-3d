@@ -4,9 +4,9 @@
 
 [在线打开牛顿科学探索馆](https://donne-shi.github.io/middle-school-science-3d/)。
 
-目前已开放天文学 11 个独立演示、3 个物理学互动演示，以及生物学《植物细胞模型》《动物细胞模型》《细菌图鉴》《细胞能量图鉴》《人体系统图鉴》和《病毒图鉴》。化学开放《原子模型2400年》；总入口另设跨学科的《2026 诺贝尔奖互动实验室》。《太阳系行星图鉴》和《地球到火星》已公开，贴图来源与 CC BY 4.0 署名记录见素材文档；生物学《细胞形态图鉴》仍仅在本地预览，内嵌显微照片待核实授权。详情见 [素材与授权记录](docs/ASSETS.md)。
+目前已开放天文学 12 个独立演示、3 个物理学互动演示，以及生物学《植物细胞模型》《动物细胞模型》《细菌图鉴》《细胞能量图鉴》《人体系统图鉴》和《病毒图鉴》。化学开放《原子模型2400年》；总入口另设跨学科的《2026 诺贝尔奖互动实验室》。《太阳系行星图鉴》和《地球到火星》已公开，贴图来源与 CC BY 4.0 署名记录见素材文档；生物学《细胞形态图鉴》仍仅在本地预览，内嵌显微照片待核实授权。详情见 [素材与授权记录](docs/ASSETS.md)。
 
-天文学按太阳系、宇宙现象、恒星与星空、登月探索四个专题组织。各演示可独立打开，返回天文学入口。
+天文学按太阳系、太阳与空间天气、宇宙现象、恒星与星空、登月探索五个专题组织。各演示可独立打开，返回天文学入口。
 
 ## 页面结构
 
@@ -25,10 +25,11 @@ site/demos/biology/bacteria-atlas/index.html   细菌图鉴独立入口
 preview/demos/biology/cell-atlas/index.html    细胞形态图鉴本地预览
 site/subjects/chemistry/index.html             化学独立入口
 site/topics/astronomy/solar-system/index.html  太阳系专题
+site/topics/astronomy/space-weather/index.html  太阳与空间天气专题
 site/topics/astronomy/universe/index.html      宇宙现象专题
 site/topics/astronomy/stellar-sky/index.html   恒星与星空专题
 site/topics/astronomy/moon-exploration/index.html 登月探索专题
-site/demos/solar-system/*.html                 11 个已公开的天文学独立演示
+site/demos/solar-system/*.html                 12 个已公开的天文学独立演示
 preview/demos/solar-system/atlas.html          行星图鉴本地预览
 preview/demos/solar-system/earth-to-mars.html  地火转移本地预览
 site/topics/physics/forces-and-motion/index.html 力与运动专题
@@ -56,7 +57,7 @@ python3 scripts/check_site.py --local
 python3 -m http.server 8000 --directory preview
 ```
 
-浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版可直接打开 11 个天文学演示及其他已开放演示；细胞图鉴保留说明卡片，素材核查前不显示无效链接。本地预览版还包括全部天文学单页以及已导入的细胞图鉴。
+浏览器访问 `http://localhost:8000/`。公开版本运行 `python3 scripts/build_site.py` 构建到 `site/`，再运行 `python3 scripts/check_site.py`。公开版可直接打开 12 个天文学演示及其他已开放演示；细胞图鉴保留说明卡片，素材核查前不显示无效链接。本地预览版还包括全部天文学单页以及已导入的细胞图鉴。
 
 天文学导入脚本只读取提供的源目录，不修改原始演示文件。它生成九个本地预览副本，其中七个不含待核对内嵌行星贴图的页面同时写入公开目录；另外，已核实授权的《太阳系行星图鉴》《地球到火星》、作者提供的《暗物质与暗能量》和《月相与食》也已单独接入。生成副本增加返回专题入口，并修正少数页面的标签或返回链接。每次源页面更新后，可重新运行导入命令。
 
@@ -75,4 +76,4 @@ python3 -m http.server 8000 --directory preview
 
 ## 参与贡献与授权
 
-欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。诺贝尔奖互动实验室、物理演示和植物细胞模型所用 Three.js 的授权文本分别见 [诺贝尔实验室许可](content/demos/nobel-2026/THREE_LICENSE.txt)、[牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)、[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)、[植物细胞模型许可](site/demos/biology/plant-cell/THREE_LICENSE.txt)和[动物细胞模型许可](site/demos/biology/animal-cell/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。
+欢迎提供科学内容纠错、浏览器兼容和课堂使用反馈。提交前请阅读 [贡献指南](CONTRIBUTING.md)。本仓库原创代码采用 [MIT 许可证](LICENSE)。诺贝尔奖互动实验室、物理演示、太阳系极光实验和植物细胞模型所用 Three.js 的授权文本分别见 [诺贝尔实验室许可](content/demos/nobel-2026/THREE_LICENSE.txt)、[牛顿车库许可](site/demos/physics/newton-garage/THREE_LICENSE.txt)、[简单机械许可](site/demos/physics/simple-machines/THREE_LICENSE.txt)、[电与磁许可](site/demos/physics/electricity-lab/THREE_LICENSE.txt)、[极光实验许可](site/demos/solar-system/aurora-THREE_LICENSE.txt)、[植物细胞模型许可](site/demos/biology/plant-cell/THREE_LICENSE.txt)和[动物细胞模型许可](site/demos/biology/animal-cell/THREE_LICENSE.txt)；第三方图片、贴图等素材按各自授权使用，不能因仓库采用 MIT 而视为 MIT 素材。
