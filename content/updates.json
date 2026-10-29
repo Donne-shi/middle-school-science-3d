@@ -5,6 +5,25 @@
       "date_en": "29 OCT 2026",
       "category": "新增演示",
       "category_en": "NEW LESSON",
+      "discipline": "生物学",
+      "discipline_en": "BIOLOGY",
+      "title": "新增《疫苗与抗生素》四单元互动课程",
+      "title_en": "Added the Vaccines & Antibiotics interactive course",
+      "summary": "新增四个单元、九讲的双语互动课程，涵盖病原体、疫苗与免疫应答、抗生素作用机制、耐药性和群体免疫模拟。",
+      "summary_en": "Added a bilingual interactive course with four units and nine lessons on pathogens, vaccines and immune responses, antibiotic mechanisms, antimicrobial resistance, and population immunity.",
+      "links": [
+        {
+          "label": "打开疫苗与抗生素课程",
+          "label_en": "Open Vaccines & Antibiotics",
+          "href": "demos/biology/vaccine-antibiotics/index.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "date_en": "29 OCT 2026",
+      "category": "新增演示",
+      "category_en": "NEW LESSON",
       "discipline": "天文学",
       "discipline_en": "ASTRONOMY",
       "title": "新增极光实验室，探索太阳风与地球磁层",

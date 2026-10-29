@@ -486,8 +486,8 @@
           "english": "Health & Infectious Disease",
           "description": "通过交互模拟观察传染病传播、接种率与群体免疫之间的关系。",
           "description_en": "Use an interactive simulation to explore how infectious disease spread, vaccination, and population immunity relate.",
-          "status": "1 个交互模拟已开放",
-          "status_en": "1 interactive simulation available",
+          "status": "2 个互动模拟已开放",
+          "status_en": "2 interactive simulations available",
           "lessons": [
             {
               "slug": "epidemic-lab",
@@ -500,6 +500,18 @@
               "href": "demos/biology/epidemic/index.html",
               "published": true,
               "screenshot": "assets/biology-epidemic-lab.png"
+            },
+            {
+              "slug": "vaccine-antibiotics",
+              "name": "疫苗与抗生素",
+              "english": "Vaccines & Antibiotics",
+              "description": "通过四个单元、九讲的交互课程认识病原体、疫苗与免疫应答、抗生素作用机制和耐药性，并在群体模拟中观察接种覆盖率的影响。",
+              "description_en": "Explore pathogens, vaccines and immune responses, antibiotic mechanisms, and antimicrobial resistance in a four-unit, nine-lesson interactive course, then examine how vaccination coverage affects a simulated population.",
+              "interaction": "四个单元 · 九讲 · 3D 交互 · 中英双语",
+              "interaction_en": "4 units · 9 lessons · Interactive 3D · Chinese / English",
+              "href": "demos/biology/vaccine-antibiotics/index.html",
+              "published": true,
+              "screenshot": "assets/biology-vaccine-antibiotics.png"
             }
           ]
         }
